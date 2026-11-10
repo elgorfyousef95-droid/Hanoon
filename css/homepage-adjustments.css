@@ -754,3 +754,294 @@
   }
 }
 
+
+/* =========================================
+   HANOON — FINAL PREMIUM HEADER
+========================================= */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  min-height: 90px;
+  padding: 13px clamp(14px, 3vw, 42px);
+  background: rgba(12,16,32,.96);
+  border-bottom: 1px solid rgba(213,179,108,.2);
+  box-shadow: 0 8px 30px rgba(0,0,0,.2);
+  backdrop-filter: blur(18px);
+}
+
+/* Logo */
+.site-header > .brand {
+  order: 1;
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 12px;
+  margin: 0;
+}
+
+.site-header > .brand img {
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(213,179,108,.25));
+}
+
+.site-header > .brand strong {
+  display: block;
+  color: #f1d99f;
+  font-size: 19px;
+  letter-spacing: 2px;
+}
+
+.site-header > .brand small {
+  display: block;
+  margin-top: 3px;
+  color: #aaa9b8;
+  font-size: 10px;
+}
+
+/* Top controls */
+.site-header > .header-controls {
+  order: 2;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: 0;
+  flex: 0 0 auto;
+}
+
+.site-header .icon-button,
+.site-header .header-profile-link {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(213,179,108,.38);
+  border-radius: 50%;
+  background: linear-gradient(
+    145deg,
+    rgba(213,179,108,.15),
+    rgba(255,255,255,.035)
+  );
+  color: #f1d99f;
+  transition: .25s ease;
+}
+
+.site-header .icon-button svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.site-header .header-profile-link {
+  overflow: hidden;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.site-header .header-profile-link img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.site-header .icon-button:hover,
+.site-header .header-profile-link:hover {
+  transform: translateY(-3px);
+  color: #101629;
+  background: #e2c27f;
+  box-shadow: 0 7px 20px rgba(213,179,108,.2);
+}
+
+/* Login button */
+.site-header .account-button {
+  position: static;
+  transform: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 125px;
+  min-height: 43px;
+  padding: 8px 17px;
+  border: 1px solid #d5b36c;
+  border-radius: 30px;
+  background: linear-gradient(
+    135deg,
+    #e7cb8a,
+    #b18a4d
+  );
+  color: #101629;
+  font-size: 12px;
+  font-weight: 900;
+  white-space: nowrap;
+  transition: .25s ease;
+}
+
+.site-header .account-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(213,179,108,.25);
+}
+
+/* Navigation — always visible, two buttons per row */
+.site-header > .main-navigation {
+  order: 3;
+  position: static;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  padding: 12px 0 2px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.site-header > .main-navigation a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 45px;
+  padding: 9px 12px;
+  border: 1px solid rgba(213,179,108,.25);
+  border-radius: 13px;
+  background: linear-gradient(
+    145deg,
+    rgba(255,255,255,.055),
+    rgba(213,179,108,.045)
+  );
+  color: #e9e5dc;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+  white-space: normal;
+  transition: .25s ease;
+}
+
+.site-header > .main-navigation a:hover,
+.site-header > .main-navigation a.active {
+  border-color: #d5b36c;
+  background: linear-gradient(
+    135deg,
+    rgba(213,179,108,.25),
+    rgba(213,179,108,.09)
+  );
+  color: #f6dfaa;
+  box-shadow: 0 5px 16px rgba(213,179,108,.1);
+  transform: translateY(-2px);
+}
+
+/* Hide menu toggle: navigation is already visible */
+.site-header > .menu-toggle {
+  display: none !important;
+}
+
+/* Tablet */
+@media (max-width: 760px) {
+  .site-header {
+    gap: 10px;
+    min-height: auto;
+    padding: 10px 13px;
+  }
+
+  .site-header > .brand img {
+    width: 43px;
+    height: 43px;
+  }
+
+  .site-header > .brand strong {
+    font-size: 16px;
+  }
+
+  .site-header > .brand small {
+    font-size: 9px;
+  }
+
+  .site-header > .header-controls {
+    gap: 6px;
+  }
+
+  .site-header .icon-button,
+  .site-header .header-profile-link {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+  }
+
+  .site-header .account-button {
+    min-width: 88px;
+    min-height: 36px;
+    padding: 6px 9px;
+    font-size: 10px;
+  }
+
+  .site-header > .main-navigation {
+    gap: 8px;
+    padding-top: 9px;
+  }
+
+  .site-header > .main-navigation a {
+    min-height: 42px;
+    padding: 8px 5px;
+    font-size: 11px;
+    border-radius: 11px;
+  }
+}
+
+/* Small phones */
+@media (max-width: 390px) {
+  .site-header {
+    padding-inline: 8px;
+    gap: 7px;
+  }
+
+  .site-header > .brand {
+    gap: 6px;
+  }
+
+  .site-header > .brand img {
+    width: 35px;
+    height: 35px;
+  }
+
+  .site-header > .brand strong {
+    font-size: 13px;
+  }
+
+  .site-header > .brand small {
+    display: none;
+  }
+
+  .site-header > .header-controls {
+    gap: 4px;
+  }
+
+  .site-header .icon-button,
+  .site-header .header-profile-link {
+    width: 31px;
+    height: 31px;
+    min-width: 31px;
+  }
+
+  .site-header .account-button {
+    min-width: 73px;
+    min-height: 32px;
+    padding: 4px 7px;
+    font-size: 9px;
+  }
+}
