@@ -1,0 +1,1215 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0C1020">
+  <meta name="description" content="اكتشف كتب هنون واقرأ في مختلف مجالات المعرفة.">
+  <title>الكتب | HANOON</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+
+  <style>
+    :root {
+      --gold: #D5B36C;
+      --purple: #8C75F5;
+      --teal: #35BDB0;
+      --bg: #0C1020;
+      --surface: #171D32;
+      --surface2: #202840;
+      --text: #F5EAD1;
+      --muted: #A8AEC2;
+      --border: rgba(255,255,255,.09);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Cairo", sans-serif;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button, input, select {
+      font-family: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .books-page {
+      min-height: 100vh;
+      background:
+        linear-gradient(rgba(12,16,32,.82),rgba(12,16,32,.94)),
+        url("../assets/backgrounds/books-bg.svg") center top / cover fixed no-repeat;
+    }
+
+    /* Header */
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 10px 5%;
+      background: rgba(12,16,32,.91);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(18px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--gold);
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+
+    .brand-mark {
+      width: 43px;
+      height: 43px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: linear-gradient(135deg,#e7cb8a,#8b6937);
+      color: #171525;
+      font-size: 23px;
+      box-shadow: 0 5px 22px rgba(213,179,108,.2);
+    }
+
+    .top-links {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .top-links a:hover,
+    .top-links a.active {
+      color: var(--gold);
+    }
+
+    .back-home {
+      padding: 8px 16px;
+      border: 1px solid rgba(213,179,108,.4);
+      border-radius: 30px;
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    /* Hero */
+
+    .hero {
+      position: relative;
+      min-height: 350px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      padding: 60px 6%;
+      background:
+        linear-gradient(90deg,rgba(12,16,32,.93),rgba(12,16,32,.55)),
+        url("../assets/backgrounds/books-bg.svg") center / cover no-repeat;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 350px;
+      height: 350px;
+      left: -120px;
+      bottom: -230px;
+      border: 1px solid rgba(213,179,108,.25);
+      border-radius: 50%;
+      box-shadow:
+        0 0 0 35px rgba(213,179,108,.025),
+        0 0 0 70px rgba(213,179,108,.02);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 720px;
+    }
+
+    .eyebrow {
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+
+    .hero h1 {
+      margin: 0 0 14px;
+      font-size: clamp(30px,5vw,52px);
+      line-height: 1.4;
+      font-weight: 900;
+    }
+
+    .hero h1 span {
+      color: var(--gold);
+    }
+
+    .hero p {
+      max-width: 590px;
+      color: #d1d2dc;
+      font-size: 14px;
+      line-height: 2.1;
+      margin: 0;
+    }
+
+    .hero-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 25px;
+    }
+
+    .hero-stat {
+      min-width: 115px;
+      padding: 10px 15px;
+      border: 1px solid rgba(255,255,255,.13);
+      border-radius: 13px;
+      background: rgba(20,25,43,.68);
+      backdrop-filter: blur(8px);
+    }
+
+    .hero-stat strong {
+      display: block;
+      color: var(--gold);
+      font-size: 21px;
+    }
+
+    .hero-stat span {
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    /* Main layout */
+
+    .container {
+      width: min(1250px,92%);
+      margin: auto;
+    }
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 15px;
+      margin: 38px 0 20px;
+    }
+
+    .section-heading h2 {
+      margin: 0 0 4px;
+      font-size: 23px;
+      font-weight: 900;
+    }
+
+    .section-heading p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .gold-line {
+      width: 55px;
+      height: 3px;
+      margin-top: 9px;
+      border-radius: 10px;
+      background: var(--gold);
+    }
+
+    /* Featured books */
+
+    .featured-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 18px;
+    }
+
+    .featured-card {
+      min-height: 250px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: end;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--surface);
+      isolation: isolate;
+    }
+
+    .featured-card img {
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .5s;
+    }
+
+    .featured-card:hover img {
+      transform: scale(1.06);
+    }
+
+    .featured-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(0deg,rgba(7,10,20,.97),rgba(7,10,20,.08));
+    }
+
+    .featured-info {
+      width: 100%;
+      padding: 24px;
+    }
+
+    .featured-info small {
+      color: var(--gold);
+      font-weight: 800;
+    }
+
+    .featured-info h3 {
+      margin: 8px 0;
+      font-size: 23px;
+    }
+
+    .featured-info p {
+      max-width: 500px;
+      margin: 0 0 12px;
+      color: #d1d2dc;
+      font-size: 12px;
+      line-height: 1.9;
+    }
+
+    .gold-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 19px;
+      border: 0;
+      border-radius: 25px;
+      background: linear-gradient(135deg,#e7cb8a,#b28b4d);
+      color: #171525;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    /* Search and filters */
+
+    .tools-area {
+      margin-top: 45px;
+      padding: 23px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: linear-gradient(145deg,rgba(31,39,62,.92),rgba(20,26,44,.9));
+    }
+
+    .search-row {
+      display: grid;
+      grid-template-columns: 1fr 190px 160px;
+      gap: 12px;
+    }
+
+    .search-box {
+      position: relative;
+    }
+
+    .search-box span {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 19px;
+      opacity: .7;
+    }
+
+    .search-box input,
+    .filter-select {
+      width: 100%;
+      height: 49px;
+      padding: 0 15px;
+      border: 1px solid rgba(255,255,255,.11);
+      border-radius: 12px;
+      outline: none;
+      background: rgba(9,13,27,.65);
+      color: white;
+      font-size: 12px;
+    }
+
+    .search-box input {
+      padding-right: 46px;
+    }
+
+    .search-box input:focus,
+    .filter-select:focus {
+      border-color: var(--gold);
+    }
+
+    .filter-select option {
+      background: #171d32;
+      color: white;
+    }
+
+    .category-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 17px;
+    }
+
+    .category-btn {
+      padding: 8px 15px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 30px;
+      background: rgba(255,255,255,.035);
+      color: var(--muted);
+      font-size: 11px;
+      transition: .2s;
+    }
+
+    .category-btn.active,
+    .category-btn:hover {
+      border-color: var(--gold);
+      background: rgba(213,179,108,.15);
+      color: var(--gold);
+    }
+
+    /* Books grid */
+
+    .result-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin: 28px 0 16px;
+    }
+
+    .result-bar strong {
+      color: var(--gold);
+    }
+
+    .result-bar span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .books-grid {
+      display: grid;
+      grid-template-columns: repeat(4,minmax(0,1fr));
+      gap: 20px;
+      padding-bottom: 55px;
+    }
+
+    .book-card {
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      background: linear-gradient(160deg,#202840,#141a2d);
+      transition: transform .25s,border-color .25s,box-shadow .25s;
+    }
+
+    .book-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(213,179,108,.55);
+      box-shadow: 0 16px 32px rgba(0,0,0,.25);
+    }
+
+    .book-cover {
+      position: relative;
+      height: 225px;
+      overflow: hidden;
+      background: #222a40;
+    }
+
+    .book-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .4s;
+    }
+
+    .book-card:hover .book-cover img {
+      transform: scale(1.07);
+    }
+
+    .book-number {
+      position: absolute;
+      top: 11px;
+      right: 11px;
+      width: 31px;
+      height: 31px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: var(--gold);
+      color: #1a1722;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .favorite-btn {
+      position: absolute;
+      top: 11px;
+      left: 11px;
+      width: 35px;
+      height: 35px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 50%;
+      background: rgba(8,12,25,.72);
+      color: white;
+      font-size: 18px;
+    }
+
+    .favorite-btn.active {
+      color: #ff758b;
+      border-color: #ff758b;
+    }
+
+    .book-info {
+      padding: 15px;
+    }
+
+    .book-category {
+      display: inline-block;
+      margin-bottom: 7px;
+      color: var(--teal);
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .book-info h3 {
+      min-height: 28px;
+      margin: 0 0 7px;
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .book-description {
+      min-height: 61px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.9;
+    }
+
+    .book-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 7px;
+      margin-top: 12px;
+      padding: 11px 0;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .book-author {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #d9c79d;
+    }
+
+    .book-author img {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #333;
+    }
+
+    .book-open {
+      width: 100%;
+      padding: 9px;
+      border: 1px solid rgba(213,179,108,.4);
+      border-radius: 10px;
+      background: rgba(213,179,108,.09);
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .book-open:hover {
+      background: var(--gold);
+      color: #171525;
+    }
+
+    .empty-state {
+      display: none;
+      margin-bottom: 50px;
+      padding: 55px 15px;
+      border: 1px dashed var(--border);
+      border-radius: 17px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .empty-state strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--gold);
+      font-size: 20px;
+    }
+
+    .loading-state {
+      grid-column: 1 / -1;
+      padding: 50px 15px;
+      color: var(--gold);
+      text-align: center;
+    }
+
+    /* Author and footer */
+
+    .author-banner {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      margin: 10px 0 50px;
+      padding: 27px;
+      border: 1px solid rgba(213,179,108,.22);
+      border-radius: 20px;
+      background: linear-gradient(100deg,rgba(13,18,35,.96),rgba(28,34,57,.9));
+    }
+
+    .author-banner img {
+      width: 95px;
+      height: 95px;
+      border: 3px solid var(--gold);
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .author-banner h3 {
+      margin: 0 0 6px;
+      color: var(--gold);
+      font-size: 19px;
+    }
+
+    .author-banner p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.9;
+    }
+
+    .footer {
+      padding: 30px 5%;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 2;
+      text-align: center;
+    }
+
+    .footer strong {
+      color: var(--gold);
+    }
+
+    /* Responsive */
+
+    @media (max-width: 1000px) {
+      .books-grid {
+        grid-template-columns: repeat(3,minmax(0,1fr));
+      }
+    }
+
+    @media (max-width: 700px) {
+      .topbar {
+        min-height: 62px;
+        padding: 9px 4%;
+      }
+
+      .brand {
+        font-size: 19px;
+      }
+
+      .brand-mark {
+        width: 37px;
+        height: 37px;
+      }
+
+      .top-links {
+        display: none;
+      }
+
+      .hero {
+        min-height: 330px;
+        padding: 48px 5%;
+      }
+
+      .hero h1 {
+        font-size: 32px;
+      }
+
+      .hero p {
+        font-size: 12px;
+      }
+
+      .hero-stat {
+        min-width: 95px;
+        padding: 8px 11px;
+      }
+
+      .featured-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .featured-card {
+        min-height: 210px;
+      }
+
+      .tools-area {
+        padding: 15px;
+      }
+
+      .search-row {
+        grid-template-columns: 1fr;
+      }
+
+      .books-grid {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+        gap: 12px;
+      }
+
+      .book-cover {
+        height: 180px;
+      }
+
+      .book-info {
+        padding: 11px;
+      }
+
+      .book-info h3 {
+        font-size: 13px;
+      }
+
+      .book-description {
+        min-height: 58px;
+        font-size: 10px;
+      }
+
+      .book-meta {
+        font-size: 9px;
+      }
+
+      .section-heading h2 {
+        font-size: 19px;
+      }
+
+      .author-banner {
+        gap: 15px;
+        padding: 18px;
+      }
+
+      .author-banner img {
+        width: 70px;
+        height: 70px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .books-grid {
+        gap: 9px;
+      }
+
+      .book-cover {
+        height: 155px;
+      }
+
+      .book-info {
+        padding: 9px;
+      }
+
+      .hero-stats {
+        gap: 7px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+<div class="books-page">
+
+  <header class="topbar">
+    <a href="../index.html" class="brand">
+      <span class="brand-mark">ه</span>
+      HANOON
+    </a>
+
+    <nav class="top-links">
+      <a href="../index.html">الرئيسية</a>
+      <a href="books.html" class="active">الكتب</a>
+      <a href="articles.html">المقالات</a>
+      <a href="stories.html">القصص</a>
+    </nav>
+
+    <a href="../index.html" class="back-home">العودة للرئيسية ←</a>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <div class="eyebrow">HANOON DIGITAL LIBRARY</div>
+      <h1>عالم من المعرفة<br><span>ينتظرك لتكتشفه</span></h1>
+      <p>
+        اكتشف كتب هنون، واقرأ في مجالات مختلفة من العلوم والأدب
+        والتكنولوجيا وتطوير الذات. كل كتاب رحلة مستقلة من الأفكار والمعرفة.
+      </p>
+
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <strong id="totalBooks">--</strong>
+          <span>كتابًا متاحًا</span>
+        </div>
+        <div class="hero-stat">
+          <strong id="totalChapters">--</strong>
+          <span>فصلًا معرفيًا</span>
+        </div>
+        <div class="hero-stat">
+          <strong id="totalCategories">--</strong>
+          <span>مجالًا مختلفًا</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main class="container">
+
+    <section>
+      <div class="section-heading">
+        <div>
+          <h2>اختيارات مميزة</h2>
+          <div class="gold-line"></div>
+        </div>
+        <p>كتب تستحق أن تبدأ بها</p>
+      </div>
+
+      <div class="featured-grid" id="featuredBooks">
+        <div class="loading-state">جاري تجهيز الاختيارات...</div>
+      </div>
+    </section>
+
+    <section class="tools-area">
+      <div class="section-heading" style="margin:0 0 17px">
+        <div>
+          <h2>اكتشف الكتب</h2>
+          <p>ابحث عن الكتاب أو المجال الذي يهمك</p>
+        </div>
+      </div>
+
+      <div class="search-row">
+        <div class="search-box">
+          <span>⌕</span>
+          <input id="bookSearch" type="search"
+            placeholder="ابحث باسم الكتاب أو الموضوع أو المجال...">
+        </div>
+
+        <select class="filter-select" id="sortBooks">
+          <option value="default">الترتيب الافتراضي</option>
+          <option value="title">ترتيب أبجدي</option>
+          <option value="chapters">الأكثر فصولًا</option>
+        </select>
+
+        <select class="filter-select" id="favoriteFilter">
+          <option value="all">كل الكتب</option>
+          <option value="favorites">المفضلة فقط</option>
+        </select>
+      </div>
+
+      <div class="category-list" id="categoryList">
+        <button class="category-btn active" data-category="all">
+          كل المجالات
+        </button>
+      </div>
+    </section>
+
+    <div class="result-bar">
+      <div>
+        <strong id="resultCount">0</strong>
+        <span>كتاب في قسم الكتب</span>
+      </div>
+      <span id="activeCategory">كل المجالات</span>
+    </div>
+
+    <section>
+      <div class="books-grid" id="booksGrid">
+        <div class="loading-state">جاري تحميل الكتب...</div>
+      </div>
+
+      <div class="empty-state" id="emptyState">
+        <strong>لم نعثر على كتب مطابقة</strong>
+        جرّب البحث بكلمات مختلفة أو اختر مجالًا آخر.
+      </div>
+    </section>
+
+    <section class="author-banner">
+      <img src="../assets/avatars/yousef.jpg"
+        alt="صورة الكاتب"
+        onerror="this.style.display='none'">
+      <div>
+        <h3>Yousef Elgorf</h3>
+        <p>
+          المعرفة تصنع الفرق.
+          نؤمن في هنون أن كل فكرة جديدة يمكن أن تكون بداية لطريق مختلف.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <strong>HANOON</strong>
+    <br>
+    المعرفة تصنع الفرق
+    <br>
+    جميع الحقوق محفوظة © <span id="currentYear"></span>
+  </footer>
+
+</div>
+
+<script src="../data/books.js"></script>
+
+<script>
+(() => {
+  "use strict";
+
+  const API = window.HANOON_BOOKS_API;
+
+  const grid = document.getElementById("booksGrid");
+  const featured = document.getElementById("featuredBooks");
+  const searchInput = document.getElementById("bookSearch");
+  const sortSelect = document.getElementById("sortBooks");
+  const favoriteFilter = document.getElementById("favoriteFilter");
+  const categoryList = document.getElementById("categoryList");
+  const emptyState = document.getElementById("emptyState");
+
+  function showError(message) {
+    grid.innerHTML = `
+      <div class="loading-state">${message}</div>
+    `;
+    featured.innerHTML = "";
+  }
+
+  if (!API || typeof API.getAll !== "function") {
+    showError("تعذر تحميل بيانات الكتب. راجع ملف data/books.js.");
+    return;
+  }
+
+  const allBooks = API.getAll();
+
+  if (!Array.isArray(allBooks) || !allBooks.length) {
+    showError("لا توجد كتب متاحة حاليًا.");
+    return;
+  }
+
+  let activeCategory = "all";
+  let favorites = [];
+
+  try {
+    const saved = JSON.parse(
+      localStorage.getItem("hanoon-book-favorites") || "[]"
+    );
+
+    if (Array.isArray(saved)) favorites = saved;
+  } catch {
+    favorites = [];
+  }
+
+  document.getElementById("currentYear").textContent =
+    new Date().getFullYear();
+
+  const categories = [
+    ...new Set(allBooks.map(book => book.category).filter(Boolean))
+  ];
+
+  const chapterTotal = allBooks.reduce(
+    (total, book) => total + (book.chapters?.length || 0),
+    0
+  );
+
+  document.getElementById("totalBooks").textContent = allBooks.length;
+  document.getElementById("totalChapters").textContent = chapterTotal;
+  document.getElementById("totalCategories").textContent = categories.length;
+
+  function safeText(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    })[char]);
+  }
+
+  function saveFavorites() {
+    try {
+      localStorage.setItem(
+        "hanoon-book-favorites",
+        JSON.stringify(favorites)
+      );
+    } catch (error) {
+      console.warn("Could not save favorites:", error);
+    }
+  }
+
+  function createCategories() {
+    categoryList.innerHTML = `
+      <button class="category-btn active" data-category="all">
+        كل المجالات
+      </button>
+    `;
+
+    categories.forEach(category => {
+      const button = document.createElement("button");
+      button.className = "category-btn";
+      button.dataset.category = category;
+      button.textContent = category;
+      categoryList.appendChild(button);
+    });
+  }
+
+  function openBook(bookId) {
+    location.href = `book.html?id=${encodeURIComponent(bookId)}`;
+  }
+
+  function renderFeatured() {
+    const selected = allBooks.slice(0, 2);
+
+    featured.innerHTML = selected.map((book, index) => `
+      <article class="featured-card">
+        <img
+          src="${safeText(book.cover)}"
+          alt="${safeText(book.title)}"
+          loading="${index === 0 ? "eager" : "lazy"}"
+        >
+
+        <div class="featured-info">
+          <small>${index === 0 ? "اختيار المحرر" : "اكتشف هذا الكتاب"}</small>
+          <h3>${safeText(book.title)}</h3>
+          <p>${safeText(book.description)}</p>
+
+          <button class="gold-button"
+            data-open="${safeText(book.id)}">
+            اكتشف الكتاب ←
+          </button>
+        </div>
+      </article>
+    `).join("");
+  }
+
+  function getFilteredBooks() {
+    const query = searchInput.value.trim().toLowerCase();
+
+    let results = allBooks.filter(book => {
+      const matchesCategory =
+        activeCategory === "all" ||
+        book.category === activeCategory;
+
+      const searchableText = [
+        book.title,
+        book.category,
+        book.description,
+        book.author?.name,
+        ...(book.chapters || []).map(chapter => chapter.title)
+      ].join(" ").toLowerCase();
+
+      const matchesSearch =
+        !query || searchableText.includes(query);
+
+      const matchesFavorite =
+        favoriteFilter.value !== "favorites" ||
+        favorites.includes(book.id);
+
+      return matchesCategory && matchesSearch && matchesFavorite;
+    });
+
+    if (sortSelect.value === "title") {
+      results.sort((a, b) =>
+        a.title.localeCompare(b.title, "ar")
+      );
+    }
+
+    if (sortSelect.value === "chapters") {
+      results.sort((a, b) =>
+        (b.chapters?.length || 0) - (a.chapters?.length || 0)
+      );
+    }
+
+    return results;
+  }
+
+  function renderBooks() {
+    const results = getFilteredBooks();
+
+    document.getElementById("resultCount").textContent =
+      results.length;
+
+    document.getElementById("activeCategory").textContent =
+      activeCategory === "all" ? "كل المجالات" : activeCategory;
+
+    emptyState.style.display =
+      results.length ? "none" : "block";
+
+    grid.style.display =
+      results.length ? "grid" : "none";
+
+    grid.innerHTML = results.map(book => {
+      const isFavorite = favorites.includes(book.id);
+
+      return `
+        <article class="book-card">
+          <div class="book-cover">
+            <img
+              src="${safeText(book.cover)}"
+              alt="${safeText(book.title)}"
+              loading="lazy"
+            >
+
+            <span class="book-number">${book.number}</span>
+
+            <button
+              class="favorite-btn ${isFavorite ? "active" : ""}"
+              data-favorite="${safeText(book.id)}"
+              aria-label="${isFavorite ? "إزالة من المفضلة" : "إضافة للمفضلة"}"
+              title="${isFavorite ? "إزالة من المفضلة" : "إضافة للمفضلة"}"
+            >${isFavorite ? "♥" : "♡"}</button>
+          </div>
+
+          <div class="book-info">
+            <span class="book-category">
+              ${safeText(book.category)}
+            </span>
+
+            <h3>${safeText(book.title)}</h3>
+
+            <p class="book-description">
+              ${safeText(book.description)}
+            </p>
+
+            <div class="book-meta">
+              <span>${book.chapters?.length || 0} فصول</span>
+              <span>كتاب ${book.number}</span>
+            </div>
+
+            <div class="book-meta"
+              style="border:0;margin-top:0;padding-top:0">
+              <span class="book-author">
+                <img
+                  src="${safeText(book.author?.image || "")}"
+                  alt=""
+                  onerror="this.style.display='none'"
+                >
+                ${safeText(book.author?.name || "هنون")}
+              </span>
+            </div>
+
+            <button class="book-open"
+              data-open="${safeText(book.id)}">
+              عرض الكتاب والفصول ←
+            </button>
+          </div>
+        </article>
+      `;
+    }).join("");
+  }
+
+  categoryList.addEventListener("click", event => {
+    const button = event.target.closest("[data-category]");
+    if (!button) return;
+
+    activeCategory = button.dataset.category;
+
+    categoryList.querySelectorAll(".category-btn").forEach(item => {
+      item.classList.toggle("active", item === button);
+    });
+
+    renderBooks();
+  });
+
+  grid.addEventListener("click", event => {
+    const favoriteButton = event.target.closest("[data-favorite]");
+    const openButton = event.target.closest("[data-open]");
+
+    if (favoriteButton) {
+      const id = favoriteButton.dataset.favorite;
+
+      if (favorites.includes(id)) {
+        favorites = favorites.filter(item => item !== id);
+      } else {
+        favorites.push(id);
+      }
+
+      saveFavorites();
+      renderBooks();
+      return;
+    }
+
+    if (openButton) {
+      openBook(openButton.dataset.open);
+    }
+  });
+
+  featured.addEventListener("click", event => {
+    const button = event.target.closest("[data-open]");
+    if (button) openBook(button.dataset.open);
+  });
+
+  searchInput.addEventListener("input", renderBooks);
+  sortSelect.addEventListener("change", renderBooks);
+  favoriteFilter.addEventListener("change", renderBooks);
+
+  createCategories();
+  renderFeatured();
+  renderBooks();
+
+})();
+</script>
+
+</body>
+</html>
