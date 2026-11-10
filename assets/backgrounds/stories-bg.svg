@@ -1,0 +1,65 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 800" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="storyBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#17121F"/>
+      <stop offset=".48" stop-color="#302033"/>
+      <stop offset="1" stop-color="#100F19"/>
+    </linearGradient>
+
+    <radialGradient id="storyLight">
+      <stop offset="0" stop-color="#C18B55" stop-opacity=".27"/>
+      <stop offset="1" stop-color="#C18B55" stop-opacity="0"/>
+    </radialGradient>
+
+    <linearGradient id="storyGold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#A98237" stop-opacity=".15"/>
+      <stop offset=".5" stop-color="#E8CD91" stop-opacity=".7"/>
+      <stop offset="1" stop-color="#A98237" stop-opacity=".1"/>
+    </linearGradient>
+
+    <pattern id="storyStars" width="110" height="110" patternUnits="userSpaceOnUse">
+      <circle cx="18" cy="20" r="1.5" fill="#E8CD91" opacity=".25"/>
+      <circle cx="75" cy="65" r="1" fill="#E8CD91" opacity=".2"/>
+      <path d="M52 12V22M47 17H57" stroke="#E8CD91" stroke-opacity=".16"/>
+    </pattern>
+  </defs>
+
+  <rect width="1400" height="800" fill="url(#storyBg)"/>
+  <ellipse cx="1050" cy="390" rx="520" ry="430" fill="url(#storyLight)"/>
+  <rect width="1400" height="800" fill="url(#storyStars)"/>
+
+  <!-- Open story book -->
+  <g transform="translate(650 330)" fill="none" stroke="url(#storyGold)" stroke-width="3" stroke-linejoin="round">
+    <path d="M0 80C-90 15 -205 10 -300 45V340C-190 300 -90 315 0 375Z" fill="#C18B55" fill-opacity=".08"/>
+    <path d="M0 80C90 15 205 10 300 45V340C190 300 90 315 0 375Z" fill="#C18B55" fill-opacity=".08"/>
+    <path d="M0 80V375" stroke-width="4"/>
+    <path d="M-250 105C-180 80 -100 90 -45 125M-250 150C-170 125 -100 135 -45 170M-250 195C-170 170 -100 180 -45 215M-250 240C-170 215 -100 225 -45 260"/>
+    <path d="M250 105C180 80 100 90 45 125M250 150C170 125 100 135 45 170M250 195C170 170 100 180 45 215M250 240C170 215 100 225 45 260"/>
+  </g>
+
+  <!-- Moon and story atmosphere -->
+  <circle cx="1120" cy="175" r="78" fill="#E8CD91" opacity=".12"/>
+  <circle cx="1150" cy="150" r="72" fill="#302033"/>
+  <circle cx="1020" cy="105" r="2.5" fill="#E8CD91"/>
+  <circle cx="1230" cy="260" r="2" fill="#E8CD91"/>
+  <circle cx="950" cy="210" r="2" fill="#E8CD91"/>
+
+  <!-- Floating decorative curves -->
+  <g fill="none" stroke="#D5B36C" stroke-opacity=".24">
+    <path d="M90 610C230 480 350 490 450 580S650 700 780 590"/>
+    <path d="M60 660C230 530 360 550 470 635S650 740 800 630"/>
+    <circle cx="310" cy="280" r="130"/>
+    <circle cx="310" cy="280" r="165" stroke-dasharray="3 12"/>
+  </g>
+
+  <!-- Story sparkles -->
+  <g stroke="#E8CD91" stroke-width="2" fill="none" opacity=".65">
+    <path d="M250 160V190M235 175H265"/>
+    <path d="M520 120V144M508 132H532"/>
+    <path d="M850 670V696M837 683H863"/>
+    <path d="M1290 490V518M1276 504H1304"/>
+  </g>
+
+  <rect x="1" y="1" width="1398" height="798" fill="none" stroke="#D5B36C" stroke-opacity=".1"/>
+</svg>
