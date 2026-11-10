@@ -1,15 +1,20 @@
 
-/* =====================================================
-   HANOON ARTICLES DATABASE
+/* =========================================================
+   HANOON — ARTICLES DATABASE
    قاعدة بيانات مقالات هنون
-   الدفعة الأولى: 10 مقالات
-===================================================== */
+   الإصدار: نظام المقالات الموسّع
+   يدعم إضافة مجموعات مقالات خارجية دون تغيير واجهة الموقع
+========================================================= */
 
 (function () {
   "use strict";
 
-  const articles = [
+  /* =======================================================
+     المقالات الأساسية الموجودة حاليًا
+     تم الحفاظ على المقالات العشرة ومحتواها
+  ======================================================= */
 
+  const articles = [
     {
       id: "art-001",
       title: "كيف تفهم نفسك وتكتشف حقيقتك؟",
@@ -429,14 +434,145 @@
         }
       ]
     }
-
   ];
 
-  // إتاحة المقالات لباقي صفحات الموقع
-  window.HANOON_ARTICLES = articles;
+  /* =======================================================
+     أدوات مساعدة
+  ======================================================= */
 
-  // واجهة موحدة للتعامل مع المقالات
-  window.HANOON_ARTICLES_API = {
+  function normalizeText(value) {
+    return String(value || "")
+      .trim()
+      .toLocaleLowerCase("ar");
+  }
+
+  function isValidArticle(article) {
+    return Boolean(
+      article &&
+      typeof article === "object" &&
+      typeof article.id === "string" &&
+      article.id.trim() &&
+      typeof article.title === "string" &&
+      article.title.trim() &&
+      typeof article.category === "string" &&
+      Array.isArray(article.content)
+    );
+  }
+
+  function getArticleText(article) {
+    const contentText = (article.content || [])
+      .map(section => {
+        const heading = section.heading || "";
+        const paragraphs = Array.isArray(section.paragraphs)
+          ? section.paragraphs.join(" ")
+          : "";
+
+        return heading + " " + paragraphs;
+      })
+      .join(" ");
+
+    return [
+      article.title,
+      article.excerpt,
+      article.category,
+      article.author,
+      ...(article.tags || []),
+      contentText
+    ].join(" ");
+  }
+
+  function findIndexById(id) {
+    return articles.findIndex(article => article.id === id);
+  }
+
+  /* =======================================================
+     إضافة المقالات ومنع التكرار
+  ======================================================= */
+
+  function addArticles(newArticles) {
+    if (!Array.isArray(newArticles)) {
+      console.error("HANOON: يجب إرسال مصفوفة مقالات صحيحة.");
+      return {
+        added: 0,
+        skipped: 0,
+        total: articles.length
+      };
+    }
+
+    let added = 0;
+    let skipped = 0;
+
+    newArticles.forEach(article => {
+      if (!isValidArticle(article)) {
+        skipped++;
+        console.warn("HANOON: تم تجاهل مقال غير مكتمل.", article);
+        return;
+      }
+
+      const existingIndex = findIndexById(article.id);
+
+      if (existingIndex !== -1) {
+        skipped++;
+        return;
+      }
+
+      articles.push(article);
+      added++;
+    });
+
+    return {
+      added,
+      skipped,
+      total: articles.length
+    };
+  }
+
+  /* =======================================================
+     تحديث مقال موجود
+  ======================================================= */
+
+  function updateArticle(id, updatedData) {
+    const index = findIndexById(id);
+
+    if (index === -1 || !updatedData || typeof updatedData !== "object") {
+      return false;
+    }
+
+    const updatedArticle = {
+      ...articles[index],
+      ...updatedData,
+      id: articles[index].id
+    };
+
+    if (!isValidArticle(updatedArticle)) {
+      return false;
+    }
+
+    articles[index] = updatedArticle;
+    return true;
+  }
+
+  /* =======================================================
+     حذف مقال
+  ======================================================= */
+
+  function removeArticle(id) {
+    const index = findIndexById(id);
+
+    if (index === -1) {
+      return false;
+    }
+
+    articles.splice(index, 1);
+    return true;
+  }
+
+  /* =======================================================
+     واجهة التعامل مع المقالات
+     الأسماء الأساسية القديمة محفوظة للتوافق
+  ======================================================= */
+
+  const api = {
 
     getAll: function () {
       return articles;
@@ -447,40 +583,182 @@
     },
 
     getByCategory: function (category) {
-      if (category === "all") return articles;
+      if (!category || category === "all") {
+        return articles;
+      }
+
       return articles.filter(article => article.category === category);
     },
 
     search: function (query) {
-      const term = String(query || "").trim().toLowerCase();
+      const term = normalizeText(query);
 
-      if (!term) return articles;
+      if (!term) {
+        return articles;
+      }
 
       return articles.filter(article => {
-        const searchable = [
-          article.title,
-          article.excerpt,
-          article.category,
-          article.author,
-          ...(article.tags || [])
-        ].join(" ").toLowerCase();
-
-        return searchable.includes(term);
+        return normalizeText(getArticleText(article)).includes(term);
       });
     },
 
     getCategories: function () {
-      return [...new Set(articles.map(article => article.category))];
+      return [...new Set(
+        articles
+          .map(article => article.category)
+          .filter(Boolean)
+      )];
     },
 
     getFeatured: function (count) {
-      return articles.slice(0, count || 4);
+      const limit = Number(count) > 0 ? Number(count) : 4;
+
+      return articles
+        .filter(article => article.featured === true)
+        .concat(articles.filter(article => article.featured !== true))
+        .slice(0, limit);
     },
 
     getCount: function () {
       return articles.length;
+    },
+
+    /* إضافة مجموعة مقالات جديدة */
+    addMany: function (newArticles) {
+      return addArticles(newArticles);
+    },
+
+    /* إضافة مقال واحد */
+    add: function (article) {
+      return addArticles([article]);
+    },
+
+    /* تحديث مقال */
+    update: function (id, updatedData) {
+      return updateArticle(id, updatedData);
+    },
+
+    /* حذف مقال */
+    remove: function (id) {
+      return removeArticle(id);
+    },
+
+    /* البحث عن مقال بواسطة الوسم */
+    getByTag: function (tag) {
+      const target = normalizeText(tag);
+
+      if (!target) return [];
+
+      return articles.filter(article =>
+        (article.tags || []).some(item =>
+          normalizeText(item) === target
+        )
+      );
+    },
+
+    /* أحدث المقالات */
+    getLatest: function (count) {
+      const limit = Number(count) > 0 ? Number(count) : articles.length;
+
+      return [...articles]
+        .sort((a, b) =>
+          String(b.date || "").localeCompare(String(a.date || ""))
+        )
+        .slice(0, limit);
+    },
+
+    /* المقالات المرتبطة */
+    getRelated: function (articleId, count) {
+      const current = api.getById(articleId);
+
+      if (!current) return [];
+
+      const limit = Number(count) > 0 ? Number(count) : 4;
+
+      return articles
+        .filter(article => article.id !== articleId)
+        .map(article => {
+          let score = 0;
+
+          if (article.category === current.category) {
+            score += 3;
+          }
+
+          const currentTags = current.tags || [];
+          const articleTags = article.tags || [];
+
+          articleTags.forEach(tag => {
+            if (currentTags.includes(tag)) {
+              score += 2;
+            }
+          });
+
+          return { article, score };
+        })
+        .sort((a, b) => b.score - a.score)
+        .slice(0, limit)
+        .map(item => item.article);
+    },
+
+    /* إحصائيات المقالات */
+    getStats: function () {
+      const categories = api.getCategories();
+
+      return {
+        total: articles.length,
+        categories: categories.length,
+        byCategory: categories.map(category => ({
+          name: category,
+          count: articles.filter(
+            article => article.category === category
+          ).length
+        }))
+      };
     }
 
   };
+
+  /* =======================================================
+     إتاحة قاعدة البيانات للموقع
+  ======================================================= */
+
+  window.HANOON_ARTICLES = articles;
+  window.HANOON_ARTICLES_API = api;
+
+  /* =======================================================
+     تسجيل مجموعات المقالات الخارجية
+     تستخدمها ملفات المقالات التي سننشئها لاحقًا
+  ======================================================= */
+
+  window.HANOON_REGISTER_ARTICLES = function (newArticles) {
+    const result = api.addMany(newArticles);
+
+    window.dispatchEvent(
+      new CustomEvent("hanoon:articles-updated", {
+        detail: result
+      })
+    );
+
+    return result;
+  };
+
+  /* =======================================================
+     حدث جاهزية قاعدة بيانات المقالات
+  ======================================================= */
+
+  window.dispatchEvent(
+    new CustomEvent("hanoon:articles-ready", {
+      detail: {
+        total: articles.length,
+        categories: api.getCategories()
+      }
+    })
+  );
+
+  console.info(
+    "HANOON Articles Database Ready:",
+    articles.length,
+    "articles"
+  );
 
 })();
