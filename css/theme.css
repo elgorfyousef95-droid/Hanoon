@@ -1,0 +1,368 @@
+
+/* =========================================
+   HANOON — DESIGN SYSTEM
+   Version 1.1
+   Arabic RTL | Luxury Modern Identity
+========================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  --brand-name: "HANOON";
+
+  /* الهوية */
+  --gold: #D5B36C;
+  --gold-light: #F1D99C;
+  --gold-dark: #A77B35;
+  --purple: #8C75F5;
+  --purple-light: #B5A6FF;
+  --teal: #35BDB0;
+  --teal-light: #75DED2;
+
+  /* الخلفيات */
+  --bg-primary: #0C1020;
+  --bg-secondary: #11182B;
+  --bg-tertiary: #171D32;
+  --bg-elevated: #1D2640;
+  --bg-card: rgba(27, 35, 58, 0.88);
+
+  /* النصوص */
+  --text-primary: #F5EAD1;
+  --text-secondary: #B8B5C5;
+  --text-muted: #85869B;
+  --text-gold: #E7C77F;
+
+  /* الحدود */
+  --border-color: rgba(213, 179, 108, 0.18);
+  --border-light: rgba(255, 255, 255, 0.09);
+
+  /* الحالات */
+  --success: #42D6A4;
+  --warning: #F3B95F;
+  --danger: #F16C7D;
+  --info: #65A8F5;
+
+  /* الخطوط */
+  --font-ar: "Cairo", sans-serif;
+  --font-en: "Inter", sans-serif;
+
+  /* أحجام النصوص */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: 2.25rem;
+  --text-4xl: 3rem;
+
+  /* المسافات */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 80px;
+
+  /* الزوايا */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-2xl: 36px;
+  --radius-full: 999px;
+
+  /* الظلال */
+  --shadow-soft: 0 8px 25px rgba(0, 0, 0, 0.2);
+  --shadow-card: 0 15px 45px rgba(0, 0, 0, 0.25);
+  --shadow-gold: 0 8px 30px rgba(213, 179, 108, 0.16);
+  --shadow-glow: 0 0 40px rgba(213, 179, 108, 0.12);
+
+  /* الحركة */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.35s ease;
+  --transition-slow: 0.6s ease;
+
+  /* أبعاد الموقع */
+  --container-width: 1440px;
+  --site-max-width: 1440px;
+  --header-height: 88px;
+
+  color-scheme: dark;
+}
+
+/* الوضع النهاري */
+[data-theme="light"] {
+  --bg-primary: #F7F5EF;
+  --bg-secondary: #F0EDE5;
+  --bg-tertiary: #FFFFFF;
+  --bg-elevated: #FFFFFF;
+  --bg-card: rgba(255, 255, 255, 0.94);
+
+  --text-primary: #20243A;
+  --text-secondary: #5D6070;
+  --text-muted: #898B98;
+  --text-gold: #98702D;
+
+  --border-color: rgba(150, 112, 45, 0.22);
+  --border-light: rgba(20, 25, 45, 0.10);
+
+  --shadow-soft: 0 8px 25px rgba(25, 25, 40, 0.06);
+  --shadow-card: 0 15px 45px rgba(25, 25, 40, 0.09);
+
+  color-scheme: light;
+}
+
+/* الإعدادات العامة */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-height) + 20px);
+}
+
+body {
+  margin: 0;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-ar);
+  font-size: var(--text-md);
+  line-height: 1.8;
+  direction: rtl;
+  transition:
+    background var(--transition-normal),
+    color var(--transition-normal);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+svg {
+  display: block;
+}
+
+/* الحاويات */
+.container {
+  width: min(100% - 40px, var(--container-width));
+  margin-inline: auto;
+}
+
+.section-padding {
+  padding-block: var(--space-8);
+}
+
+/* النصوص */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 800;
+  line-height: 1.45;
+  color: var(--text-primary);
+}
+
+h1 {
+  font-size: clamp(2.1rem, 5vw, 4.2rem);
+}
+
+h2 {
+  font-size: clamp(1.7rem, 3vw, 2.7rem);
+}
+
+h3 {
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+}
+
+p {
+  color: var(--text-secondary);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--gold);
+  font-size: var(--text-sm);
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.eyebrow::before {
+  content: "";
+  width: 24px;
+  height: 2px;
+  background: var(--gold);
+  border-radius: var(--radius-full);
+}
+
+/* ألوان الهوية */
+.gold-text {
+  color: var(--gold);
+}
+
+.purple-text {
+  color: var(--purple);
+}
+
+.teal-text {
+  color: var(--teal);
+}
+
+/* الخلفيات */
+.bg-primary {
+  background: var(--bg-primary);
+}
+
+.bg-secondary {
+  background: var(--bg-secondary);
+}
+
+.bg-surface {
+  background: var(--bg-tertiary);
+}
+
+.gradient-gold {
+  background: linear-gradient(
+    135deg,
+    #F1D99C 0%,
+    #D5B36C 45%,
+    #A77B35 100%
+  );
+}
+
+.gradient-brand {
+  background: linear-gradient(
+    135deg,
+    #8C75F5 0%,
+    #35BDB0 100%
+  );
+}
+
+/* التأثير الزجاجي */
+.glass {
+  background: rgba(255, 255, 255, 0.045);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--border-light);
+}
+
+[data-theme="light"] .glass {
+  background: rgba(255, 255, 255, 0.72);
+}
+
+/* الحدود والظلال */
+.border-gold {
+  border: 1px solid var(--border-color);
+}
+
+.shadow-soft {
+  box-shadow: var(--shadow-soft);
+}
+
+.shadow-card {
+  box-shadow: var(--shadow-card);
+}
+
+.shadow-gold {
+  box-shadow: var(--shadow-gold);
+}
+
+/* الحركة */
+.transition {
+  transition: all var(--transition-normal);
+}
+
+.hover-lift {
+  transition: transform var(--transition-normal);
+}
+
+.hover-lift:hover {
+  transform: translateY(-6px);
+}
+
+/* شريط التمرير */
+::-webkit-scrollbar {
+  width: 9px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    var(--gold),
+    var(--gold-dark)
+  );
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold-light);
+}
+
+/* تحديد النص */
+::selection {
+  background: var(--gold);
+  color: #0C1020;
+}
+
+/* التركيز وإمكانية الوصول */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* تقليل الحركة */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
