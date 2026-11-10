@@ -1,0 +1,811 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <link rel="stylesheet" href="../css/fixed-viewport.css">
+  <meta charset="UTF-8">
+  
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+  <meta name="theme-color" content="#0C1020">
+  <title>رحلة إلى النور | HANOON</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+
+  <style>
+    :root {
+      --gold: #D5B36C;
+      --purple: #8C75F5;
+      --teal: #35BDB0;
+      --bg: #0C1020;
+      --surface: #171D32;
+      --text: #F5EAD1;
+      --muted: #A7A9BC;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Cairo', sans-serif;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; }
+
+    .story-header {
+      position: relative;
+      min-height: 570px;
+      display: flex;
+      align-items: center;
+      background:
+        linear-gradient(90deg, rgba(12,16,32,.35), rgba(12,16,32,.96)),
+        linear-gradient(0deg, var(--bg), transparent 55%),
+        url('https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=2000&q=85') center/cover;
+      padding: 35px 7%;
+    }
+
+    .top-nav {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      padding: 22px 7%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 5;
+      background: linear-gradient(rgba(12,16,32,.8), transparent);
+    }
+
+    .brand img {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 25px;
+      color: #eee5d5;
+      font-size: 14px;
+    }
+
+    .nav-links a:hover { color: var(--gold); }
+
+    .story-hero {
+      width: 100%;
+      max-width: 1150px;
+      margin: 90px auto 0;
+      display: grid;
+      grid-template-columns: 270px 1fr;
+      gap: 55px;
+      align-items: center;
+    }
+
+    .story-cover {
+      width: 100%;
+      height: 390px;
+      object-fit: cover;
+      border-radius: 18px;
+      box-shadow: 0 25px 70px #0009;
+      border: 1px solid #ffffff22;
+    }
+
+    .story-info .eyebrow {
+      color: var(--gold);
+      font-size: 13px;
+      letter-spacing: 2px;
+      font-weight: 800;
+    }
+
+    .story-info h1 {
+      font-size: clamp(35px, 5vw, 58px);
+      margin: 12px 0;
+      line-height: 1.4;
+    }
+
+    .story-info p {
+      color: #d1cdd0;
+      line-height: 2.1;
+      max-width: 650px;
+    }
+
+    .story-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin: 24px 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .story-meta span { display: flex; gap: 7px; align-items: center; }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 25px;
+    }
+
+    .btn {
+      border: 1px solid #ffffff20;
+      padding: 12px 23px;
+      border-radius: 10px;
+      background: #ffffff0c;
+      color: white;
+      font-weight: 700;
+      transition: .25s;
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, #D5B36C, #A9823F);
+      color: #171321;
+      border: none;
+    }
+
+    .btn:hover { transform: translateY(-3px); }
+
+    .page-container {
+      width: min(1150px, 90%);
+      margin: auto;
+    }
+
+    .reading-layout {
+      display: grid;
+      grid-template-columns: 270px 1fr;
+      gap: 35px;
+      padding: 70px 0;
+      align-items: start;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 20px;
+      background: var(--surface);
+      border: 1px solid #ffffff12;
+      border-radius: 18px;
+      padding: 24px;
+    }
+
+    .sidebar h3 {
+      margin-top: 0;
+      color: var(--gold);
+    }
+
+    .chapter-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .chapter-list button {
+      background: transparent;
+      color: #c5c4d1;
+      border: 0;
+      border-radius: 9px;
+      padding: 12px;
+      text-align: right;
+      font-size: 13px;
+    }
+
+    .chapter-list button:hover,
+    .chapter-list button.active {
+      background: #D5B36C18;
+      color: var(--gold);
+    }
+
+    .reading-tools {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      background: var(--surface);
+      border: 1px solid #ffffff12;
+      border-radius: 14px;
+      padding: 15px;
+      margin-bottom: 25px;
+    }
+
+    .tool-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tool-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 9px;
+      border: 1px solid #ffffff20;
+      color: var(--text);
+      background: #ffffff08;
+      font-size: 17px;
+    }
+
+    .tool-btn:hover { color: var(--gold); border-color: var(--gold); }
+
+    .reading-progress {
+      height: 4px;
+      width: 100%;
+      background: #ffffff15;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .reading-progress span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--purple), var(--gold));
+    }
+
+    .progress-label {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .reading-paper {
+      background: #171D32;
+      border: 1px solid #ffffff12;
+      border-radius: 20px;
+      padding: clamp(22px, 5vw, 55px);
+      line-height: 2.5;
+      box-shadow: 0 20px 60px #0002;
+      transition: background .3s;
+    }
+
+    .reading-paper.light-mode {
+      background: #F3EBDD;
+      color: #30291F;
+    }
+
+    .reading-paper h2 {
+      color: var(--gold);
+      font-size: 29px;
+      margin: 0 0 25px;
+    }
+
+    .reading-paper.light-mode h2 { color: #94703A; }
+
+    .reading-paper p {
+      font-size: var(--reading-font, 18px);
+      margin: 0 0 23px;
+      color: inherit;
+    }
+
+    .chapter-divider {
+      width: 90px;
+      height: 3px;
+      background: var(--gold);
+      margin: 40px auto;
+      border-radius: 10px;
+    }
+
+    .story-quote {
+      padding: 25px;
+      margin: 35px 0;
+      border-right: 3px solid var(--gold);
+      background: #D5B36C0d;
+      color: var(--gold);
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .chapter-navigation {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    .author-card {
+      margin-top: 30px;
+      background: var(--surface);
+      padding: 25px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .author-card img {
+      width: 75px;
+      height: 75px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .author-card p { color: var(--muted); margin: 5px 0; }
+
+    .related-section { padding: 20px 0 80px; }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 25px;
+    }
+
+    .section-heading h2 { color: var(--gold); }
+
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .related-card {
+      background: var(--surface);
+      border-radius: 15px;
+      overflow: hidden;
+      border: 1px solid #ffffff10;
+      transition: .3s;
+    }
+
+    .related-card:hover { transform: translateY(-6px); }
+
+    .related-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .related-card div { padding: 18px; }
+    .related-card h3 { margin: 0 0 8px; }
+    .related-card p { color: var(--muted); font-size: 13px; line-height: 1.9; }
+
+    footer {
+      text-align: center;
+      padding: 35px 15px;
+      border-top: 1px solid #ffffff12;
+      color: var(--muted);
+    }
+
+    @media(max-width: 850px) {
+      .story-hero { grid-template-columns: 190px 1fr; gap: 25px; }
+      .story-cover { height: 290px; }
+      .reading-layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .chapter-list { display: grid; grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media(max-width: 600px) {
+      .nav-links { display: none; }
+      .story-header { padding: 25px 5%; min-height: 700px; }
+      .story-hero { grid-template-columns: 1fr; text-align: center; margin-top: 75px; }
+      .story-cover { width: 190px; height: 270px; margin: auto; }
+      .story-info p { margin-inline: auto; }
+      .story-meta, .hero-actions { justify-content: center; }
+      .related-grid { grid-template-columns: 1fr; }
+      .reading-layout { padding-top: 40px; }
+      .chapter-list { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="story-header">
+  <nav class="top-nav">
+    <a href="../index.html" class="brand">
+      <img src="../assets/logo/logo.svg" alt="HANOON">
+    </a>
+
+    <div class="nav-links">
+      <a href="../index.html">الرئيسية</a>
+      <a href="library.html">المكتبة</a>
+      <a href="stories.html">القصص</a>
+      <a href="learning.html">التعلم</a>
+      <a href="community.html">المجتمع</a>
+    </div>
+  </nav>
+
+  <div class="story-hero">
+    <img class="story-cover"
+      src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=85"
+      alt="غلاف قصة رحلة إلى النور">
+
+    <div class="story-info">
+      <span class="eyebrow">قصة إنسانية ملهمة</span>
+      <h1>رحلة إلى النور</h1>
+
+      <p>
+        حكاية عن الإنسان الذي يواجه خوفه، ويكتشف أن الطريق إلى التغيير
+        يبدأ بخطوة صغيرة، وأن الأمل قد يظهر في أكثر اللحظات ظلامًا.
+      </p>
+
+      <div class="story-meta">
+        <span>✦ قصة قصيرة</span>
+        <span>✦ 6 فصول</span>
+        <span>✦ قراءة 25 دقيقة</span>
+        <span>✦ تنمية إنسانية</span>
+      </div>
+
+      <div class="hero-actions">
+        <a href="#reading" class="btn primary">ابدأ القراءة</a>
+        <button class="btn" id="saveStory">♡ حفظ القصة</button>
+        <button class="btn" id="shareStory">مشاركة القصة</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="page-container">
+
+  <section class="reading-layout" id="reading">
+
+    <aside class="sidebar">
+      <h3>فصول القصة</h3>
+
+      <div class="chapter-list">
+        <button class="active" data-chapter="chapter1">01 — بداية الطريق</button>
+        <button data-chapter="chapter2">02 — أول اختبار</button>
+        <button data-chapter="chapter3">03 — خلف الأبواب</button>
+        <button data-chapter="chapter4">04 — لحظة الحقيقة</button>
+        <button data-chapter="chapter5">05 — قوة القرار</button>
+        <button data-chapter="chapter6">06 — إلى النور</button>
+      </div>
+    </aside>
+
+    <div class="reading-area">
+
+      <div class="reading-tools">
+        <div class="tool-group">
+          <button class="tool-btn" id="fontDown" aria-label="تصغير الخط">−</button>
+          <span class="progress-label">حجم الخط</span>
+          <button class="tool-btn" id="fontUp" aria-label="تكبير الخط">+</button>
+        </div>
+
+        <div class="tool-group">
+          <button class="btn" id="readingMode">وضع القراءة</button>
+          <span class="progress-label" id="progressText">0% مكتمل</span>
+        </div>
+
+        <div class="reading-progress">
+          <span id="progressBar"></span>
+        </div>
+      </div>
+
+      <article class="reading-paper" id="readingPaper">
+
+        <section id="chapter1" class="chapter">
+          <h2>الفصل الأول: بداية الطريق</h2>
+
+          <p>
+            في مدينة صغيرة تحيط بها التلال من كل جانب، كان يعيش شاب
+            اسمه آدم. لم يكن يختلف كثيرًا عن الآخرين، لكنه كان يحمل
+            بداخله سؤالًا لا يتوقف: هل يمكن للإنسان أن يبدأ من جديد؟
+          </p>
+
+          <p>
+            اعتاد آدم أن يستيقظ كل صباح وهو يشعر بأن الأيام تتشابه.
+            نفس الطريق، ونفس الوجوه، ونفس الأحلام المؤجلة. كان يعرف
+            أنه يريد شيئًا مختلفًا، لكنه لم يكن يعرف من أين يبدأ.
+          </p>
+
+          <p>
+            وفي صباح هادئ، بينما كان يسير قرب الحديقة القديمة، لمح
+            كتابًا صغيرًا على مقعد خشبي. لم يكن على غلافه اسم مؤلف،
+            بل كُتبت عليه جملة واحدة:
+          </p>
+
+          <div class="story-quote">
+            «لا تنتظر أن يتغير الطريق، ابدأ بتغيير خطوتك الأولى».
+          </div>
+
+          <p>
+            حمل آدم الكتاب، وجلس يتأمل الكلمات طويلًا. شعر أن الجملة
+            تخاطبه وحده، وكأنها وصلت إليه في الوقت الذي كان يحتاجها فيه.
+          </p>
+
+          <p>
+            فتح الصفحة الأولى، فوجد سؤالًا مكتوبًا بخط واضح:
+            ما الشيء الذي ستفعله اليوم لو لم يكن الخوف عائقًا أمامك؟
+          </p>
+        </section>
+
+        <div class="chapter-divider"></div>
+
+        <section id="chapter2" class="chapter">
+          <h2>الفصل الثاني: أول اختبار</h2>
+
+          <p>
+            عاد آدم إلى منزله والكتاب بين يديه. جلس أمام النافذة،
+            وبدأ يكتب كل الأشياء التي طالما أراد فعلها ولم يجرؤ.
+            كتب عن حلمه في التعلم، وعن رغبته في مساعدة الآخرين،
+            وعن مشروع صغير ظل يؤجله سنوات.
+          </p>
+
+          <p>
+            في البداية بدت القائمة طويلة ومخيفة. لكنه قرر أن يختار
+            أمرًا واحدًا فقط، أمرًا يستطيع تنفيذه دون انتظار الظروف المثالية.
+          </p>
+
+          <p>
+            كانت الخطوة الأولى بسيطة: أن يتعلم شيئًا جديدًا لمدة
+            نصف ساعة كل يوم. لم يكن يعرف إلى أين ستقوده هذه العادة،
+            لكنه أدرك أن البداية أهم من معرفة النهاية.
+          </p>
+
+          <div class="story-quote">
+            «النجاح لا يبدأ بخطوة كبيرة، بل بخطوة تستمر».
+          </div>
+
+          <p>
+            مر اليوم الأول، ثم الثاني، ثم أسبوع كامل. لم تتغير حياته
+            فجأة، لكن شيئًا صغيرًا بدأ يتغير داخله: أصبح يثق في قدرته
+            على الالتزام بوعد قطعه لنفسه.
+          </p>
+        </section>
+
+        <div class="chapter-divider"></div>
+
+        <section id="chapter3" class="chapter">
+          <h2>الفصل الثالث: خلف الأبواب</h2>
+
+          <p>
+            لم يكن الطريق سهلًا. ظهرت أيام شعر فيها آدم بالتعب،
+            وأيام أخرى عاد فيها صوته القديم ليقول له إن المحاولة
+            لن تغير شيئًا.
+          </p>
+
+          <p>
+            لكنه تذكر الكتاب. وتذكر أن كل باب مغلق لا يعني أن
+            الطريق انتهى، فقد يكون هناك باب آخر يحتاج فقط إلى
+            أن يبحث عنه الإنسان بصبر.
+          </p>
+
+          <p>
+            بدأ يشارك ما يتعلمه مع صديق قديم، ثم انضم إلى مجموعة
+            صغيرة تهتم بالقراءة والتطوير. اكتشف أن مشاركة المعرفة
+            تمنحها معنى أكبر، وأن الإنسان يتعلم كثيرًا حين يساعد غيره.
+          </p>
+        </section>
+
+        <div class="chapter-divider"></div>
+
+        <section id="chapter4" class="chapter">
+          <h2>الفصل الرابع: لحظة الحقيقة</h2>
+
+          <p>
+            في أحد الأيام، واجه آدم موقفًا صعبًا. أخفق في فرصة
+            كان ينتظرها طويلًا، وشعر أن كل ما بناه قد انهار في
+            لحظة واحدة.
+          </p>
+
+          <p>
+            عاد إلى الكتاب وقرأ السؤال الأول مرة أخرى. ثم فهم
+            أن الشجاعة ليست غياب الخوف أو الفشل، بل القدرة على
+            مواصلة الطريق رغم وجودهما.
+          </p>
+        </section>
+
+        <div class="chapter-divider"></div>
+
+        <section id="chapter5" class="chapter">
+          <h2>الفصل الخامس: قوة القرار</h2>
+
+          <p>
+            قرر آدم أن يعيد ترتيب أهدافه. لم يعد يقيس نجاحه
+            بما يحققه الآخرون، بل بما يتعلمه كل يوم، وبمدى
+            اقترابه من الشخص الذي يريد أن يكونه.
+          </p>
+
+          <p>
+            بدأ مشروعه الصغير، واستفاد من أخطائه، واستمع إلى
+            النصائح دون أن يتخلى عن رؤيته. ومع الوقت، أصبحت
+            الخطوات الصغيرة طريقًا واضحًا.
+          </p>
+        </section>
+
+        <div class="chapter-divider"></div>
+
+        <section id="chapter6" class="chapter">
+          <h2>الفصل السادس: إلى النور</h2>
+
+          <p>
+            بعد شهور، عاد آدم إلى الحديقة القديمة. جلس على المقعد
+            نفسه، ووضع الكتاب بجواره. لم يكن قد وصل إلى كل ما
+            حلم به، لكنه لم يعد الشخص الذي كانه في ذلك الصباح.
+          </p>
+
+          <p>
+            تعلم أن التغيير رحلة، وأن الأمل ليس وعدًا بأن كل شيء
+            سيكون سهلًا، بل إيمان بأن المحاولة تستحق.
+          </p>
+
+          <div class="story-quote">
+            «أحيانًا لا نحتاج إلى رؤية الطريق كله، يكفي أن نرى
+            الخطوة التالية ونمتلك الشجاعة لنخطوها».
+          </div>
+
+          <p>
+            أغلق آدم الكتاب، وابتسم. كانت الشمس تقترب من الأفق،
+            والطريق أمامه ما زال طويلًا، لكنه هذه المرة لم يكن خائفًا
+            من البداية.
+          </p>
+
+          <p>
+            **النهاية — والبداية دائمًا ممكنة.**
+          </p>
+        </section>
+
+      </article>
+
+      <div class="chapter-navigation">
+        <button class="btn" id="previousChapter">الفصل السابق</button>
+        <button class="btn primary" id="nextChapter">الفصل التالي</button>
+      </div>
+
+      <div class="author-card">
+        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80" alt="صورة الكاتب">
+        <div>
+          <strong>عن كاتب القصة</strong>
+          <p>قصة أدبية تجريبية ضمن مكتبة HANOON، تهدف إلى تقديم معنى إيجابي وتجربة قراءة ملهمة.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="related-section">
+    <div class="section-heading">
+      <h2>قد تعجبك أيضًا</h2>
+      <a href="stories.html">كل القصص ←</a>
+    </div>
+
+    <div class="related-grid">
+      <a href="stories.html" class="related-card">
+        <img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=700&q=80" alt="قصة الطريق">
+        <div>
+          <h3>على الطريق</h3>
+          <p>حكاية عن الصبر واكتشاف الذات.</p>
+        </div>
+      </a>
+
+      <a href="stories.html" class="related-card">
+        <img src="https://images.unsplash.com/photo-1519682337058-a94d519337bc?auto=format&fit=crop&w=700&q=80" alt="قصة المعرفة">
+        <div>
+          <h3>نافذة المعرفة</h3>
+          <p>رحلة قصيرة في عالم التعلم والاكتشاف.</p>
+        </div>
+      </a>
+
+      <a href="stories.html" class="related-card">
+        <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=700&q=80" alt="قصة الأمل">
+        <div>
+          <h3>حين يعود الأمل</h3>
+          <p>قصة عن القوة التي تولد بعد العثرات.</p>
+        </div>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>HANOON — المعرفة تصنع الفرق</p>
+  <p>© 2026 جميع الحقوق محفوظة</p>
+</footer>
+
+<script>
+  const paper = document.getElementById('readingPaper');
+  const chapters = [...document.querySelectorAll('.chapter')];
+  const chapterButtons = [...document.querySelectorAll('[data-chapter]')];
+  const progressBar = document.getElementById('progressBar');
+  const progressText = document.getElementById('progressText');
+
+  let fontSize = 18;
+  let currentChapter = 0;
+
+  document.getElementById('fontUp').addEventListener('click', () => {
+    fontSize = Math.min(fontSize + 2, 30);
+    paper.style.setProperty('--reading-font', fontSize + 'px');
+  });
+
+  document.getElementById('fontDown').addEventListener('click', () => {
+    fontSize = Math.max(fontSize - 2, 14);
+    paper.style.setProperty('--reading-font', fontSize + 'px');
+  });
+
+  document.getElementById('readingMode').addEventListener('click', () => {
+    paper.classList.toggle('light-mode');
+  });
+
+  function showChapter(index) {
+    currentChapter = Math.max(0, Math.min(index, chapters.length - 1));
+    chapters[currentChapter].scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    chapterButtons.forEach((button, i) => {
+      button.classList.toggle('active', i === currentChapter);
+    });
+  }
+
+  chapterButtons.forEach((button, index) => {
+    button.addEventListener('click', () => showChapter(index));
+  });
+
+  document.getElementById('nextChapter').addEventListener('click', () => {
+    showChapter(currentChapter + 1);
+  });
+
+  document.getElementById('previousChapter').addEventListener('click', () => {
+    showChapter(currentChapter - 1);
+  });
+
+  window.addEventListener('scroll', () => {
+    const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+    const percent = scrollable > 0 ? Math.round((window.scrollY / scrollable) * 100) : 0;
+
+    progressBar.style.width = percent + '%';
+    progressText.textContent = percent + '% مكتمل';
+
+    try {
+      localStorage.setItem('hanoon-story-position', String(window.scrollY));
+    } catch (error) {}
+  });
+
+  document.getElementById('saveStory').addEventListener('click', function() {
+    try {
+      const saved = localStorage.getItem('hanoon-story-saved') === 'true';
+      localStorage.setItem('hanoon-story-saved', String(!saved));
+      this.textContent = saved ? '♡ حفظ القصة' : '♥ تم حفظ القصة';
+    } catch (error) {
+      alert('تعذر حفظ القصة على هذا الجهاز.');
+    }
+  });
+
+  document.getElementById('shareStory').addEventListener('click', async () => {
+    const shareData = {
+      title: 'رحلة إلى النور | HANOON',
+      text: 'اقرأ قصة رحلة إلى النور على HANOON',
+      url: window.location.href
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(shareData.url);
+        alert('تم نسخ رابط القصة.');
+      } else {
+        alert('المشاركة غير مدعومة في هذا المتصفح.');
+      }
+    } catch (error) {}
+  });
+
+  window.addEventListener('DOMContentLoaded', () => {
+    try {
+      const savedPosition = localStorage.getItem('hanoon-story-position');
+      if (savedPosition !== null && Number(savedPosition) > 0) {
+        const resume = confirm('هل تريد العودة إلى آخر موضع وصلت إليه؟');
+        if (resume) {
+          window.scrollTo(0, Number(savedPosition));
+        }
+      }
+
+      const saved = localStorage.getItem('hanoon-story-saved') === 'true';
+      if (saved) {
+        document.getElementById('saveStory').textContent = '♥ تم حفظ القصة';
+      }
+    } catch (error) {}
+  });
+  <script src="../js/global-back.js"></script>
+</script>
+
+</body>
+</html>
