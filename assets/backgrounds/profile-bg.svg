@@ -1,0 +1,66 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 800" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="profileBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#111522"/>
+      <stop offset=".52" stop-color="#272337"/>
+      <stop offset="1" stop-color="#11141E"/>
+    </linearGradient>
+    <radialGradient id="profileGlow">
+      <stop offset="0" stop-color="#D5B36C" stop-opacity=".24"/>
+      <stop offset="1" stop-color="#D5B36C" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="profileGold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#A98237" stop-opacity=".1"/>
+      <stop offset=".5" stop-color="#E8CD91" stop-opacity=".8"/>
+      <stop offset="1" stop-color="#A98237" stop-opacity=".1"/>
+    </linearGradient>
+    <pattern id="profilePattern" width="100" height="100" patternUnits="userSpaceOnUse">
+      <path d="M50 0L100 50L50 100L0 50Z" fill="none" stroke="#D5B36C" stroke-opacity=".045"/>
+    </pattern>
+  </defs>
+
+  <rect width="1400" height="800" fill="url(#profileBg)"/>
+  <ellipse cx="700" cy="220" rx="620" ry="420" fill="url(#profileGlow)"/>
+  <rect width="1400" height="800" fill="url(#profilePattern)"/>
+
+  <!-- Profile frame -->
+  <g transform="translate(700 350)" fill="none" stroke="url(#profileGold)">
+    <circle r="185" stroke-width="3"/>
+    <circle r="215" stroke-width="2" stroke-dasharray="5 13"/>
+    <circle r="245" stroke-width="1.5" opacity=".45"/>
+    <path d="M-290 0H-225M225 0H290M0 -290V-225M0 225V290" stroke-width="3"/>
+  </g>
+
+  <!-- Abstract person silhouette -->
+  <g transform="translate(700 350)" fill="#D5B36C" fill-opacity=".09" stroke="#E8CD91" stroke-opacity=".55" stroke-width="3">
+    <circle cx="0" cy="-55" r="72"/>
+    <path d="M-145 145C-135 45 -75 0 0 0S135 45 145 145Z"/>
+  </g>
+
+  <!-- Achievement stars -->
+  <g fill="none" stroke="#E8CD91" stroke-width="3" opacity=".7">
+    <path d="M300 170L315 205L350 220L315 235L300 270L285 235L250 220L285 205Z"/>
+    <path d="M1100 170L1112 198L1140 210L1112 222L1100 250L1088 222L1060 210L1088 198Z"/>
+    <path d="M1080 570L1092 596L1118 608L1092 620L1080 646L1068 620L1042 608L1068 596Z"/>
+  </g>
+
+  <!-- Decorative orbit -->
+  <g fill="none" stroke="#D5B36C" stroke-opacity=".23">
+    <ellipse cx="700" cy="350" rx="430" ry="135" transform="rotate(-22 700 350)"/>
+    <ellipse cx="700" cy="350" rx="430" ry="135" transform="rotate(22 700 350)"/>
+  </g>
+
+  <!-- Small particles -->
+  <g fill="#E8CD91">
+    <circle cx="230" cy="390" r="3"/>
+    <circle cx="420" cy="110" r="2"/>
+    <circle cx="980" cy="100" r="3"/>
+    <circle cx="1190" cy="400" r="2"/>
+    <circle cx="920" cy="690" r="2.5"/>
+    <circle cx="390" cy="650" r="2"/>
+    <circle cx="700" cy="75" r="3"/>
+  </g>
+
+  <rect x="1" y="1" width="1398" height="798" fill="none" stroke="#D5B36C" stroke-opacity=".1"/>
+</svg>
