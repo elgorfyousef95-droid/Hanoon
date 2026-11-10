@@ -1,21 +1,25 @@
 
 /* =========================================
    HANOON — DESIGN SYSTEM
-   Version 1.1
+   Version 1.0
    Arabic RTL | Luxury Modern Identity
 ========================================= */
 
+/* الخطوط */
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap');
 
 :root {
+
+  /* الهوية الأساسية */
   --brand-name: "HANOON";
 
-  /* الهوية */
   --gold: #D5B36C;
   --gold-light: #F1D99C;
   --gold-dark: #A77B35;
+
   --purple: #8C75F5;
   --purple-light: #B5A6FF;
+
   --teal: #35BDB0;
   --teal-light: #75DED2;
 
@@ -46,7 +50,7 @@
   --font-ar: "Cairo", sans-serif;
   --font-en: "Inter", sans-serif;
 
-  /* أحجام النصوص */
+  /* الأحجام */
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
   --text-md: 1rem;
@@ -86,16 +90,19 @@
   --transition-normal: 0.35s ease;
   --transition-slow: 0.6s ease;
 
-  /* أبعاد الموقع */
+  /* العرض */
   --container-width: 1440px;
-  --site-max-width: 1440px;
   --header-height: 88px;
 
   color-scheme: dark;
 }
 
-/* الوضع النهاري */
+/* =========================================
+   الوضع النهاري
+========================================= */
+
 [data-theme="light"] {
+
   --bg-primary: #F7F5EF;
   --bg-secondary: #F0EDE5;
   --bg-tertiary: #FFFFFF;
@@ -116,11 +123,14 @@
   color-scheme: light;
 }
 
-/* الإعدادات العامة */
-*,
-*::before,
-*::after {
+/* =========================================
+   إعدادات عامة
+========================================= */
+
+* {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html {
@@ -129,7 +139,6 @@ html {
 }
 
 body {
-  margin: 0;
   background: var(--bg-primary);
   color: var(--text-primary);
   font-family: var(--font-ar);
@@ -176,7 +185,10 @@ svg {
   display: block;
 }
 
-/* الحاويات */
+/* =========================================
+   الحاويات
+========================================= */
+
 .container {
   width: min(100% - 40px, var(--container-width));
   margin-inline: auto;
@@ -186,7 +198,10 @@ svg {
   padding-block: var(--space-8);
 }
 
-/* النصوص */
+/* =========================================
+   النصوص
+========================================= */
+
 h1,
 h2,
 h3,
@@ -232,7 +247,10 @@ p {
   border-radius: var(--radius-full);
 }
 
-/* ألوان الهوية */
+/* =========================================
+   ألوان الهوية
+========================================= */
+
 .gold-text {
   color: var(--gold);
 }
@@ -245,7 +263,10 @@ p {
   color: var(--teal);
 }
 
-/* الخلفيات */
+/* =========================================
+   الخلفيات
+========================================= */
+
 .bg-primary {
   background: var(--bg-primary);
 }
@@ -275,7 +296,10 @@ p {
   );
 }
 
-/* التأثير الزجاجي */
+/* =========================================
+   التأثير الزجاجي
+========================================= */
+
 .glass {
   background: rgba(255, 255, 255, 0.045);
   backdrop-filter: blur(18px);
@@ -287,7 +311,10 @@ p {
   background: rgba(255, 255, 255, 0.72);
 }
 
-/* الحدود والظلال */
+/* =========================================
+   الحدود والظلال
+========================================= */
+
 .border-gold {
   border: 1px solid var(--border-color);
 }
@@ -304,7 +331,10 @@ p {
   box-shadow: var(--shadow-gold);
 }
 
-/* الحركة */
+/* =========================================
+   الحركة
+========================================= */
+
 .transition {
   transition: all var(--transition-normal);
 }
@@ -317,7 +347,10 @@ p {
   transform: translateY(-6px);
 }
 
-/* شريط التمرير */
+/* =========================================
+   شريط التمرير
+========================================= */
+
 ::-webkit-scrollbar {
   width: 9px;
 }
@@ -339,13 +372,19 @@ p {
   background: var(--gold-light);
 }
 
-/* تحديد النص */
+/* =========================================
+   تحديد النص
+========================================= */
+
 ::selection {
   background: var(--gold);
   color: #0C1020;
 }
 
-/* التركيز وإمكانية الوصول */
+/* =========================================
+   التركيز وإمكانية الوصول
+========================================= */
+
 :focus-visible {
   outline: 2px solid var(--gold);
   outline-offset: 4px;
@@ -355,7 +394,10 @@ p {
   display: none !important;
 }
 
-/* تقليل الحركة */
+/* =========================================
+   تقليل الحركة
+========================================= */
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
