@@ -4,7 +4,8 @@
    Responsive Page Architecture
 ========================================= */
 
-/* Main Page Layout */
+/* ---------- Main Page Layout ---------- */
+
 .page-wrapper {
   width: 100%;
   min-height: 100vh;
@@ -48,7 +49,8 @@
   gap: 10px;
 }
 
-/* General Grid Layouts */
+/* ---------- General Grid Layouts ---------- */
+
 .layout-grid {
   display: grid;
   gap: 22px;
@@ -84,7 +86,8 @@
   align-items: start;
 }
 
-/* Two Column Workspace */
+/* ---------- Two Column Workspace ---------- */
+
 .workspace {
   display: grid;
   grid-template-columns: 320px minmax(0, 1fr);
@@ -107,7 +110,8 @@
   padding: 25px;
 }
 
-/* Sidebar */
+/* ---------- Sidebar ---------- */
+
 .sidebar {
   position: sticky;
   top: calc(var(--header-height) + 20px);
@@ -172,7 +176,8 @@
   flex-shrink: 0;
 }
 
-/* Dashboard */
+/* ---------- Dashboard ---------- */
+
 .dashboard {
   display: flex;
   flex-direction: column;
@@ -204,7 +209,8 @@
   font-size: 17px;
 }
 
-/* Admin Layout */
+/* ---------- Admin Layout ---------- */
+
 .admin-layout {
   min-height: 100vh;
   display: grid;
@@ -286,7 +292,8 @@
   margin-bottom: 30px;
 }
 
-/* Authentication Layout */
+/* ---------- Authentication Layout ---------- */
+
 .auth-layout {
   min-height: 100vh;
   display: grid;
@@ -353,7 +360,8 @@
   font-size: 13px;
 }
 
-/* Reading Layout */
+/* ---------- Reading Layout ---------- */
+
 .reading-layout {
   width: min(900px, 92%);
   margin-inline: auto;
@@ -395,7 +403,8 @@
   border-radius: 0 12px 12px 0;
 }
 
-/* Learning Layout */
+/* ---------- Learning Layout ---------- */
+
 .course-layout {
   display: grid;
   grid-template-columns: 300px minmax(0, 1fr);
@@ -452,7 +461,8 @@
   color: var(--success);
 }
 
-/* Profile Layout */
+/* ---------- Profile Layout ---------- */
+
 .profile-layout {
   display: grid;
   grid-template-columns: 310px minmax(0, 1fr);
@@ -475,7 +485,8 @@
   gap: 22px;
 }
 
-/* Community Feed */
+/* ---------- Community Feed ---------- */
+
 .community-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 290px;
@@ -498,7 +509,8 @@
   gap: 18px;
 }
 
-/* Table Wrapper */
+/* ---------- Table Wrapper ---------- */
+
 .table-wrapper {
   width: 100%;
   overflow-x: auto;
@@ -535,8 +547,10 @@
   background: rgba(255,255,255,.025);
 }
 
-/* Responsive Layout */
+/* ---------- Responsive Layout ---------- */
+
 @media (max-width: 1050px) {
+
   .grid-4 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -565,9 +579,11 @@
   .profile-layout {
     grid-template-columns: 250px minmax(0, 1fr);
   }
+
 }
 
 @media (max-width: 760px) {
+
   .page-main {
     width: 92%;
     padding-block: 25px 45px;
@@ -694,9 +710,11 @@
   .feed-sidebar {
     order: -1;
   }
+
 }
 
 @media (max-width: 420px) {
+
   .dashboard-stats {
     grid-template-columns: 1fr 1fr;
   }
@@ -712,9 +730,11 @@
   .page-header-actions .btn {
     flex: 1;
   }
+
 }
 
-/* RTL Support */
+/* ---------- RTL Support ---------- */
+
 [dir="rtl"] .reading-content blockquote {
   border-right: 3px solid var(--gold);
   border-left: 0;
@@ -726,4 +746,6 @@
   border-radius: 12px 0 0 12px;
 }
 
-/* END HANOON LAYOUT SYSTEM */
+/* =========================================
+   END HANOON LAYOUT SYSTEM
+========================================= */
