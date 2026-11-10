@@ -1,0 +1,707 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0C1020">
+
+  <title>HANOON | المعرفة تصنع الفرق</title>
+  <meta name="description" content="هنون منصة معرفية متكاملة للقراءة والتعلم والثقافة والتطوير.">
+
+  <link rel="icon" href="assets/logo/logo.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.json">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="css/fixes.css">
+  <link rel="stylesheet" href="css/homepage-visual.css">
+  <link rel="stylesheet" href="css/homepage-adjustments.css">
+  <link rel="stylesheet" href="css/splash-screen.css">
+  <link rel="stylesheet" href="css/fixed-viewport.css">
+
+  <style>
+    /* بطاقات الكتب والمقالات في الصفحة الرئيسية */
+    .home-data-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 20px;
+      margin-top: 25px;
+    }
+
+    .home-data-card {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid rgba(216,181,109,.17);
+      border-radius: 19px;
+      background: linear-gradient(145deg, #182139, #101729);
+      box-shadow: 0 14px 35px rgba(0,0,0,.18);
+      transition: transform .25s ease, border-color .25s ease;
+    }
+
+    .home-data-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(216,181,109,.55);
+    }
+
+    .home-data-image {
+      width: 100%;
+      height: 220px;
+      display: block;
+      object-fit: cover;
+      background: #20263b;
+    }
+
+    .home-data-body {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 17px;
+    }
+
+    .home-data-category {
+      display: inline-block;
+      margin-bottom: 9px;
+      padding: 5px 11px;
+      border: 1px solid rgba(70,200,183,.2);
+      border-radius: 30px;
+      background: rgba(70,200,183,.08);
+      color: #69d9c9;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .home-data-title {
+      margin: 0 0 9px;
+      color: #f6dfaa;
+      font-size: 17px;
+      font-weight: 900;
+      line-height: 1.8;
+    }
+
+    .home-data-description {
+      margin: 0 0 15px;
+      color: #c0bdc4;
+      font-size: 12px;
+      line-height: 2;
+    }
+
+    .home-data-link {
+      margin-top: auto;
+      padding-top: 10px;
+      color: #f1d99d;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .home-data-empty {
+      grid-column: 1 / -1;
+      padding: 25px;
+      border: 1px solid rgba(216,181,109,.16);
+      border-radius: 16px;
+      background: rgba(255,255,255,.025);
+      color: #c0bdc4;
+      text-align: center;
+      line-height: 2;
+    }
+
+    .home-section-count {
+      display: inline-block;
+      margin-right: 8px;
+      color: #d8b56d;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 1000px) {
+      .home-data-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 560px) {
+      .home-data-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .home-data-image {
+        height: 210px;
+      }
+
+      .home-data-title {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- شاشة البداية -->
+  <div class="splash-screen" id="splashScreen">
+    <div class="splash-overlay"></div>
+
+    <div class="splash-content">
+      <img src="assets/logo/logo.svg" alt="شعار HANOON" class="splash-logo">
+      <h1>HANOON</h1>
+      <div class="splash-line"></div>
+      <h2>المعرفة تصنع الفرق</h2>
+
+      <p class="splash-motto">
+        اقرأ .. تعلم .. اكتشف .. وحقق أحلامك
+      </p>
+
+      <p class="splash-quote">
+        كل صفحة تقرؤها تقرّبك من حلمك،
+        وكل معرفة تكتسبها تصنع مستقبلك.
+      </p>
+
+      <div class="splash-owner">YOUSEF ELGORF</div>
+
+      <div class="splash-loading">
+        <span></span>
+      </div>
+
+      <small>رحلتك نحو المعرفة تبدأ الآن</small>
+    </div>
+  </div>
+
+  <!-- رأس الموقع -->
+  <header class="site-header" id="siteHeader">
+
+    <a class="brand" href="index.html">
+      <img src="assets/logo/logo.svg" alt="HANOON">
+      <span>
+        <strong>HANOON</strong>
+        <small>المعرفة تصنع الفرق</small>
+      </span>
+    </a>
+
+    <button class="menu-toggle" id="menuToggle"
+      aria-label="فتح القائمة" aria-expanded="false" type="button">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="main-navigation" id="mainNavigation">
+      <a class="active" href="index.html">الرئيسية</a>
+      <a href="pages/library.html">المكتبة</a>
+      <a href="pages/articles.html">المقالات</a>
+      <a href="pages/stories.html">القصص</a>
+      <a href="pages/poetry.html">الشعر والأدب</a>
+      <a href="pages/research.html">الأبحاث</a>
+      <a href="pages/learning.html">التعلم</a>
+      <a href="pages/exams.html">الاختبارات</a>
+      <a href="pages/achievements.html">إنجازاتي</a>
+      <a href="pages/community.html">المجتمع</a>
+    </nav>
+
+    <div class="header-controls">
+
+      <button id="searchToggle" class="icon-button"
+        aria-label="البحث" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="10.8" cy="10.8" r="6.8"></circle>
+          <path d="m16 16 5 5"></path>
+        </svg>
+      </button>
+
+      <button id="themeToggle" class="icon-button"
+        aria-label="تغيير المظهر" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path>
+        </svg>
+      </button>
+
+      <a class="header-profile-link"
+        id="headerProfileLink"
+        href="pages/profile.html"
+        aria-label="ملفي الشخصي"
+        title="ملفي الشخصي">
+        <span id="headerProfileInitial">م</span>
+        <img id="headerProfileImage" src="" alt="صورة المستخدم" hidden>
+      </a>
+
+      <a class="account-button" href="pages/auth.html" id="accountButton">
+        تسجيل الدخول
+      </a>
+
+    </div>
+  </header>
+
+  <!-- البحث -->
+  <section class="search-panel" id="searchPanel" hidden>
+    <form id="globalSearchForm">
+      <label for="globalSearchInput">ابحث في عالم هنون</label>
+
+      <div class="search-field">
+        <input id="globalSearchInput" type="search"
+          placeholder="كتاب، مقال، درس، موضوع..." autocomplete="off">
+        <button type="submit">بحث</button>
+      </div>
+
+      <div id="searchResults" aria-live="polite"></div>
+    </form>
+  </section>
+
+  <main>
+
+    <!-- الواجهة الرئيسية -->
+    <section class="hero-section">
+      <div class="hero-background"></div>
+      <div class="hero-shade"></div>
+
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <span class="eyebrow">مرحبًا بك في عالم المعرفة</span>
+
+          <h1>
+            المعرفة بداية كل شيء،
+            <span>والتطور رحلة لا تنتهي</span>
+          </h1>
+
+          <p>
+            مساحة تجمع الكتب والأفكار والعلوم والتجارب الإنسانية،
+            وتمنحك رحلة متكاملة لاكتشاف نفسك وفهم العالم من حولك.
+          </p>
+
+          <div class="hero-actions">
+            <a href="pages/library.html" class="button button-gold">
+              اكتشف المكتبة
+            </a>
+            <a href="pages/learning.html" class="button button-glass">
+              ابدأ التعلم
+            </a>
+          </div>
+
+          <div class="hero-motto">
+            <span>اكتشف</span>
+            <i></i>
+            <span>تعلّم</span>
+            <i></i>
+            <span>تطوّر</span>
+          </div>
+        </div>
+
+        <div class="hero-emblem">
+          <img src="assets/logo/logo.svg" alt="شعار هنون">
+        </div>
+      </div>
+
+      <div class="hero-bottom">
+        <span>رحلتك نحو معرفة أعمق تبدأ من هنا</span>
+        <a href="#platformSections" aria-label="اكتشف أقسام الموقع">اكتشف الأقسام ↓</a>
+      </div>
+    </section>
+
+    <!-- أقسام المنصة -->
+    <section class="content-section" id="platformSections">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">عالم متكامل من المعرفة</span>
+          <h2>اكتشف أقسام هنون</h2>
+          <p>كل مجال يفتح أمامك بابًا جديدًا للفهم والتعلم.</p>
+        </div>
+      </div>
+
+      <div class="sections-grid">
+
+        <a href="pages/library.html" class="section-card">
+          <span class="section-icon">01</span>
+          <h3>المكتبة المعرفية</h3>
+          <p>كتب متخصصة ورحلات قراءة في مختلف مجالات الحياة.</p>
+          <span class="card-link">استكشف المكتبة ←</span>
+        </a>
+
+        <a href="pages/articles.html" class="section-card">
+          <span class="section-icon">02</span>
+          <h3>المقالات والأفكار</h3>
+          <p>موضوعات وتحليلات وأفكار تساعدك على توسيع مداركك.</p>
+          <span class="card-link">اكتشف المقالات ←</span>
+        </a>
+
+        <a href="pages/stories.html" class="section-card">
+          <span class="section-icon">03</span>
+          <h3>القصص والروايات</h3>
+          <p>حكايات وتجارب إنسانية وأعمال أدبية متنوعة.</p>
+          <span class="card-link">ابدأ القراءة ←</span>
+        </a>
+
+        <a href="pages/poetry.html" class="section-card">
+          <span class="section-icon">04</span>
+          <h3>الشعر والأدب</h3>
+          <p>مساحة للكلمة الجميلة والنصوص الأدبية والإبداع.</p>
+          <span class="card-link">اكتشف الأدب ←</span>
+        </a>
+
+        <a href="pages/research.html" class="section-card">
+          <span class="section-icon">05</span>
+          <h3>الأبحاث والمعرفة</h3>
+          <p>موضوعات بحثية منظمة ومعلومات قابلة للاستكشاف.</p>
+          <span class="card-link">تصفح الأبحاث ←</span>
+        </a>
+
+        <a href="pages/learning.html" class="section-card">
+          <span class="section-icon">06</span>
+          <h3>مسارات التعلم</h3>
+          <p>تعلم تدريجي منظم من الأساسيات إلى المستويات المتقدمة.</p>
+          <span class="card-link">اختر مسارك ←</span>
+        </a>
+
+        <a href="pages/exams.html" class="section-card">
+          <span class="section-icon">07</span>
+          <h3>الاختبارات والتحديات</h3>
+          <p>اختبر معرفتك وتابع تقدمك وحقق إنجازات جديدة.</p>
+          <span class="card-link">ابدأ الاختبار ←</span>
+        </a>
+
+        <a href="pages/community.html" class="section-card">
+          <span class="section-icon">08</span>
+          <h3>مجتمع هنون</h3>
+          <p>شارك الأفكار وناقش الموضوعات مع مجتمع المعرفة.</p>
+          <span class="card-link">انضم للمجتمع ←</span>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- الكتب المميزة -->
+    <section class="content-section featured-section">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">مختارات معرفية</span>
+          <h2>رحلات تستحق القراءة</h2>
+          <p>اكتشف مجموعة من الموضوعات التي تفتح لك آفاقًا جديدة.</p>
+          <span class="home-section-count" id="homeBooksCount"></span>
+        </div>
+        <a href="pages/library.html" class="text-link">المكتبة كاملة ←</a>
+      </div>
+
+      <div class="home-data-grid books-grid" id="featuredBooks">
+        <div class="home-data-empty">جاري تجهيز الكتب...</div>
+      </div>
+    </section>
+
+    <!-- مسارات التعلم -->
+    <section class="content-section learning-section">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">خطوتك القادمة</span>
+          <h2>تعلّم بطريقة منظمة</h2>
+          <p>مسارات تساعدك على بناء المعرفة والمهارات خطوة بخطوة.</p>
+        </div>
+        <a href="pages/learning.html" class="text-link">كل المسارات ←</a>
+      </div>
+
+      <div class="learning-grid">
+        <a href="pages/learning.html" class="learning-card">
+          <span>01</span>
+          <h3>تطوير الذات</h3>
+          <p>الوعي، التفكير، العادات، وإدارة الحياة.</p>
+        </a>
+
+        <a href="pages/learning.html" class="learning-card">
+          <span>02</span>
+          <h3>البرمجة والتقنية</h3>
+          <p>أساسيات البرمجة والتطبيقات والتكنولوجيا.</p>
+        </a>
+
+        <a href="pages/learning.html" class="learning-card">
+          <span>03</span>
+          <h3>الثقافة والعلوم</h3>
+          <p>اكتشف العلوم والمجتمع والتاريخ والفكر.</p>
+        </a>
+      </div>
+    </section>
+
+    <!-- أحدث المقالات -->
+    <section class="content-section">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">أفكار تستحق التأمل</span>
+          <h2>من أحدث المقالات</h2>
+          <span class="home-section-count" id="homeArticlesCount"></span>
+        </div>
+        <a href="pages/articles.html" class="text-link">جميع المقالات ←</a>
+      </div>
+
+      <div class="home-data-grid articles-grid" id="latestArticles">
+        <div class="home-data-empty">جاري تجهيز المقالات...</div>
+      </div>
+    </section>
+
+    <!-- مساحة المستخدم -->
+    <section class="content-section personal-section">
+      <div class="personal-card">
+        <div>
+          <span class="eyebrow">رحلتك الشخصية</span>
+          <h2>اجعل المعرفة جزءًا من يومك</h2>
+          <p>
+            أنشئ حسابك، واحفظ قراءاتك، وتابع تقدمك،
+            واجمع النقاط والإنجازات مع كل خطوة.
+          </p>
+          <a href="pages/auth.html" class="button button-gold">
+            أنشئ حسابك
+          </a>
+        </div>
+        <div class="personal-decoration">H</div>
+      </div>
+    </section>
+
+    <!-- المجتمع -->
+    <section class="content-section community-section">
+      <div class="community-card">
+        <span class="eyebrow">المعرفة تنمو بالمشاركة</span>
+        <h2>فكرتك قد تلهم شخصًا آخر</h2>
+        <p>شارك ما تعلمته، ناقش الأفكار، وكن جزءًا من مجتمع هنون.</p>
+        <a href="pages/community.html" class="button button-gold">
+          اكتشف المجتمع
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- التذييل -->
+  <footer class="site-footer">
+    <div class="footer-main">
+
+      <div class="footer-brand">
+        <img src="assets/logo/logo.svg" alt="شعار HANOON" class="brand-icon">
+        <h2>HANOON</h2>
+        <p>المعرفة تصنع الفرق</p>
+        <span>اكتشف، تعلّم، تطوّر.</span>
+      </div>
+
+      <div class="footer-column">
+        <h3>استكشف</h3>
+        <a href="pages/library.html">المكتبة</a>
+        <a href="pages/articles.html">المقالات</a>
+        <a href="pages/stories.html">القصص</a>
+        <a href="pages/research.html">الأبحاث</a>
+      </div>
+
+      <div class="footer-column">
+        <h3>تعلّم</h3>
+        <a href="pages/learning.html">مسارات التعلم</a>
+        <a href="pages/exams.html">الاختبارات</a>
+        <a href="pages/community.html">المجتمع</a>
+      </div>
+
+      <div class="footer-column">
+        <h3>حسابك</h3>
+        <a href="pages/auth.html">تسجيل الدخول</a>
+        <a href="pages/profile.html">الملف الشخصي</a>
+        <a href="pages/settings.html">الإعدادات</a>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p>© <span id="currentYear">2026</span> HANOON. جميع الحقوق محفوظة.</p>
+      <span>صُنع بشغف من أجل المعرفة.</span>
+    </div>
+  </footer>
+
+  <!-- بيانات الحساب المحلي -->
+  <script>
+  (function () {
+    "use strict";
+
+    const image = document.getElementById("headerProfileImage");
+    const initial = document.getElementById("headerProfileInitial");
+
+    function updateProfileImage() {
+      try {
+        const saved = localStorage.getItem("hanoon_user_profile");
+        if (!saved) return;
+
+        const profile = JSON.parse(saved);
+        const name = profile.name || profile.username || "مستخدم";
+        const avatar = profile.avatar || profile.photoURL || profile.photo || "";
+
+        initial.textContent = name.trim().charAt(0) || "م";
+
+        if (!avatar) return;
+
+        image.onload = function () {
+          image.hidden = false;
+          initial.hidden = true;
+        };
+
+        image.onerror = function () {
+          image.hidden = true;
+          initial.hidden = false;
+        };
+
+        image.src = avatar;
+      } catch (error) {
+        console.error("Profile image error:", error);
+      }
+    }
+
+    updateProfileImage();
+    window.addEventListener("pageshow", updateProfileImage);
+
+    window.addEventListener("storage", function (event) {
+      if (event.key === "hanoon_user_profile") {
+        updateProfileImage();
+      }
+    });
+  })();
+  </script>
+
+  <!-- تحميل بيانات الكتب والمقالات المحلية -->
+  <script src="data/books.js"></script>
+  <script src="data/articles.js"></script>
+
+  <!-- عرض الكتب والمقالات في الصفحة الرئيسية -->
+  <script>
+  (function () {
+    "use strict";
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, function (char) {
+        return {
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;"
+        }[char];
+      });
+    }
+
+    function renderBooks() {
+      const container = document.getElementById("featuredBooks");
+      const count = document.getElementById("homeBooksCount");
+      const api = window.HANOON_BOOKS_API;
+
+      if (!container) return;
+
+      if (!api || typeof api.getAll !== "function") {
+        container.innerHTML =
+          '<div class="home-data-empty">تعذر تحميل بيانات الكتب. راجع ملف data/books.js.</div>';
+        return;
+      }
+
+      const books = api.getAll() || [];
+
+      if (count) {
+        count.textContent = books.length
+          ? "عدد الكتب: " + books.length
+          : "";
+      }
+
+      if (!books.length) {
+        container.innerHTML =
+          '<div class="home-data-empty">لا توجد كتب متاحة حاليًا.</div>';
+        return;
+      }
+
+      container.innerHTML = books.slice(0, 4).map(function (book) {
+        const title = escapeHTML(book.title);
+        const category = escapeHTML(book.category || "كتاب معرفي");
+        const description = escapeHTML(book.description || "");
+        const cover = escapeHTML(book.cover || "");
+        const link = "pages/book.html?id=" + encodeURIComponent(book.id);
+
+        return `
+          <a class="home-data-card" href="${link}">
+            <img class="home-data-image"
+              src="${cover}"
+              alt="${title}"
+              loading="lazy">
+            <div class="home-data-body">
+              <span class="home-data-category">${category}</span>
+              <h3 class="home-data-title">${title}</h3>
+              <p class="home-data-description">${description}</p>
+              <span class="home-data-link">اقرأ تفاصيل الكتاب ←</span>
+            </div>
+          </a>
+        `;
+      }).join("");
+    }
+
+    function renderArticles() {
+      const container = document.getElementById("latestArticles");
+      const count = document.getElementById("homeArticlesCount");
+      const api = window.HANOON_ARTICLES_API;
+
+      if (!container) return;
+
+      if (!api || typeof api.getAll !== "function") {
+        container.innerHTML =
+          '<div class="home-data-empty">تعذر تحميل المقالات. راجع ملف data/articles.js.</div>';
+        return;
+      }
+
+      const articles = api.getAll() || [];
+
+      if (count) {
+        count.textContent = articles.length
+          ? "عدد المقالات: " + articles.length
+          : "";
+      }
+
+      if (!articles.length) {
+        container.innerHTML =
+          '<div class="home-data-empty">لا توجد مقالات متاحة حاليًا.</div>';
+        return;
+      }
+
+      const latest = articles.slice(-4).reverse();
+
+      container.innerHTML = latest.map(function (article) {
+        const title = escapeHTML(article.title);
+        const category = escapeHTML(article.category || "مقال معرفي");
+        const excerpt = escapeHTML(article.excerpt || "");
+        const cover = escapeHTML(article.cover || "");
+        const link = "pages/article.html?id=" + encodeURIComponent(article.id);
+
+        return `
+          <a class="home-data-card" href="${link}">
+            <img class="home-data-image"
+              src="${cover}"
+              alt="${title}"
+              loading="lazy">
+            <div class="home-data-body">
+              <span class="home-data-category">${category}</span>
+              <h3 class="home-data-title">${title}</h3>
+              <p class="home-data-description">${excerpt}</p>
+              <span class="home-data-link">اقرأ المقال ←</span>
+            </div>
+          </a>
+        `;
+      }).join("");
+    }
+
+    function startHomeContent() {
+      renderBooks();
+      renderArticles();
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", startHomeContent, { once: true });
+    } else {
+      startHomeContent();
+    }
+  })();
+  </script>
+
+  <script type="module" src="js/app.js"></script>
+  <script src="js/global-back.js"></script>
+
+</body>
+</html>
