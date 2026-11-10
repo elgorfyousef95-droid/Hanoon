@@ -1,0 +1,631 @@
+
+/* =========================================
+   HANOON — CARDS DESIGN SYSTEM
+   Version 1.0
+========================================= */
+
+/* General Card */
+.card {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-soft);
+  transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(213,179,108,.5);
+  box-shadow: var(--shadow-card);
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.card-title {
+  margin-bottom: 10px;
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1.7;
+}
+
+.card-description {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 2;
+}
+
+/* Image Card */
+.card-image {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--bg-elevated);
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: transform .5s ease;
+}
+
+.card:hover .card-image img {
+  transform: scale(1.045);
+}
+
+.card-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 45%,
+    rgba(5,8,18,.78)
+  );
+}
+
+.card-image-label {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  z-index: 2;
+}
+
+/* Book Card */
+.book-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.book-cover {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(213,179,108,.2), transparent 55%),
+    var(--bg-elevated);
+}
+
+.book-cover img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: transform .5s ease;
+}
+
+.book-card:hover .book-cover img {
+  transform: scale(1.04);
+}
+
+.book-cover::after {
+  content: "";
+  position: absolute;
+  inset: 45% 0 0;
+  background: linear-gradient(transparent, rgba(0,0,0,.45));
+  pointer-events: none;
+}
+
+.book-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  padding: 17px;
+}
+
+.book-title {
+  color: var(--text-primary);
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1.8;
+}
+
+.book-author {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.book-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.book-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-light);
+}
+
+/* Article Card */
+.article-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.article-cover {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--bg-elevated);
+}
+
+.article-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .45s ease;
+}
+
+.article-card:hover .article-cover img {
+  transform: scale(1.05);
+}
+
+.article-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 11px;
+  padding: 19px;
+}
+
+.article-category {
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.article-title {
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1.8;
+}
+
+.article-excerpt {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 2;
+}
+
+.article-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 13px;
+  margin-top: auto;
+  padding-top: 12px;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-light);
+  font-size: 10px;
+}
+
+/* Story Card */
+.story-card {
+  position: relative;
+  min-height: 230px;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+}
+
+.story-card img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .5s ease;
+}
+
+.story-card:hover img {
+  transform: scale(1.06);
+}
+
+.story-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 10%,
+    rgba(5,8,18,.85) 100%
+  );
+}
+
+.story-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 20px;
+  color: white;
+}
+
+.story-content h3 {
+  margin-bottom: 7px;
+  font-size: 17px;
+}
+
+.story-content p {
+  color: rgba(255,255,255,.78);
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+/* Course Card */
+.course-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.course-cover {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--bg-elevated);
+}
+
+.course-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.course-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 13px;
+  padding: 20px;
+}
+
+.course-title {
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1.8;
+}
+
+.course-description {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.9;
+}
+
+.course-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+/* User Card */
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  transition: border-color .2s, background .2s;
+}
+
+.user-card:hover {
+  background: var(--bg-elevated);
+  border-color: var(--gold);
+}
+
+.user-card-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.user-card-content strong {
+  display: block;
+  overflow: hidden;
+  color: var(--text-primary);
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-card-content small {
+  display: block;
+  margin-top: 5px;
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+/* Achievement Card */
+.achievement-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 23px 15px;
+  text-align: center;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+}
+
+.achievement-icon {
+  width: 65px;
+  height: 65px;
+  display: grid;
+  place-items: center;
+  color: var(--gold);
+  background: rgba(213,179,108,.12);
+  border: 1px solid rgba(213,179,108,.2);
+  border-radius: 20px;
+  font-size: 25px;
+}
+
+.achievement-card h3 {
+  font-size: 13px;
+}
+
+.achievement-card p {
+  color: var(--text-muted);
+  font-size: 10px;
+  line-height: 1.8;
+}
+
+.achievement-card.locked {
+  opacity: .48;
+  filter: grayscale(1);
+}
+
+/* Community Post Card */
+.post-card {
+  padding: 20px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 17px;
+}
+
+.post-author {
+  flex: 1;
+  min-width: 0;
+}
+
+.post-author strong {
+  display: block;
+  color: var(--text-primary);
+  font-size: 13px;
+}
+
+.post-author small {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.post-content {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 2.1;
+  overflow-wrap: anywhere;
+}
+
+.post-image {
+  width: 100%;
+  max-height: 430px;
+  margin-top: 15px;
+  overflow: hidden;
+  border-radius: 13px;
+}
+
+.post-image img {
+  width: 100%;
+  max-height: 430px;
+  display: block;
+  object-fit: cover;
+}
+
+.post-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 17px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-light);
+}
+
+.post-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--text-muted);
+  background: transparent;
+  border: 0;
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.post-action:hover,
+.post-action.active {
+  color: var(--gold);
+}
+
+/* Quote Card */
+.quote-card {
+  position: relative;
+  padding: 27px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(213,179,108,.13), transparent 45%),
+    var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+}
+
+.quote-card::before {
+  content: "”";
+  position: absolute;
+  top: -25px;
+  left: 18px;
+  color: rgba(213,179,108,.13);
+  font-family: Georgia, serif;
+  font-size: 130px;
+  line-height: 1;
+}
+
+.quote-card blockquote {
+  position: relative;
+  color: var(--text-primary);
+  font-size: 16px;
+  line-height: 2.2;
+}
+
+.quote-card cite {
+  display: block;
+  margin-top: 17px;
+  color: var(--gold);
+  font-size: 11px;
+  font-style: normal;
+}
+
+/* Feature Card */
+.feature-card {
+  position: relative;
+  padding: 25px;
+  overflow: hidden;
+  background: linear-gradient(
+    145deg,
+    rgba(213,179,108,.12),
+    var(--bg-tertiary) 65%
+  );
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+}
+
+.feature-card-icon {
+  width: 55px;
+  height: 55px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 18px;
+  color: var(--gold);
+  background: rgba(213,179,108,.13);
+  border-radius: 17px;
+  font-size: 22px;
+}
+
+.feature-card h3 {
+  margin-bottom: 10px;
+  font-size: 17px;
+}
+
+.feature-card p {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 2;
+}
+
+/* Card Grid */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.books-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.articles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+/* Responsive */
+@media (max-width: 1000px) {
+  .books-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .cards-grid,
+  .articles-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 650px) {
+  .books-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .cards-grid,
+  .articles-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .book-content,
+  .article-content {
+    padding: 13px;
+  }
+
+  .book-title,
+  .article-title {
+    font-size: 13px;
+  }
+
+  .card-body {
+    padding: 15px;
+  }
+
+  .post-card {
+    padding: 15px;
+  }
+
+  .post-actions {
+    gap: 13px;
+  }
+
+  .quote-card {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 360px) {
+  .books-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* END HANOON CARDS SYSTEM */
