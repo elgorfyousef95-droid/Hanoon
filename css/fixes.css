@@ -1,0 +1,493 @@
+
+/* =========================================
+   HANOON — GLOBAL FIXES
+   Scroll / Splash / Mobile / Background
+========================================= */
+
+/* إصلاح التمرير */
+html {
+  min-height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+body {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+
+/* منع أي عنصر من توسيع الصفحة */
+* {
+  max-width: 100%;
+}
+
+img,
+svg,
+video {
+  max-width: 100%;
+}
+
+/* إصلاح شاشة البداية */
+#splashScreen,
+#splash,
+.splash-screen {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  z-index: 99999;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      ellipse at 50% 45%,
+      #202943 0%,
+      #11182B 48%,
+      #0C1020 100%
+    );
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity .8s ease,
+    visibility .8s ease;
+}
+
+/* إخفاء شاشة البداية */
+#splashScreen.is-hidden,
+#splashScreen.splash-hidden,
+#splash.is-hidden,
+#splash.splash-hidden,
+.splash-screen.is-hidden,
+.splash-screen.splash-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* محتوى شاشة البداية */
+.splash-content {
+  width: min(90%, 500px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: center;
+}
+
+.splash-content h1 {
+  color: #F1D99C;
+  font-family: Georgia, serif;
+  font-size: clamp(2.2rem, 8vw, 3.5rem);
+  letter-spacing: 6px;
+}
+
+.splash-content p {
+  color: #B8B5C5;
+  font-size: 15px;
+}
+
+.splash-spinner {
+  width: 44px;
+  height: 44px;
+  margin-top: 25px;
+  border: 2px solid rgba(213, 179, 108, .15);
+  border-top-color: #D5B36C;
+  border-radius: 50%;
+  animation: hanoonSpin 1s linear infinite;
+}
+
+@keyframes hanoonSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* خلفية احتياطية للواجهة الرئيسية */
+.hero-section {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(
+      ellipse at 78% 30%,
+      rgba(213, 179, 108, .16),
+      transparent 35%
+    ),
+    radial-gradient(
+      ellipse at 18% 75%,
+      rgba(140, 117, 245, .14),
+      transparent 38%
+    ),
+    linear-gradient(
+      135deg,
+      #0C1020,
+      #171D32 55%,
+      #0C1020
+    );
+}
+
+.hero-background {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(12, 16, 32, .25),
+      rgba(12, 16, 32, .8)
+    ),
+    url("../assets/backgrounds/home-hero.png")
+    center / cover no-repeat;
+}
+
+/* طبقة حماية النص من الخلفية */
+.hero-shade {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+}
+
+/* بديل الشعار عند عدم وجود الصورة */
+.logo-text-fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #D5B36C;
+  font-family: Georgia, serif;
+  font-weight: 800;
+  letter-spacing: 3px;
+  font-size: 22px;
+}
+
+/* إصلاح ظهور البحث */
+.search-panel[hidden] {
+  display: none !important;
+}
+
+.search-panel.is-open {
+  display: block;
+}
+
+/* منع العناصر من الخروج عن عرض الهاتف */
+@media (max-width: 768px) {
+  html,
+  body {
+    width: 100%;
+    overflow-x: hidden !important;
+  }
+
+  .hero-section {
+    min-height: auto;
+  }
+
+  .hero-inner {
+    width: 92%;
+    min-height: auto;
+    padding-block: 75px;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    gap: 35px;
+  }
+
+  .hero-copy {
+    width: 100%;
+  }
+
+  .hero-actions {
+    justify-content: center;
+  }
+
+  .hero-emblem {
+    width: min(190px, 55vw);
+  }
+
+  .hero-motto {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .content-section {
+    width: 92%;
+    padding-block: 55px;
+  }
+}
+
+/* تقليل الحركة عند طلب الجهاز ذلك */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+/* =========================================
+   HANOON - PREMIUM HORIZONTAL NAVIGATION
+========================================= */
+
+.site-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 14px;
+  padding: 10px 2.5%;
+  min-width: 0;
+}
+
+.site-header .brand {
+  flex-shrink: 0;
+  gap: 8px;
+}
+
+.site-header .brand img {
+  width: 46px;
+  height: 46px;
+}
+
+.main-navigation {
+  display: flex !important;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap !important;
+  gap: 17px;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.main-navigation::-webkit-scrollbar {
+  display: none;
+}
+
+.main-navigation a {
+  flex: 0 0 auto;
+  padding: 11px 0;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.header-controls {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+}
+
+/* صورة المستخدم بجوار القائمة */
+
+.header-profile-link {
+  width: 43px;
+  height: 43px;
+  flex: 0 0 43px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  background: linear-gradient(135deg, #8C75F5, #343E68);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 900;
+  box-shadow: 0 0 15px rgba(213,179,108,.15);
+  transition: .25s ease;
+}
+
+.header-profile-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(213,179,108,.3);
+}
+
+.header-profile-link img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.header-profile-link img[hidden],
+.header-profile-link span[hidden] {
+  display: none !important;
+}
+
+/* الشاشات المتوسطة */
+
+@media (max-width: 1100px) {
+  .site-header {
+    gap: 10px;
+    padding-inline: 2%;
+  }
+
+  .main-navigation {
+    gap: 13px;
+  }
+
+  .main-navigation a {
+    font-size: 11px;
+  }
+
+  .site-header .brand small {
+    display: none;
+  }
+
+  .account-button {
+    padding-inline: 11px;
+    font-size: 11px;
+  }
+}
+
+/* الهواتف والأجهزة اللوحية */
+
+@media (max-width: 768px) {
+  .site-header {
+    flex-wrap: wrap;
+    gap: 9px;
+    padding: 9px 3%;
+  }
+
+  .site-header .brand {
+    order: 1;
+  }
+
+  .menu-toggle {
+    order: 2;
+    display: block;
+    flex: 0 0 42px;
+  }
+
+  .header-controls {
+    order: 3;
+    margin-inline-start: auto;
+    gap: 6px;
+  }
+
+  .header-controls .icon-button {
+    width: 38px;
+    height: 38px;
+  }
+
+  .header-profile-link {
+    width: 39px;
+    height: 39px;
+    flex-basis: 39px;
+  }
+
+  .header-controls .account-button {
+    min-height: 38px;
+    padding: 7px 10px;
+    font-size: 10px;
+  }
+
+  .main-navigation {
+    order: 4;
+    flex: 0 0 100%;
+    width: 100%;
+    justify-content: flex-start;
+    gap: 19px;
+    padding: 5px 2px 9px;
+    border-top: 1px solid var(--border-color);
+  }
+
+  .main-navigation a {
+    padding: 9px 0;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 390px) {
+  .site-header .brand img {
+    width: 39px;
+    height: 39px;
+  }
+
+  .site-header .brand strong {
+    font-size: 18px;
+  }
+
+  .header-controls {
+    gap: 4px;
+  }
+
+  .header-controls .account-button {
+    padding-inline: 7px;
+  }
+
+  .main-navigation {
+    gap: 16px;
+  }
+}
+
+/* HANOON - Mobile Navigation Toggle */
+@media (max-width: 768px) {
+  .site-header .main-navigation {
+    display: none !important;
+    flex: 0 0 100%;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .site-header .main-navigation.is-open {
+    display: flex !important;
+  }
+}
+
+/* HANOON - Navigation buttons without horizontal scrolling */
+
+.site-header .main-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  overflow: visible !important;
+  white-space: normal !important;
+}
+
+.site-header .main-navigation a {
+  flex: 0 1 auto;
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* Mobile navigation */
+@media (max-width: 768px) {
+  .site-header .main-navigation {
+    display: none !important;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 7px;
+    overflow: visible !important;
+    white-space: normal !important;
+  }
+
+  .site-header .main-navigation.is-open {
+    display: flex !important;
+  }
+
+  .site-header .main-navigation a {
+    flex: 0 1 auto;
+    padding: 9px 12px;
+    font-size: 13px;
+  }
+}
