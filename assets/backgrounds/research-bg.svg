@@ -1,0 +1,79 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 800" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="researchBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B1422"/>
+      <stop offset=".5" stop-color="#17243A"/>
+      <stop offset="1" stop-color="#10131E"/>
+    </linearGradient>
+    <radialGradient id="researchGlow">
+      <stop offset="0" stop-color="#568FC5" stop-opacity=".23"/>
+      <stop offset="1" stop-color="#568FC5" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="researchGold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#A98237" stop-opacity=".15"/>
+      <stop offset=".5" stop-color="#E8CD91" stop-opacity=".7"/>
+      <stop offset="1" stop-color="#A98237" stop-opacity=".15"/>
+    </linearGradient>
+    <pattern id="researchGrid" width="55" height="55" patternUnits="userSpaceOnUse">
+      <path d="M55 0H0V55" fill="none" stroke="#8BB4D9" stroke-opacity=".055"/>
+    </pattern>
+  </defs>
+
+  <rect width="1400" height="800" fill="url(#researchBg)"/>
+  <ellipse cx="1020" cy="370" rx="510" ry="420" fill="url(#researchGlow)"/>
+  <rect width="1400" height="800" fill="url(#researchGrid)"/>
+
+  <!-- Research network -->
+  <g fill="none" stroke="#80B8DC" stroke-opacity=".35" stroke-width="2">
+    <path d="M760 180L950 280L1150 170L1250 350L1080 500L900 420L760 180Z"/>
+    <path d="M950 280L900 420M950 280L1080 500M1150 170L1080 500"/>
+    <path d="M1250 350L1350 470M760 180L620 300L900 420"/>
+  </g>
+
+  <g fill="#E8CD91" stroke="#E8CD91" stroke-width="2">
+    <circle cx="760" cy="180" r="7"/>
+    <circle cx="950" cy="280" r="9"/>
+    <circle cx="1150" cy="170" r="7"/>
+    <circle cx="1250" cy="350" r="8"/>
+    <circle cx="1080" cy="500" r="10"/>
+    <circle cx="900" cy="420" r="7"/>
+    <circle cx="620" cy="300" r="5"/>
+    <circle cx="1350" cy="470" r="5"/>
+  </g>
+
+  <!-- Analytical chart -->
+  <g transform="translate(130 250)" fill="none" stroke="url(#researchGold)" stroke-width="3">
+    <rect x="0" y="0" width="390" height="310" rx="18" opacity=".6"/>
+    <path d="M55 250H345M55 250V45"/>
+    <path d="M55 210L115 175L170 190L235 105L290 125L345 65" stroke="#80B8DC" stroke-width="5"/>
+    <path d="M55 210L115 175L170 190L235 105L290 125L345 65V250H55Z" fill="#80B8DC" fill-opacity=".08" stroke="none"/>
+    <path d="M55 145H345M55 95H345" stroke-opacity=".2" stroke-dasharray="5 8"/>
+    <circle cx="235" cy="105" r="7" fill="#E8CD91"/>
+    <circle cx="345" cy="65" r="7" fill="#E8CD91"/>
+  </g>
+
+  <!-- Magnifying lens -->
+  <g transform="translate(1010 570)" fill="none" stroke="url(#researchGold)" stroke-width="5">
+    <circle cx="0" cy="0" r="70" fill="#80B8DC" fill-opacity=".05"/>
+    <path d="M50 50L125 125" stroke-linecap="round" stroke-width="13"/>
+    <circle cx="0" cy="0" r="48" stroke-opacity=".35"/>
+  </g>
+
+  <!-- Scientific decorative circles -->
+  <g fill="none" stroke="#80B8DC" stroke-opacity=".2">
+    <circle cx="350" cy="130" r="85"/>
+    <circle cx="350" cy="130" r="115" stroke-dasharray="4 10"/>
+    <circle cx="350" cy="130" r="145" opacity=".5"/>
+  </g>
+
+  <g fill="#E8CD91">
+    <circle cx="190" cy="130" r="3"/>
+    <circle cx="570" cy="180" r="2"/>
+    <circle cx="690" cy="650" r="3"/>
+    <circle cx="1280" cy="110" r="2.5"/>
+    <circle cx="1200" cy="700" r="2"/>
+  </g>
+
+  <rect x="1" y="1" width="1398" height="798" fill="none" stroke="#D5B36C" stroke-opacity=".1"/>
+</svg>
