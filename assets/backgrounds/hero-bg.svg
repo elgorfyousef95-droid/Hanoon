@@ -1,0 +1,33 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" fill="none">
+  <defs>
+    <radialGradient id="glow1">
+      <stop offset="0%" stop-color="#A98237" stop-opacity=".22"/>
+      <stop offset="100%" stop-color="#A98237" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2">
+      <stop offset="0%" stop-color="#52658D" stop-opacity=".16"/>
+      <stop offset="100%" stop-color="#52658D" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="70" height="70" patternUnits="userSpaceOnUse">
+      <path d="M70 0H0V70" stroke="#D5B36C" stroke-opacity=".055" stroke-width="1"/>
+      <circle cx="0" cy="0" r="1.5" fill="#D5B36C" fill-opacity=".12"/>
+    </pattern>
+  </defs>
+
+  <rect width="1600" height="900" fill="#10131C"/>
+  <ellipse cx="1220" cy="260" rx="600" ry="500" fill="url(#glow1)"/>
+  <ellipse cx="260" cy="750" rx="550" ry="430" fill="url(#glow2)"/>
+  <rect width="1600" height="900" fill="url(#grid)"/>
+
+  <circle cx="1230" cy="300" r="220"
+          stroke="#D5B36C" stroke-opacity=".09"/>
+  <circle cx="1230" cy="300" r="270"
+          stroke="#D5B36C" stroke-opacity=".055"/>
+  <circle cx="1230" cy="300" r="320"
+          stroke="#D5B36C" stroke-opacity=".035"/>
+
+  <path d="M0 720 Q420 590 800 730 T1600 650"
+        stroke="#D5B36C" stroke-opacity=".08"
+        stroke-width="2"/>
+</svg>
