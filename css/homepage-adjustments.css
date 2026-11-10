@@ -151,3 +151,282 @@
         height: 48px;
     }
 }
+
+/* =========================================
+   HANOON — PREMIUM HOME HEADER
+   توزيع متوازن وأزرار دائرية
+========================================= */
+
+.site-header {
+  position: sticky;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 88px;
+  padding: 12px clamp(18px, 4vw, 65px);
+  isolation: isolate;
+}
+
+/* الشعار في طرف مستقل */
+.site-header > .brand {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+  gap: 15px;
+  margin-inline-end: 20px;
+}
+
+.site-header > .brand img {
+  width: 62px;
+  height: 62px;
+  object-fit: contain;
+}
+
+.site-header > .brand strong {
+  font-size: 20px;
+  letter-spacing: 2px;
+}
+
+.site-header > .brand small {
+  font-size: 10px;
+}
+
+/* روابط التنقل */
+.site-header > .main-navigation {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(10px, 1.5vw, 22px);
+  min-width: 0;
+}
+
+.site-header > .main-navigation a {
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+  padding: 10px 2px;
+}
+
+/* مجموعة الأزرار */
+.site-header > .header-controls {
+  position: static;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  flex: 0 0 auto;
+}
+
+/* الأزرار الدائرية */
+.site-header .icon-button,
+.site-header .header-profile-link {
+  width: 45px;
+  height: 45px;
+  min-width: 45px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(216,181,109,.48);
+  background: rgba(216,181,109,.08);
+  color: var(--hv-gold-light);
+  box-shadow: 0 5px 18px rgba(0,0,0,.2);
+  transition:
+    transform .25s ease,
+    background .25s ease,
+    border-color .25s ease,
+    box-shadow .25s ease;
+}
+
+.site-header .icon-button svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.site-header .icon-button:hover,
+.site-header .header-profile-link:hover {
+  transform: translateY(-3px);
+  background: rgba(216,181,109,.2);
+  border-color: var(--hv-gold-light);
+  box-shadow: 0 8px 24px rgba(216,181,109,.2);
+}
+
+/* تسجيل الدخول في منتصف الهيدر */
+.site-header .account-button {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 142px;
+  min-height: 43px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 30px;
+  border: 1px solid var(--hv-gold);
+  background: linear-gradient(
+    135deg,
+    rgba(216,181,109,.2),
+    rgba(216,181,109,.07)
+  );
+  color: var(--hv-gold-light);
+  font-size: 13px;
+  font-weight: 900;
+  white-space: nowrap;
+  box-shadow: 0 5px 20px rgba(0,0,0,.2);
+  transition: background .25s ease, box-shadow .25s ease;
+}
+
+.site-header .account-button:hover {
+  background: var(--hv-gold);
+  color: #080d1b;
+  box-shadow: 0 8px 25px rgba(216,181,109,.25);
+}
+
+/* مساحة حتى لا تتداخل الروابط مع زر الدخول */
+@media (min-width: 1101px) {
+  .site-header > .main-navigation {
+    padding-inline: 65px;
+  }
+}
+
+/* الأجهزة المتوسطة */
+@media (max-width: 1100px) {
+  .site-header {
+    gap: 12px;
+  }
+
+  .site-header > .main-navigation {
+    gap: 9px;
+  }
+
+  .site-header > .main-navigation a {
+    font-size: 10px;
+  }
+
+  .site-header > .brand {
+    margin-inline-end: 5px;
+  }
+
+  .site-header .account-button {
+    min-width: 115px;
+    font-size: 11px;
+  }
+}
+
+/* الموبايل */
+@media (max-width: 768px) {
+  .site-header {
+    min-height: 70px;
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 13px;
+  }
+
+  .site-header > .brand {
+    gap: 7px;
+    margin: 0;
+  }
+
+  .site-header > .brand img {
+    width: 43px;
+    height: 43px;
+  }
+
+  .site-header > .brand strong {
+    font-size: 15px;
+  }
+
+  .site-header > .brand small {
+    font-size: 8px;
+  }
+
+  .site-header > .main-navigation {
+    display: none;
+  }
+
+  .site-header > .main-navigation.is-open {
+    display: flex;
+  }
+
+  .site-header > .header-controls {
+    margin: 0;
+    gap: 7px;
+  }
+
+  .site-header .icon-button,
+  .site-header .header-profile-link {
+    width: 37px;
+    height: 37px;
+    min-width: 37px;
+  }
+
+  .site-header .icon-button svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .site-header .account-button {
+    position: static;
+    transform: none;
+    min-width: 90px;
+    min-height: 36px;
+    padding: 5px 10px;
+    font-size: 10px;
+  }
+
+  .site-header .menu-toggle {
+    display: block;
+    order: 3;
+    flex: 0 0 37px;
+    width: 37px;
+    height: 37px;
+    border-radius: 50%;
+  }
+}
+
+/* الشاشات الصغيرة جدًا */
+@media (max-width: 390px) {
+  .site-header {
+    padding-inline: 8px;
+    gap: 5px;
+  }
+
+  .site-header > .brand img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .site-header > .brand strong {
+    font-size: 13px;
+  }
+
+  .site-header > .brand small {
+    display: none;
+  }
+
+  .site-header > .header-controls {
+    gap: 5px;
+  }
+
+  .site-header .icon-button,
+  .site-header .header-profile-link {
+    width: 33px;
+    height: 33px;
+    min-width: 33px;
+  }
+
+  .site-header .account-button {
+    min-width: 78px;
+    font-size: 9px;
+  }
+}
