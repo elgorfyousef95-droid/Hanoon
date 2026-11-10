@@ -1,0 +1,76 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 800" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="examBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#101923"/>
+      <stop offset=".5" stop-color="#172C2B"/>
+      <stop offset="1" stop-color="#0C151C"/>
+    </linearGradient>
+    <radialGradient id="examGlow">
+      <stop offset="0" stop-color="#43B58A" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#43B58A" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="examGold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#A98237" stop-opacity=".15"/>
+      <stop offset=".5" stop-color="#E8CD91" stop-opacity=".75"/>
+      <stop offset="1" stop-color="#A98237" stop-opacity=".15"/>
+    </linearGradient>
+    <pattern id="examDots" width="65" height="65" patternUnits="userSpaceOnUse">
+      <circle cx="4" cy="4" r="1.5" fill="#43B58A" opacity=".17"/>
+    </pattern>
+  </defs>
+
+  <rect width="1400" height="800" fill="url(#examBg)"/>
+  <ellipse cx="1000" cy="370" rx="520" ry="420" fill="url(#examGlow)"/>
+  <rect width="1400" height="800" fill="url(#examDots)"/>
+
+  <!-- Exam paper -->
+  <g transform="translate(820 135)" fill="none" stroke="url(#examGold)" stroke-width="3" stroke-linejoin="round">
+    <path d="M0 0H300L390 90V510H0Z" fill="#43B58A" fill-opacity=".045"/>
+    <path d="M300 0V90H390"/>
+    <rect x="45" y="145" width="28" height="28" rx="5"/>
+    <path d="M51 158L60 167L76 149" stroke="#43B58A" stroke-width="4"/>
+    <path d="M95 158H320"/>
+    <rect x="45" y="225" width="28" height="28" rx="5"/>
+    <path d="M95 239H290"/>
+    <rect x="45" y="305" width="28" height="28" rx="5"/>
+    <path d="M95 319H320"/>
+    <rect x="45" y="385" width="28" height="28" rx="5"/>
+    <path d="M95 399H250"/>
+  </g>
+
+  <!-- Achievement target -->
+  <g transform="translate(350 390)" fill="none" stroke="url(#examGold)" stroke-width="4">
+    <circle r="165"/>
+    <circle r="120" stroke-opacity=".55"/>
+    <circle r="75" stroke="#43B58A" stroke-opacity=".7"/>
+    <circle r="27" fill="#43B58A" fill-opacity=".18"/>
+    <path d="M0 0L105 -105" stroke="#E8CD91" stroke-width="7" stroke-linecap="round"/>
+    <path d="M105 -105L98 -75L75 -98Z" fill="#E8CD91"/>
+  </g>
+
+  <!-- Progress bars -->
+  <g transform="translate(120 650)" fill="none" stroke-linecap="round">
+    <path d="M0 0H330" stroke="#43B58A" stroke-opacity=".15" stroke-width="8"/>
+    <path d="M0 0H235" stroke="#43B58A" stroke-opacity=".7" stroke-width="8"/>
+    <path d="M0 40H330" stroke="#D5B36C" stroke-opacity=".13" stroke-width="8"/>
+    <path d="M0 40H180" stroke="#E8CD91" stroke-opacity=".7" stroke-width="8"/>
+  </g>
+
+  <!-- Decorative stars -->
+  <g stroke="#E8CD91" stroke-width="3" fill="none" opacity=".65">
+    <path d="M650 150V190M630 170H670"/>
+    <path d="M1200 590V626M1182 608H1218"/>
+    <path d="M180 190V218M166 204H194"/>
+  </g>
+
+  <g fill="#E8CD91">
+    <circle cx="580" cy="570" r="3"/>
+    <circle cx="730" cy="690" r="2"/>
+    <circle cx="1260" cy="160" r="3"/>
+    <circle cx="110" cy="370" r="2"/>
+    <circle cx="700" cy="300" r="2"/>
+  </g>
+
+  <rect x="1" y="1" width="1398" height="798" fill="none" stroke="#D5B36C" stroke-opacity=".1"/>
+</svg>
