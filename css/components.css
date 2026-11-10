@@ -1,10 +1,11 @@
 
 /* =========================================
    HANOON — COMPONENTS SYSTEM
-   Version 1.1
+   Shared UI Components
 ========================================= */
 
-/* Labels & Badges */
+/* ---------- Labels & Badges ---------- */
+
 .eyebrow {
   display: inline-flex;
   align-items: center;
@@ -12,6 +13,7 @@
   color: var(--gold);
   font-size: 12px;
   font-weight: 800;
+  letter-spacing: .5px;
 }
 
 .eyebrow::before {
@@ -52,7 +54,8 @@
   border-color: rgba(255,102,125,.25);
 }
 
-/* Buttons */
+/* ---------- Buttons ---------- */
+
 .btn {
   min-height: 44px;
   display: inline-flex;
@@ -151,7 +154,8 @@ button:disabled {
   transform: none;
 }
 
-/* Glass Surface */
+/* ---------- Glass Surface ---------- */
+
 .glass-card {
   background: rgba(255,255,255,.045);
   border: 1px solid rgba(255,255,255,.09);
@@ -183,7 +187,8 @@ button:disabled {
   box-shadow: var(--shadow-card);
 }
 
-/* Avatars */
+/* ---------- Avatars ---------- */
+
 .avatar {
   width: 44px;
   height: 44px;
@@ -227,7 +232,8 @@ button:disabled {
   outline-offset: 3px;
 }
 
-/* User Info */
+/* ---------- User Info ---------- */
+
 .user-info {
   display: flex;
   align-items: center;
@@ -255,7 +261,8 @@ button:disabled {
   font-size: 11px;
 }
 
-/* Status Indicators */
+/* ---------- Status Indicators ---------- */
+
 .status-dot {
   width: 9px;
   height: 9px;
@@ -277,7 +284,8 @@ button:disabled {
   background: var(--gold);
 }
 
-/* Form Elements */
+/* ---------- Form Elements ---------- */
+
 .form-group {
   display: flex;
   flex-direction: column;
@@ -339,7 +347,8 @@ select.form-control {
   font-size: 11px;
 }
 
-/* Checkbox & Switch */
+/* ---------- Checkbox & Switch ---------- */
+
 .checkbox-row {
   display: flex;
   align-items: center;
@@ -401,7 +410,8 @@ select.form-control {
   background: var(--gold);
 }
 
-/* Progress */
+/* ---------- Progress ---------- */
+
 .progress {
   width: 100%;
   height: 9px;
@@ -435,7 +445,8 @@ select.form-control {
   font-size: 11px;
 }
 
-/* Statistics */
+/* ---------- Statistics ---------- */
+
 .stat-card {
   padding: 22px;
   background: var(--bg-tertiary);
@@ -464,7 +475,8 @@ select.form-control {
   font-size: 10px;
 }
 
-/* Tabs */
+/* ---------- Tabs ---------- */
+
 .tabs {
   display: flex;
   align-items: center;
@@ -499,7 +511,8 @@ select.form-control {
   background: var(--gold);
 }
 
-/* Dropdown */
+/* ---------- Dropdown ---------- */
+
 .dropdown {
   position: relative;
 }
@@ -540,7 +553,8 @@ select.form-control {
   background: rgba(213,179,108,.08);
 }
 
-/* Modal */
+/* ---------- Modal ---------- */
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -599,7 +613,8 @@ select.form-control {
   }
 }
 
-/* Notifications */
+/* ---------- Notifications ---------- */
+
 .toast-container {
   position: fixed;
   top: 20px;
@@ -664,7 +679,8 @@ select.form-control {
   }
 }
 
-/* Empty States */
+/* ---------- Empty States ---------- */
+
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -699,7 +715,8 @@ select.form-control {
   font-size: 12px;
 }
 
-/* Loading */
+/* ---------- Loading ---------- */
+
 .loading-spinner {
   width: 30px;
   height: 30px;
@@ -710,9 +727,7 @@ select.form-control {
 }
 
 @keyframes componentSpin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
 .skeleton {
@@ -738,12 +753,11 @@ select.form-control {
 }
 
 @keyframes skeletonMove {
-  to {
-    transform: translateX(100%);
-  }
+  to { transform: translateX(100%); }
 }
 
-/* Pagination */
+/* ---------- Pagination ---------- */
+
 .pagination {
   display: flex;
   align-items: center;
@@ -768,7 +782,8 @@ select.form-control {
   border-color: var(--gold);
 }
 
-/* Tooltips */
+/* ---------- Tooltips ---------- */
+
 [data-tooltip] {
   position: relative;
 }
@@ -799,8 +814,10 @@ select.form-control {
   transform: translate(50%, 0);
 }
 
-/* Responsive */
+/* ---------- Responsive Components ---------- */
+
 @media (max-width: 600px) {
+
   .surface-card {
     padding: 17px;
   }
@@ -831,9 +848,11 @@ select.form-control {
     min-height: 48px;
     padding: 11px 18px;
   }
+
 }
 
-/* Accessibility */
+/* ---------- Accessibility ---------- */
+
 .btn:focus-visible,
 button:focus-visible,
 a:focus-visible,
@@ -860,4 +879,6 @@ textarea:focus-visible {
   }
 }
 
-/* END HANOON COMPONENTS */
+/* =========================================
+   END HANOON COMPONENTS
+========================================= */
