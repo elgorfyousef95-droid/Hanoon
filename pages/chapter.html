@@ -1,0 +1,1660 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0C1020">
+  <meta name="description" content="اقرأ فصول الكتب والمعرفة على منصة هنون HANOON">
+
+  <title>قراءة الفصل | HANOON</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0C1020;
+      --surface: #171D32;
+      --surface-2: #202943;
+      --surface-3: #28324C;
+      --gold: #D5B36C;
+      --purple: #8C75F5;
+      --teal: #35BDB0;
+      --text: #F5EAD1;
+      --muted: #A6AEC3;
+      --border: rgba(213,179,108,.17);
+      --reader-bg: #171D32;
+      --reader-text: #E9E5DA;
+      --danger: #FF7185;
+      --shadow: 0 15px 45px rgba(0,0,0,.22);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+      scrollbar-color: var(--gold) var(--bg);
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 10% 5%, rgba(140,117,245,.12), transparent 30%),
+        radial-gradient(circle at 90% 30%, rgba(53,189,176,.08), transparent 30%),
+        var(--bg);
+      color: var(--text);
+      font-family: 'Cairo', sans-serif;
+      overflow-x: hidden;
+      line-height: 1.8;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button:focus-visible,
+    a:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 3px;
+    }
+
+    .reading-progress {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 4px;
+      z-index: 9999;
+      background: rgba(255,255,255,.06);
+    }
+
+    .reading-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--purple), var(--gold), var(--teal));
+      transition: width .15s linear;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 12px 5%;
+      background: rgba(12,16,32,.91);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 43px;
+      height: 43px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      background: linear-gradient(145deg, var(--gold), #96723B);
+      color: #171321;
+      font-size: 21px;
+      font-weight: 900;
+      box-shadow: 0 5px 20px rgba(213,179,108,.2);
+    }
+
+    .brand-name {
+      font-size: 21px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      line-height: 1.3;
+    }
+
+    .brand-sub {
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 18px;
+      transition: .2s;
+    }
+
+    .icon-btn:hover {
+      background: var(--surface-3);
+      border-color: var(--gold);
+      transform: translateY(-2px);
+    }
+
+    .page-layout {
+      width: min(1450px, 94%);
+      margin: 30px auto 70px;
+      display: grid;
+      grid-template-columns: 290px minmax(0, 1fr);
+      gap: 25px;
+      align-items: start;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 100px;
+      background: rgba(23,29,50,.88);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      max-height: calc(100vh - 125px);
+      overflow-y: auto;
+    }
+
+    .sidebar-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 17px;
+    }
+
+    .sidebar-heading h3 {
+      font-size: 16px;
+      color: var(--gold);
+    }
+
+    .book-small {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 18px;
+      line-height: 1.8;
+    }
+
+    .chapter-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .chapter-link {
+      width: 100%;
+      text-align: right;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 12px;
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid transparent;
+      border-radius: 12px;
+      font-size: 12px;
+      line-height: 1.7;
+      transition: .2s;
+    }
+
+    .chapter-link:hover {
+      background: var(--surface-2);
+      color: var(--text);
+    }
+
+    .chapter-link.active {
+      color: var(--gold);
+      background: rgba(213,179,108,.09);
+      border-color: var(--border);
+    }
+
+    .chapter-number {
+      width: 27px;
+      height: 27px;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: var(--surface-3);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .chapter-link.active .chapter-number {
+      background: var(--gold);
+      color: #171321;
+    }
+
+    .chapter-check {
+      margin-right: auto;
+      color: var(--teal);
+      font-size: 14px;
+    }
+
+    .sidebar-footer {
+      margin-top: 22px;
+      padding-top: 17px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 11px;
+      text-align: center;
+    }
+
+    .reader-main {
+      min-width: 0;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-bottom: 20px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .breadcrumb a:hover {
+      color: var(--gold);
+    }
+
+    .chapter-hero {
+      position: relative;
+      overflow: hidden;
+      padding: 38px;
+      border: 1px solid var(--border);
+      border-radius: 25px;
+      background:
+        linear-gradient(115deg, rgba(12,16,32,.97), rgba(36,37,72,.86)),
+        radial-gradient(circle at 85% 20%, var(--purple), transparent 40%);
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+    }
+
+    .chapter-hero::before {
+      content: "H";
+      position: absolute;
+      left: 25px;
+      top: -80px;
+      font-size: 280px;
+      font-weight: 900;
+      color: rgba(213,179,108,.055);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .chapter-hero h1 {
+      position: relative;
+      z-index: 1;
+      font-size: clamp(26px, 4vw, 39px);
+      line-height: 1.6;
+      margin-bottom: 12px;
+      font-weight: 900;
+    }
+
+    .chapter-description {
+      position: relative;
+      z-index: 1;
+      color: #C0C5D5;
+      font-size: 14px;
+      max-width: 700px;
+    }
+
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 18px;
+      margin-top: 24px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .hero-meta span {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .reader-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 15px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      margin-bottom: 20px;
+    }
+
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .toolbar-label {
+      color: var(--muted);
+      font-size: 11px;
+      margin-left: 5px;
+    }
+
+    .tool-btn {
+      min-width: 37px;
+      height: 36px;
+      padding: 0 10px;
+      display: grid;
+      place-items: center;
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 13px;
+      transition: .2s;
+    }
+
+    .tool-btn:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .tool-btn.active {
+      color: var(--gold);
+      border-color: var(--gold);
+    }
+
+    .reader-card {
+      background: var(--reader-bg);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: clamp(22px, 5vw, 55px);
+      box-shadow: var(--shadow);
+      transition: background .25s, color .25s;
+    }
+
+    .reader-content {
+      color: var(--reader-text);
+      font-size: 18px;
+      line-height: 2.25;
+      overflow-wrap: anywhere;
+      transition: font-size .2s;
+    }
+
+    .reader-content .chapter-opening {
+      padding: 24px;
+      margin-bottom: 30px;
+      background: rgba(213,179,108,.065);
+      border-right: 4px solid var(--gold);
+      border-radius: 13px;
+    }
+
+    .reader-content h2 {
+      color: var(--gold);
+      font-size: 23px;
+      font-weight: 900;
+      margin: 38px 0 16px;
+      line-height: 1.7;
+    }
+
+    .reader-content .chapter-opening h2 {
+      margin-top: 0;
+    }
+
+    .reader-content h3 {
+      color: var(--teal);
+      font-size: 18px;
+      margin: 26px 0 10px;
+      font-weight: 800;
+    }
+
+    .reader-content p {
+      margin-bottom: 20px;
+    }
+
+    .reader-content ul,
+    .reader-content ol {
+      padding-right: 28px;
+      margin: 10px 0 25px;
+    }
+
+    .reader-content li {
+      margin-bottom: 9px;
+      padding-right: 5px;
+    }
+
+    .reader-content li::marker {
+      color: var(--gold);
+    }
+
+    .reader-content blockquote {
+      padding: 22px 25px;
+      margin: 30px 0;
+      border-right: 4px solid var(--purple);
+      border-radius: 12px;
+      background: rgba(140,117,245,.09);
+      color: var(--gold);
+      font-size: 19px;
+      font-weight: 700;
+    }
+
+    .reader-content strong {
+      color: var(--gold);
+    }
+
+    .reader-content a {
+      color: var(--teal);
+      text-decoration: underline;
+    }
+
+    .reader-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 14px;
+    }
+
+    body.light-reading {
+      --reader-bg: #F5F0E6;
+      --reader-text: #33313B;
+    }
+
+    body.light-reading .reader-card {
+      border-color: rgba(0,0,0,.09);
+    }
+
+    body.light-reading .reader-content .chapter-opening {
+      background: rgba(213,179,108,.15);
+    }
+
+    body.light-reading .reader-content h2 {
+      color: #98733A;
+    }
+
+    body.light-reading .reader-content h3 {
+      color: #187F78;
+    }
+
+    body.light-reading .reader-content blockquote {
+      background: rgba(140,117,245,.1);
+      color: #7158C7;
+    }
+
+    body.light-reading .reader-content strong {
+      color: #98733A;
+    }
+
+    .reader-end {
+      text-align: center;
+      padding: 28px 15px 10px;
+      border-top: 1px solid var(--border);
+      margin-top: 35px;
+    }
+
+    .reader-end p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 15px;
+    }
+
+    .complete-btn {
+      padding: 13px 23px;
+      background: linear-gradient(135deg, var(--gold), #A98242);
+      color: #171321;
+      border-radius: 13px;
+      font-size: 13px;
+      font-weight: 900;
+      transition: .2s;
+    }
+
+    .complete-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 7px 22px rgba(213,179,108,.2);
+    }
+
+    .complete-btn.completed {
+      background: var(--teal);
+      color: #071C1B;
+    }
+
+    .chapter-navigation {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 13px;
+      margin-top: 20px;
+    }
+
+    .nav-chapter {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      text-align: right;
+      padding: 17px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      color: var(--text);
+      transition: .2s;
+      min-width: 0;
+    }
+
+    .nav-chapter:hover {
+      border-color: var(--gold);
+      transform: translateY(-2px);
+    }
+
+    .nav-chapter.next {
+      text-align: left;
+      align-items: flex-start;
+    }
+
+    .nav-chapter:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .nav-label {
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .nav-title {
+      font-size: 13px;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .author-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 22px;
+      padding: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+    }
+
+    .author-avatar {
+      width: 53px;
+      height: 53px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--gold);
+      background: var(--surface-3);
+    }
+
+    .author-info strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .author-info span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 25px;
+      left: 50%;
+      transform: translate(-50%, 20px);
+      padding: 12px 20px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface-3);
+      color: var(--text);
+      font-size: 12px;
+      z-index: 500;
+      opacity: 0;
+      pointer-events: none;
+      transition: .25s;
+      box-shadow: var(--shadow);
+      max-width: 90%;
+      text-align: center;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .error-box {
+      padding: 35px 20px;
+      text-align: center;
+      border: 1px solid rgba(255,113,133,.3);
+      background: rgba(255,113,133,.06);
+      border-radius: 18px;
+    }
+
+    .error-box h2 {
+      color: var(--danger);
+      margin-bottom: 10px;
+    }
+
+    .error-box p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+
+    .back-link {
+      display: inline-block;
+      padding: 10px 18px;
+      background: var(--surface-3);
+      border-radius: 10px;
+      color: var(--gold);
+      font-size: 12px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--muted);
+    }
+
+    .loading-ring {
+      width: 42px;
+      height: 42px;
+      margin: 0 auto 18px;
+      border: 3px solid rgba(213,179,108,.15);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .footer {
+      width: min(1450px, 94%);
+      margin: 0 auto 30px;
+      padding: 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 11px;
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 950px) {
+      .page-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: relative;
+        top: 0;
+        max-height: none;
+      }
+
+      .chapter-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0,1fr));
+      }
+    }
+
+    @media (max-width: 600px) {
+      .topbar {
+        min-height: 65px;
+        padding: 10px 4%;
+      }
+
+      .brand-name {
+        font-size: 18px;
+      }
+
+      .brand-sub {
+        font-size: 9px;
+      }
+
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+      }
+
+      .icon-btn {
+        width: 37px;
+        height: 37px;
+        font-size: 15px;
+      }
+
+      .page-layout {
+        width: 94%;
+        margin-top: 17px;
+        gap: 15px;
+      }
+
+      .chapter-hero {
+        padding: 25px 20px;
+        border-radius: 19px;
+      }
+
+      .chapter-hero::before {
+        font-size: 180px;
+      }
+
+      .chapter-hero h1 {
+        font-size: 25px;
+      }
+
+      .chapter-description {
+        font-size: 12px;
+      }
+
+      .hero-meta {
+        gap: 10px;
+        font-size: 10px;
+      }
+
+      .reader-toolbar {
+        padding: 12px;
+      }
+
+      .toolbar-label {
+        display: none;
+      }
+
+      .reader-card {
+        padding: 20px 16px;
+        border-radius: 18px;
+      }
+
+      .reader-content {
+        font-size: 16px;
+        line-height: 2.1;
+      }
+
+      .reader-content h2 {
+        font-size: 20px;
+        margin-top: 30px;
+      }
+
+      .reader-content h3 {
+        font-size: 16px;
+      }
+
+      .reader-content .chapter-opening {
+        padding: 17px;
+      }
+
+      .chapter-list {
+        grid-template-columns: 1fr;
+      }
+
+      .chapter-navigation {
+        gap: 8px;
+      }
+
+      .nav-chapter {
+        padding: 12px;
+      }
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        color: black !important;
+      }
+
+      .topbar,
+      .sidebar,
+      .reader-toolbar,
+      .chapter-navigation,
+      .author-card,
+      .footer,
+      .reader-end,
+      .breadcrumb,
+      .reading-progress {
+        display: none !important;
+      }
+
+      .page-layout {
+        display: block;
+        width: 100%;
+        margin: 0;
+      }
+
+      .chapter-hero,
+      .reader-card {
+        background: white !important;
+        color: black !important;
+        box-shadow: none !important;
+        border: none !important;
+      }
+
+      .reader-content {
+        color: black !important;
+      }
+
+      .reader-content h2,
+      .reader-content h3 {
+        color: black !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="reading-progress">
+    <div class="reading-progress-fill" id="progressFill"></div>
+  </div>
+
+  <header class="topbar">
+
+    <a href="../index.html" class="brand">
+      <div class="brand-mark">H</div>
+
+      <div>
+        <div class="brand-name">HANOON</div>
+        <div class="brand-sub">المعرفة تصنع الفرق</div>
+      </div>
+    </a>
+
+    <div class="top-actions">
+
+      <button class="icon-btn" id="shareBtn" title="مشاركة الفصل" aria-label="مشاركة الفصل">
+        ↗
+      </button>
+
+      <button class="icon-btn" id="printBtn" title="طباعة الفصل" aria-label="طباعة الفصل">
+        ⎙
+      </button>
+
+      <a href="library.html" class="icon-btn" title="المكتبة" aria-label="المكتبة">
+        ▤
+      </a>
+
+    </div>
+
+  </header>
+
+  <main class="page-layout">
+
+    <aside class="sidebar">
+
+      <div class="sidebar-heading">
+        <h3>فهرس الكتاب</h3>
+        <span style="color:var(--gold);font-size:18px;">☷</span>
+      </div>
+
+      <div class="book-small" id="sidebarBookName">
+        جاري تحميل الكتاب...
+      </div>
+
+      <div class="chapter-list" id="chapterList">
+        <div class="loading">
+          جاري تحميل الفصول...
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        HANOON READING EXPERIENCE
+      </div>
+
+    </aside>
+
+    <section class="reader-main">
+
+      <nav class="breadcrumb">
+        <a href="../index.html">الرئيسية</a>
+        <span>›</span>
+        <a href="library.html">المكتبة</a>
+        <span>›</span>
+        <span id="breadcrumbBook">الكتاب</span>
+        <span>›</span>
+        <span id="breadcrumbChapter">الفصل</span>
+      </nav>
+
+      <div id="pageContent">
+
+        <div class="loading">
+          <div class="loading-ring"></div>
+          جاري تجهيز تجربة القراءة...
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    © <span id="currentYear"></span> HANOON — المعرفة تصنع الفرق
+    <br>
+    جميع الحقوق محفوظة
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- ملفات البيانات ونظام تحميل الفصول -->
+  <script src="../data/books.js"></script>
+  <script src="../js/content-loader.js"></script>
+
+  <script>
+    /* =====================================================
+       HANOON READER ENGINE
+       نظام القراءة وتحميل الفصل المستقل
+    ===================================================== */
+
+    const params = new URLSearchParams(window.location.search);
+
+    const bookId = params.get("book");
+    const chapterId = params.get("chapter");
+
+    const pageContent = document.getElementById("pageContent");
+    const chapterList = document.getElementById("chapterList");
+    const toast = document.getElementById("toast");
+
+    let currentBook = null;
+    let currentChapter = null;
+    let allChapters = [];
+    let currentFontSize = 18;
+    let toastTimer = null;
+
+    const STORAGE_PREFIX = "hanoon_reader_";
+
+    /* ==========================================
+       NOTIFICATIONS
+    ========================================== */
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+
+      clearTimeout(toastTimer);
+
+      toastTimer = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2600);
+    }
+
+    /* ==========================================
+       SECURITY
+    ========================================== */
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      })[char]);
+    }
+
+    /* ==========================================
+       BOOK DATA
+    ========================================== */
+
+    function getBook() {
+      if (!bookId || !window.HANOON_BOOKS_API) {
+        return null;
+      }
+
+      return window.HANOON_BOOKS_API.getById(bookId);
+    }
+
+    function getChapterData() {
+      if (!currentBook || !currentBook.chapters) {
+        return null;
+      }
+
+      return currentBook.chapters.find(chapter =>
+        String(chapter.id) === String(chapterId)
+      ) || null;
+    }
+
+    /* ==========================================
+       INDEPENDENT CHAPTER LOADER
+    ========================================== */
+
+    async function getContent() {
+      const chapters = currentBook?.chapters || [];
+
+      const chapterIndex = chapters.findIndex(
+        chapter => String(chapter.id) === String(chapterId)
+      );
+
+      if (chapterIndex === -1) {
+        return null;
+      }
+
+      return await window.HANOON_CONTENT_API.getChapter(
+        bookId,
+        chapterIndex + 1
+      );
+    }
+
+    /* ==========================================
+       LOCAL READING STORAGE
+    ========================================== */
+
+    function getStorageKey() {
+      return STORAGE_PREFIX + bookId + "_" + chapterId;
+    }
+
+    function getCompletedKey() {
+      return STORAGE_PREFIX + "completed_" + bookId;
+    }
+
+    function getCompletedChapters() {
+      try {
+        return JSON.parse(
+          localStorage.getItem(getCompletedKey())
+        ) || [];
+      } catch {
+        return [];
+      }
+    }
+
+    function isCompleted(id) {
+      return getCompletedChapters().includes(id);
+    }
+
+    function setCompleted(completed) {
+      const list = getCompletedChapters();
+
+      const updated = completed
+        ? [...new Set([...list, chapterId])]
+        : list.filter(id => id !== chapterId);
+
+      localStorage.setItem(
+        getCompletedKey(),
+        JSON.stringify(updated)
+      );
+
+      updateCompleteButton();
+      renderChapterList();
+
+      showToast(
+        completed
+          ? "تم تسجيل الفصل كمكتمل"
+          : "تم إلغاء إكمال الفصل"
+      );
+    }
+
+    function updateCompleteButton() {
+      const button = document.getElementById("completeBtn");
+
+      if (!button) return;
+
+      const completed = isCompleted(chapterId);
+
+      button.classList.toggle("completed", completed);
+
+      button.textContent = completed
+        ? "✓ تم إكمال الفصل"
+        : "تحديد الفصل كمكتمل";
+    }
+
+    /* ==========================================
+       CHAPTER LIST
+    ========================================== */
+
+    function getChapterNumber(index) {
+      return String(index + 1).padStart(2, "0");
+    }
+
+    function renderChapterList() {
+      if (!currentBook || !Array.isArray(currentBook.chapters)) {
+        chapterList.innerHTML = "";
+        return;
+      }
+
+      chapterList.innerHTML = currentBook.chapters.map((chapter, index) => {
+
+        const active = chapter.id === chapterId;
+        const completed = isCompleted(chapter.id);
+
+        const url =
+          `chapter.html?book=${encodeURIComponent(bookId)}&chapter=${encodeURIComponent(chapter.id)}`;
+
+        return `
+          <a
+            class="chapter-link ${active ? "active" : ""}"
+            href="${url}"
+            ${active ? 'aria-current="page"' : ""}
+          >
+
+            <span class="chapter-number">
+              ${getChapterNumber(index)}
+            </span>
+
+            <span>${escapeHTML(chapter.title)}</span>
+
+            ${completed ? '<span class="chapter-check">✓</span>' : ""}
+
+          </a>
+        `;
+
+      }).join("");
+    }
+
+    /* ==========================================
+       CHAPTER DESCRIPTION
+    ========================================== */
+
+    function getReadingDescription(chapter) {
+      return chapter?.summary ||
+        "اقرأ هذا الفصل واكتشف أفكاره وتطبيقاته العملية.";
+    }
+
+    /* ==========================================
+       ERROR DISPLAY
+    ========================================== */
+
+    function renderError(title, message) {
+      pageContent.innerHTML = `
+        <div class="error-box">
+          <h2>${escapeHTML(title)}</h2>
+          <p>${escapeHTML(message)}</p>
+          <a href="library.html" class="back-link">
+            العودة إلى المكتبة
+          </a>
+        </div>
+      `;
+    }
+
+    /* ==========================================
+       MAIN READER
+    ========================================== */
+
+    async function renderPage() {
+
+      currentBook = getBook();
+
+      if (!currentBook) {
+        renderError(
+          "الكتاب غير موجود",
+          "لم نتمكن من العثور على هذا الكتاب. ارجع إلى المكتبة واختر كتابًا."
+        );
+        return;
+      }
+
+      currentChapter = getChapterData();
+
+      if (!currentChapter) {
+        renderError(
+          "الفصل غير موجود",
+          "الفصل المطلوب غير موجود ضمن فصول هذا الكتاب."
+        );
+        return;
+      }
+
+      let content;
+
+      try {
+        content = await getContent();
+      } catch (error) {
+        console.error("HANOON reader:", error);
+
+        renderError(
+          "المحتوى غير متاح حاليًا",
+          error.message || "تعذر تحميل ملف هذا الفصل."
+        );
+
+        return;
+      }
+
+      if (!content) {
+        renderError(
+          "ملف الفصل غير موجود",
+          "لم يتم إنشاء ملف هذا الفصل بعد. سنضيف محتوى الكتب في المرحلة الأخيرة."
+        );
+        return;
+      }
+
+      allChapters = currentBook.chapters || [];
+
+      const currentIndex = allChapters.findIndex(
+        chapter => String(chapter.id) === String(chapterId)
+      );
+
+      const previous = currentIndex > 0
+        ? allChapters[currentIndex - 1]
+        : null;
+
+      const next = currentIndex < allChapters.length - 1
+        ? allChapters[currentIndex + 1]
+        : null;
+
+      const description =
+        content.summary || getReadingDescription(currentChapter);
+
+      const displayTitle =
+        content.title || currentChapter.title;
+
+      const authorName =
+        currentBook.author?.name || "Yousef Elgorf";
+
+      const authorImage =
+        currentBook.author?.image || "../assets/avatars/yousef.jpg";
+
+      document.title =
+        displayTitle + " | " + currentBook.title + " | HANOON";
+
+      document.getElementById("breadcrumbBook").textContent =
+        currentBook.title;
+
+      document.getElementById("breadcrumbChapter").textContent =
+        displayTitle;
+
+      document.getElementById("sidebarBookName").textContent =
+        currentBook.title;
+
+      pageContent.innerHTML = `
+
+        <section class="chapter-hero">
+
+          <div class="eyebrow">
+            HANOON • تجربة القراءة
+          </div>
+
+          <h1>${escapeHTML(displayTitle)}</h1>
+
+          <p class="chapter-description">
+            ${escapeHTML(description)}
+          </p>
+
+          <div class="hero-meta">
+
+            <span>▤ ${escapeHTML(currentBook.title)}</span>
+
+            <span>◷ قراءة هادئة ومركزة</span>
+
+            <span>✦ ${escapeHTML(authorName)}</span>
+
+          </div>
+
+        </section>
+
+        <div class="reader-toolbar">
+
+          <div class="toolbar-group">
+
+            <span class="toolbar-label">حجم الخط</span>
+
+            <button class="tool-btn" id="decreaseFont" title="تصغير الخط">
+              A-
+            </button>
+
+            <button class="tool-btn" id="increaseFont" title="تكبير الخط">
+              A+
+            </button>
+
+          </div>
+
+          <div class="toolbar-group">
+
+            <button class="tool-btn" id="themeBtn" title="تغيير وضع القراءة">
+              ◐
+            </button>
+
+            <button class="tool-btn" id="savePositionBtn" title="حفظ موضع القراءة">
+              ♡
+            </button>
+
+            <button class="tool-btn" id="restorePositionBtn" title="استعادة موضع القراءة">
+              ↶
+            </button>
+
+          </div>
+
+        </div>
+
+        <article class="reader-card">
+
+          <div class="reader-content" id="readerContent">
+            ${content.content}
+          </div>
+
+          <div class="reader-end">
+
+            <p>
+              وصلت إلى نهاية محتوى الفصل. راجع ما تعلمته
+              ثم حدد الفصل كمكتمل.
+            </p>
+
+            <button class="complete-btn" id="completeBtn">
+              تحديد الفصل كمكتمل
+            </button>
+
+          </div>
+
+        </article>
+
+        <div class="chapter-navigation">
+
+          <a
+            class="nav-chapter"
+            ${previous
+              ? `href="chapter.html?book=${encodeURIComponent(bookId)}&chapter=${encodeURIComponent(previous.id)}"`
+              : 'aria-disabled="true"'}
+            ${!previous ? 'style="opacity:.4;pointer-events:none"' : ""}
+          >
+
+            <span class="nav-label">← الفصل السابق</span>
+
+            <span class="nav-title">
+              ${previous ? escapeHTML(previous.title) : "لا يوجد فصل سابق"}
+            </span>
+
+          </a>
+
+          <a
+            class="nav-chapter next"
+            ${next
+              ? `href="chapter.html?book=${encodeURIComponent(bookId)}&chapter=${encodeURIComponent(next.id)}"`
+              : 'aria-disabled="true"'}
+            ${!next ? 'style="opacity:.4;pointer-events:none"' : ""}
+          >
+
+            <span class="nav-label">الفصل التالي ←</span>
+
+            <span class="nav-title">
+              ${next ? escapeHTML(next.title) : "نهاية الكتاب"}
+            </span>
+
+          </a>
+
+        </div>
+
+        <div class="author-card">
+
+          <img
+            class="author-avatar"
+            src="${escapeHTML(authorImage)}"
+            alt="صورة الكاتب"
+            onerror="this.style.display='none'"
+          >
+
+          <div class="author-info">
+            <strong>${escapeHTML(authorName)}</strong>
+            <span>كاتب ومؤسس منصة HANOON</span>
+          </div>
+
+        </div>
+
+      `;
+
+      renderChapterList();
+
+      setupReaderControls();
+
+      updateCompleteButton();
+
+      restoreSavedFont();
+
+      restoreTheme();
+
+      restoreReadingPosition();
+    }
+
+    /* ==========================================
+       FONT CONTROLS
+    ========================================== */
+
+    function setupReaderControls() {
+
+      document.getElementById("increaseFont").addEventListener("click", () => {
+        currentFontSize = Math.min(30, currentFontSize + 1);
+        applyFontSize();
+      });
+
+      document.getElementById("decreaseFont").addEventListener("click", () => {
+        currentFontSize = Math.max(13, currentFontSize - 1);
+        applyFontSize();
+      });
+
+      document.getElementById("themeBtn").addEventListener("click", toggleTheme);
+
+      document.getElementById("savePositionBtn").addEventListener("click", () => {
+        saveReadingPosition();
+        showToast("تم حفظ موضع القراءة");
+      });
+
+      document.getElementById("restorePositionBtn").addEventListener("click", () => {
+        restoreReadingPosition(true);
+      });
+
+      document.getElementById("completeBtn").addEventListener("click", () => {
+        setCompleted(!isCompleted(chapterId));
+      });
+
+    }
+
+    function applyFontSize() {
+      const content = document.getElementById("readerContent");
+
+      if (!content) return;
+
+      content.style.fontSize = currentFontSize + "px";
+
+      localStorage.setItem(
+        STORAGE_PREFIX + "font_size",
+        currentFontSize
+      );
+    }
+
+    function restoreSavedFont() {
+      const saved = Number(
+        localStorage.getItem(STORAGE_PREFIX + "font_size")
+      );
+
+      if (saved >= 13 && saved <= 30) {
+        currentFontSize = saved;
+      }
+
+      applyFontSize();
+    }
+
+    /* ==========================================
+       READING THEME
+    ========================================== */
+
+    function restoreTheme() {
+      const saved = localStorage.getItem(
+        STORAGE_PREFIX + "theme"
+      );
+
+      document.body.classList.toggle(
+        "light-reading",
+        saved === "light"
+      );
+    }
+
+    function toggleTheme() {
+      const light = document.body.classList.toggle("light-reading");
+
+      localStorage.setItem(
+        STORAGE_PREFIX + "theme",
+        light ? "light" : "dark"
+      );
+
+      showToast(
+        light
+          ? "تم تفعيل وضع القراءة الفاتح"
+          : "تم تفعيل وضع القراءة الداكن"
+      );
+    }
+
+    /* ==========================================
+       READING POSITION
+    ========================================== */
+
+    function saveReadingPosition() {
+      const position = window.scrollY;
+
+      localStorage.setItem(
+        getStorageKey(),
+        position
+      );
+    }
+
+    function restoreReadingPosition(showMessage = false) {
+      const saved = localStorage.getItem(getStorageKey());
+
+      if (saved === null) return;
+
+      const position = Number(saved);
+
+      if (!Number.isFinite(position)) return;
+
+      window.scrollTo({
+        top: position,
+        behavior: "smooth"
+      });
+
+      if (showMessage) {
+        showToast("تم استعادة موضع القراءة");
+      }
+    }
+
+    let savePositionTimer;
+
+    window.addEventListener("scroll", () => {
+      updateReadingProgress();
+
+      clearTimeout(savePositionTimer);
+
+      savePositionTimer = setTimeout(() => {
+        saveReadingPosition();
+      }, 350);
+    }, { passive: true });
+
+    window.addEventListener("beforeunload", saveReadingPosition);
+
+    /* ==========================================
+       READING PROGRESS
+    ========================================== */
+
+    function updateReadingProgress() {
+      const documentHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+
+      const progress = documentHeight > 0
+        ? (window.scrollY / documentHeight) * 100
+        : 0;
+
+      document.getElementById("progressFill").style.width =
+        Math.min(100, Math.max(0, progress)) + "%";
+    }
+
+    /* ==========================================
+       SHARE
+    ========================================== */
+
+    document.getElementById("shareBtn").addEventListener("click", async () => {
+
+      const shareData = {
+        title: document.title,
+        text: currentChapter
+          ? currentChapter.title + " — من منصة HANOON"
+          : "منصة HANOON",
+        url: window.location.href
+      };
+
+      try {
+        if (navigator.share) {
+          await navigator.share(shareData);
+        } else if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(window.location.href);
+          showToast("تم نسخ رابط الفصل");
+        } else {
+          showToast("المشاركة غير مدعومة في هذا المتصفح");
+        }
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          showToast("تعذرت المشاركة");
+        }
+      }
+
+    });
+
+    /* ==========================================
+       PRINT
+    ========================================== */
+
+    document.getElementById("printBtn").addEventListener("click", () => {
+      window.print();
+    });
+
+    /* ==========================================
+       INITIALIZATION
+    ========================================== */
+
+    document.getElementById("currentYear").textContent =
+      new Date().getFullYear();
+
+    if (!bookId || !chapterId) {
+
+      renderError(
+        "بيانات الفصل غير مكتملة",
+        "يجب فتح الفصل من داخل صفحة الكتاب حتى يتم تحديد الكتاب والفصل."
+      );
+
+    } else if (!window.HANOON_BOOKS_API) {
+
+      renderError(
+        "تعذر تحميل بيانات الكتب",
+        "تأكد من وجود الملف data/books.js ومن صحة مساره."
+      );
+
+    } else if (!window.HANOON_CONTENT_API) {
+
+      renderError(
+        "تعذر تحميل نظام الفصول",
+        "تأكد من وجود الملف js/content-loader.js ومن صحة مساره."
+      );
+
+    } else {
+
+      renderPage();
+
+    }
+
+  </script>
+
+</body>
+</html>
