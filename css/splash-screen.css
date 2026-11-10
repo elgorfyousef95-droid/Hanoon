@@ -1,0 +1,208 @@
+
+/* =========================================
+   HANOON — SPLASH SCREEN
+   Compatible with current index.html
+========================================= */
+
+.splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  padding: 25px 18px;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(213,179,108,.17), transparent 35%),
+    radial-gradient(circle at 15% 85%, rgba(140,117,245,.13), transparent 35%),
+    linear-gradient(145deg, #0C1020, #15182C 55%, #211B36);
+  transition: opacity .7s ease, visibility .7s ease;
+}
+
+.splash-screen.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.splash-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at center, transparent 20%, rgba(0,0,0,.28) 100%);
+}
+
+.splash-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(100%, 440px);
+  text-align: center;
+  animation: splashEnter .9s ease both;
+}
+
+.splash-logo {
+  width: 145px;
+  height: 145px;
+  margin-bottom: 22px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 25px rgba(213,179,108,.3));
+  animation: splashFloat 3s ease-in-out infinite;
+}
+
+.splash-content h1 {
+  margin: 0;
+  color: var(--gold-light, #F1D99C);
+  font-family: Georgia, serif;
+  font-size: clamp(38px, 9vw, 56px);
+  font-weight: 900;
+  letter-spacing: 5px;
+  text-shadow: 0 5px 25px rgba(213,179,108,.22);
+}
+
+.splash-line {
+  width: 100px;
+  height: 2px;
+  margin: 17px 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--gold, #D5B36C),
+    transparent
+  );
+}
+
+.splash-content h2 {
+  margin: 0;
+  color: #F1D99C;
+  font-family: var(--font-ar, "Cairo", sans-serif);
+  font-size: clamp(19px, 5vw, 25px);
+  font-weight: 800;
+}
+
+.splash-motto {
+  margin-top: 12px;
+  color: #D2C9B8;
+  font-size: 14px;
+  line-height: 2;
+}
+
+.splash-quote {
+  max-width: 340px;
+  margin-top: 18px;
+  color: rgba(255,255,255,.66);
+  font-size: 12px;
+  line-height: 2.1;
+}
+
+.splash-owner {
+  margin-top: 25px;
+  color: var(--gold, #D5B36C);
+  font-family: Georgia, serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+}
+
+.splash-loading {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  margin-top: 30px;
+  border: 2px solid rgba(213,179,108,.18);
+  border-top-color: var(--gold, #D5B36C);
+  border-left-color: var(--teal, #35BDB0);
+  border-radius: 50%;
+  animation: splashRotate 1s linear infinite;
+}
+
+.splash-loading span {
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(213,179,108,.35);
+  border-radius: 50%;
+}
+
+.splash-content small {
+  margin-top: 15px;
+  color: rgba(255,255,255,.45);
+  font-size: 10px;
+}
+
+@keyframes splashEnter {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes splashFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes splashRotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 600px) {
+  .splash-logo {
+    width: 125px;
+    height: 125px;
+  }
+
+  .splash-quote {
+    max-width: 290px;
+  }
+}
+
+@media (max-height: 650px) {
+  .splash-logo {
+    width: 95px;
+    height: 95px;
+    margin-bottom: 12px;
+  }
+
+  .splash-quote {
+    margin-top: 10px;
+  }
+
+  .splash-owner {
+    margin-top: 14px;
+  }
+
+  .splash-loading {
+    margin-top: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splash-content,
+  .splash-logo,
+  .splash-loading {
+    animation: none !important;
+  }
+
+  .splash-screen {
+    transition: none;
+  }
+}
+
+/* END HANOON SPLASH SCREEN */
