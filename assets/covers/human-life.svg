@@ -1,0 +1,42 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" role="img" aria-labelledby="title">
+  <title id="title">الإنسان والحياة</title>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1">
+      <stop stop-color="#111b2b"/>
+      <stop offset="1" stop-color="#263b4b"/>
+    </linearGradient>
+    <linearGradient id="gold">
+      <stop stop-color="#a98237"/>
+      <stop offset=".5" stop-color="#f0d99d"/>
+      <stop offset="1" stop-color="#b88b42"/>
+    </linearGradient>
+    <radialGradient id="sun">
+      <stop stop-color="#f4dfaa" stop-opacity=".9"/>
+      <stop offset="1" stop-color="#d5b36c" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="600" height="900" fill="url(#bg)"/>
+  <circle cx="300" cy="360" r="245" fill="url(#sun)"/>
+
+  <g fill="none" stroke="url(#gold)" opacity=".72">
+    <circle cx="300" cy="360" r="205" stroke-width="2"/>
+    <circle cx="300" cy="360" r="174"/>
+    <path d="M70 360h460M300 130v460M138 198l324 324M462 198 138 522" opacity=".5"/>
+    <path d="M80 690Q300 570 520 690M105 730Q300 620 495 730" stroke-width="2"/>
+  </g>
+
+  <path d="M300 210c-58 55-76 105-76 153 0 63 34 105 76 135 42-30 76-72 76-135 0-48-18-98-76-153Z"
+        fill="none" stroke="url(#gold)" stroke-width="5"/>
+  <path d="M300 280v165M245 360h110" stroke="url(#gold)" stroke-width="3"/>
+
+  <g fill="#f5ead1" text-anchor="middle" font-family="Arial, sans-serif">
+    <text x="300" y="105" font-size="25" letter-spacing="8">HANOON • BOOKS</text>
+    <text x="300" y="625" font-size="58" font-weight="700">الإنسان</text>
+    <text x="300" y="700" font-size="58" font-weight="700">والحياة</text>
+    <text x="300" y="785" font-size="23" fill="#d5b36c">رحلة في فهم الإنسان والعالم</text>
+  </g>
+
+  <path d="M70 55h460M70 835h460" stroke="url(#gold)" stroke-width="2"/>
+</svg>
