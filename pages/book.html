@@ -1,0 +1,932 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0C1020">
+  <title>الكتاب | HANOON</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/fixed-viewport.css">
+
+  <style>
+    :root {
+      --gold: #D5B36C;
+      --purple: #8C75F5;
+      --teal: #35BDB0;
+      --bg: #0C1020;
+      --panel: #171D32;
+      --text: #F5EAD1;
+      --muted: #A7ABC0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 85% 5%, rgba(140,117,245,.15), transparent 38%),
+        radial-gradient(ellipse at 5% 45%, rgba(53,189,176,.08), transparent 35%),
+        var(--bg);
+      color: var(--text);
+      font-family: "Cairo", sans-serif;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; }
+
+    .topbar {
+      min-height: 72px;
+      padding: 12px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      background: rgba(12,16,32,.88);
+      backdrop-filter: blur(15px);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .brand {
+      color: var(--gold);
+      font-size: 25px;
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+
+    .back-link {
+      padding: 9px 17px;
+      border: 1px solid rgba(213,179,108,.35);
+      border-radius: 12px;
+      color: var(--gold);
+      font-size: 13px;
+    }
+
+    .page {
+      width: min(1120px, 92%);
+      margin: 35px auto 70px;
+    }
+
+    .breadcrumb {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 22px;
+    }
+
+    .breadcrumb a { color: var(--gold); }
+
+    .book-hero {
+      display: grid;
+      grid-template-columns: 310px 1fr;
+      gap: 38px;
+      align-items: center;
+      padding: 28px;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 25px;
+      background: linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.015));
+      box-shadow: 0 25px 70px rgba(0,0,0,.2);
+    }
+
+    .cover-wrap {
+      position: relative;
+      overflow: hidden;
+      border-radius: 19px;
+      aspect-ratio: 3 / 4;
+      background: var(--panel);
+      box-shadow: 0 20px 40px rgba(0,0,0,.35);
+    }
+
+    .cover-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .cover-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(0deg, rgba(5,8,20,.7), transparent 60%);
+      pointer-events: none;
+    }
+
+    .book-number {
+      position: absolute;
+      bottom: 15px;
+      right: 15px;
+      color: white;
+      font-size: 12px;
+      background: rgba(0,0,0,.5);
+      padding: 6px 12px;
+      border-radius: 20px;
+    }
+
+    .category {
+      display: inline-block;
+      color: var(--teal);
+      background: rgba(53,189,176,.1);
+      border: 1px solid rgba(53,189,176,.2);
+      border-radius: 30px;
+      padding: 6px 15px;
+      font-size: 12px;
+      margin-bottom: 14px;
+    }
+
+    .book-title {
+      font-size: clamp(27px, 4vw, 43px);
+      line-height: 1.5;
+      font-weight: 900;
+      margin: 0 0 14px;
+    }
+
+    .book-description {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 2.1;
+      margin: 0 0 25px;
+    }
+
+    .author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .author img {
+      width: 48px;
+      height: 48px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid var(--gold);
+      background: var(--panel);
+    }
+
+    .author-name { font-weight: 800; color: var(--text); }
+    .author-caption { color: var(--muted); font-size: 11px; }
+
+    .book-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 25px;
+    }
+
+    .action-btn {
+      border: 0;
+      cursor: pointer;
+      padding: 11px 20px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 13px;
+      transition: .2s;
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, var(--gold), #a98543);
+      color: #171321;
+    }
+
+    .secondary-btn {
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      color: var(--text);
+    }
+
+    .action-btn:active { transform: scale(.97); }
+
+    .chapters-section { margin-top: 48px; }
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .section-heading h2 { font-size: 25px; margin: 0; }
+    .section-heading span { color: var(--gold); font-size: 13px; }
+
+    .chapters-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 13px;
+    }
+
+    .chapter-card {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 17px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #1b2239, #151a2c);
+      border: 1px solid rgba(255,255,255,.06);
+      transition: .25s;
+    }
+
+    .chapter-card:hover {
+      border-color: rgba(213,179,108,.45);
+      transform: translateY(-3px);
+    }
+
+    .chapter-number {
+      width: 43px;
+      height: 43px;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      color: var(--gold);
+      background: rgba(213,179,108,.1);
+      font-weight: 900;
+    }
+
+    .chapter-info { min-width: 0; flex: 1; }
+    .chapter-info h3 { margin: 0 0 5px; font-size: 14px; }
+
+    .chapter-info p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.8;
+    }
+
+    .chapter-arrow { color: var(--gold); font-size: 20px; }
+
+    .quote-box {
+      margin-top: 40px;
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+      border: 1px solid rgba(213,179,108,.2);
+      background: linear-gradient(120deg, rgba(213,179,108,.08), rgba(140,117,245,.08));
+    }
+
+    .quote-box p {
+      font-size: 19px;
+      line-height: 2;
+      margin: 0;
+      font-weight: 700;
+    }
+
+    .quote-box span {
+      display: block;
+      margin-top: 12px;
+      color: var(--gold);
+      font-size: 12px;
+    }
+
+    .error-state {
+      text-align: center;
+      padding: 80px 15px;
+      background: var(--panel);
+      border-radius: 20px;
+    }
+
+    .error-state h2 { color: var(--gold); }
+    .error-state p { color: var(--muted); line-height: 2; }
+
+    .footer {
+      text-align: center;
+      padding: 25px;
+      color: var(--muted);
+      font-size: 12px;
+      border-top: 1px solid rgba(255,255,255,.07);
+    }
+
+    @media (max-width: 700px) {
+      .topbar { min-height: 62px; }
+      .page { margin-top: 22px; }
+
+      .book-hero {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 17px;
+      }
+
+      .cover-wrap {
+        width: min(230px, 75%);
+        margin: auto;
+      }
+
+      .book-details { text-align: center; }
+      .author { justify-content: center; }
+      .book-actions { justify-content: center; }
+      .chapters-grid { grid-template-columns: 1fr; }
+      .section-heading h2 { font-size: 20px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <a class="brand" href="../index.html">HANOON</a>
+  <a class="back-link" href="library.html">العودة للمكتبة ←</a>
+</header>
+
+<main class="page" id="bookPage">
+  <div class="breadcrumb">
+    <a href="../index.html">الرئيسية</a>
+    /
+    <a href="library.html">المكتبة</a>
+    /
+    تفاصيل الكتاب
+  </div>
+
+  <div id="bookContent">
+    <div class="error-state">
+      <h2>جاري تحميل الكتاب...</h2>
+      <p>لحظات ونجهز لك محتوى الكتاب.</p>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  HANOON — المعرفة تصنع الفرق
+</footer>
+
+<script src="../data/books.js"></script>
+
+<script>
+(function () {
+  "use strict";
+
+  const FAVORITES_KEY = "hanoon-book-favorites";
+  const READER_PREFIX = "hanoon_reader_";
+
+  const container = document.getElementById("bookContent");
+  const params = new URLSearchParams(window.location.search);
+  const bookId = params.get("id");
+
+  if (!window.HANOON_BOOKS_API) {
+    showError("ملف بيانات الكتب غير موجود",
+      "تأكد من وجود data/books.js ورفعه في المسار الصحيح.");
+    return;
+  }
+
+  if (!bookId) {
+    showError("لم يتم تحديد الكتاب",
+      "ارجع إلى المكتبة واختر الكتاب الذي تريد قراءته.");
+    return;
+  }
+
+  const book = window.HANOON_BOOKS_API.getById(bookId);
+
+  if (!book) {
+    showError("الكتاب غير موجود",
+      "قد يكون الرابط غير صحيح أو أن هذا الكتاب غير مسجل في المكتبة.");
+    return;
+  }
+
+  renderBook(book);
+
+  // حماية النصوص
+  function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, function (char) {
+      return {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      }[char];
+    });
+  }
+
+  // المفضلة
+  function getFavorites() {
+    try {
+      const value = JSON.parse(
+        localStorage.getItem(FAVORITES_KEY) || "[]"
+      );
+
+      return Array.isArray(value) ? value : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function isFavorite(id) {
+    return getFavorites().includes(id);
+  }
+
+  function toggleFavorite(id) {
+    let favorites = getFavorites();
+
+    if (favorites.includes(id)) {
+      favorites = favorites.filter(item => item !== id);
+    } else {
+      favorites.push(id);
+    }
+
+    localStorage.setItem(
+      FAVORITES_KEY,
+      JSON.stringify(favorites)
+    );
+
+    window.dispatchEvent(new CustomEvent(
+      "hanoon:favorites-changed",
+      {
+        detail: { bookId: id, favorites }
+      }
+    ));
+
+    return favorites.includes(id);
+  }
+
+  // نظام تقدم القراءة
+  function getCompletedKey() {
+    return READER_PREFIX + "completed_" + book.id;
+  }
+
+  function getCompletedChapters() {
+    try {
+      const saved = JSON.parse(
+        localStorage.getItem(getCompletedKey()) || "[]"
+      );
+
+      return Array.isArray(saved) ? saved : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function getProgress() {
+    const completed = getCompletedChapters();
+    const total = book.chapters.length;
+
+    const completedCount = book.chapters.filter(chapter =>
+      completed.includes(chapter.id)
+    ).length;
+
+    const percentage = total > 0
+      ? Math.round((completedCount / total) * 100)
+      : 0;
+
+    return {
+      completed,
+      total,
+      completedCount,
+      remaining: total - completedCount,
+      percentage
+    };
+  }
+
+  function getNextChapter() {
+    const completed = getCompletedChapters();
+
+    return book.chapters.find(chapter =>
+      !completed.includes(chapter.id)
+    ) || book.chapters[0] || null;
+  }
+
+  // إنشاء روابط الفصول
+  function createChapterURL(chapter) {
+    return "chapter.html?book=" +
+      encodeURIComponent(book.id) +
+      "&chapter=" +
+      encodeURIComponent(chapter.id);
+  }
+
+  // عرض الكتاب
+  function renderBook(book) {
+    document.title = book.title + " | HANOON";
+
+    const saved = isFavorite(book.id);
+    const progress = getProgress();
+    const nextChapter = getNextChapter();
+
+    // التحقق من إكمال جميع الفصول
+    const isBookCompleted =
+      progress.total > 0 &&
+      progress.completedCount === progress.total;
+
+    const firstChapterURL = nextChapter
+      ? createChapterURL(nextChapter)
+      : "#chapters";
+
+    const chaptersHTML = book.chapters.map(function (chapter, index) {
+      const completed = progress.completed.includes(chapter.id);
+
+      return `
+        <a
+          class="chapter-card"
+          href="${createChapterURL(chapter)}"
+          style="
+            position:relative;
+            border-color:${completed
+              ? "rgba(53,189,176,.4)"
+              : "rgba(255,255,255,.06)"};
+          "
+        >
+
+          <div
+            class="chapter-number"
+            style="${completed
+              ? "background:rgba(53,189,176,.15);color:#35BDB0;"
+              : ""}"
+          >
+            ${completed ? "✓" : String(index + 1).padStart(2, "0")}
+          </div>
+
+          <div class="chapter-info">
+            <h3>${escapeHTML(chapter.title)}</h3>
+
+            <p>
+              ${escapeHTML(
+                chapter.summary || "افتح الفصل لبدء القراءة."
+              )}
+            </p>
+          </div>
+
+          <span
+            style="
+              color:${completed ? "#35BDB0" : "#D5B36C"};
+              font-size:12px;
+              font-weight:800;
+              white-space:nowrap;
+            "
+          >
+            ${completed ? "مكتمل ✓" : "قراءة ←"}
+          </span>
+
+        </a>
+      `;
+    }).join("");
+
+    container.innerHTML = `
+
+      <section class="book-hero">
+
+        <div class="cover-wrap">
+
+          <img
+            src="${escapeHTML(book.cover)}"
+            alt="${escapeHTML(book.title)}"
+            onerror="this.style.display='none'"
+          >
+
+          <div class="cover-overlay"></div>
+
+          <span class="book-number">
+            الكتاب رقم ${escapeHTML(book.number)}
+          </span>
+
+        </div>
+
+        <div class="book-details">
+
+          <span class="category">
+            ${escapeHTML(book.category)}
+          </span>
+
+          <h1 class="book-title">
+            ${escapeHTML(book.title)}
+          </h1>
+
+          <p class="book-description">
+            ${escapeHTML(book.description)}
+          </p>
+
+          <div class="author">
+
+            <img
+              src="${escapeHTML(book.author?.image || "")}"
+              alt="${escapeHTML(book.author?.name || "كاتب هنون")}"
+              onerror="this.style.display='none'"
+            >
+
+            <div>
+              <div class="author-name">
+                ${escapeHTML(book.author?.name || "Yousef Elgorf")}
+              </div>
+
+              <div class="author-caption">
+                كاتب ومؤسس HANOON
+              </div>
+            </div>
+
+          </div>
+
+          <div class="book-actions">
+
+            <a class="action-btn primary-btn" href="${firstChapterURL}">
+              ${
+                isBookCompleted
+                  ? "مراجعة الكتاب ↻"
+                  : progress.completedCount > 0
+                    ? "واصل القراءة ←"
+                    : "ابدأ القراءة"
+              }
+            </a>
+
+            <button
+              class="action-btn secondary-btn"
+              id="favoriteBtn"
+              type="button"
+            >
+              ${saved ? "★ في المفضلة" : "☆ أضف للمفضلة"}
+            </button>
+
+            <button
+              class="action-btn secondary-btn"
+              id="shareBtn"
+              type="button"
+            >
+              مشاركة الكتاب
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- تقدم القراءة -->
+
+      <section
+        id="bookProgress"
+        style="
+          margin-top:25px;
+          padding:24px;
+          border-radius:20px;
+          background:linear-gradient(135deg,#171D32,#202943);
+          border:1px solid rgba(213,179,108,.2);
+        "
+      >
+
+        <div
+          style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            flex-wrap:wrap;
+            gap:12px;
+            margin-bottom:18px;
+          "
+        >
+
+          <div>
+            <h2 style="font-size:19px;margin:0 0 5px;">
+              تقدمك في هذا الكتاب
+            </h2>
+
+            <p style="color:#A7ABC0;font-size:12px;margin:0;">
+              استمر في القراءة حتى تكمل رحلتك المعرفية
+            </p>
+          </div>
+
+          <div
+            id="progressPercentage"
+            style="
+              color:#D5B36C;
+              font-size:30px;
+              font-weight:900;
+            "
+          >
+            ${progress.percentage}%
+          </div>
+
+        </div>
+
+        <div
+          style="
+            width:100%;
+            height:12px;
+            background:rgba(255,255,255,.08);
+            border-radius:30px;
+            overflow:hidden;
+          "
+        >
+
+          <div
+            id="bookProgressFill"
+            style="
+              width:${progress.percentage}%;
+              height:100%;
+              border-radius:30px;
+              background:linear-gradient(90deg,#8C75F5,#D5B36C,#35BDB0);
+              transition:width .4s ease;
+            "
+          ></div>
+
+        </div>
+
+        <div
+          style="
+            display:grid;
+            grid-template-columns:repeat(3,minmax(0,1fr));
+            gap:10px;
+            margin-top:20px;
+            text-align:center;
+          "
+        >
+
+          <div style="padding:12px 5px;background:rgba(255,255,255,.04);border-radius:12px;">
+            <strong
+              id="completedCount"
+              style="display:block;color:#35BDB0;font-size:23px;"
+            >
+              ${progress.completedCount}
+            </strong>
+            <span style="color:#A7ABC0;font-size:11px;">
+              فصول مكتملة
+            </span>
+          </div>
+
+          <div style="padding:12px 5px;background:rgba(255,255,255,.04);border-radius:12px;">
+            <strong
+              id="remainingCount"
+              style="display:block;color:#D5B36C;font-size:23px;"
+            >
+              ${progress.remaining}
+            </strong>
+            <span style="color:#A7ABC0;font-size:11px;">
+              فصول متبقية
+            </span>
+          </div>
+
+          <div style="padding:12px 5px;background:rgba(255,255,255,.04);border-radius:12px;">
+            <strong
+              id="totalCount"
+              style="display:block;color:#8C75F5;font-size:23px;"
+            >
+              ${progress.total}
+            </strong>
+            <span style="color:#A7ABC0;font-size:11px;">
+              إجمالي الفصول
+            </span>
+          </div>
+
+        </div>
+
+        <p
+          id="progressMessage"
+          style="
+            color:#A7ABC0;
+            text-align:center;
+            font-size:12px;
+            margin:17px 0 0;
+          "
+        >
+          ${progress.percentage === 100
+            ? "ممتاز! لقد أكملت جميع فصول الكتاب."
+            : "كل فصل تنهيه يقرّبك من إكمال الكتاب."}
+        </p>
+
+      </section>
+
+      <!-- فهرس الفصول -->
+
+      <section class="chapters-section" id="chapters">
+
+        <div class="section-heading">
+
+          <h2>فهرس الكتاب</h2>
+
+          <span>
+            ${progress.completedCount} من ${progress.total} فصول مكتملة
+          </span>
+
+        </div>
+
+        <div class="chapters-grid">
+          ${chaptersHTML}
+        </div>
+
+      </section>
+
+      <div class="quote-box">
+
+        <p>
+          «المعرفة لا تكتمل بقراءة الكلمات، بل تبدأ عندما تتحول إلى فهم وعمل»
+        </p>
+
+        <span>
+          HANOON — المعرفة تصنع الفرق
+        </span>
+
+      </div>
+
+    `;
+
+    // زر المفضلة
+    document.getElementById("favoriteBtn").addEventListener(
+      "click",
+      function () {
+        const nowSaved = toggleFavorite(book.id);
+
+        this.textContent = nowSaved
+          ? "★ في المفضلة"
+          : "☆ أضف للمفضلة";
+      }
+    );
+
+    // زر المشاركة
+    document.getElementById("shareBtn").addEventListener(
+      "click",
+      shareBook
+    );
+  }
+
+  // تحديث تقدم الكتاب
+  function updateProgressDisplay() {
+    const progress = getProgress();
+
+    const percentage = document.getElementById(
+      "progressPercentage"
+    );
+
+    const fill = document.getElementById(
+      "bookProgressFill"
+    );
+
+    const completed = document.getElementById(
+      "completedCount"
+    );
+
+    const remaining = document.getElementById(
+      "remainingCount"
+    );
+
+    const message = document.getElementById(
+      "progressMessage"
+    );
+
+    if (!percentage || !fill) return;
+
+    percentage.textContent = progress.percentage + "%";
+    fill.style.width = progress.percentage + "%";
+
+    completed.textContent = progress.completedCount;
+    remaining.textContent = progress.remaining;
+
+    message.textContent = progress.percentage === 100
+      ? "ممتاز! لقد أكملت جميع فصول الكتاب."
+      : "كل فصل تنهيه يقرّبك من إكمال الكتاب.";
+  }
+
+  // المشاركة
+  async function shareBook() {
+    const shareData = {
+      title: book.title,
+      text: "اكتشف كتاب " + book.title + " على منصة HANOON",
+      url: window.location.href
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(window.location.href);
+        alert("تم نسخ رابط الكتاب.");
+      } else {
+        alert("المشاركة غير مدعومة في هذا المتصفح.");
+      }
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        alert("تعذرت المشاركة من هذا الجهاز.");
+      }
+    }
+  }
+
+  // رسائل الخطأ
+  function showError(title, message) {
+    container.innerHTML = `
+      <div class="error-state">
+        <h2>${escapeHTML(title)}</h2>
+        <p>${escapeHTML(message)}</p>
+        <a class="action-btn primary-btn" href="library.html">
+          العودة للمكتبة
+        </a>
+      </div>
+    `;
+  }
+
+  // تحديث عند تغيير التخزين
+  window.addEventListener("storage", function (event) {
+    if (event.key === getCompletedKey()) {
+      updateProgressDisplay();
+      renderBook(book);
+    }
+  });
+  
+})();
+
+</script>
+
+</body>
+</html>
