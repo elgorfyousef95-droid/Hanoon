@@ -1,0 +1,720 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+
+  <meta name="theme-color" content="#0b1020">
+  <title>قراءة المقال | هنون</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0b1020;
+      --surface: #121a2e;
+      --surface2: #18223a;
+      --gold: #d7b56d;
+      --gold-light: #f1d99d;
+      --text: #f5f2e9;
+      --muted: #a5aec1;
+      --border: rgba(255,255,255,.09);
+      --purple: #8e7cf3;
+      --teal: #46c8b7;
+      --danger: #ff7285;
+      --radius: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background:
+        radial-gradient(ellipse at 10% 5%, rgba(142,124,243,.12), transparent 32%),
+        radial-gradient(ellipse at 90% 30%, rgba(70,200,183,.07), transparent 35%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.9;
+    }
+
+    button, a {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(11,16,32,.88);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .topbar-inner {
+      width: min(1120px, 92%);
+      margin: auto;
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--gold-light);
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      color: #111525;
+      background: linear-gradient(135deg, #f3dda7, #b88d43);
+      box-shadow: 0 5px 22px rgba(215,181,109,.2);
+      font-size: 23px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .action-btn {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 13px;
+      font-size: 13px;
+      transition: .2s;
+    }
+
+    .action-btn:hover {
+      border-color: var(--gold);
+      color: var(--gold-light);
+      transform: translateY(-2px);
+    }
+
+    .action-btn.active {
+      color: var(--gold-light);
+      border-color: var(--gold);
+      background: rgba(215,181,109,.1);
+    }
+
+    .page {
+      width: min(920px, 92%);
+      margin: 35px auto 80px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 9px;
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 25px;
+    }
+
+    .breadcrumb a:hover {
+      color: var(--gold-light);
+    }
+
+    .breadcrumb span {
+      color: var(--gold);
+    }
+
+    .article-card {
+      background: linear-gradient(145deg, rgba(24,34,58,.96), rgba(15,23,42,.97));
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 25px 80px rgba(0,0,0,.24);
+    }
+
+    .article-header {
+      padding: 35px 38px 25px;
+    }
+
+    .category {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--gold-light);
+      background: rgba(215,181,109,.1);
+      border: 1px solid rgba(215,181,109,.22);
+      padding: 5px 14px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 17px;
+    }
+
+    .article-title {
+      font-size: clamp(27px, 5vw, 43px);
+      line-height: 1.55;
+      font-weight: 900;
+      color: #fff;
+      margin-bottom: 13px;
+    }
+
+    .article-excerpt {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 2;
+      max-width: 760px;
+    }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 18px;
+      margin-top: 23px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .meta-item strong {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .cover-wrap {
+      padding: 0 38px 30px;
+    }
+
+    .cover-image {
+      width: 100%;
+      height: 390px;
+      object-fit: cover;
+      display: block;
+      border-radius: 21px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+    }
+
+    .article-body {
+      padding: 8px 48px 40px;
+    }
+
+    .article-content {
+      color: #dce2ed;
+      font-size: 17px;
+      line-height: 2.35;
+      overflow-wrap: anywhere;
+    }
+
+    .article-content h2 {
+      color: var(--gold-light);
+      font-size: 25px;
+      line-height: 1.6;
+      margin: 36px 0 13px;
+      padding-right: 15px;
+      border-right: 3px solid var(--gold);
+    }
+
+    .article-content h3 {
+      color: #fff;
+      font-size: 20px;
+      margin: 27px 0 10px;
+    }
+
+    .article-content p {
+      margin: 0 0 21px;
+    }
+
+    .article-content blockquote {
+      margin: 28px 0;
+      padding: 20px 24px;
+      border-right: 4px solid var(--purple);
+      border-radius: 15px 0 0 15px;
+      background: rgba(142,124,243,.09);
+      color: #e4dcff;
+      font-size: 18px;
+    }
+
+    .article-content ul,
+    .article-content ol {
+      padding-right: 25px;
+      margin: 15px 0 25px;
+    }
+
+    .article-content li {
+      margin-bottom: 9px;
+    }
+
+    .article-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 17px;
+      margin: 15px 0;
+    }
+
+    .article-footer {
+      padding: 25px 38px 35px;
+      border-top: 1px solid var(--border);
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 25px;
+    }
+
+    .tag {
+      background: rgba(255,255,255,.055);
+      border: 1px solid var(--border);
+      color: #cbd3e1;
+      border-radius: 30px;
+      padding: 5px 13px;
+      font-size: 12px;
+    }
+
+    .article-controls {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .control-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 43px;
+      padding: 8px 17px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      color: var(--text);
+      background: var(--surface2);
+      font-size: 13px;
+      transition: .2s;
+    }
+
+    .control-btn:hover {
+      transform: translateY(-2px);
+      border-color: var(--gold);
+    }
+
+    .control-btn.favorite.active {
+      color: var(--danger);
+      border-color: rgba(255,114,133,.4);
+      background: rgba(255,114,133,.08);
+    }
+
+    .related-section {
+      margin-top: 55px;
+    }
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .section-heading h2 {
+      font-size: 23px;
+      font-weight: 900;
+    }
+
+    .section-heading h2 span {
+      color: var(--gold);
+    }
+
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 17px;
+    }
+
+    .related-card {
+      display: block;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      transition: .25s;
+    }
+
+    .related-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(215,181,109,.5);
+    }
+
+    .related-card img {
+      width: 100%;
+      height: 145px;
+      object-fit: cover;
+      display: block;
+      background: var(--surface2);
+    }
+
+    .related-info {
+      padding: 13px;
+    }
+
+    .related-info small {
+      color: var(--gold);
+      font-size: 11px;
+    }
+
+    .related-info h3 {
+      font-size: 14px;
+      line-height: 1.8;
+      margin-top: 5px;
+    }
+
+    .loading,
+    .error-state {
+      text-align: center;
+      padding: 65px 20px;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+    }
+
+    .error-state h2 {
+      color: var(--gold-light);
+      margin-bottom: 12px;
+    }
+
+    .error-state a {
+      display: inline-block;
+      margin-top: 20px;
+      color: var(--gold-light);
+      border: 1px solid var(--gold);
+      padding: 8px 18px;
+      border-radius: 12px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 25px;
+      left: 50%;
+      transform: translate(-50%, 20px);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 100;
+      background: #202c43;
+      border: 1px solid rgba(215,181,109,.35);
+      color: #fff;
+      border-radius: 13px;
+      padding: 10px 20px;
+      font-size: 13px;
+      transition: .25s;
+      box-shadow: 0 10px 30px rgba(0,0,0,.3);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .back-top {
+      position: fixed;
+      bottom: 25px;
+      right: 22px;
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--gold-light);
+      font-size: 20px;
+      display: none;
+      z-index: 40;
+    }
+
+    .back-top.visible {
+      display: block;
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      padding: 35px 15px;
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 700px) {
+      .topbar-inner {
+        min-height: 64px;
+      }
+
+      .brand {
+        font-size: 19px;
+      }
+
+      .top-actions {
+        gap: 6px;
+      }
+
+      .action-btn {
+        padding: 7px 10px;
+        font-size: 11px;
+      }
+
+      .page {
+        margin-top: 22px;
+      }
+
+      .article-header {
+        padding: 25px 20px 20px;
+      }
+
+      .cover-wrap {
+        padding: 0 15px 20px;
+      }
+
+      .cover-image {
+        height: 245px;
+      }
+
+      .article-body {
+        padding: 5px 22px 28px;
+      }
+
+      .article-content {
+        font-size: 15px;
+        line-height: 2.2;
+      }
+
+      .article-content h2 {
+        font-size: 21px;
+      }
+
+      .article-footer {
+        padding: 22px 20px 28px;
+      }
+
+      .related-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 11px;
+      }
+
+      .related-card img {
+        height: 115px;
+      }
+
+      .related-info {
+        padding: 10px;
+      }
+
+      .related-info h3 {
+        font-size: 12px;
+      }
+
+      .article-meta {
+        gap: 10px 15px;
+      }
+    }
+
+    @media (max-width: 390px) {
+      .related-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cover-image {
+        height: 205px;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+        color: #111;
+      }
+
+      .topbar,
+      .article-controls,
+      .related-section,
+      .footer,
+      .back-top,
+      .breadcrumb {
+        display: none !important;
+      }
+
+      .article-card {
+        background: #fff;
+        border: 0;
+        box-shadow: none;
+      }
+
+      .article-content,
+      .article-title,
+      .article-content h2,
+      .article-content h3 {
+        color: #111 !important;
+      }
+
+      .article-excerpt,
+      .article-meta {
+        color: #444 !important;
+      }
+    }
+    
+/* تثبيت عرض الصفحة ومنع التكبير باللمس */
+html {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  touch-action: pan-y;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+  touch-action: pan-y;
+  overscroll-behavior-x: none;
+}
+
+/* منع العناصر من توسيع الشاشة */
+img,
+video,
+iframe,
+table,
+.article-card,
+.article-content {
+  max-width: 100%;
+}
+
+.article-content {
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+/* منع الحقول من تكبير الشاشة تلقائيًا على الهاتف */
+input,
+select,
+textarea,
+button {
+  font-size: 16px;
+}
+
+  </style>
+</head>
+
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="../index.html">
+        <span class="brand-mark">ه</span>
+        <span>هنون</span>
+      </a>
+
+      <div class="top-actions">
+        <a class="action-btn" href="articles.html">المقالات</a>
+        <a class="action-btn" href="../index.html">الرئيسية</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+
+    <nav class="breadcrumb">
+      <a href="../index.html">الرئيسية</a>
+      <span>‹</span>
+      <a href="articles.html">المقالات</a>
+      <span>‹</span>
+      <span id="breadcrumbTitle">قراءة المقال</span>
+    </nav>
+
+    <div id="articleRoot">
+      <div class="loading">
+        <div>جاري تحميل المقال...</div>
+      </div>
+    </div>
+
+    <section class="related-section" id="relatedSection" hidden>
+      <div class="section-heading">
+        <h2>قد يعجبك <span>أيضًا</span></h2>
+        <a href="articles.html" class="action-btn">كل المقالات ←</a>
+      </div>
+      <div class="related-grid" id="arRelated"></div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    © <span id="currentYear"></span> هنون — المعرفة تبدأ بفكرة
+  </footer>
+
+  <button class="back-top" id="backTop" aria-label="العودة للأعلى">↑</button>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- قاعدة بيانات المقالات -->
+  <script src="../data/articles.js"></script>
+
+  <!-- محرك عرض المقال -->
+  <script src="../js/article.js"></script>
+
+  <script>
+    document.getElementById('currentYear').textContent =
+      new Date().getFullYear();
+
+    const backTop = document.getElementById('backTop');
+
+    window.addEventListener('scroll', () => {
+      backTop.classList.toggle('visible', window.scrollY > 400);
+    });
+
+    backTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
+
+  <!-- زر الرجوع العام خارج أي script آخر -->
+  <script src="../js/global-back.js"></script>
+
+</body>
+</html>
