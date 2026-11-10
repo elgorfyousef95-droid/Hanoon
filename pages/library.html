@@ -1165,35 +1165,11 @@
   sortSelect.addEventListener("change", renderBooks);
   favoriteFilter.addEventListener("change", renderBooks);
 
-    createCategories();
+  createCategories();
   renderFeatured();
   renderBooks();
 
 })();
-  
-/* HANOON — Restore Library Background */
-.library-page {
-  background:
-    linear-gradient(
-      180deg,
-      rgba(12, 16, 32, .78),
-      rgba(12, 16, 32, .91)
-    ),
-    url("../assets/backgrounds/books-bg.svg")
-    center top / cover fixed no-repeat !important;
-}
-
-.hero {
-  background:
-    linear-gradient(
-      90deg,
-      rgba(12, 16, 32, .88),
-      rgba(12, 16, 32, .55)
-    ),
-    url("../assets/backgrounds/books-bg.svg")
-    center / cover no-repeat !important;
-}
-
 </script>
 
 </body>
