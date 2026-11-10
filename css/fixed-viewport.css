@@ -1,0 +1,134 @@
+
+/* ==========================================
+   HANOON — FIXED & RESPONSIVE VIEWPORT
+   تثبيت تخطيط الموقع ومنع التمدد الأفقي
+========================================== */
+
+:root {
+    --site-max-width: 1440px;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    width: 100%;
+    min-width: 320px;
+    min-height: 100%;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-behavior: smooth;
+}
+
+body {
+    width: 100%;
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ضبط الصور والوسائط */
+img,
+svg,
+video,
+iframe,
+picture {
+    max-width: 100%;
+}
+
+/* منع خروج العناصر من الشاشة */
+main,
+header,
+footer,
+section,
+article,
+aside,
+nav,
+.container,
+.main-container,
+.page-container {
+    min-width: 0;
+    max-width: 100%;
+}
+
+/* ضبط الحقول والأزرار */
+input,
+textarea,
+select,
+button {
+    max-width: 100%;
+    font-family: inherit;
+}
+
+/* منع تمدد الشبكات */
+.grid,
+.cards-grid,
+.books-grid,
+.stories-grid {
+    min-width: 0;
+    max-width: 100%;
+}
+
+/* تثبيت خلفيات الموقع */
+.fixed-background,
+.site-background {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+/* ضبط الهواتف */
+@media (max-width: 768px) {
+    html,
+    body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    .container,
+    .main-container,
+    .page-container {
+        width: 92%;
+        max-width: 92%;
+        margin-inline: auto;
+    }
+
+    img {
+        height: auto;
+    }
+}
+
+/* الشاشات الصغيرة */
+@media (max-width: 380px) {
+    .container,
+    .main-container,
+    .page-container {
+        width: 94%;
+        max-width: 94%;
+    }
+}
+
+/* تقليل الحركة عند الحاجة */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
