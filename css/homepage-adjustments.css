@@ -1,0 +1,239 @@
+
+/* =========================================
+   HANOON — HOMEPAGE FINAL ADJUSTMENTS
+   Version 1.0
+========================================= */
+
+/* Prevent Horizontal Overflow */
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+img,
+video,
+iframe {
+  max-width: 100%;
+}
+
+.home-hero,
+.home-section,
+.home-cta {
+  max-width: 100%;
+}
+
+/* Hero Content */
+.home-hero-inner > *,
+.home-hero-content,
+.home-hero-visual {
+  min-width: 0;
+}
+
+.home-hero h1,
+.home-section-heading h2,
+.featured-book-content h3 {
+  overflow-wrap: anywhere;
+}
+
+/* Buttons */
+.home-hero-actions .btn {
+  min-width: 145px;
+}
+
+.home-hero-actions .btn:active,
+.home-cta .btn:active {
+  transform: scale(.98);
+}
+
+/* Statistics */
+.home-stats {
+  position: relative;
+}
+
+.home-stat {
+  min-width: 0;
+}
+
+.home-stat strong {
+  overflow-wrap: anywhere;
+}
+
+/* Section Spacing */
+.home-section + .home-section {
+  padding-top: 25px;
+}
+
+.home-section-header {
+  min-width: 0;
+}
+
+.home-section-header > * {
+  min-width: 0;
+}
+
+/* Featured Book */
+.featured-book {
+  min-width: 0;
+}
+
+.featured-book-content {
+  min-width: 0;
+}
+
+.featured-book-content p {
+  overflow-wrap: anywhere;
+}
+
+.featured-book-cover img {
+  display: block;
+}
+
+/* Category Cards */
+.home-category {
+  min-width: 0;
+}
+
+.home-category h3,
+.home-category p {
+  overflow-wrap: anywhere;
+}
+
+/* Article and Book Grids */
+.books-grid,
+.articles-grid,
+.cards-grid {
+  width: 100%;
+  min-width: 0;
+}
+
+.books-grid > *,
+.articles-grid > *,
+.cards-grid > * {
+  min-width: 0;
+}
+
+/* Image Stability */
+.card-image img,
+.book-cover img,
+.article-cover img,
+.course-cover img {
+  display: block;
+}
+
+/* Light Theme Contrast */
+[data-theme="light"] .home-hero-kicker {
+  color: #745A25;
+  background: rgba(213,179,108,.15);
+}
+
+[data-theme="light"] .home-section-heading p {
+  color: #656174;
+}
+
+[data-theme="light"] .home-category p {
+  color: #6D6878;
+}
+
+[data-theme="light"] .home-stat span {
+  color: #6D6878;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  .home-hero-inner {
+    width: 100%;
+  }
+
+  .home-section {
+    width: 92%;
+  }
+
+  .home-stats {
+    width: 92%;
+  }
+}
+
+/* Mobile */
+@media (max-width: 650px) {
+  .home-hero-actions {
+    width: 100%;
+  }
+
+  .home-hero-actions .btn {
+    flex: 1 1 145px;
+  }
+
+  .home-section {
+    width: 92%;
+  }
+
+  .home-section-header {
+    gap: 12px;
+  }
+
+  .home-section-link {
+    padding-block: 5px;
+  }
+
+  .featured-book {
+    gap: 20px;
+  }
+
+  .featured-book-content .btn {
+    width: 100%;
+  }
+
+  .home-category {
+    overflow-wrap: anywhere;
+  }
+}
+
+/* Small Phones */
+@media (max-width: 380px) {
+  .home-hero h1 {
+    font-size: 29px;
+  }
+
+  .home-hero-kicker {
+    font-size: 10px;
+  }
+
+  .home-hero-actions {
+    flex-direction: column;
+  }
+
+  .home-hero-actions .btn {
+    width: 100%;
+  }
+
+  .home-stats {
+    gap: 9px;
+  }
+
+  .home-stat strong {
+    font-size: 21px;
+  }
+
+  .home-category {
+    min-height: 145px;
+    padding: 12px;
+  }
+
+  .home-category h3 {
+    font-size: 12px;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .home-hero *,
+  .home-section *,
+  .home-cta * {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+/* END HANOON HOMEPAGE ADJUSTMENTS */
