@@ -1,0 +1,817 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <link rel="stylesheet" href="../css/fixed-viewport.css">
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+<meta name="theme-color" content="#0C1020">
+<meta name="description" content="اكتشف القصص والروايات الأدبية في مكتبة HANOON.">
+<title>القصص والروايات | HANOON</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/layout.css">
+<link rel="stylesheet" href="../css/pages.css">
+
+<style>
+:root {
+  --gold:#D5B36C;
+  --navy:#0C1020;
+  --panel:#171D32;
+  --purple:#8C75F5;
+  --teal:#35BDB0;
+  --cream:#F5EAD1;
+}
+
+* { box-sizing:border-box; }
+
+body {
+  margin:0;
+  background:var(--navy);
+  color:#fff;
+  font-family:'Cairo',sans-serif;
+  overflow-x:hidden;
+}
+
+a { color:inherit;text-decoration:none; }
+button,input { font:inherit; }
+
+.page {
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 10% 20%,rgba(140,117,245,.09),transparent 30%),
+    radial-gradient(circle at 90% 60%,rgba(213,179,108,.06),transparent 25%),
+    var(--navy);
+}
+
+.topbar {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+  padding:15px 7%;
+  background:rgba(12,16,32,.92);
+  border-bottom:1px solid rgba(213,179,108,.15);
+  backdrop-filter:blur(18px);
+}
+
+.brand {
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.brand img { width:46px;height:46px;object-fit:contain; }
+
+.brand span {
+  color:var(--gold);
+  font-size:19px;
+  font-weight:900;
+  letter-spacing:2px;
+}
+
+.nav-links {
+  display:flex;
+  gap:22px;
+  color:#c4c4d1;
+  font-size:13px;
+}
+
+.nav-links a:hover { color:var(--gold); }
+
+.home-btn {
+  padding:9px 17px;
+  border:1px solid rgba(213,179,108,.4);
+  border-radius:30px;
+  color:var(--gold);
+  font-size:12px;
+}
+
+.hero {
+  position:relative;
+  min-height:470px;
+  display:flex;
+  align-items:center;
+  padding:65px 8%;
+  overflow:hidden;
+  background:
+    linear-gradient(90deg,rgba(8,11,24,.97),rgba(8,11,24,.72) 50%,rgba(8,11,24,.16)),
+    linear-gradient(0deg,rgba(8,11,24,.35),transparent),
+    url("https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=2000&q=90") center/cover;
+}
+
+.hero-content {
+  max-width:660px;
+  position:relative;
+  z-index:1;
+}
+
+.eyebrow {
+  color:var(--gold);
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:1px;
+}
+
+.hero h1 {
+  margin:18px 0;
+  font-size:clamp(37px,6vw,65px);
+  line-height:1.4;
+  font-weight:900;
+}
+
+.hero h1 span { color:var(--gold); }
+
+.hero p {
+  color:#d0d0dc;
+  font-size:14px;
+  line-height:2.2;
+  max-width:550px;
+}
+
+.hero-buttons {
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:25px;
+}
+
+.primary-btn,.outline-btn {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:12px 22px;
+  border-radius:12px;
+  font-size:13px;
+  font-weight:800;
+}
+
+.primary-btn {
+  color:#101323;
+  background:linear-gradient(135deg,#f0d69b,var(--gold));
+}
+
+.outline-btn {
+  color:var(--cream);
+  border:1px solid rgba(255,255,255,.25);
+  background:rgba(255,255,255,.05);
+}
+
+.section { padding:65px 7%; }
+
+.section-head {
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:20px;
+  margin-bottom:28px;
+}
+
+.section-head h2 {
+  margin:7px 0;
+  font-size:28px;
+  font-weight:900;
+}
+
+.section-head p {
+  margin:0;
+  color:#a8a8b9;
+  font-size:13px;
+}
+
+.gold { color:var(--gold); }
+
+.featured {
+  display:grid;
+  grid-template-columns:1.25fr 1fr;
+  gap:23px;
+}
+
+.featured-main,.featured-small {
+  position:relative;
+  min-height:360px;
+  overflow:hidden;
+  border-radius:22px;
+  border:1px solid rgba(255,255,255,.1);
+}
+
+.featured-main img,.featured-small img {
+  width:100%;
+  height:100%;
+  min-height:360px;
+  object-fit:cover;
+  transition:transform .6s;
+}
+
+.featured-main:hover img,.featured-small:hover img {
+  transform:scale(1.06);
+}
+
+.featured-overlay {
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:end;
+  padding:27px;
+  background:linear-gradient(0deg,rgba(5,8,20,.97),transparent 85%);
+}
+
+.tag {
+  width:fit-content;
+  padding:6px 13px;
+  border:1px solid rgba(213,179,108,.4);
+  border-radius:30px;
+  color:var(--gold);
+  background:rgba(213,179,108,.14);
+  font-size:11px;
+}
+
+.featured-overlay h3 {
+  margin:13px 0 7px;
+  font-size:25px;
+  font-weight:900;
+}
+
+.featured-overlay p {
+  margin:0;
+  color:#d0d0dc;
+  font-size:13px;
+  line-height:2;
+}
+
+.featured-overlay a {
+  margin-top:15px;
+  color:var(--gold);
+  font-size:13px;
+  font-weight:800;
+}
+
+.search-box {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  max-width:520px;
+  padding:8px 16px;
+  border:1px solid rgba(213,179,108,.25);
+  border-radius:14px;
+  background:rgba(255,255,255,.04);
+}
+
+.search-box span { color:var(--gold);font-size:20px; }
+
+.search-box input {
+  width:100%;
+  padding:9px 0;
+  outline:0;
+  border:0;
+  color:#fff;
+  background:transparent;
+}
+
+.search-box input::placeholder { color:#9292a5; }
+
+.categories {
+  display:flex;
+  gap:11px;
+  flex-wrap:wrap;
+  margin:25px 0;
+}
+
+.category {
+  padding:9px 18px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:30px;
+  color:#c4c4d1;
+  background:rgba(255,255,255,.035);
+  font-size:12px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.category:hover,.category.active {
+  color:var(--navy);
+  background:var(--gold);
+  border-color:var(--gold);
+}
+
+.stories-grid {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:24px;
+}
+
+.story-card {
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:19px;
+  background:linear-gradient(145deg,#1b2239,#12182b);
+  transition:.3s;
+}
+
+.story-card:hover {
+  transform:translateY(-7px);
+  border-color:rgba(213,179,108,.5);
+}
+
+.story-cover {
+  position:relative;
+  height:280px;
+  overflow:hidden;
+  background:#252b42;
+}
+
+.story-cover img {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:transform .6s;
+}
+
+.story-card:hover .story-cover img { transform:scale(1.07); }
+
+.story-cover .tag {
+  position:absolute;
+  top:14px;
+  right:14px;
+  backdrop-filter:blur(10px);
+}
+
+.story-body { padding:20px; }
+
+.story-meta {
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  color:#9999ad;
+  font-size:11px;
+}
+
+.story-body h3 {
+  margin:12px 0 8px;
+  font-size:19px;
+  font-weight:900;
+}
+
+.story-body p {
+  min-height:58px;
+  margin:0;
+  color:#aaabba;
+  font-size:12px;
+  line-height:2;
+}
+
+.story-footer {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:17px;
+  padding-top:14px;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+
+.story-footer span {
+  color:#aaaabb;
+  font-size:11px;
+}
+
+.story-footer a {
+  color:var(--gold);
+  font-size:12px;
+  font-weight:800;
+}
+
+.empty-state {
+  display:none;
+  grid-column:1/-1;
+  padding:35px;
+  text-align:center;
+  color:#aaaabb;
+  border:1px dashed rgba(213,179,108,.3);
+  border-radius:16px;
+}
+
+.quote {
+  position:relative;
+  overflow:hidden;
+  margin:5px 7% 65px;
+  padding:60px 8%;
+  border:1px solid rgba(213,179,108,.2);
+  border-radius:24px;
+  text-align:center;
+  background:
+    linear-gradient(rgba(12,16,32,.87),rgba(12,16,32,.94)),
+    url("https://images.unsplash.com/photo-1476275466078-4007374efbbe?auto=format&fit=crop&w=1800&q=85") center/cover;
+}
+
+.quote-mark {
+  color:var(--gold);
+  font-size:55px;
+}
+
+.quote h2 {
+  max-width:750px;
+  margin:10px auto;
+  font-size:clamp(20px,3vw,30px);
+  line-height:1.9;
+}
+
+.quote p { color:var(--gold);font-size:13px; }
+
+.collections {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+}
+
+.collection {
+  position:relative;
+  min-height:220px;
+  overflow:hidden;
+  display:flex;
+  align-items:end;
+  padding:22px;
+  border-radius:18px;
+  background-size:cover;
+  background-position:center;
+  border:1px solid rgba(255,255,255,.1);
+}
+
+.collection::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(0deg,rgba(5,8,20,.95),rgba(5,8,20,.08));
+}
+
+.collection div {
+  position:relative;
+  z-index:1;
+}
+
+.collection h3 { margin:0 0 5px;font-size:20px; }
+.collection p { margin:0;color:#c4c4d1;font-size:12px; }
+
+.cta {
+  padding:55px 7%;
+  text-align:center;
+  background:linear-gradient(110deg,rgba(140,117,245,.15),rgba(53,189,176,.08));
+  border-top:1px solid rgba(255,255,255,.07);
+}
+
+.cta h2 { margin:0 0 10px;font-size:27px; }
+.cta p { color:#aaaabb;font-size:13px;line-height:2; }
+
+.footer {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:18px;
+  padding:28px 7%;
+  color:#9999aa;
+  font-size:12px;
+}
+
+.footer strong { color:var(--gold); }
+
+@media(max-width:850px) {
+  .featured { grid-template-columns:1fr; }
+  .stories-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+
+@media(max-width:600px) {
+  .topbar { padding:12px 5%; }
+  .brand img { width:40px;height:40px; }
+  .brand span { font-size:16px; }
+  .nav-links { display:none; }
+  .hero { min-height:430px;padding:50px 6%;background-position:60% center; }
+  .hero p { font-size:13px; }
+  .section { padding:45px 5%; }
+  .section-head { align-items:start;flex-direction:column; }
+  .section-head h2 { font-size:24px; }
+  .stories-grid { grid-template-columns:1fr; }
+  .story-cover { height:300px; }
+  .quote { margin:5px 5% 45px;padding:40px 6%; }
+  .collections { grid-template-columns:1fr; }
+  .footer { justify-content:center;text-align:center; }
+}
+</style>
+</head>
+
+<body>
+<div class="page">
+
+<header class="topbar">
+  <a href="../index.html" class="brand">
+    <img src="../assets/logo/logo.svg" alt="شعار HANOON">
+    <span>HANOON</span>
+  </a>
+
+  <nav class="nav-links">
+    <a href="../index.html">الرئيسية</a>
+    <a href="library.html">المكتبة</a>
+    <a href="articles.html">المقالات</a>
+    <a href="poetry.html">الشعر</a>
+    <a href="learning.html">التعلم</a>
+  </nav>
+
+  <a class="home-btn" href="../index.html">الرئيسية</a>
+</header>
+
+<main>
+
+<section class="hero">
+  <div class="hero-content">
+    <span class="eyebrow">HANOON LITERARY WORLD</span>
+
+    <h1>كل قصة عالم،<br><span>وكل حكاية حياة</span></h1>
+
+    <p>
+      ادخل عوالم مختلفة من الخيال والواقع، واكتشف حكايات
+      تحمل المشاعر والأفكار والتجارب الإنسانية.
+      هنا تبدأ رحلتك بين الكلمات.
+    </p>
+
+    <div class="hero-buttons">
+      <a class="primary-btn" href="#allStories">اكتشف القصص الآن</a>
+      <a class="outline-btn" href="#collections">استكشف التصنيفات</a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">FEATURED STORIES</span>
+      <h2>حكايات <span class="gold">مختارة</span></h2>
+      <p>قصص نرشحها لك لتبدأ رحلتك الأدبية.</p>
+    </div>
+  </div>
+
+  <div class="featured">
+    <a class="featured-main" href="story.html">
+      <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=85" alt="طريق وسط الطبيعة">
+      <div class="featured-overlay">
+        <span class="tag">قصة ملهمة</span>
+        <h3>الطريق الذي لم يختره أحد</h3>
+        <p>حكاية عن الشجاعة، والاختيارات الصعبة، والإيمان بأن البداية الجديدة ممكنة دائمًا.</p>
+        <span>اكتشف الحكاية ←</span>
+      </div>
+    </a>
+
+    <a class="featured-small" href="story.html">
+      <img src="https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1000&q=85" alt="شروق الشمس">
+      <div class="featured-overlay">
+        <span class="tag">قصة إنسانية</span>
+        <h3>حين عاد الأمل</h3>
+        <p>أحيانًا تبدأ أجمل الحكايات من أصعب اللحظات.</p>
+        <span>اقرأ القصة ←</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<section class="section" id="allStories" style="padding-top:10px;">
+
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">STORY LIBRARY</span>
+      <h2>مكتبة <span class="gold">القصص</span></h2>
+      <p>اختر حكايتك التالية من بين العوالم المختلفة.</p>
+    </div>
+  </div>
+
+  <div class="search-box">
+    <span>⌕</span>
+    <input type="search" id="storySearch" placeholder="ابحث عن قصة أو تصنيف...">
+  </div>
+
+  <div class="categories" id="categories">
+    <button class="category active" data-category="all">كل القصص</button>
+    <button class="category" data-category="inspiring">قصص ملهمة</button>
+    <button class="category" data-category="human">قصص إنسانية</button>
+    <button class="category" data-category="fiction">خيال ومغامرة</button>
+    <button class="category" data-category="mystery">غموض وتشويق</button>
+    <button class="category" data-category="short">قصص قصيرة</button>
+  </div>
+
+  <div class="stories-grid" id="storiesGrid">
+
+    <article class="story-card" data-category="inspiring">
+      <div class="story-cover">
+        <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=900&q=85" alt="طريق وسط الغابة" loading="lazy">
+        <span class="tag">ملهمة</span>
+      </div>
+      <div class="story-body">
+        <div class="story-meta"><span>رحلة وتغيير</span><span>12 دقيقة</span></div>
+        <h3>الطريق الذي لم يختره أحد</h3>
+        <p>شاب يكتشف أن الطريق الأصعب قد يكون الطريق الذي يقوده إلى نفسه.</p>
+        <div class="story-footer">
+          <span>قصة قصيرة</span>
+          <a href="story.html">ابدأ القراءة ←</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="story-card" data-category="human">
+      <div class="story-cover">
+        <img src="https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=900&q=85" alt="شروق الشمس" loading="lazy">
+        <span class="tag">إنسانية</span>
+      </div>
+      <div class="story-body">
+        <div class="story-meta"><span>الأمل</span><span>9 دقائق</span></div>
+        <h3>حين عاد الأمل</h3>
+        <p>حكاية عن إنسان ظن أن كل الأبواب أغلقت، حتى وجد بابًا لم ينتبه إليه.</p>
+        <div class="story-footer">
+          <span>قصة إنسانية</span>
+          <a href="story.html">ابدأ القراءة ←</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="story-card" data-category="fiction">
+      <div class="story-cover">
+        <img src="https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=900&q=85" alt="غابة خضراء" loading="lazy">
+        <span class="tag">خيال ومغامرة</span>
+      </div>
+      <div class="story-body">
+        <div class="story-meta"><span>عالم خيالي</span><span>15 دقيقة</span></div>
+        <h3>الغابة التي تتذكر</h3>
+        <p>رحلة غامضة إلى مكان يبدو أنه يحتفظ بأسرار كل من مروا به.</p>
+        <div class="story-footer">
+          <span>خيال</span>
+          <a href="story.html">ابدأ القراءة ←</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="story-card" data-category="mystery">
+      <div class="story-cover">
+        <img src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=900&q=85" alt="سماء ليلية" loading="lazy">
+        <span class="tag">غموض وتشويق</span>
+      </div>
+      <div class="story-body">
+        <div class="story-meta"><span>لغز</span><span>18 دقيقة</span></div>
+        <h3>الرسالة الأخيرة</h3>
+        <p>رسالة تصل في منتصف الليل، تحمل سؤالًا لا يستطيع صاحبها تجاهله.</p>
+        <div class="story-footer">
+          <span>تشويق</span>
+          <a href="story.html">ابدأ القراءة ←</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="story-card" data-category="short">
+      <div class="story-cover">
+        <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=900&q=85" alt="دفتر وقلم" loading="lazy">
+        <span class="tag">قصة قصيرة</span>
+      </div>
+      <div class="story-body">
+        <div class="story-meta"><span>تأمل</span><span>4 دقائق</span></div>
+        <h3>رسالة لم أرسلها</h3>
+        <p>كلمات ظلت حبيسة دفتر قديم، حتى اكتشف صاحبها قيمتها الحقيقية.</p>
+        <div class="story-footer">
+          <span>قصيرة جدًا</span>
+          <a href="story.html">ابدأ القراءة ←</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="story-card" data-category="inspiring">
+      <div class="story-cover">
+        <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=85" alt="جبال وطبيعة" loading="lazy">
+        <span class="tag">ملهمة</span>
+      </div>
+      <div class="story-body">
+        <div class="story-meta"><span>تحدي وإصرار</span><span>11 دقيقة</span></div>
+        <h3>خطوة بعد ألف محاولة</h3>
+        <p>قصة عن شخص تعلم أن الفشل ليس نهاية الطريق، بل جزء من الوصول.</p>
+        <div class="story-footer">
+          <span>قصة تحفيزية</span>
+          <a href="story.html">ابدأ القراءة ←</a>
+        </div>
+      </div>
+    </article>
+
+    <div class="empty-state" id="emptyState">
+      لا توجد قصص تطابق بحثك. جرّب كلمة أخرى.
+    </div>
+
+  </div>
+</section>
+
+<section class="quote">
+  <div class="quote-mark">“</div>
+  <h2>بعض القصص نقرأها للتسلية، وبعضها نقرأه فنكتشف أنه يحكي شيئًا من حياتنا.</h2>
+  <p>HANOON — المعرفة تصنع الفرق</p>
+</section>
+
+<section class="section" id="collections">
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">STORY COLLECTIONS</span>
+      <h2>عوالم <span class="gold">تستحق الاكتشاف</span></h2>
+      <p>ادخل إلى عالم يناسب مزاجك واهتماماتك.</p>
+    </div>
+  </div>
+
+  <div class="collections">
+
+    <a class="collection" href="#allStories"
+       style="background-image:url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80')">
+      <div>
+        <h3>رحلات ملهمة</h3>
+        <p>حكايات تمنحك دافعًا للبداية.</p>
+      </div>
+    </a>
+
+    <a class="collection" href="#allStories"
+       style="background-image:url('https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=900&q=80')">
+      <div>
+        <h3>عوالم الخيال</h3>
+        <p>مساحات واسعة وراء حدود الواقع.</p>
+      </div>
+    </a>
+
+    <a class="collection" href="#allStories"
+       style="background-image:url('https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=900&q=80')">
+      <div>
+        <h3>حكايات إنسانية</h3>
+        <p>قصص تلامس القلب والوجدان.</p>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<section class="cta">
+  <span class="eyebrow">YOUR NEXT STORY</span>
+  <h2>كل قراءة بداية لحكاية جديدة</h2>
+  <p>استمر في الاكتشاف، فقد تجد بين الكلمات فكرة تغير يومك بالكامل.</p>
+  <a class="primary-btn" href="library.html">العودة إلى المكتبة</a>
+</section>
+
+</main>
+
+<footer class="footer">
+  <span>© HANOON — جميع الحقوق محفوظة</span>
+  <strong>المعرفة تصنع الفرق</strong>
+  <a href="../index.html">الرئيسية ↑</a>
+</footer>
+
+</div>
+
+<script>
+const searchInput = document.getElementById('storySearch');
+const categoryButtons = document.querySelectorAll('.category');
+const storyCards = document.querySelectorAll('.story-card');
+const emptyState = document.getElementById('emptyState');
+
+let selectedCategory = 'all';
+
+function filterStories() {
+  const searchTerm = searchInput.value.trim().toLowerCase();
+  let visibleCount = 0;
+
+  storyCards.forEach(card => {
+    const categoryMatch =
+      selectedCategory === 'all' ||
+      card.dataset.category === selectedCategory;
+
+    const searchMatch =
+      card.textContent.toLowerCase().includes(searchTerm);
+
+    const visible = categoryMatch && searchMatch;
+
+    card.style.display = visible ? '' : 'none';
+
+    if (visible) visibleCount++;
+  });
+
+  emptyState.style.display = visibleCount ? 'none' : 'block';
+}
+
+searchInput.addEventListener('input', filterStories);
+
+categoryButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    categoryButtons.forEach(item => item.classList.remove('active'));
+    button.classList.add('active');
+
+    selectedCategory = button.dataset.category;
+    filterStories();
+  });
+});
+  <script src="../js/global-back.js"></script>
+</script>
+
+</body>
+</html>
