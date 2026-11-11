@@ -1,0 +1,366 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1020">
+<title>تفاصيل الديوان | هنون</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#0b1020;--panel:#151e32;--panel2:#1d2942;
+  --gold:#d7b66e;--gold2:#f1dba9;
+  --text:#f5f0e5;--muted:#a4aec1;
+  --border:rgba(215,182,110,.2);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  margin:0;min-height:100vh;color:var(--text);
+  background:
+    radial-gradient(ellipse at 85% 0%,rgba(132,105,220,.15),transparent 38%),
+    radial-gradient(ellipse at 5% 50%,rgba(49,169,160,.07),transparent 35%),
+    var(--bg);
+  font-family:"Cairo",sans-serif;overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(215,182,110,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(215,182,110,.025) 1px,transparent 1px);
+  background-size:48px 48px;
+}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer}
+.topbar{
+  min-height:70px;display:flex;align-items:center;
+  justify-content:space-between;gap:12px;padding:10px 4%;
+  border-bottom:1px solid var(--border);
+  background:rgba(11,16,32,.91);
+  position:sticky;top:0;z-index:20;
+  backdrop-filter:blur(18px);
+}
+.brand{display:flex;align-items:center;gap:11px}
+.brand-mark{
+  width:43px;height:43px;display:grid;place-items:center;
+  border-radius:13px;color:#171321;
+  background:linear-gradient(145deg,#f5e3b5,#b18a48);
+  font-size:23px;font-weight:900;
+}
+.brand-name{font-size:19px;font-weight:900}
+.brand-caption{font-size:10px;color:var(--muted);margin-top:-5px}
+.back-link{
+  padding:8px 13px;border:1px solid var(--border);
+  border-radius:11px;color:var(--gold2);font-size:11px;
+}
+.page{width:min(1050px,94%);margin:auto;padding:22px 0 65px}
+.breadcrumb{font-size:11px;color:var(--muted);margin:5px 0 20px}
+.breadcrumb a{color:var(--gold2)}
+.book-layout{
+  display:grid;grid-template-columns:270px 1fr;gap:30px;
+  padding:25px;border:1px solid var(--border);
+  border-radius:23px;
+  background:linear-gradient(140deg,rgba(31,42,66,.95),rgba(17,25,43,.96));
+  box-shadow:0 22px 60px rgba(0,0,0,.3);
+}
+.cover-column{display:flex;flex-direction:column;align-items:center}
+.cover{
+  width:100%;max-width:235px;aspect-ratio:3/4.2;
+  position:relative;overflow:hidden;
+  border:1px solid rgba(241,219,169,.5);
+  border-radius:5px 13px 13px 5px;
+  background:linear-gradient(145deg,#453b68,#131d35);
+  box-shadow:12px 15px 28px rgba(0,0,0,.4),inset 5px 0 9px rgba(0,0,0,.25);
+}
+.cover img{width:100%;height:100%;object-fit:cover;display:block}
+.cover-fallback{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;padding:20px;
+  background:
+    radial-gradient(circle at 50% 30%,rgba(215,182,110,.17),transparent 40%),
+    linear-gradient(145deg,#453b68,#131d35);
+}
+.cover-fallback::before{content:"";position:absolute;inset:12px;border:1px solid rgba(241,219,169,.45)}
+.cover-fallback small{font-size:9px;color:var(--gold2);letter-spacing:2px}
+.cover-fallback strong{font-size:23px;line-height:1.9;color:#f7e8c4;margin:15px 0}
+.cover-fallback span{width:38px;height:1px;background:var(--gold)}
+.cover-author{margin-top:13px;color:var(--gold2);font-size:11px;font-weight:800}
+.book-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:16px}
+.action-btn{
+  padding:9px 13px;border:1px solid var(--border);
+  border-radius:10px;color:var(--gold2);
+  background:rgba(255,255,255,.035);font-size:11px;
+}
+.action-btn:hover{background:rgba(215,182,110,.1)}
+.book-details{align-self:center}
+.book-label{font-size:10px;color:var(--gold);font-weight:900;letter-spacing:2px}
+.book-title{
+  margin:10px 0;font-size:clamp(27px,5vw,42px);
+  line-height:1.6;font-weight:900;color:var(--gold2);
+}
+.book-subtitle{font-size:14px;color:#c4c9d5;margin:0 0 15px}
+.book-description{font-size:13px;line-height:2.2;color:var(--muted);max-width:650px}
+.book-meta{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
+.meta-chip{
+  padding:7px 12px;border:1px solid var(--border);
+  border-radius:30px;background:rgba(255,255,255,.025);
+  color:var(--muted);font-size:10px;
+}
+.meta-chip strong{color:var(--gold2)}
+.read-first{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:11px 21px;border-radius:11px;
+  color:#171321;background:linear-gradient(135deg,#f2dfb0,#bd9855);
+  font-size:12px;font-weight:900;
+}
+.section-title{
+  display:flex;align-items:end;justify-content:space-between;
+  gap:10px;margin:36px 0 17px;padding-bottom:13px;
+  border-bottom:1px solid var(--border);
+}
+.section-title h2{font-size:21px;margin:0}
+.section-title p{font-size:10px;color:var(--muted);margin:4px 0 0}
+.poem-list{
+  overflow:hidden;border:1px solid var(--border);
+  border-radius:17px;background:rgba(21,30,50,.85);
+}
+.poem-row{
+  display:grid;grid-template-columns:48px 1fr auto;
+  align-items:center;gap:14px;padding:15px 18px;
+  border-bottom:1px solid rgba(255,255,255,.055);
+  transition:.2s;
+}
+.poem-row:last-child{border-bottom:0}
+.poem-row:hover{background:rgba(215,182,110,.075)}
+.poem-number{
+  width:38px;height:38px;display:grid;place-items:center;
+  border:1px solid var(--border);border-radius:11px;
+  color:var(--gold2);font-size:12px;font-weight:900;
+}
+.poem-info strong{display:block;font-size:13px}
+.poem-info span{display:block;color:var(--muted);font-size:10px;margin-top:4px}
+.poem-arrow{color:var(--gold);font-size:19px}
+.empty-state{
+  padding:35px 15px;text-align:center;color:var(--muted);
+  line-height:2;font-size:12px;
+}
+.error-state{
+  padding:45px 20px;text-align:center;
+  border:1px solid var(--border);border-radius:18px;
+  background:var(--panel);
+}
+.error-state h2{color:var(--gold2)}
+.error-state p{color:var(--muted);font-size:12px;line-height:2}
+.error-state a{color:var(--gold2);text-decoration:underline}
+.footer{
+  padding:24px 10px;margin-top:35px;text-align:center;
+  border-top:1px solid var(--border);font-size:10px;color:var(--muted);
+}
+.footer strong{color:var(--gold)}
+@media(max-width:680px){
+  .book-layout{grid-template-columns:1fr;padding:17px;gap:22px}
+  .cover{max-width:205px}
+  .book-details{text-align:center}
+  .book-meta{justify-content:center}
+  .book-title{font-size:29px}
+  .book-description{font-size:12px}
+  .section-title h2{font-size:18px}
+  .poem-row{grid-template-columns:38px 1fr auto;gap:10px;padding:13px 11px}
+  .poem-number{width:34px;height:34px}
+}
+</style>
+</head>
+
+<body>
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand-mark">ش</span>
+    <span>
+      <span class="brand-name">HANOON</span>
+      <span class="brand-caption">مكتبة المعرفة والأدب</span>
+    </span>
+  </a>
+  <a class="back-link" href="poetry.html">← مكتبة الشعر</a>
+</header>
+
+<main class="page">
+  <div class="breadcrumb">
+    <a href="../index.html">الرئيسية</a> /
+    <a href="poetry.html">مكتبة الشعر</a> /
+    <span id="breadcrumbTitle">تفاصيل الديوان</span>
+  </div>
+
+  <div id="collectionContent">
+    <div class="empty-state">جاري تحميل الديوان...</div>
+  </div>
+
+  <footer class="footer">
+    <strong>HANOON</strong> — كل قصيدة حكاية تستحق أن تُقرأ
+  </footer>
+</main>
+
+<script src="../data/poetry-01.js"></script>
+<script src="../data/poetry-02.js"></script>
+<script src="../data/poetry-03.js"></script>
+<script src="../data/poetry-04.js"></script>
+<script src="../data/poetry.js"></script>
+
+<script>
+(function(){
+"use strict";
+
+const API=window.HANOON_POETRY_API;
+const params=new URLSearchParams(location.search);
+const collectionId=params.get("id");
+const root=document.getElementById("collectionContent");
+
+const escapeHTML=value=>String(value??"").replace(/[&<>"']/g,c=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+}[c]));
+
+const labels={
+  love:"الحب والعشق",romance:"الحب والعشق",
+  separation:"الفراق والغياب",nostalgia:"الحنين والذكريات",
+  friendship:"الصحاب والجدعنة",mother:"الأم",father:"الأب",
+  family:"العيلة",life:"الحياة",ambition:"الطموح",
+  success:"النجاح",pain:"الوجع والخذلان",patience:"الصبر",
+  hope:"الأمل",exile:"الغربة",street:"الشارع",
+  dignity:"الكرامة",youth:"الشباب",homeland:"الوطن",
+  wisdom:"الحكمة",humor:"الضحك وخفة الدم"
+};
+
+function categoryName(value){return labels[value]||value||"شعر متنوع"}
+
+function getCollection(){
+  if(!API||typeof API.getCollectionById!=="function")return null;
+  return API.getCollectionById(collectionId);
+}
+
+function render(){
+  const collection=getCollection();
+
+  if(!collection){
+    root.innerHTML=`
+      <div class="error-state">
+        <h2>الديوان غير موجود</h2>
+        <p>لم نتمكن من العثور على هذا الديوان. ارجع للمكتبة واختر ديوانًا من الفهرس.</p>
+        <a href="poetry.html">العودة إلى مكتبة الشعر</a>
+      </div>`;
+    return;
+  }
+
+  const poems=Array.isArray(collection.poems)?collection.poems:[];
+  const cover=collection.cover?`
+    <img src="${escapeHTML(collection.cover)}"
+      alt="غلاف ${escapeHTML(collection.title)}"
+      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+  `:"";
+
+  const poemRows=poems.length?poems.map((poem,index)=>`
+    <a class="poem-row" href="poem.html?id=${encodeURIComponent(poem.id)}">
+      <span class="poem-number">${String(index+1).padStart(2,"0")}</span>
+      <span class="poem-info">
+        <strong>${escapeHTML(poem.title)}</strong>
+        <span>${poem.lines?.length||0} سطر · ${escapeHTML(poem.rhythm||"قصيدة شعرية")}</span>
+      </span>
+      <span class="poem-arrow">←</span>
+    </a>
+  `).join(""):`<div class="empty-state">لا توجد قصائد مسجلة داخل هذا الديوان حتى الآن.</div>`;
+
+  document.title=`${collection.title} | هنون`;
+  document.getElementById("breadcrumbTitle").textContent=collection.title;
+
+  root.innerHTML=`
+    <section class="book-layout">
+      <div class="cover-column">
+        <div class="cover">
+          ${cover}
+          <div class="cover-fallback" style="display:${collection.cover?"none":"flex"}">
+            <small>HANOON POETRY</small>
+            <strong>${escapeHTML(collection.title)}</strong>
+            <span></span>
+          </div>
+        </div>
+        <div class="cover-author">${escapeHTML(collection.author||"Yousef Elgorf")}</div>
+        <div class="book-actions">
+          <button class="action-btn" id="shareCollection" type="button">مشاركة الديوان ↗</button>
+          <button class="action-btn" id="copyCollection" type="button">نسخ الرابط</button>
+        </div>
+      </div>
+
+      <div class="book-details">
+        <div class="book-label">HANOON • POETRY COLLECTION</div>
+        <h1 class="book-title">${escapeHTML(collection.title)}</h1>
+        <p class="book-subtitle">${escapeHTML(collection.subtitle||categoryName(collection.category))}</p>
+        <p class="book-description">${escapeHTML(collection.description||"ديوان من مكتبة هنون للشعر والأدب، يضم مجموعة من القصائد المكتوبة بعناية.")}</p>
+
+        <div class="book-meta">
+          <span class="meta-chip">التصنيف: <strong>${escapeHTML(categoryName(collection.category))}</strong></span>
+          <span class="meta-chip">القصائد: <strong>${poems.length}</strong></span>
+          <span class="meta-chip">الأسطر: <strong>${poems.reduce((sum,p)=>sum+(p.lines?.length||0),0)}</strong></span>
+          <span class="meta-chip">الكاتب: <strong>${escapeHTML(collection.author||"Yousef Elgorf")}</strong></span>
+        </div>
+
+        ${poems.length?`<a class="read-first" href="poem.html?id=${encodeURIComponent(poems[0].id)}">ابدأ قراءة الديوان ←</a>`:""}
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title">
+        <div>
+          <h2>فهرس قصائد الديوان</h2>
+          <p>اختر عنوان القصيدة لفتح صفحة القراءة</p>
+        </div>
+        <span class="meta-chip">${poems.length} قصيدة</span>
+      </div>
+      <div class="poem-list">${poemRows}</div>
+    </section>
+  `;
+
+  document.getElementById("shareCollection")?.addEventListener("click",async()=>{
+    const shareData={
+      title:collection.title,
+      text:`${collection.title} — من مكتبة هنون للشعر والأدب`,
+      url:location.href
+    };
+    try{
+      if(navigator.share)await navigator.share(shareData);
+      else{
+        await navigator.clipboard.writeText(location.href);
+        alert("تم نسخ رابط الديوان");
+      }
+    }catch(error){
+      if(error.name!=="AbortError")alert("تعذرت مشاركة الديوان");
+    }
+  });
+
+  document.getElementById("copyCollection")?.addEventListener("click",async()=>{
+    try{
+      await navigator.clipboard.writeText(location.href);
+      alert("تم نسخ رابط الديوان");
+    }catch(error){
+      alert("تعذر نسخ الرابط على هذا المتصفح");
+    }
+  });
+}
+
+if(API)render();
+else{
+  root.innerHTML=`
+    <div class="error-state">
+      <h2>تعذر تحميل مكتبة الشعر</h2>
+      <p>تأكد من وجود ملفات الدواوين وملف الربط المركزي في المسارات المحددة.</p>
+      <a href="poetry.html">العودة للمكتبة</a>
+    </div>`;
+}
+
+window.addEventListener("hanoon:poetry-ready",render);
+window.addEventListener("hanoon:poetry-part-ready",render);
+
+})();
+</script>
+</body>
+</html>
