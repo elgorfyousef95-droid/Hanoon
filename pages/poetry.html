@@ -1,0 +1,1337 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="مكتبة هنون للشعر والأدب، دواوين وقصائد باللهجة المصرية والعربية.">
+  <title>الشعر والأدب | هنون</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #111a2d;
+      --panel-2: #162139;
+      --panel-3: #1b2943;
+      --gold: #d9b66d;
+      --gold-light: #f2d99c;
+      --purple: #a58bff;
+      --teal: #54d6c3;
+      --text: #f5f1e8;
+      --muted: #9ca9bd;
+      --border: rgba(217,182,109,.17);
+      --danger: #ff8291;
+      --shadow: 0 18px 50px rgba(0,0,0,.24);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse at 85% 0%, rgba(105,83,168,.17), transparent 38%),
+        radial-gradient(ellipse at 0% 35%, rgba(53,143,139,.09), transparent 32%),
+        var(--bg);
+      font-family: "Cairo", sans-serif;
+      overflow-x: hidden;
+    }
+
+    button, input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      width: min(1200px, 100%);
+      margin: auto;
+      padding: 22px 20px 70px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 32px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-mark {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 15px;
+      color: #151322;
+      background: linear-gradient(145deg, var(--gold-light), #b58a42);
+      box-shadow: 0 7px 25px rgba(217,182,109,.2);
+      font-size: 24px;
+      font-weight: 900;
+    }
+
+    .brand-name {
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: .3px;
+    }
+
+    .brand-caption {
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: -5px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 15px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--gold-light);
+      background: rgba(255,255,255,.025);
+      font-size: 13px;
+      transition: .2s;
+    }
+
+    .back-link:hover {
+      background: rgba(217,182,109,.1);
+      transform: translateY(-2px);
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 42px 38px;
+      border: 1px solid var(--border);
+      border-radius: 27px;
+      background:
+        radial-gradient(circle at 12% 50%, rgba(165,139,255,.16), transparent 35%),
+        linear-gradient(125deg, #17233b, #11182b 65%, #191c35);
+      box-shadow: var(--shadow);
+    }
+
+    .hero::after {
+      content: "ش";
+      position: absolute;
+      left: 35px;
+      top: -75px;
+      color: rgba(217,182,109,.055);
+      font-size: 290px;
+      line-height: 1;
+      font-weight: 900;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--gold-light);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .4px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 22px;
+      height: 2px;
+      background: var(--gold);
+    }
+
+    .hero h1 {
+      margin: 14px 0 10px;
+      font-size: clamp(29px, 5vw, 48px);
+      line-height: 1.45;
+      font-weight: 900;
+    }
+
+    .hero h1 span {
+      color: var(--gold-light);
+    }
+
+    .hero p {
+      max-width: 590px;
+      margin: 0;
+      color: #b5bfd0;
+      font-size: 14px;
+      line-height: 2.1;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 11px;
+      margin-top: 24px;
+    }
+
+    .primary-btn, .secondary-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 45px;
+      padding: 10px 20px;
+      border-radius: 13px;
+      font-size: 13px;
+      font-weight: 800;
+      transition: .2s;
+    }
+
+    .primary-btn {
+      color: #171421;
+      border: 0;
+      background: linear-gradient(135deg, var(--gold-light), #c49b50);
+    }
+
+    .secondary-btn {
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,.13);
+      background: rgba(255,255,255,.045);
+    }
+
+    .primary-btn:hover, .secondary-btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.08);
+    }
+
+    .section {
+      margin-top: 35px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 17px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .section-heading p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .section-count {
+      color: var(--gold-light);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 13px;
+    }
+
+    .stat-card {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      min-height: 105px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 19px;
+      background: linear-gradient(145deg, rgba(24,37,61,.92), rgba(17,26,45,.92));
+    }
+
+    .stat-circle {
+      --progress: 0deg;
+      width: 62px;
+      height: 62px;
+      flex: 0 0 62px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, #142039 58%, transparent 60%),
+        conic-gradient(var(--gold) var(--progress), rgba(255,255,255,.09) 0);
+    }
+
+    .stat-circle span {
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--gold-light);
+    }
+
+    .stat-number {
+      font-size: 22px;
+      line-height: 1.2;
+      font-weight: 900;
+    }
+
+    .stat-label {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      height: 49px;
+      padding: 0 46px 0 15px;
+      outline: none;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--panel);
+      transition: .2s;
+    }
+
+    .search-wrap input:focus {
+      border-color: rgba(217,182,109,.65);
+      box-shadow: 0 0 0 3px rgba(217,182,109,.08);
+    }
+
+    .search-wrap input::placeholder {
+      color: #8491a6;
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gold);
+      font-size: 18px;
+    }
+
+    .sort-select {
+      height: 49px;
+      padding: 0 14px;
+      color: var(--text);
+      outline: none;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--panel);
+    }
+
+    .categories {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 3px 0 13px;
+      scrollbar-width: none;
+    }
+
+    .categories::-webkit-scrollbar {
+      display: none;
+    }
+
+    .category-btn {
+      flex: 0 0 auto;
+      padding: 9px 15px;
+      color: #b6c0d1;
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      background: rgba(255,255,255,.025);
+      font-size: 12px;
+      font-weight: 700;
+      transition: .2s;
+    }
+
+    .category-btn.active {
+      color: #171421;
+      border-color: var(--gold);
+      background: linear-gradient(135deg, var(--gold-light), #c49b50);
+    }
+
+    .collections-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 17px;
+    }
+
+    .collection-card {
+      position: relative;
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: linear-gradient(155deg, #192640, #111a2d 72%);
+      transition: transform .25s, border-color .25s, box-shadow .25s;
+    }
+
+    .collection-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(217,182,109,.48);
+      box-shadow: 0 17px 35px rgba(0,0,0,.22);
+    }
+
+    .collection-cover {
+      position: relative;
+      height: 165px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 25% 25%, rgba(242,217,156,.25), transparent 32%),
+        linear-gradient(135deg, #4c3e70, #1b2943 70%);
+    }
+
+    .collection-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      opacity: .78;
+      transition: transform .5s;
+    }
+
+    .collection-card:hover .collection-cover img {
+      transform: scale(1.06);
+    }
+
+    .cover-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: end;
+      padding: 15px;
+      background: linear-gradient(transparent 25%, rgba(7,12,25,.83));
+    }
+
+    .cover-symbol {
+      color: var(--gold-light);
+      font-size: 35px;
+      font-weight: 900;
+      text-shadow: 0 3px 15px rgba(0,0,0,.5);
+    }
+
+    .collection-body {
+      padding: 16px;
+    }
+
+    .collection-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 9px;
+    }
+
+    .collection-category {
+      padding: 4px 9px;
+      color: var(--gold-light);
+      border: 1px solid rgba(217,182,109,.2);
+      border-radius: 20px;
+      background: rgba(217,182,109,.07);
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .poem-count {
+      color: var(--muted);
+      font-size: 10px;
+      white-space: nowrap;
+    }
+
+    .collection-title {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 900;
+      line-height: 1.7;
+    }
+
+    .collection-subtitle {
+      margin: 3px 0 8px;
+      color: var(--gold-light);
+      font-size: 11px;
+    }
+
+    .collection-description {
+      min-height: 48px;
+      margin: 0;
+      color: #aab6c9;
+      font-size: 11px;
+      line-height: 1.9;
+    }
+
+    .collection-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 15px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,.07);
+    }
+
+    .author-name {
+      color: #aab6c9;
+      font-size: 10px;
+    }
+
+    .open-collection {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--gold-light);
+      font-size: 11px;
+      font-weight: 800;
+      background: none;
+      border: 0;
+      padding: 5px 0;
+    }
+
+    .open-collection:hover {
+      color: white;
+    }
+
+    .featured-panel {
+      padding: 22px;
+      border: 1px solid rgba(165,139,255,.2);
+      border-radius: 21px;
+      background:
+        radial-gradient(circle at 0% 100%, rgba(165,139,255,.12), transparent 40%),
+        linear-gradient(120deg, #18223b, #121a2e);
+    }
+
+    .featured-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 11px;
+    }
+
+    .featured-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      padding: 13px;
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 14px;
+      background: rgba(255,255,255,.025);
+      transition: .2s;
+    }
+
+    .featured-item:hover {
+      border-color: rgba(217,182,109,.35);
+      background: rgba(217,182,109,.05);
+    }
+
+    .featured-number {
+      width: 36px;
+      height: 36px;
+      flex: 0 0 36px;
+      display: grid;
+      place-items: center;
+      color: var(--gold-light);
+      border-radius: 11px;
+      background: rgba(217,182,109,.1);
+      font-weight: 900;
+    }
+
+    .featured-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .featured-info strong {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 12px;
+    }
+
+    .featured-info span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .featured-arrow {
+      color: var(--gold);
+      font-size: 17px;
+    }
+
+    .empty-state, .loading-state {
+      grid-column: 1 / -1;
+      padding: 42px 20px;
+      text-align: center;
+      border: 1px dashed rgba(217,182,109,.25);
+      border-radius: 18px;
+      color: var(--muted);
+      background: rgba(255,255,255,.02);
+    }
+
+    .empty-icon {
+      margin-bottom: 9px;
+      color: var(--gold);
+      font-size: 32px;
+    }
+
+    .empty-state strong {
+      display: block;
+      color: var(--text);
+      font-size: 15px;
+    }
+
+    .empty-state p {
+      margin: 7px 0 0;
+      font-size: 12px;
+      line-height: 1.9;
+    }
+
+    .integrity-note {
+      margin-top: 24px;
+      padding: 13px 16px;
+      color: #b4c0d1;
+      border: 1px solid rgba(84,214,195,.15);
+      border-radius: 13px;
+      background: rgba(84,214,195,.045);
+      font-size: 11px;
+      line-height: 1.9;
+    }
+
+    .integrity-note strong {
+      color: var(--teal);
+    }
+
+    .footer {
+      margin-top: 45px;
+      padding-top: 20px;
+      text-align: center;
+      color: #78869c;
+      border-top: 1px solid rgba(255,255,255,.06);
+      font-size: 11px;
+    }
+
+    @media (max-width: 900px) {
+      .collections-grid {
+        grid-template-columns: repeat(2, minmax(0,1fr));
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2,1fr);
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page {
+        padding: 15px 13px 45px;
+      }
+
+      .topbar {
+        margin-bottom: 20px;
+      }
+
+      .brand-name {
+        font-size: 17px;
+      }
+
+      .back-link {
+        padding: 8px 10px;
+        font-size: 11px;
+      }
+
+      .hero {
+        padding: 29px 20px;
+        border-radius: 21px;
+      }
+
+      .hero::after {
+        left: -25px;
+        top: -25px;
+        font-size: 190px;
+      }
+
+      .hero p {
+        font-size: 12px;
+      }
+
+      .hero-actions {
+        gap: 8px;
+      }
+
+      .primary-btn, .secondary-btn {
+        min-height: 42px;
+        padding: 9px 13px;
+        font-size: 11px;
+      }
+
+      .stats-grid {
+        gap: 9px;
+      }
+
+      .stat-card {
+        min-height: 88px;
+        padding: 10px;
+        gap: 9px;
+      }
+
+      .stat-circle {
+        width: 49px;
+        height: 49px;
+        flex-basis: 49px;
+      }
+
+      .stat-circle span {
+        font-size: 12px;
+      }
+
+      .stat-number {
+        font-size: 18px;
+      }
+
+      .stat-label {
+        font-size: 9px;
+      }
+
+      .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .sort-select {
+        width: 100%;
+      }
+
+      .collections-grid {
+        grid-template-columns: 1fr;
+        gap: 13px;
+      }
+
+      .collection-card {
+        display: grid;
+        grid-template-columns: 112px minmax(0,1fr);
+        min-height: 158px;
+      }
+
+      .collection-cover {
+        height: 100%;
+        min-height: 158px;
+      }
+
+      .cover-overlay {
+        padding: 9px;
+      }
+
+      .cover-symbol {
+        font-size: 27px;
+      }
+
+      .collection-body {
+        padding: 12px;
+      }
+
+      .collection-title {
+        font-size: 14px;
+      }
+
+      .collection-description {
+        min-height: auto;
+        font-size: 10px;
+      }
+
+      .collection-footer {
+        margin-top: 9px;
+        padding-top: 8px;
+      }
+
+      .featured-panel {
+        padding: 13px;
+      }
+
+      .featured-list {
+        grid-template-columns: 1fr;
+      }
+
+      .section {
+        margin-top: 27px;
+      }
+
+      .section-heading h2 {
+        font-size: 17px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+
+    <header class="topbar">
+      <a class="brand" href="../index.html" aria-label="هنون">
+        <div class="brand-mark">هـ</div>
+        <div>
+          <div class="brand-name">هنون</div>
+          <div class="brand-caption">منصة المعرفة والإبداع</div>
+        </div>
+      </a>
+
+      <a class="back-link" href="../index.html">
+        <span>←</span>
+        العودة للرئيسية
+      </a>
+    </header>
+
+    <section class="hero">
+      <div class="hero-content">
+        <div class="eyebrow">مساحة الكلمة والإحساس</div>
+        <h1>هنا تسكن <span>الكلمات</span></h1>
+        <p>
+          مكتبة الشعر والأدب في هنون؛ مساحة تجمع القصائد والدواوين
+          بمختلف ألوانها، من الحب والحنين إلى الحياة والصداقة والحكمة.
+          كل قصيدة حكاية، وكل ديوان عالم مستقل.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#collections" class="primary-btn">اكتشف الدواوين <span>↓</span></a>
+          <a href="#featured" class="secondary-btn">قصائد مختارة <span>✦</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-label="إحصائيات المكتبة">
+      <div class="section-heading">
+        <div>
+          <h2>أرقام المكتبة</h2>
+          <p>إحصائيات المحتوى الموجود فعليًا</p>
+        </div>
+        <span class="section-count" id="completionLabel">جارٍ فحص البيانات</span>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-circle" id="collectionsCircle"><span id="collectionsPercent">0%</span></div>
+          <div>
+            <div class="stat-number" id="collectionsCount">0</div>
+            <div class="stat-label">ديوان من أصل 20</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-circle" id="poemsCircle"><span id="poemsPercent">0%</span></div>
+          <div>
+            <div class="stat-number" id="poemsCount">0</div>
+            <div class="stat-label">قصيدة من أصل 400</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-circle" id="linesCircle"><span id="linesPercent">0%</span></div>
+          <div>
+            <div class="stat-number" id="linesCount">0</div>
+            <div class="stat-label">سطر من أصل 8,000</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-circle" id="favoritesCircle"><span>♥</span></div>
+          <div>
+            <div class="stat-number" id="favoritesCount">0</div>
+            <div class="stat-label">قصيدة في المفضلة</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="collections">
+      <div class="section-heading">
+        <div>
+          <h2>مكتبة الدواوين</h2>
+          <p>اختار العالم الشعري اللي تحب تدخله</p>
+        </div>
+        <span class="section-count" id="visibleCount">0 ديوان</span>
+      </div>
+
+      <div class="toolbar">
+        <div class="search-wrap">
+          <span class="search-icon">⌕</span>
+          <input
+            type="search"
+            id="searchInput"
+            placeholder="ابحث عن ديوان أو قصيدة أو موضوع..."
+            autocomplete="off"
+            aria-label="البحث في الدواوين والقصائد"
+          >
+        </div>
+
+        <select class="sort-select" id="sortSelect" aria-label="ترتيب الدواوين">
+          <option value="default">الترتيب الافتراضي</option>
+          <option value="title">ترتيب أبجدي</option>
+          <option value="count">الأكثر قصائد</option>
+        </select>
+      </div>
+
+      <div class="categories" id="categories">
+        <button class="category-btn active" data-category="all">كل الدواوين</button>
+      </div>
+
+      <div class="collections-grid" id="collectionsGrid">
+        <div class="loading-state">جارٍ تحميل مكتبة الشعر...</div>
+      </div>
+    </section>
+
+    <section class="section" id="featured">
+      <div class="section-heading">
+        <div>
+          <h2>من القصائد</h2>
+          <p>قصائد من داخل الدواوين المتاحة</p>
+        </div>
+        <span class="section-count">مختارات المكتبة</span>
+      </div>
+
+      <div class="featured-panel">
+        <div class="featured-list" id="featuredList">
+          <div class="loading-state">جارٍ تجهيز القصائد...</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="integrity-note" id="integrityNote">
+      <strong>تنبيه المكتبة:</strong>
+      يتم احتساب أعداد الدواوين والقصائد والأسطر من ملفات البيانات الفعلية،
+      ولا يتم عرض أي محتوى غير مكتمل على أنه مكتمل.
+    </div>
+
+    <footer class="footer">
+      <div>هنون — مساحة تجمع المعرفة والإبداع</div>
+      <div style="margin-top:5px">الشعر والأدب · جميع الحقوق محفوظة</div>
+    </footer>
+
+  </main>
+
+  <!-- ملفات الدواوين: يجب تحميلها قبل ملف الربط المركزي -->
+  <script src="../data/poetry-01.js"></script>
+  <script src="../data/poetry-02.js"></script>
+  <script src="../data/poetry-03.js"></script>
+  <script src="../data/poetry-04.js"></script>
+  <script src="../data/poetry.js"></script>
+
+  <script>
+  (() => {
+    "use strict";
+
+    const API = window.HANOON_POETRY_API;
+
+    const elements = {
+      grid: document.getElementById("collectionsGrid"),
+      featured: document.getElementById("featuredList"),
+      categories: document.getElementById("categories"),
+      search: document.getElementById("searchInput"),
+      sort: document.getElementById("sortSelect"),
+      visible: document.getElementById("visibleCount"),
+      integrity: document.getElementById("integrityNote")
+    };
+
+    const state = {
+      category: "all",
+      search: "",
+      sort: "default"
+    };
+
+    const number = value => Number(value || 0).toLocaleString("en-US");
+
+    const escapeHTML = value => String(value ?? "").replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[char]);
+
+    const normalize = value => String(value || "")
+      .toLowerCase()
+      .replace(/[أإآ]/g, "ا")
+      .replace(/ة/g, "ه")
+      .replace(/ى/g, "ي")
+      .replace(/[ًٌٍَُِّْـ]/g, "")
+      .trim();
+
+    function getCollections() {
+      if (!API || typeof API.getAllCollections !== "function") return [];
+      return API.getAllCollections();
+    }
+
+    function getAllPoems() {
+      if (!API || typeof API.getAllPoems !== "function") return [];
+      return API.getAllPoems();
+    }
+
+    function getStats() {
+      if (!API || typeof API.getStats !== "function") {
+        return { collections: 0, poems: 0, lines: 0 };
+      }
+      return API.getStats();
+    }
+
+    function getCategoryLabel(category) {
+      const labels = {
+        love: "الحب والعشق",
+        romance: "الحب والعشق",
+        separation: "الفراق والغياب",
+        nostalgia: "الحنين والذكريات",
+        friendship: "الصحاب والجدعنة",
+        mother: "الأم",
+        father: "الأب",
+        family: "العيلة",
+        life: "الحياة",
+        ambition: "الطموح",
+        success: "النجاح",
+        pain: "الوجع والخذلان",
+        patience: "الصبر",
+        hope: "الأمل",
+        exile: "الغربة",
+        street: "الشارع",
+        dignity: "الكرامة",
+        youth: "الشباب",
+        homeland: "الوطن",
+        wisdom: "الحكمة",
+        humor: "الضحك وخفة الدم"
+      };
+
+      return labels[category] || category || "شعر متنوع";
+    }
+
+    function updateCircle(id, percentageId, value, total) {
+      const percent = total ? Math.min(100, Math.round(value / total * 100)) : 0;
+      const circle = document.getElementById(id);
+      const text = document.getElementById(percentageId);
+
+      if (circle) {
+        circle.style.setProperty("--progress", `${percent * 3.6}deg`);
+      }
+
+      if (text) text.textContent = `${percent}%`;
+    }
+
+    function renderStats() {
+      const stats = getStats();
+      const collections = getCollections();
+      const poems = getAllPoems();
+
+      const collectionCount = Number(stats.collections ?? collections.length);
+      const poemCount = Number(stats.poems ?? poems.length);
+      const lineCount = Number(
+        stats.lines ??
+        poems.reduce((sum, poem) => sum + (Array.isArray(poem.lines) ? poem.lines.length : 0), 0)
+      );
+
+      const favorites = API && typeof API.getFavorites === "function"
+        ? API.getFavorites().length
+        : 0;
+
+      document.getElementById("collectionsCount").textContent = number(collectionCount);
+      document.getElementById("poemsCount").textContent = number(poemCount);
+      document.getElementById("linesCount").textContent = number(lineCount);
+      document.getElementById("favoritesCount").textContent = number(favorites);
+
+      updateCircle("collectionsCircle", "collectionsPercent", collectionCount, 20);
+      updateCircle("poemsCircle", "poemsPercent", poemCount, 400);
+      updateCircle("linesCircle", "linesPercent", lineCount, 8000);
+
+      const complete = collectionCount === 20 &&
+        poemCount === 400 &&
+        lineCount === 8000;
+
+      document.getElementById("completionLabel").textContent =
+        complete ? "المكتبة مكتملة" : "المكتبة قيد الإكمال";
+    }
+
+    function renderCategories() {
+      let categories = [];
+
+      if (API && typeof API.getCategories === "function") {
+        categories = API.getCategories();
+      } else {
+        categories = [...new Set(getCollections().map(item => item.category).filter(Boolean))];
+      }
+
+      const buttons = [
+        `<button class="category-btn ${state.category === "all" ? "active" : ""}" data-category="all">كل الدواوين</button>`,
+        ...categories.map(category => `
+          <button
+            class="category-btn ${state.category === category ? "active" : ""}"
+            data-category="${escapeHTML(category)}">
+            ${escapeHTML(getCategoryLabel(category))}
+          </button>
+        `)
+      ];
+
+      elements.categories.innerHTML = buttons.join("");
+    }
+
+    function getFilteredCollections() {
+      let collections = [...getCollections()];
+
+      if (state.category !== "all") {
+        collections = collections.filter(item => item.category === state.category);
+      }
+
+      if (state.search) {
+        const query = normalize(state.search);
+
+        collections = collections.filter(collection => {
+          const collectionText = normalize([
+            collection.title,
+            collection.subtitle,
+            collection.description,
+            collection.category
+          ].join(" "));
+
+          const poemText = (collection.poems || []).some(poem =>
+            normalize([
+              poem.title,
+              poem.description,
+              poem.category
+            ].join(" ")).includes(query)
+          );
+
+          return collectionText.includes(query) || poemText;
+        });
+      }
+
+      if (state.sort === "title") {
+        collections.sort((a, b) => String(a.title).localeCompare(String(b.title), "ar"));
+      } else if (state.sort === "count") {
+        collections.sort((a, b) =>
+          (b.poems?.length || 0) - (a.poems?.length || 0)
+        );
+      }
+
+      return collections;
+    }
+
+    function collectionCard(collection) {
+      const image = collection.cover
+        ? `<img src="${escapeHTML(collection.cover)}" alt="${escapeHTML(collection.title)}" loading="lazy" onerror="this.remove()">`
+        : "";
+
+      const count = Array.isArray(collection.poems) ? collection.poems.length : 0;
+
+      return `
+        <article class="collection-card">
+          <div class="collection-cover">
+            ${image}
+            <div class="cover-overlay">
+              <span class="cover-symbol">ش</span>
+            </div>
+          </div>
+
+          <div class="collection-body">
+            <div class="collection-meta">
+              <span class="collection-category">
+                ${escapeHTML(getCategoryLabel(collection.category))}
+              </span>
+              <span class="poem-count">${number(count)} قصيدة</span>
+            </div>
+
+            <h3 class="collection-title">${escapeHTML(collection.title)}</h3>
+
+            <div class="collection-subtitle">
+              ${escapeHTML(collection.subtitle || "ديوان شعري")}
+            </div>
+
+            <p class="collection-description">
+              ${escapeHTML(collection.description || "مجموعة من القصائد الشعرية.")}
+            </p>
+
+            <div class="collection-footer">
+              <span class="author-name">
+                ${escapeHTML(collection.author || "Yousef Elgorf")}
+              </span>
+
+              <a class="open-collection"
+                 href="poem.html?collection=${encodeURIComponent(collection.id)}">
+                استكشف الديوان <span>←</span>
+              </a>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderCollections() {
+      const collections = getFilteredCollections();
+
+      elements.visible.textContent = `${number(collections.length)} ديوان`;
+
+      if (!collections.length) {
+        elements.grid.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">⌕</div>
+            <strong>ملقيناش نتيجة مطابقة</strong>
+            <p>جرّب كلمة بحث تانية أو اختار تصنيف مختلف.</p>
+          </div>
+        `;
+        return;
+      }
+
+      elements.grid.innerHTML = collections.map(collectionCard).join("");
+    }
+
+    function renderFeatured() {
+      const poems = getAllPoems().slice(0, 6);
+
+      if (!poems.length) {
+        elements.featured.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">✦</div>
+            <strong>القصائد هتظهر هنا</strong>
+            <p>بعد إضافة ملفات الدواوين واحتوائها على القصائد الفعلية.</p>
+          </div>
+        `;
+        return;
+      }
+
+      elements.featured.innerHTML = poems.map((poem, index) => {
+        const collection = getCollections().find(item =>
+          (item.poems || []).some(entry => entry.id === poem.id)
+        );
+
+        return `
+          <a class="featured-item" href="poem.html?id=${encodeURIComponent(poem.id)}">
+            <span class="featured-number">${String(index + 1).padStart(2, "0")}</span>
+            <span class="featured-info">
+              <strong>${escapeHTML(poem.title)}</strong>
+              <span>${escapeHTML(collection?.title || "ديوان شعري")}</span>
+            </span>
+            <span class="featured-arrow">←</span>
+          </a>
+        `;
+      }).join("");
+    }
+
+    function renderIntegrity() {
+      const stats = getStats();
+      const errors = API && typeof API.getValidationErrors === "function"
+        ? API.getValidationErrors()
+        : [];
+
+      const complete = stats.collections === 20 &&
+        stats.poems === 400 &&
+        stats.lines === 8000 &&
+        (!errors || errors.length === 0);
+
+      if (complete) {
+        elements.integrity.innerHTML = `
+          <strong>المكتبة مكتملة:</strong>
+          تم التحقق من وجود 20 ديوانًا و400 قصيدة و8,000 سطر دون أخطاء في البيانات.
+        `;
+      } else {
+        elements.integrity.innerHTML = `
+          <strong>حالة بناء المكتبة:</strong>
+          الأرقام المعروضة محسوبة من المحتوى الموجود بالفعل.
+          لن تظهر المكتبة كمكتملة إلا بعد إضافة الدواوين والقصائد والأسطر المطلوبة والتحقق منها.
+        `;
+      }
+    }
+
+    function renderAll() {
+      renderStats();
+      renderCategories();
+      renderCollections();
+      renderFeatured();
+      renderIntegrity();
+    }
+
+    elements.search.addEventListener("input", event => {
+      state.search = event.target.value;
+      renderCollections();
+    });
+
+    elements.sort.addEventListener("change", event => {
+      state.sort = event.target.value;
+      renderCollections();
+    });
+
+    elements.categories.addEventListener("click", event => {
+      const button = event.target.closest("[data-category]");
+      if (!button) return;
+
+      state.category = button.dataset.category;
+      renderCategories();
+      renderCollections();
+    });
+
+    if (API) {
+      renderAll();
+    } else {
+      elements.grid.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">!</div>
+          <strong>ملفات بيانات الشعر غير جاهزة</strong>
+          <p>تأكد من وجود ملفات الدواوين وملف الربط المركزي في المسارات المحددة أسفل الصفحة.</p>
+        </div>
+      `;
+
+      elements.featured.innerHTML = `
+        <div class="empty-state">
+          <strong>في انتظار تحميل البيانات</strong>
+          <p>سيتم عرض القصائد هنا بمجرد تحميل ملفات المكتبة.</p>
+        </div>
+      `;
+    }
+
+    window.addEventListener("hanoon:poetry-ready", renderAll);
+    window.addEventListener("hanoon:poetry-part-ready", () => {
+      if (API) renderAll();
+    });
+
+  })();
+  </script>
+</body>
+</html>
