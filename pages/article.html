@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
 
   <meta name="theme-color" content="#0b1020">
   <title>قراءة المقال | هنون</title>
@@ -597,48 +597,47 @@
         color: #444 !important;
       }
     }
-    
-/* تثبيت عرض الصفحة ومنع التكبير باللمس */
-html {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-  touch-action: pan-y;
-  -webkit-text-size-adjust: 100%;
-}
 
-body {
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  overflow-x: hidden;
-  touch-action: pan-y;
-  overscroll-behavior-x: none;
-}
+    /* تثبيت عرض الصفحة ومنع التكبير باللمس */
+    html {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+      touch-action: pan-y;
+      -webkit-text-size-adjust: 100%;
+    }
 
-/* منع العناصر من توسيع الشاشة */
-img,
-video,
-iframe,
-table,
-.article-card,
-.article-content {
-  max-width: 100%;
-}
+    body {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: hidden;
+      touch-action: pan-y;
+      overscroll-behavior-x: none;
+    }
 
-.article-content {
-  overflow-wrap: anywhere;
-  word-break: normal;
-}
+    /* منع العناصر من توسيع الشاشة */
+    img,
+    video,
+    iframe,
+    table,
+    .article-card,
+    .article-content {
+      max-width: 100%;
+    }
 
-/* منع الحقول من تكبير الشاشة تلقائيًا على الهاتف */
-input,
-select,
-textarea,
-button {
-  font-size: 16px;
-}
+    .article-content {
+      overflow-wrap: anywhere;
+      word-break: normal;
+    }
 
+    /* منع الحقول من تكبير الشاشة تلقائيًا على الهاتف */
+    input,
+    select,
+    textarea,
+    button {
+      font-size: 16px;
+    }
   </style>
 </head>
 
@@ -692,8 +691,11 @@ button {
 
   <div class="toast" id="toast"></div>
 
-  <!-- قاعدة بيانات المقالات -->
+  <!-- قاعدة بيانات المقالات الأساسية -->
   <script src="../data/articles.js"></script>
+
+  <!-- مجموعة مقالات تطوير الذات والنجاح -->
+  <script src="../data/articles-development.js"></script>
 
   <!-- محرك عرض المقال -->
   <script src="../js/article.js"></script>
