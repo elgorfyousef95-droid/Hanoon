@@ -26,6 +26,146 @@
   <link rel="stylesheet" href="css/homepage-adjustments.css">
   <link rel="stylesheet" href="css/splash-screen.css">
   <link rel="stylesheet" href="css/fixed-viewport.css">
+
+  <!-- إضافات تصميم إشعار المسابقة فقط -->
+  <style>
+    .competition-notice {
+      position: fixed;
+      z-index: 100001;
+      top: max(18px, env(safe-area-inset-top));
+      left: 50%;
+      width: min(430px, calc(100% - 28px));
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 13px 15px;
+      direction: rtl;
+      color: #fff9e9;
+      background: linear-gradient(
+        135deg,
+        rgba(25, 31, 53, .97),
+        rgba(48, 39, 67, .96)
+      );
+      border: 1px solid rgba(226, 190, 119, .58);
+      border-radius: 19px;
+      box-shadow:
+        0 18px 55px rgba(0, 0, 0, .38),
+        0 0 28px rgba(216, 181, 109, .12);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translate(-50%, -22px) scale(.97);
+    }
+
+    .competition-notice.is-visible {
+      visibility: visible;
+      pointer-events: auto;
+      animation: competitionNoticeIn .55s cubic-bezier(.2, .8, .2, 1) forwards;
+    }
+
+    .competition-notice.is-leaving {
+      animation: competitionNoticeOut .45s ease forwards;
+    }
+
+    .competition-notice-avatar {
+      flex: 0 0 58px;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #e5c27d;
+      box-shadow: 0 0 0 4px rgba(229, 194, 125, .12);
+      background: #24243a;
+    }
+
+    .competition-notice-copy {
+      min-width: 0;
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .competition-notice-kicker {
+      color: #e6c783;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .3px;
+    }
+
+    .competition-notice-copy strong {
+      color: #fff;
+      font-size: 15px;
+      font-weight: 900;
+      line-height: 1.5;
+    }
+
+    .competition-notice-date {
+      color: #f2d9a5;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .competition-notice-copy small {
+      color: rgba(255, 255, 255, .72);
+      font-size: 10px;
+    }
+
+    .competition-notice-mark {
+      align-self: flex-start;
+      color: #e8c77f;
+      font-size: 19px;
+    }
+
+    @keyframes competitionNoticeIn {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -22px) scale(.97);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(1);
+      }
+    }
+
+    @keyframes competitionNoticeOut {
+      from {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(1);
+      }
+      to {
+        opacity: 0;
+        transform: translate(-50%, -16px) scale(.98);
+        visibility: hidden;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .competition-notice {
+        gap: 10px;
+        padding: 11px 12px;
+      }
+
+      .competition-notice-avatar {
+        flex-basis: 50px;
+        width: 50px;
+        height: 50px;
+      }
+
+      .competition-notice-copy strong {
+        font-size: 13px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .competition-notice.is-visible,
+      .competition-notice.is-leaving {
+        animation-duration: .01ms;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -71,6 +211,38 @@
   </div>
 </div>
 
+  <!-- إضافة إشعار المسابقة -->
+  <aside
+    class="competition-notice"
+    id="competitionNotice"
+    role="status"
+    aria-live="polite"
+    aria-hidden="true"
+  >
+    <img
+      class="competition-notice-avatar"
+      src="assets/avatars/yousef.jpg"
+      alt="صورة صاحب منصة هنون"
+    >
+
+    <div class="competition-notice-copy">
+      <span class="competition-notice-kicker">
+        موعد التحدي يقترب
+      </span>
+
+      <strong>جهّز نفسك للمسابقة!</strong>
+
+      <span class="competition-notice-date">
+        11 يناير 2027
+      </span>
+
+      <small id="competitionCountdown">
+        استعد للانطلاق
+      </small>
+    </div>
+
+    <span class="competition-notice-mark" aria-hidden="true">✦</span>
+  </aside>
 
   <!-- رأس الموقع -->
   
@@ -455,6 +627,89 @@
   });
 })();
 </script>
+
+  <!-- إضافة تشغيل إشعار المسابقة بعد شاشة البداية -->
+  <script>
+  (function () {
+    "use strict";
+
+    const notice = document.getElementById("competitionNotice");
+    const countdown = document.getElementById("competitionCountdown");
+
+    if (!notice) return;
+
+    // موعد المسابقة: 11 يناير 2027
+    const competitionDate = new Date(2027, 0, 11, 0, 0, 0);
+
+    function updateCountdown() {
+      if (!countdown) return;
+
+      const now = new Date();
+      const remaining = competitionDate.getTime() - now.getTime();
+
+      if (remaining <= 0) {
+        countdown.textContent = "موعد المسابقة اليوم أو قد حان";
+        return;
+      }
+
+      const days = Math.ceil(remaining / (1000 * 60 * 60 * 24));
+      countdown.textContent = "متبقي " + days + " يومًا على موعد المسابقة";
+    }
+
+    let noticeShown = false;
+
+    function showCompetitionNotice() {
+      if (noticeShown || !document.body.contains(notice)) return;
+
+      noticeShown = true;
+      updateCountdown();
+
+      notice.setAttribute("aria-hidden", "false");
+      notice.classList.add("is-visible");
+
+      // تختفي الرسالة تلقائيًا بعد خمس ثوانٍ
+      window.setTimeout(function () {
+        notice.classList.remove("is-visible");
+        notice.classList.add("is-leaving");
+
+        window.setTimeout(function () {
+          notice.remove();
+        }, 500);
+      }, 5000);
+    }
+
+    const splash = document.getElementById("splashScreen");
+
+    if (!splash) {
+      window.addEventListener("load", function () {
+        window.setTimeout(showCompetitionNotice, 250);
+      }, { once: true });
+
+      return;
+    }
+
+    // نراقب شاشة البداية الموجودة بالفعل دون تعديل كودها
+    const observer = new MutationObserver(function () {
+      const splashHidden =
+        splash.classList.contains("is-hidden") ||
+        splash.classList.contains("splash-hidden") ||
+        !document.body.contains(splash);
+
+      if (splashHidden) {
+        observer.disconnect();
+
+        // ننتظر انتهاء انتقال شاشة البداية قبل إظهار الرسالة
+        window.setTimeout(showCompetitionNotice, 850);
+      }
+    });
+
+    observer.observe(splash, {
+      attributes: true,
+      attributeFilter: ["class"]
+    });
+
+  })();
+  </script>
 
   <script type="module" src="js/app.js"></script>
   <script src="js/global-back.js"></script>
