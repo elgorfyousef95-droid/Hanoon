@@ -3,11 +3,9 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
-
-  <meta name="theme-color" content="#101321">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="اكتشف مقالات هنون في المعرفة وتطوير الذات والصحة والعلاقات والتكنولوجيا والحياة.">
   <title>المقالات | هنون</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,16 +14,17 @@
 
   <style>
     :root {
-      --bg: #101321;
-      --surface: #191e30;
-      --surface2: #20263b;
-      --gold: #d6b36b;
-      --gold-light: #f0d69b;
-      --purple: #9d8bfa;
-      --text: #f5f3fb;
-      --muted: #a6a9ba;
+      --bg: #0b1020;
+      --surface: #121a2e;
+      --surface2: #18223a;
+      --gold: #d7b56d;
+      --gold-light: #f1d99d;
+      --text: #f5f2e9;
+      --muted: #a5aec1;
       --border: rgba(255,255,255,.09);
-      --radius: 20px;
+      --purple: #8e7cf3;
+      --teal: #46c8b7;
+      --radius: 22px;
     }
 
     * {
@@ -36,17 +35,34 @@
 
     html {
       scroll-behavior: smooth;
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+      -webkit-text-size-adjust: 100%;
     }
 
     body {
-      background:
-        radial-gradient(ellipse at 10% 5%, rgba(105,82,170,.13), transparent 35%),
-        radial-gradient(ellipse at 90% 40%, rgba(214,179,107,.07), transparent 35%),
-        var(--bg);
-      color: var(--text);
       font-family: "Cairo", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse at 8% 5%, rgba(142,124,243,.13), transparent 32%),
+        radial-gradient(ellipse at 92% 25%, rgba(70,200,183,.08), transparent 35%),
+        var(--bg);
       min-height: 100vh;
       overflow-x: hidden;
+      line-height: 1.8;
+    }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    button, a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button {
+      cursor: pointer;
     }
 
     a {
@@ -54,383 +70,393 @@
       text-decoration: none;
     }
 
-    button,
-    input,
-    select {
-      font: inherit;
+    img {
+      max-width: 100%;
     }
 
-    button {
-      cursor: pointer;
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(11,16,32,.88);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
     }
 
-    .articles-page {
-      width: min(1440px, 100%);
+    .topbar-inner {
+      width: min(1160px, 92%);
+      min-height: 72px;
       margin: auto;
-      padding: 0 30px 80px;
-    }
-
-    /* Header */
-
-    .ha-topbar {
-      height: 76px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-      gap: 20px;
+      gap: 15px;
     }
 
-    .ha-brand {
+    .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 11px;
+      color: var(--gold-light);
       font-size: 23px;
       font-weight: 900;
-      color: var(--gold-light);
     }
 
-    .ha-brand-mark {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
+    .brand-mark {
+      width: 43px;
+      height: 43px;
       display: grid;
       place-items: center;
-      color: #171727;
-      background: linear-gradient(135deg, #f2d99e, #bd9450);
-      box-shadow: 0 5px 25px rgba(214,179,107,.2);
+      border-radius: 14px;
+      color: #111525;
+      background: linear-gradient(135deg, #f3dda7, #b88d43);
+      box-shadow: 0 5px 22px rgba(215,181,109,.2);
       font-size: 23px;
     }
 
-    .ha-top-actions {
+    .top-links {
       display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .ha-top-link {
-      padding: 9px 16px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      color: var(--muted);
-      font-size: 13px;
-      transition: .25s;
-    }
-
-    .ha-top-link:hover {
-      color: var(--gold-light);
-      border-color: var(--gold);
-    }
-
-    /* Hero */
-
-    .ha-hero {
-      position: relative;
-      overflow: hidden;
-      margin: 35px 0 48px;
-      min-height: 340px;
-      border-radius: 28px;
-      padding: 55px;
-      display: flex;
-      align-items: center;
-      background:
-        linear-gradient(100deg, rgba(12,15,29,.96), rgba(20,22,42,.78)),
-        url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1800&q=85") center/cover;
-      border: 1px solid rgba(214,179,107,.2);
-    }
-
-    .ha-hero::before {
-      content: "";
-      position: absolute;
-      width: 380px;
-      height: 380px;
-      border: 1px solid rgba(214,179,107,.15);
-      border-radius: 50%;
-      left: -110px;
-      top: -150px;
-      box-shadow:
-        0 0 0 35px rgba(214,179,107,.025),
-        0 0 0 70px rgba(214,179,107,.02);
-    }
-
-    .ha-hero-content {
-      position: relative;
-      z-index: 1;
-      max-width: 680px;
-    }
-
-    .ha-eyebrow {
-      display: inline-flex;
       align-items: center;
       gap: 9px;
-      color: var(--gold-light);
+    }
+
+    .top-link {
+      padding: 8px 15px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: var(--surface);
+      color: var(--text);
       font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 17px;
+      transition: .2s;
     }
 
-    .ha-eyebrow::before {
-      content: "";
-      width: 25px;
-      height: 2px;
-      background: var(--gold);
+    .top-link:hover,
+    .top-link.active {
+      color: var(--gold-light);
+      border-color: var(--gold);
+      background: rgba(215,181,109,.08);
     }
 
-    .ha-hero h1 {
-      font-size: clamp(30px, 5vw, 53px);
-      line-height: 1.5;
+    .page {
+      width: min(1160px, 92%);
+      margin: auto;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      margin: 35px 0 28px;
+      padding: 48px 45px;
+      border: 1px solid rgba(215,181,109,.19);
+      border-radius: 30px;
+      background:
+        radial-gradient(circle at 12% 20%, rgba(142,124,243,.23), transparent 35%),
+        radial-gradient(circle at 90% 85%, rgba(70,200,183,.15), transparent 35%),
+        linear-gradient(135deg, #192440, #111a30 65%, #17182d);
+      box-shadow: 0 25px 70px rgba(0,0,0,.2);
+    }
+
+    .hero::after {
+      content: "ه";
+      position: absolute;
+      left: 35px;
+      top: -60px;
+      color: rgba(255,255,255,.035);
+      font-size: 260px;
       font-weight: 900;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 700px;
+    }
+
+    .hero-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--gold-light);
+      background: rgba(215,181,109,.1);
+      border: 1px solid rgba(215,181,109,.22);
+      border-radius: 30px;
+      padding: 6px 15px;
+      font-size: 12px;
+      font-weight: 800;
       margin-bottom: 15px;
     }
 
-    .ha-hero h1 span {
+    .hero h1 {
+      color: #fff;
+      font-size: clamp(30px, 5vw, 48px);
+      line-height: 1.5;
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+
+    .hero h1 span {
       color: var(--gold-light);
     }
 
-    .ha-hero p {
-      color: #c2c3d0;
+    .hero p {
+      max-width: 650px;
+      color: #c0c9da;
       font-size: 15px;
       line-height: 2.1;
-      max-width: 590px;
     }
 
-    .ha-hero-stats {
+    .hero-stats {
       display: flex;
-      gap: 30px;
-      margin-top: 28px;
       flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 25px;
     }
 
-    .ha-stat {
-      display: flex;
-      flex-direction: column;
+    .stat {
+      min-width: 125px;
+      padding: 12px 17px;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 15px;
+      background: rgba(255,255,255,.045);
     }
 
-    .ha-stat strong {
+    .stat strong {
+      display: block;
       color: var(--gold-light);
-      font-size: 25px;
-      line-height: 1.4;
-    }
-
-    .ha-stat span {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    /* Section headings */
-
-    .ha-section {
-      margin-top: 48px;
-    }
-
-    .ha-section-heading {
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      gap: 15px;
-      margin-bottom: 23px;
-    }
-
-    .ha-section-heading h2 {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 900;
     }
 
-    .ha-section-heading p {
+    .stat span {
       color: var(--muted);
-      font-size: 13px;
-      margin-top: 4px;
+      font-size: 11px;
     }
 
-    .ha-heading-mark {
+    .section {
+      margin-top: 45px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .section-heading h2 {
+      color: #fff;
+      font-size: 23px;
+      font-weight: 900;
+    }
+
+    .section-heading h2 span {
       color: var(--gold);
-      font-size: 12px;
-      font-weight: 700;
     }
 
-    /* Featured */
+    .section-heading p {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 3px;
+    }
 
-    .ha-featured-grid {
+    .featured-grid {
       display: grid;
-      grid-template-columns: 1.5fr 1fr 1fr;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 15px;
     }
 
     .ha-featured-card {
-      min-height: 235px;
       position: relative;
+      display: block;
+      height: 235px;
       overflow: hidden;
-      border-radius: 19px;
-      background: var(--surface);
       border: 1px solid var(--border);
+      border-radius: 19px;
+      background: var(--surface2);
       isolation: isolate;
+      transition: .25s;
+    }
+
+    .ha-featured-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(215,181,109,.55);
     }
 
     .ha-featured-card img {
-      width: 100%;
-      height: 100%;
-      min-height: 235px;
-      object-fit: cover;
       position: absolute;
       inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
       transition: transform .5s;
       z-index: -2;
     }
 
     .ha-featured-card:hover img {
-      transform: scale(1.07);
+      transform: scale(1.06);
     }
 
     .ha-featured-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        0deg,
-        rgba(10,12,24,.98),
-        rgba(10,12,24,.08) 90%
-      );
       z-index: -1;
+      background: linear-gradient(transparent 5%, rgba(5,9,20,.9) 100%);
     }
 
     .ha-featured-content {
       position: absolute;
-      bottom: 0;
-      right: 0;
-      left: 0;
-      padding: 22px;
+      right: 15px;
+      left: 15px;
+      bottom: 15px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 5px;
     }
 
     .ha-featured-content small {
       color: var(--gold-light);
-      font-size: 12px;
+      font-size: 11px;
     }
 
     .ha-featured-content strong {
-      font-size: 17px;
-      line-height: 1.8;
+      color: #fff;
+      font-size: 15px;
+      line-height: 1.7;
     }
 
     .ha-featured-content > span {
-      color: #c7c5d2;
-      font-size: 12px;
+      color: #d5d9e3;
+      font-size: 11px;
     }
 
-    /* Categories */
-
-    .ha-categories {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      overflow-x: auto;
-      padding: 4px 2px 13px;
-      scrollbar-width: thin;
-      scrollbar-color: #55506e transparent;
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 190px;
+      gap: 12px;
+      margin-bottom: 18px;
     }
 
-    .ha-category-btn {
-      flex: 0 0 auto;
-      padding: 10px 19px;
-      color: #c0c1cf;
-      border: 1px solid var(--border);
-      border-radius: 30px;
-      background: rgba(255,255,255,.025);
-      transition: .25s;
-      font-size: 13px;
-    }
-
-    .ha-category-btn:hover,
-    .ha-category-btn.active {
-      background: linear-gradient(135deg, #e5c987, #bd9857);
-      color: #1a1920;
-      border-color: transparent;
-      font-weight: 800;
-    }
-
-    /* Toolbar */
-
-    .ha-toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-      margin: 25px 0;
-      flex-wrap: wrap;
-    }
-
-    .ha-search-box {
-      flex: 1;
-      min-width: 220px;
+    .search-wrap {
       position: relative;
     }
 
-    .ha-search-box input {
-      width: 100%;
-      height: 51px;
-      padding: 0 48px 0 17px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      border-radius: 14px;
-      color: white;
-      outline: none;
-      transition: .25s;
-    }
-
-    .ha-search-box input:focus {
-      border-color: var(--gold);
-      box-shadow: 0 0 0 3px rgba(214,179,107,.09);
-    }
-
-    .ha-search-icon {
+    .search-wrap span {
       position: absolute;
       right: 17px;
       top: 50%;
       transform: translateY(-50%);
       color: var(--gold);
-      font-size: 19px;
+      font-size: 20px;
+      pointer-events: none;
     }
 
-    .ha-sort-box select {
-      height: 51px;
-      min-width: 165px;
-      padding: 0 15px;
+    .search-input,
+    .sort-select {
+      width: 100%;
+      min-height: 53px;
+      outline: none;
+      color: var(--text);
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 14px;
-      color: white;
-      outline: none;
+      border-radius: 15px;
+      padding: 10px 16px;
+      transition: .2s;
     }
 
-    .ha-results-count {
+    .search-input {
+      padding-right: 49px;
+    }
+
+    .search-input::placeholder {
+      color: #8490a7;
+    }
+
+    .search-input:focus,
+    .sort-select:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(215,181,109,.08);
+    }
+
+    .sort-select {
+      cursor: pointer;
+    }
+
+    .sort-select option {
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .categories {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      flex-wrap: wrap;
+      margin-bottom: 23px;
+    }
+
+    .ha-category-btn {
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 8px 16px;
+      color: #c5ccda;
+      background: rgba(255,255,255,.035);
+      font-size: 12px;
+      font-weight: 700;
+      transition: .2s;
+    }
+
+    .ha-category-btn:hover,
+    .ha-category-btn.active {
+      color: #171525;
+      background: linear-gradient(135deg, #f1d99d, #c49b53);
+      border-color: transparent;
+    }
+
+    .results-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
       color: var(--muted);
-      font-size: 13px;
-      margin-bottom: 18px;
+      font-size: 12px;
+      margin-bottom: 15px;
     }
 
-    /* Articles */
+    .results-line strong {
+      color: var(--gold-light);
+    }
 
-    .ha-articles-grid {
+    .articles-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 22px;
+      gap: 19px;
     }
 
     .ha-card {
+      min-width: 0;
       overflow: hidden;
-      border-radius: var(--radius);
       border: 1px solid var(--border);
-      background: linear-gradient(145deg, #1c2235, #171b2b);
-      transition: transform .3s, border-color .3s, box-shadow .3s;
-      animation: haFade .5s both;
-      animation-delay: calc(var(--card-index, 0) * 40ms);
+      border-radius: 21px;
+      background: linear-gradient(145deg, rgba(24,34,58,.96), rgba(15,23,42,.98));
+      box-shadow: 0 12px 35px rgba(0,0,0,.13);
+      animation: cardIn .4s both;
+      animation-delay: calc(var(--card-index, 0) * 35ms);
+      transition: .25s;
     }
 
-    @keyframes haFade {
+    .ha-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(215,181,109,.42);
+      box-shadow: 0 20px 45px rgba(0,0,0,.23);
+    }
+
+    @keyframes cardIn {
       from {
         opacity: 0;
-        transform: translateY(14px);
+        transform: translateY(12px);
       }
       to {
         opacity: 1;
@@ -438,76 +464,75 @@
       }
     }
 
-    .ha-card:hover {
-      transform: translateY(-6px);
-      border-color: rgba(214,179,107,.38);
-      box-shadow: 0 18px 45px rgba(0,0,0,.2);
-    }
-
     .ha-card-image {
-      height: 210px;
-      display: block;
-      overflow: hidden;
       position: relative;
-      background: #252a3d;
+      display: block;
+      height: 205px;
+      overflow: hidden;
+      background: var(--surface2);
     }
 
     .ha-card-image img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform .5s;
+      display: block;
+      transition: transform .45s;
     }
 
     .ha-card:hover .ha-card-image img {
-      transform: scale(1.06);
+      transform: scale(1.055);
     }
 
     .ha-card-category {
       position: absolute;
-      bottom: 13px;
       right: 13px;
-      background: rgba(15,18,32,.86);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(214,179,107,.35);
-      border-radius: 20px;
-      padding: 6px 12px;
+      bottom: 12px;
+      padding: 5px 12px;
+      border: 1px solid rgba(215,181,109,.3);
+      border-radius: 30px;
       color: var(--gold-light);
-      font-size: 11px;
+      background: rgba(11,16,32,.86);
+      backdrop-filter: blur(10px);
+      font-size: 10px;
+      font-weight: 800;
     }
 
     .ha-card-body {
-      padding: 18px;
+      padding: 17px;
     }
 
     .ha-card-meta {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
+      flex-wrap: wrap;
+      gap: 7px;
       color: var(--muted);
-      font-size: 11px;
-      margin-bottom: 13px;
+      font-size: 10px;
+      margin-bottom: 10px;
     }
 
-    .ha-card-meta > span {
-      display: flex;
+    .ha-card-meta > span:first-child {
+      display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
     }
 
     .ha-dot {
       width: 6px;
       height: 6px;
-      background: var(--gold);
+      display: inline-block;
       border-radius: 50%;
+      background: var(--teal);
     }
 
     .ha-card h3 {
+      color: #fff;
       font-size: 17px;
-      line-height: 1.9;
-      margin-bottom: 9px;
+      line-height: 1.8;
       font-weight: 800;
+      margin-bottom: 9px;
     }
 
     .ha-card h3 a:hover {
@@ -515,31 +540,36 @@
     }
 
     .ha-card-body > p {
-      color: #aeb1c1;
+      min-height: 72px;
+      color: #aeb8ca;
       font-size: 12px;
       line-height: 2;
-      min-height: 50px;
-      margin-bottom: 18px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .ha-card-footer {
-      border-top: 1px solid var(--border);
-      padding-top: 14px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: 10px;
+      justify-content: space-between;
+      gap: 8px;
+      border-top: 1px solid var(--border);
+      margin-top: 15px;
+      padding-top: 13px;
     }
 
     .ha-author {
-      color: #c0c1d0;
-      font-size: 11px;
+      color: #9da9bd;
+      font-size: 10px;
     }
 
     .ha-read-link {
       color: var(--gold-light);
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 800;
+      white-space: nowrap;
     }
 
     .ha-read-link span {
@@ -551,24 +581,25 @@
       transform: translateX(-4px);
     }
 
-    /* Empty state */
-
     .ha-empty {
-      grid-column: 1/-1;
-      padding: 65px 20px;
+      grid-column: 1 / -1;
       text-align: center;
-      border: 1px dashed var(--border);
+      padding: 55px 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: 20px;
-      background: rgba(255,255,255,.02);
     }
 
     .ha-empty-icon {
-      font-size: 38px;
       color: var(--gold);
+      font-size: 45px;
+      margin-bottom: 10px;
     }
 
     .ha-empty h3 {
-      margin: 12px 0;
+      color: #fff;
+      font-size: 19px;
+      margin-bottom: 7px;
     }
 
     .ha-empty p {
@@ -577,43 +608,40 @@
     }
 
     .ha-empty button {
-      margin-top: 20px;
-      border: 0;
+      margin-top: 17px;
+      padding: 9px 18px;
+      border: 1px solid var(--gold);
       border-radius: 12px;
-      background: var(--gold);
-      color: #191722;
-      padding: 10px 20px;
-      font-weight: 800;
+      color: var(--gold-light);
+      background: rgba(215,181,109,.08);
     }
 
-    /* Pagination */
-
-    .ha-pagination {
+    .pagination {
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 35px;
+      gap: 7px;
+      margin: 30px 0 65px;
     }
 
     .ha-page-btn {
-      min-width: 40px;
-      height: 40px;
-      border-radius: 11px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text);
+      min-width: 39px;
+      height: 39px;
       padding: 0 12px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      color: #cbd3e1;
+      background: var(--surface);
+      font-size: 12px;
       transition: .2s;
     }
 
     .ha-page-btn:hover:not(:disabled),
     .ha-page-btn.active {
-      background: var(--gold);
-      color: #171722;
-      border-color: var(--gold);
-      font-weight: 900;
+      color: #171525;
+      border-color: transparent;
+      background: linear-gradient(135deg, #f1d99d, #c49b53);
     }
 
     .ha-page-btn:disabled {
@@ -621,141 +649,140 @@
       cursor: not-allowed;
     }
 
-    /* Footer */
-
-    .ha-footer {
+    .footer {
+      padding: 30px 15px;
       border-top: 1px solid var(--border);
-      margin-top: 80px;
-      padding: 30px 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px;
-      flex-wrap: wrap;
       color: var(--muted);
+      text-align: center;
       font-size: 12px;
     }
 
-    .ha-footer strong {
+    .back-top {
+      position: fixed;
+      right: 20px;
+      bottom: 22px;
+      z-index: 40;
+      width: 45px;
+      height: 45px;
+      display: none;
+      border: 1px solid var(--border);
+      border-radius: 14px;
       color: var(--gold-light);
-      font-size: 18px;
+      background: var(--surface2);
+      font-size: 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,.2);
     }
 
-    /* Responsive */
+    .back-top.visible {
+      display: block;
+    }
 
-    @media (max-width: 950px) {
-      .ha-featured-grid {
-        grid-template-columns: 1fr 1fr;
+    @media (max-width: 900px) {
+      .featured-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
-      .ha-featured-card:first-child {
-        grid-column: 1/-1;
-      }
-
-      .ha-articles-grid {
+      .articles-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
     @media (max-width: 600px) {
-      .articles-page {
-        padding: 0 15px 50px;
+      .topbar-inner {
+        min-height: 63px;
       }
 
-      .ha-topbar {
-        height: 65px;
-      }
-
-      .ha-brand {
+      .brand {
         font-size: 19px;
       }
 
-      .ha-top-link {
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+      }
+
+      .top-link {
         padding: 7px 10px;
         font-size: 11px;
       }
 
-      .ha-hero {
-        min-height: 340px;
-        margin: 20px 0 35px;
-        padding: 27px 21px;
-        border-radius: 20px;
+      .hero {
+        margin-top: 20px;
+        padding: 30px 22px;
+        border-radius: 23px;
       }
 
-      .ha-hero h1 {
-        font-size: 31px;
+      .hero::after {
+        left: 0;
+        top: 0;
+        font-size: 170px;
       }
 
-      .ha-hero p {
+      .hero p {
         font-size: 13px;
       }
 
-      .ha-hero-stats {
-        gap: 20px;
+      .stat {
+        min-width: 105px;
+        padding: 9px 12px;
       }
 
-      .ha-section {
-        margin-top: 36px;
+      .stat strong {
+        font-size: 19px;
       }
 
-      .ha-section-heading h2 {
-        font-size: 20px;
+      .section {
+        margin-top: 35px;
       }
 
-      .ha-featured-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 9px;
+      .section-heading h2 {
+        font-size: 19px;
+      }
+
+      .featured-grid {
+        gap: 10px;
       }
 
       .ha-featured-card {
-        min-height: 180px;
-      }
-
-      .ha-featured-card img {
-        min-height: 180px;
-      }
-
-      .ha-featured-card:first-child {
-        min-height: 220px;
-      }
-
-      .ha-featured-card:first-child img {
-        min-height: 220px;
+        height: 185px;
+        border-radius: 15px;
       }
 
       .ha-featured-content {
-        padding: 13px;
+        right: 10px;
+        left: 10px;
+        bottom: 10px;
       }
 
       .ha-featured-content strong {
-        font-size: 13px;
+        font-size: 12px;
       }
 
-      .ha-featured-content small,
-      .ha-featured-content > span {
-        font-size: 10px;
+      .toolbar {
+        grid-template-columns: 1fr;
       }
 
-      .ha-toolbar {
-        gap: 9px;
+      .search-input,
+      .sort-select {
+        min-height: 49px;
+        font-size: 16px;
       }
 
-      .ha-search-box {
-        min-width: 100%;
+      .categories {
+        gap: 7px;
       }
 
-      .ha-sort-box,
-      .ha-sort-box select {
-        width: 100%;
+      .ha-category-btn {
+        padding: 7px 12px;
+        font-size: 11px;
       }
 
-      .ha-articles-grid {
-        grid-template-columns: 1fr 1fr;
+      .articles-grid {
         gap: 11px;
       }
 
       .ha-card {
-        border-radius: 14px;
+        border-radius: 16px;
       }
 
       .ha-card-image {
@@ -768,218 +795,202 @@
 
       .ha-card-meta {
         font-size: 9px;
-        flex-wrap: wrap;
       }
 
       .ha-card h3 {
         font-size: 13px;
-        line-height: 1.8;
+        line-height: 1.7;
       }
 
       .ha-card-body > p {
+        min-height: 66px;
         font-size: 10px;
-        line-height: 1.8;
-        min-height: 55px;
       }
 
       .ha-card-footer {
-        flex-wrap: wrap;
+        margin-top: 10px;
+        padding-top: 10px;
       }
 
-      .ha-author,
+      .ha-author {
+        font-size: 9px;
+      }
+
       .ha-read-link {
         font-size: 10px;
       }
-
-      .ha-footer {
-        margin-top: 50px;
-      }
     }
 
-    @media (max-width: 360px) {
-      .ha-articles-grid {
+    @media (max-width: 370px) {
+      .articles-grid {
         grid-template-columns: 1fr;
       }
 
       .ha-card-image {
         height: 190px;
       }
+
+      .ha-card h3 {
+        font-size: 16px;
+      }
+
+      .ha-card-body > p {
+        min-height: auto;
+        font-size: 12px;
+      }
+
+      .top-links {
+        gap: 5px;
+      }
+
+      .top-link {
+        padding: 6px 8px;
+        font-size: 10px;
+      }
     }
-    
-/* تثبيت عرض الصفحة ومنع التكبير باللمس */
-html {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-  touch-action: pan-y;
-  -webkit-text-size-adjust: 100%;
-}
-
-body {
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  overflow-x: hidden;
-  touch-action: pan-y;
-  overscroll-behavior-x: none;
-}
-
-/* منع العناصر من توسيع الشاشة */
-img,
-video,
-iframe,
-table,
-.article-card,
-.article-content {
-  max-width: 100%;
-}
-
-.article-content {
-  overflow-wrap: anywhere;
-  word-break: normal;
-}
-
-/* منع الحقول من تكبير الشاشة تلقائيًا على الهاتف */
-input,
-select,
-textarea,
-button {
-  font-size: 16px;
-}
-
   </style>
 </head>
 
 <body>
 
-  <main class="articles-page">
-
-    <header class="ha-topbar">
-      <a class="ha-brand" href="../index.html">
-        <span class="ha-brand-mark">هـ</span>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="../index.html">
+        <span class="brand-mark">ه</span>
         <span>هنون</span>
       </a>
 
-      <nav class="ha-top-actions">
-        <a class="ha-top-link" href="../index.html">الرئيسية</a>
-        <a class="ha-top-link" href="library.html">المكتبة</a>
+      <nav class="top-links">
+        <a class="top-link active" href="articles.html">المقالات</a>
+        <a class="top-link" href="library.html">المكتبة</a>
+        <a class="top-link" href="../index.html">الرئيسية</a>
       </nav>
-    </header>
+    </div>
+  </header>
 
-    <section class="ha-hero">
-      <div class="ha-hero-content">
+  <main class="page">
 
-        <div class="ha-eyebrow">مساحة للفكر والمعرفة</div>
+    <section class="hero">
+      <div class="hero-content">
+        <span class="hero-label">✦ مساحة للمعرفة والاكتشاف</span>
 
-        <h1>
-          اقرأ أكثر،
-          <span>اكتشف أعمق</span>
-        </h1>
+        <h1>اقرأ، اكتشف، <span>وتطوّر</span></h1>
 
         <p>
-          عالم من المقالات والأفكار والتجارب الإنسانية.
-          اكتشف موضوعات جديدة، ووسّع معرفتك، واجعل كل قراءة
-          خطوة نحو فهم أفضل للحياة.
+          في هنون، نؤمن أن كل فكرة جديدة قد تكون بداية لتغيير كبير.
+          اكتشف مقالات متعمقة في الحياة والإنسان والعلوم والتكنولوجيا
+          والعلاقات، واقرأ محتوى يساعدك على الفهم والتفكير والتطور.
         </p>
 
-        <div class="ha-hero-stats">
-          <div class="ha-stat">
+        <div class="hero-stats">
+          <div class="stat">
             <strong id="haTotalArticles">0</strong>
-            <span>مقال متاح حاليًا</span>
+            <span>مقال في المكتبة</span>
           </div>
 
-          <div class="ha-stat">
-            <strong>متنوع</strong>
-            <span>موضوعات متعددة</span>
+          <div class="stat">
+            <strong>15</strong>
+            <span>مجموعة معرفية مستهدفة</span>
           </div>
 
-          <div class="ha-stat">
-            <strong>هنون</strong>
-            <span>مساحتك المعرفية</span>
+          <div class="stat">
+            <strong>∞</strong>
+            <span>أفكار تستحق الاكتشاف</span>
           </div>
         </div>
-
       </div>
     </section>
 
-    <section class="ha-section">
-
-      <div class="ha-section-heading">
+    <section class="section" id="featuredSection">
+      <div class="section-heading">
         <div>
-          <h2>اختيارات هنون</h2>
-          <p>مجموعة من المقالات التي تستحق وقتك</p>
+          <h2>مختارات <span>هنون</span></h2>
+          <p>مجموعة من المقالات التي تستحق أن تبدأ بها</p>
         </div>
-
-        <span class="ha-heading-mark">مقالات مختارة</span>
       </div>
 
-      <div class="ha-featured-grid" id="haFeatured"></div>
-
+      <div class="featured-grid" id="haFeatured"></div>
     </section>
 
-    <section class="ha-section">
-
-      <div class="ha-section-heading">
+    <section class="section" id="allArticles">
+      <div class="section-heading">
         <div>
-          <h2>اكتشف حسب اهتمامك</h2>
-          <p>اختر المجال الذي ترغب في القراءة عنه</p>
+          <h2>اكتشف <span>المقالات</span></h2>
+          <p>ابحث في الموضوعات واختر المجال الذي يثير اهتمامك</p>
         </div>
       </div>
 
-      <div class="ha-categories" id="haCategories"></div>
-
-    </section>
-
-    <section class="ha-section" id="haAllArticles">
-
-      <div class="ha-section-heading">
-        <div>
-          <h2>جميع المقالات</h2>
-          <p>أفكار جديدة ومعرفة تستحق الاكتشاف</p>
-        </div>
-      </div>
-
-      <div class="ha-toolbar">
-
-        <div class="ha-search-box">
-          <span class="ha-search-icon">⌕</span>
+      <div class="toolbar">
+        <div class="search-wrap">
+          <span aria-hidden="true">⌕</span>
           <input
             type="search"
             id="haSearch"
-            placeholder="ابحث عن مقال أو موضوع..."
+            class="search-input"
+            placeholder="ابحث عن مقال أو فكرة أو موضوع..."
             autocomplete="off"
+            aria-label="البحث في المقالات"
           >
         </div>
 
-        <div class="ha-sort-box">
-          <select id="haSort">
-            <option value="latest">الأحدث أولًا</option>
-            <option value="oldest">الأقدم أولًا</option>
-            <option value="title">ترتيب العناوين</option>
-          </select>
-        </div>
-
+        <select id="haSort" class="sort-select" aria-label="ترتيب المقالات">
+          <option value="latest">الأحدث أولًا</option>
+          <option value="oldest">الأقدم أولًا</option>
+          <option value="title">الترتيب حسب العنوان</option>
+        </select>
       </div>
 
-      <div class="ha-results-count" id="haResultsCount"></div>
+      <div class="categories" id="haCategories"></div>
 
-      <div class="ha-articles-grid" id="haArticlesGrid"></div>
+      <div class="results-line">
+        <span id="haResultsCount">جاري تحميل المقالات...</span>
+        <span>محتوى <strong>هنون</strong></span>
+      </div>
 
-      <div class="ha-pagination" id="haPagination"></div>
+      <div class="articles-grid" id="haArticlesGrid">
+        <div class="ha-empty">
+          <div class="ha-empty-icon">✦</div>
+          <h3>جاري تجهيز المقالات</h3>
+          <p>لحظات ونبدأ رحلة المعرفة.</p>
+        </div>
+      </div>
 
+      <div class="pagination" id="haPagination"></div>
     </section>
-
-    <footer class="ha-footer">
-      <strong>هنون | HANOON</strong>
-      <span>المعرفة تبدأ بخطوة، والقراءة تفتح الطريق.</span>
-      <a href="../index.html">العودة للرئيسية ←</a>
-    </footer>
 
   </main>
 
-  <!-- ملفات المقالات -->
+  <footer class="footer">
+    © <span id="currentYear"></span> هنون — المعرفة تبدأ بفكرة
+  </footer>
+
+  <button class="back-top" id="backTop" aria-label="العودة للأعلى">↑</button>
+
+  <!-- قاعدة بيانات المقالات الأساسية -->
   <script src="../data/articles.js"></script>
+
+  <!-- محرك عرض المقالات والبحث والتصنيفات -->
   <script src="../js/articles.js"></script>
+
+  <script>
+    document.getElementById("currentYear").textContent =
+      new Date().getFullYear();
+
+    const backTop = document.getElementById("backTop");
+
+    window.addEventListener("scroll", () => {
+      backTop.classList.toggle("visible", window.scrollY > 400);
+    });
+
+    backTop.addEventListener("click", () => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    });
+  </script>
+
+  <script src="../js/global-back.js"></script>
 
 </body>
 </html>
