@@ -2,1468 +2,693 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#080d1b">
-  <meta name="description" content="مكتبة هنون للشعر والأدب، دواوين وقصائد باللهجة المصرية والعربية.">
-  <title>الشعر والأدب | هنون</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --bg: #080d1b;
-      --panel: #111a2d;
-      --panel-2: #162139;
-      --panel-3: #1b2943;
-      --gold: #d9b66d;
-      --gold-light: #f2d99c;
-      --purple: #a58bff;
-      --teal: #54d6c3;
-      --text: #f5f1e8;
-      --muted: #9ca9bd;
-      --border: rgba(217,182,109,.2);
-      --danger: #ff8291;
-      --shadow: 0 22px 65px rgba(0,0,0,.32);
-    }
-
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html {
-      scroll-behavior: smooth;
-      background: var(--bg);
-    }
-
-    body {
-      position: relative;
-      isolation: isolate;
-      margin: 0;
-      min-height: 100vh;
-      color: var(--text);
-      background:
-        radial-gradient(ellipse at 85% 0%, rgba(105,83,168,.22), transparent 38%),
-        radial-gradient(ellipse at 0% 35%, rgba(53,143,139,.12), transparent 32%),
-        linear-gradient(180deg,#080d1b,#0c1427 55%,#080d1b);
-      font-family: "Cairo", sans-serif;
-      overflow-x: hidden;
-    }
-
-    /* الخلفية الفنية الثابتة */
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      z-index: -1;
-      pointer-events: none;
-      opacity: .34;
-      background-image:
-        repeating-linear-gradient(45deg,transparent 0 38px,rgba(226,190,112,.055) 39px,transparent 40px 78px),
-        repeating-linear-gradient(-45deg,transparent 0 38px,rgba(226,190,112,.035) 39px,transparent 40px 78px);
-      mask-image: linear-gradient(to bottom,black,transparent 95%);
-    }
-
-    body::after {
-      content: "ش";
-      position: fixed;
-      z-index: -1;
-      left: -45px;
-      bottom: -160px;
-      color: rgba(226,190,112,.035);
-      font-size: clamp(300px,45vw,650px);
-      line-height: 1;
-      font-weight: 900;
-      pointer-events: none;
-      transform: rotate(-12deg);
-    }
-
-    button, input, select {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    .page {
-      position: relative;
-      width: min(1200px, 100%);
-      margin: auto;
-      padding: 22px 20px 70px;
-    }
-
-    /* الشريط العلوي */
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-      margin-bottom: 30px;
-      padding: 11px 15px;
-      border: 1px solid rgba(226,190,112,.17);
-      border-radius: 19px;
-      background: rgba(13,22,41,.7);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      box-shadow: 0 12px 35px rgba(0,0,0,.2);
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .brand-mark {
-      width: 48px;
-      height: 48px;
-      display: grid;
-      place-items: center;
-      border-radius: 16px;
-      color: #151322;
-      background: linear-gradient(145deg,#fff0bd,#b58a42);
-      box-shadow: 0 0 0 5px rgba(226,190,112,.07),0 8px 27px rgba(217,182,109,.25);
-      font-size: 25px;
-      font-weight: 900;
-    }
-
-    .brand-name {
-      font-size: 20px;
-      font-weight: 900;
-      letter-spacing: .3px;
-    }
-
-    .brand-caption {
-      color: var(--muted);
-      font-size: 11px;
-      margin-top: -5px;
-    }
-
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 15px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      color: var(--gold-light);
-      background: rgba(255,255,255,.035);
-      font-size: 13px;
-      transition: .25s;
-    }
-
-    .back-link:hover {
-      background: rgba(217,182,109,.12);
-      transform: translateY(-2px);
-      border-color: rgba(217,182,109,.5);
-    }
-
-    /* واجهة المكتبة الرئيسية */
-    .hero {
-      position: relative;
-      overflow: hidden;
-      min-height: 330px;
-      display: flex;
-      align-items: center;
-      padding: 48px 42px;
-      border: 1px solid rgba(226,190,112,.3);
-      border-radius: 29px;
-      background:
-        radial-gradient(circle at 12% 50%,rgba(165,139,255,.22),transparent 35%),
-        radial-gradient(circle at 90% 10%,rgba(84,214,195,.11),transparent 30%),
-        linear-gradient(125deg,rgba(15,25,47,.98),rgba(23,29,54,.96) 65%,rgba(16,22,42,.98));
-      box-shadow: 0 25px 75px rgba(0,0,0,.36),inset 0 1px rgba(255,255,255,.06);
-    }
-
-    .hero::before {
-      content: "";
-      position: absolute;
-      inset: 13px;
-      border: 1px solid rgba(226,190,112,.15);
-      border-radius: 20px;
-      pointer-events: none;
-    }
-
-    .hero::after {
-      content: "ش";
-      position: absolute;
-      left: 35px;
-      top: -85px;
-      color: rgba(217,182,109,.08);
-      font-size: 320px;
-      line-height: 1;
-      font-weight: 900;
-      pointer-events: none;
-      text-shadow: 0 0 80px rgba(217,182,109,.1);
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 1;
-      max-width: 680px;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      color: var(--gold-light);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: .4px;
-    }
-
-    .eyebrow::before {
-      content: "";
-      width: 27px;
-      height: 2px;
-      background: linear-gradient(90deg,var(--gold),transparent);
-    }
-
-    .hero h1 {
-      margin: 15px 0 12px;
-      font-size: clamp(31px,5vw,52px);
-      line-height: 1.5;
-      font-weight: 900;
-      text-shadow: 0 8px 30px rgba(0,0,0,.35);
-    }
-
-    .hero h1 span {
-      background: linear-gradient(100deg,#fff0bd,#d9b66d 55%,#bca5ff);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .hero p {
-      max-width: 590px;
-      margin: 0;
-      color: #b5bfd0;
-      font-size: 14px;
-      line-height: 2.2;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 11px;
-      margin-top: 25px;
-    }
-
-    .primary-btn, .secondary-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      min-height: 46px;
-      padding: 10px 20px;
-      border-radius: 13px;
-      font-size: 13px;
-      font-weight: 800;
-      transition: .25s;
-    }
-
-    .primary-btn {
-      color: #171421;
-      border: 0;
-      background: linear-gradient(135deg,#fff0bd,#c49b50);
-      box-shadow: 0 7px 22px rgba(217,182,109,.17);
-    }
-
-    .secondary-btn {
-      color: var(--text);
-      border: 1px solid rgba(255,255,255,.15);
-      background: rgba(255,255,255,.05);
-      backdrop-filter: blur(10px);
-    }
-
-    .primary-btn:hover, .secondary-btn:hover {
-      transform: translateY(-3px);
-      filter: brightness(1.08);
-    }
-
-    /* الأقسام */
-    .section {
-      margin-top: 38px;
-    }
-
-    .section-heading {
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      gap: 15px;
-      margin-bottom: 18px;
-    }
-
-    .section-heading h2 {
-      margin: 0;
-      color: #fff1cf;
-      font-size: 21px;
-      font-weight: 900;
-    }
-
-    .section-heading p {
-      margin: 3px 0 0;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .section-count {
-      color: var(--gold-light);
-      font-size: 12px;
-      white-space: nowrap;
-    }
-
-    /* الإحصائيات */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4,1fr);
-      gap: 13px;
-    }
-
-    .stat-card {
-      position: relative;
-      display: flex;
-      align-items: center;
-      gap: 13px;
-      min-height: 108px;
-      padding: 16px;
-      overflow: hidden;
-      border: 1px solid rgba(226,190,112,.16);
-      border-radius: 19px;
-      background: linear-gradient(145deg,rgba(24,37,61,.92),rgba(12,20,37,.91));
-      backdrop-filter: blur(14px);
-      box-shadow: inset 0 1px rgba(255,255,255,.04),0 12px 30px rgba(0,0,0,.16);
-      transition: .25s;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-3px);
-      border-color: rgba(226,190,112,.38);
-    }
-
-    .stat-circle {
-      --progress: 0deg;
-      width: 62px;
-      height: 62px;
-      flex: 0 0 62px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      background:
-        radial-gradient(circle,#142039 58%,transparent 60%),
-        conic-gradient(var(--gold) var(--progress),rgba(255,255,255,.09) 0);
-      filter: drop-shadow(0 0 12px rgba(217,182,109,.1));
-    }
-
-    .stat-circle span {
-      font-size: 15px;
-      font-weight: 900;
-      color: var(--gold-light);
-    }
-
-    .stat-number {
-      font-size: 22px;
-      line-height: 1.2;
-      font-weight: 900;
-    }
-
-    .stat-label {
-      margin-top: 4px;
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    /* البحث والتصنيفات */
-    .toolbar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 15px;
-    }
-
-    .search-wrap {
-      position: relative;
-      flex: 1;
-    }
-
-    .search-wrap input {
-      width: 100%;
-      height: 50px;
-      padding: 0 46px 0 15px;
-      outline: none;
-      color: var(--text);
-      border: 1px solid rgba(226,190,112,.19);
-      border-radius: 14px;
-      background: rgba(17,26,45,.83);
-      backdrop-filter: blur(12px);
-      transition: .2s;
-    }
-
-    .search-wrap input:focus {
-      border-color: rgba(217,182,109,.7);
-      box-shadow: 0 0 0 3px rgba(217,182,109,.09);
-    }
-
-    .search-wrap input::placeholder {
-      color: #8491a6;
-    }
-
-    .search-icon {
-      position: absolute;
-      right: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--gold);
-      font-size: 18px;
-    }
-
-    .sort-select {
-      height: 50px;
-      padding: 0 14px;
-      color: var(--text);
-      outline: none;
-      border: 1px solid rgba(226,190,112,.19);
-      border-radius: 14px;
-      background: rgba(17,26,45,.9);
-    }
-
-    .sort-select option {
-      color: white;
-      background: #111a2d;
-    }
-
-    .categories {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding: 3px 0 13px;
-      scrollbar-width: none;
-    }
-
-    .categories::-webkit-scrollbar {
-      display: none;
-    }
-
-    .category-btn {
-      flex: 0 0 auto;
-      padding: 9px 15px;
-      color: #b6c0d1;
-      border: 1px solid rgba(226,190,112,.17);
-      border-radius: 30px;
-      background: rgba(255,255,255,.035);
-      font-size: 12px;
-      font-weight: 700;
-      transition: .2s;
-    }
-
-    .category-btn:hover {
-      border-color: rgba(226,190,112,.5);
-      color: var(--gold-light);
-    }
-
-    .category-btn.active {
-      color: #171421;
-      border-color: var(--gold);
-      background: linear-gradient(135deg,var(--gold-light),#c49b50);
-      box-shadow: 0 5px 18px rgba(217,182,109,.15);
-    }
-
-    /* بطاقات الدواوين */
-    .collections-grid {
-      display: grid;
-      grid-template-columns: repeat(3,minmax(0,1fr));
-      gap: 18px;
-    }
-
-    .collection-card {
-      position: relative;
-      min-width: 0;
-      overflow: hidden;
-      border: 1px solid rgba(226,190,112,.2);
-      border-radius: 21px;
-      background: linear-gradient(155deg,rgba(25,38,64,.96),rgba(10,17,32,.97));
-      box-shadow: 0 15px 38px rgba(0,0,0,.2);
-      transition: transform .28s,border-color .28s,box-shadow .28s;
-    }
-
-    .collection-card:hover {
-      transform: translateY(-6px);
-      border-color: rgba(217,182,109,.55);
-      box-shadow: 0 22px 45px rgba(0,0,0,.32);
-    }
-
-    .collection-cover {
-      position: relative;
-      height: 180px;
-      overflow: hidden;
-      background:
-        radial-gradient(circle at 25% 25%,rgba(242,217,156,.3),transparent 32%),
-        radial-gradient(circle at 80% 80%,rgba(165,139,255,.24),transparent 38%),
-        linear-gradient(135deg,#4c3e70,#1b2943 70%);
-    }
-
-    .collection-cover::before {
-      content: "";
-      position: absolute;
-      inset: 9px;
-      z-index: 1;
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 13px;
-      pointer-events: none;
-    }
-
-    .collection-cover img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      opacity: .82;
-      transition: transform .6s,opacity .3s;
-    }
-
-    .collection-card:hover .collection-cover img {
-      transform: scale(1.07);
-      opacity: .96;
-    }
-
-    .cover-overlay {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: end;
-      padding: 15px;
-      background: linear-gradient(transparent 15%,rgba(7,12,25,.88));
-    }
-
-    .cover-symbol {
-      color: var(--gold-light);
-      font-size: 38px;
-      font-weight: 900;
-      text-shadow: 0 3px 15px rgba(0,0,0,.6);
-    }
-
-    .collection-body {
-      padding: 17px;
-      background: linear-gradient(180deg,rgba(18,28,48,.18),rgba(8,14,28,.38));
-    }
-
-    .collection-meta {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 9px;
-    }
-
-    .collection-category {
-      padding: 4px 10px;
-      color: var(--gold-light);
-      border: 1px solid rgba(217,182,109,.23);
-      border-radius: 20px;
-      background: rgba(217,182,109,.08);
-      font-size: 10px;
-      font-weight: 700;
-    }
-
-    .poem-count {
-      color: var(--muted);
-      font-size: 10px;
-      white-space: nowrap;
-    }
-
-    .collection-title {
-      margin: 0;
-      color: #fff4d8;
-      font-size: 17px;
-      font-weight: 900;
-      line-height: 1.7;
-    }
-
-    .collection-subtitle {
-      margin: 3px 0 8px;
-      color: var(--gold-light);
-      font-size: 11px;
-    }
-
-    .collection-description {
-      min-height: 48px;
-      margin: 0;
-      color: #aab6c9;
-      font-size: 11px;
-      line-height: 1.9;
-    }
-
-    .collection-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-top: 15px;
-      padding-top: 12px;
-      border-top: 1px solid rgba(255,255,255,.08);
-    }
-
-    .author-name {
-      color: #aab6c9;
-      font-size: 10px;
-    }
-
-    .open-collection {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--gold-light);
-      font-size: 11px;
-      font-weight: 800;
-      background: none;
-      border: 0;
-      padding: 5px 0;
-    }
-
-    .open-collection:hover {
-      color: white;
-    }
-
-    /* القصائد المختارة */
-    .featured-panel {
-      position: relative;
-      overflow: hidden;
-      padding: 23px;
-      border: 1px solid rgba(165,139,255,.23);
-      border-radius: 22px;
-      background:
-        radial-gradient(circle at 0% 100%,rgba(165,139,255,.17),transparent 40%),
-        radial-gradient(circle at 100% 0%,rgba(217,182,109,.08),transparent 35%),
-        linear-gradient(120deg,rgba(24,34,59,.96),rgba(12,20,37,.98));
-      box-shadow: 0 18px 45px rgba(0,0,0,.2);
-    }
-
-    .featured-list {
-      display: grid;
-      grid-template-columns: repeat(2,minmax(0,1fr));
-      gap: 11px;
-    }
-
-    .featured-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-width: 0;
-      padding: 13px;
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 14px;
-      background: rgba(255,255,255,.035);
-      transition: .2s;
-    }
-
-    .featured-item:hover {
-      transform: translateY(-2px);
-      border-color: rgba(217,182,109,.4);
-      background: rgba(217,182,109,.07);
-    }
-
-    .featured-number {
-      width: 38px;
-      height: 38px;
-      flex: 0 0 38px;
-      display: grid;
-      place-items: center;
-      color: var(--gold-light);
-      border-radius: 11px;
-      background: rgba(217,182,109,.12);
-      box-shadow: inset 0 0 0 1px rgba(226,190,112,.12);
-      font-weight: 900;
-    }
-
-    .featured-info {
-      min-width: 0;
-      flex: 1;
-    }
-
-    .featured-info strong {
-      display: block;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      font-size: 12px;
-    }
-
-    .featured-info span {
-      display: block;
-      margin-top: 3px;
-      color: var(--muted);
-      font-size: 10px;
-    }
-
-    .featured-arrow {
-      color: var(--gold);
-      font-size: 17px;
-    }
-
-    /* حالات التحميل */
-    .empty-state, .loading-state {
-      grid-column: 1 / -1;
-      padding: 42px 20px;
-      text-align: center;
-      border: 1px dashed rgba(217,182,109,.28);
-      border-radius: 18px;
-      color: var(--muted);
-      background: rgba(255,255,255,.025);
-    }
-
-    .empty-icon {
-      margin-bottom: 9px;
-      color: var(--gold);
-      font-size: 32px;
-    }
-
-    .empty-state strong {
-      display: block;
-      color: var(--text);
-      font-size: 15px;
-    }
-
-    .empty-state p {
-      margin: 7px 0 0;
-      font-size: 12px;
-      line-height: 1.9;
-    }
-
-    .integrity-note {
-      margin-top: 24px;
-      padding: 14px 17px;
-      color: #b4c0d1;
-      border: 1px solid rgba(84,214,195,.19);
-      border-radius: 14px;
-      background: rgba(23,67,66,.15);
-      backdrop-filter: blur(12px);
-      font-size: 11px;
-      line-height: 1.9;
-    }
-
-    .integrity-note strong {
-      color: var(--teal);
-    }
-
-    .footer {
-      margin-top: 45px;
-      padding-top: 20px;
-      text-align: center;
-      color: #78869c;
-      border-top: 1px solid rgba(226,190,112,.12);
-      font-size: 11px;
-    }
-
-    /* الشاشات المتوسطة */
-    @media (max-width: 900px) {
-      .collections-grid {
-        grid-template-columns: repeat(2,minmax(0,1fr));
-      }
-
-      .stats-grid {
-        grid-template-columns: repeat(2,1fr);
-      }
-    }
-
-    /* الجوال */
-    @media (max-width: 560px) {
-      .page {
-        padding: 15px 13px 45px;
-      }
-
-      .topbar {
-        margin-bottom: 20px;
-        padding: 9px 10px;
-        border-radius: 15px;
-      }
-
-      .brand-mark {
-        width: 42px;
-        height: 42px;
-      }
-
-      .brand-name {
-        font-size: 17px;
-      }
-
-      .back-link {
-        padding: 8px 10px;
-        font-size: 11px;
-      }
-
-      .hero {
-        min-height: 300px;
-        padding: 31px 21px;
-        border-radius: 22px;
-      }
-
-      .hero::before {
-        inset: 7px;
-      }
-
-      .hero::after {
-        left: -25px;
-        top: -25px;
-        font-size: 200px;
-      }
-
-      .hero p {
-        font-size: 12px;
-      }
-
-      .hero-actions {
-        gap: 8px;
-      }
-
-      .primary-btn, .secondary-btn {
-        min-height: 42px;
-        padding: 9px 13px;
-        font-size: 11px;
-      }
-
-      .stats-grid {
-        gap: 9px;
-      }
-
-      .stat-card {
-        min-height: 88px;
-        padding: 10px;
-        gap: 9px;
-      }
-
-      .stat-circle {
-        width: 49px;
-        height: 49px;
-        flex-basis: 49px;
-      }
-
-      .stat-circle span {
-        font-size: 12px;
-      }
-
-      .stat-number {
-        font-size: 18px;
-      }
-
-      .stat-label {
-        font-size: 9px;
-      }
-
-      .toolbar {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .sort-select {
-        width: 100%;
-      }
-
-      .collections-grid {
-        grid-template-columns: 1fr;
-        gap: 13px;
-      }
-
-      .collection-card {
-        display: grid;
-        grid-template-columns: 112px minmax(0,1fr);
-        min-height: 158px;
-        border-radius: 17px;
-      }
-
-      .collection-cover {
-        height: 100%;
-        min-height: 158px;
-      }
-
-      .collection-cover::before {
-        inset: 6px;
-      }
-
-      .cover-overlay {
-        padding: 9px;
-      }
-
-      .cover-symbol {
-        font-size: 27px;
-      }
-
-      .collection-body {
-        padding: 12px;
-      }
-
-      .collection-title {
-        font-size: 14px;
-      }
-
-      .collection-description {
-        min-height: auto;
-        font-size: 10px;
-      }
-
-      .collection-footer {
-        margin-top: 9px;
-        padding-top: 8px;
-      }
-
-      .featured-panel {
-        padding: 13px;
-      }
-
-      .featured-list {
-        grid-template-columns: 1fr;
-      }
-
-      .section {
-        margin-top: 28px;
-      }
-
-      .section-heading h2 {
-        font-size: 17px;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        scroll-behavior: auto !important;
-        transition-duration: .01ms !important;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0c1020">
+<meta name="description" content="مكتبة هنون للشعر والأدب والدواوين الشعرية">
+<title>مكتبة الشعر والأدب | هنون</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#0c1020;
+  --panel:#171d32;
+  --panel2:#202840;
+  --gold:#d5b36c;
+  --gold2:#f1d99e;
+  --purple:#8c75f5;
+  --teal:#35bdb0;
+  --text:#f5ead1;
+  --muted:#a8aec2;
+  --border:rgba(213,179,108,.19);
+  --shadow:0 22px 65px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{
+  margin:0;min-height:100vh;color:var(--text);
+  background:
+    radial-gradient(ellipse at 85% 0%,rgba(140,117,245,.15),transparent 35%),
+    radial-gradient(ellipse at 5% 40%,rgba(53,189,176,.07),transparent 32%),
+    var(--bg);
+  font-family:"Cairo",sans-serif;overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  opacity:.25;
+  background-image:
+    linear-gradient(rgba(213,179,108,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(213,179,108,.035) 1px,transparent 1px);
+  background-size:55px 55px;
+}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.page{width:min(1240px,94%);margin:auto;padding-bottom:70px}
+
+/* Header */
+.topbar{
+  min-height:76px;display:flex;align-items:center;
+  justify-content:space-between;gap:15px;
+  padding:12px 4%;
+  position:sticky;top:0;z-index:50;
+  background:rgba(12,16,32,.92);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(18px);
+}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-mark{
+  width:46px;height:46px;display:grid;place-items:center;
+  border-radius:14px;color:#171321;
+  background:linear-gradient(145deg,#f4dfa9,#a98543);
+  font-size:24px;font-weight:900;
+  box-shadow:0 7px 24px rgba(213,179,108,.2);
+}
+.brand-name{font-size:21px;font-weight:900;letter-spacing:1px}
+.brand-caption{font-size:10px;color:var(--muted);margin-top:-5px}
+.header-links{display:flex;align-items:center;gap:10px}
+.header-link{
+  padding:9px 15px;border:1px solid var(--border);
+  border-radius:12px;color:var(--gold2);font-size:12px;
+  transition:.2s;
+}
+.header-link:hover{background:rgba(213,179,108,.1)}
+
+/* Hero */
+.hero{
+  min-height:350px;margin-top:24px;
+  position:relative;overflow:hidden;
+  display:grid;grid-template-columns:1.3fr .7fr;
+  align-items:center;gap:25px;
+  padding:38px 5%;
+  border:1px solid rgba(213,179,108,.28);
+  border-radius:27px;
+  background:
+    radial-gradient(circle at 12% 50%,rgba(140,117,245,.2),transparent 35%),
+    radial-gradient(circle at 90% 15%,rgba(53,189,176,.12),transparent 30%),
+    linear-gradient(125deg,#111a30,#20243d 60%,#11182b);
+  box-shadow:var(--shadow);
+}
+.hero::before{
+  content:"ش";position:absolute;left:25px;top:-105px;
+  font-size:390px;line-height:1;color:rgba(213,179,108,.055);
+  font-weight:900;pointer-events:none;
+}
+.hero-content{position:relative;z-index:2}
+.eyebrow{
+  color:var(--gold);font-size:12px;font-weight:900;
+  letter-spacing:2px;margin-bottom:12px;
+}
+.hero h1{font-size:clamp(29px,5vw,49px);line-height:1.5;margin:0 0 12px;font-weight:900}
+.hero h1 span{color:var(--gold2)}
+.hero p{max-width:600px;color:#c4c7d3;font-size:13px;line-height:2.2;margin:0}
+.hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:23px}
+.primary-btn,.outline-btn{
+  min-height:44px;padding:10px 20px;border-radius:12px;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:900;transition:.2s;
+}
+.primary-btn{background:linear-gradient(135deg,#f0d99f,#b38b4c);color:#171321}
+.outline-btn{border:1px solid var(--border);color:var(--gold2);background:rgba(255,255,255,.035)}
+.primary-btn:hover,.outline-btn:hover{transform:translateY(-2px)}
+.hero-art{
+  min-height:260px;display:flex;align-items:center;
+  justify-content:center;position:relative;z-index:2;
+}
+.hero-book{
+  width:170px;height:225px;position:relative;
+  border-radius:5px 13px 13px 5px;
+  transform:rotate(-7deg);
+  background:
+    linear-gradient(90deg,rgba(0,0,0,.5),transparent 13%),
+    linear-gradient(145deg,#3a3158,#151b34 70%,#8b6937);
+  border:1px solid rgba(242,217,158,.65);
+  box-shadow:20px 22px 35px rgba(0,0,0,.45),inset 5px 0 9px rgba(0,0,0,.3);
+}
+.hero-book::before{
+  content:"";position:absolute;inset:10px;
+  border:1px solid rgba(242,217,158,.5);
+}
+.hero-book::after{
+  content:"";position:absolute;left:-8px;top:5px;bottom:5px;width:9px;
+  background:repeating-linear-gradient(180deg,#e7d6ad 0 2px,#b9a47c 3px 4px);
+  border-radius:3px 0 0 3px;
+}
+.book-cover-content{
+  position:absolute;inset:22px 15px;
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;text-align:center;
+}
+.book-cover-content small{color:#e6cb8e;font-size:9px;letter-spacing:2px}
+.book-cover-content strong{font-size:24px;line-height:1.8;color:#f7e5b8;margin:14px 0}
+.book-cover-content span{width:35px;height:1px;background:#d5b36c}
+.book-cover-content em{font-size:9px;color:#d8c9a9;font-style:normal;margin-top:12px}
+.hero-orbit{
+  position:absolute;width:260px;height:260px;border:1px solid rgba(213,179,108,.18);
+  border-radius:50%;box-shadow:0 0 0 25px rgba(213,179,108,.025),0 0 0 50px rgba(213,179,108,.02);
+}
+
+/* Stats */
+.stats-strip{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:12px;margin:20px 0 35px;
+}
+.stat-box{
+  padding:15px;border:1px solid var(--border);
+  border-radius:15px;background:linear-gradient(145deg,rgba(31,40,64,.9),rgba(18,25,43,.9));
+  text-align:center;
+}
+.stat-box strong{display:block;color:var(--gold2);font-size:23px;font-weight:900}
+.stat-box span{color:var(--muted);font-size:10px}
+
+/* Section headings */
+.section-heading{
+  display:flex;align-items:end;justify-content:space-between;
+  gap:12px;margin:38px 0 18px;
+}
+.section-heading h2{font-size:22px;margin:0;font-weight:900}
+.section-heading p{font-size:11px;color:var(--muted);margin:4px 0 0}
+.section-kicker{color:var(--gold);font-size:10px;font-weight:900}
+.heading-line{width:48px;height:3px;background:var(--gold);border-radius:5px;margin-top:9px}
+
+/* Search */
+.library-tools{
+  padding:19px;border:1px solid var(--border);
+  border-radius:19px;background:rgba(23,29,50,.85);
+  box-shadow:0 12px 35px rgba(0,0,0,.13);
+}
+.search-row{display:grid;grid-template-columns:1fr 180px;gap:10px}
+.search-wrap{position:relative}
+.search-wrap svg{position:absolute;right:15px;top:50%;transform:translateY(-50%);width:19px;color:var(--gold)}
+.search-input,.sort-select{
+  width:100%;height:48px;border:1px solid rgba(255,255,255,.1);
+  border-radius:11px;background:#0d1426;color:white;
+  outline:none;padding:0 15px;font-size:12px;
+}
+.search-input{padding-right:45px}
+.search-input:focus,.sort-select:focus{border-color:var(--gold)}
+.sort-select option{background:#171d32}
+.category-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.category-btn{
+  padding:8px 14px;border:1px solid rgba(255,255,255,.1);
+  border-radius:30px;background:rgba(255,255,255,.035);
+  color:var(--muted);font-size:11px;transition:.2s;
+}
+.category-btn.active,.category-btn:hover{
+  color:#171321;background:var(--gold2);border-color:var(--gold2);
+  font-weight:900;
+}
+
+/* Featured collection */
+.featured-collection{
+  display:grid;grid-template-columns:260px 1fr;gap:27px;
+  padding:23px;border:1px solid rgba(213,179,108,.28);
+  border-radius:22px;
+  background:linear-gradient(120deg,rgba(31,39,63,.96),rgba(17,25,44,.96));
+  box-shadow:var(--shadow);overflow:hidden;position:relative;
+}
+.featured-collection::after{
+  content:"";position:absolute;left:-90px;bottom:-140px;
+  width:270px;height:270px;border:1px solid rgba(213,179,108,.15);
+  border-radius:50%;box-shadow:0 0 0 25px rgba(213,179,108,.025),0 0 0 50px rgba(213,179,108,.02);
+}
+.featured-cover{
+  height:310px;position:relative;overflow:hidden;
+  border-radius:10px 16px 16px 10px;
+  background:linear-gradient(145deg,#473b69,#141c35);
+  box-shadow:12px 16px 28px rgba(0,0,0,.4);
+}
+.featured-cover img{width:100%;height:100%;object-fit:cover;display:block}
+.featured-cover::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(4,8,18,.65),transparent 65%)}
+.featured-details{position:relative;z-index:2;align-self:center}
+.featured-label{color:var(--gold);font-size:11px;font-weight:900}
+.featured-details h3{font-size:clamp(23px,4vw,34px);margin:9px 0}
+.featured-details p{color:var(--muted);font-size:13px;line-height:2.1;max-width:650px}
+.featured-meta{display:flex;flex-wrap:wrap;gap:8px;margin:17px 0}
+.meta-chip{padding:6px 11px;border:1px solid var(--border);border-radius:30px;color:var(--muted);font-size:10px}
+.featured-open{display:inline-flex;padding:10px 20px;border-radius:10px;background:var(--gold2);color:#171321;font-size:12px;font-weight:900}
+
+/* Bookshelf */
+.shelf-section{margin-top:35px}
+.shelf-heading{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);
+}
+.shelf-heading h3{margin:0;font-size:17px}
+.shelf-heading span{font-size:11px;color:var(--muted)}
+.shelf{
+  position:relative;display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:19px 17px;padding:12px 12px 22px;
+  border-bottom:9px solid #655039;
+  border-radius:0 0 8px 8px;
+  background:linear-gradient(180deg,rgba(26,34,54,.22),rgba(213,179,108,.035));
+  box-shadow:0 12px 17px rgba(0,0,0,.22);
+}
+.shelf::after{
+  content:"";position:absolute;bottom:-13px;right:0;left:0;height:4px;
+  border-radius:50%;background:rgba(0,0,0,.3);filter:blur(3px);
+}
+.book-item{min-width:0;display:flex;flex-direction:column;align-items:center;cursor:pointer}
+.book-cover{
+  width:100%;max-width:155px;aspect-ratio:3/4.15;
+  position:relative;overflow:hidden;border-radius:4px 9px 9px 4px;
+  background:linear-gradient(145deg,#39345c,#121b31);
+  border:1px solid rgba(242,217,158,.35);
+  box-shadow:8px 10px 17px rgba(0,0,0,.4),inset 5px 0 8px rgba(0,0,0,.25);
+  transition:transform .3s,box-shadow .3s;
+}
+.book-item:hover .book-cover{
+  transform:translateY(-8px) rotate(-1deg);
+  box-shadow:12px 18px 25px rgba(0,0,0,.5),0 0 0 1px var(--gold);
+}
+.book-cover img{width:100%;height:100%;object-fit:cover;display:block}
+.book-cover::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(0,0,0,.34),transparent 17%,transparent 80%,rgba(0,0,0,.13));
+  pointer-events:none;
+}
+.cover-fallback{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;padding:12px;
+  background:linear-gradient(145deg,#41375e,#121a30);
+}
+.cover-fallback::before{content:"";position:absolute;inset:9px;border:1px solid rgba(242,217,158,.45)}
+.cover-fallback small{font-size:8px;color:var(--gold2);letter-spacing:2px}
+.cover-fallback strong{font-size:clamp(13px,2vw,19px);line-height:1.8;color:#f5e6c3;margin:10px 0;position:relative}
+.cover-fallback span{width:25px;height:1px;background:var(--gold)}
+.book-info{width:100%;max-width:155px;text-align:center;padding-top:11px}
+.book-info h4{font-size:12px;line-height:1.8;margin:0 0 4px;font-weight:800}
+.book-info p{font-size:10px;color:var(--muted);margin:0}
+.book-count{display:inline-block;margin-top:6px;color:var(--gold);font-size:9px}
+
+/* Empty and footer */
+.empty-state{
+  grid-column:1/-1;padding:45px 15px;text-align:center;
+  border:1px dashed var(--border);border-radius:16px;color:var(--muted);
+}
+.empty-state strong{display:block;color:var(--gold2);font-size:16px;margin-bottom:7px}
+.empty-state p{font-size:12px;line-height:2;margin:0}
+.integrity-note{
+  margin-top:30px;padding:15px 18px;border:1px solid var(--border);
+  border-radius:14px;background:rgba(23,29,50,.65);
+  color:var(--muted);font-size:11px;line-height:2;
+}
+.integrity-note strong{color:var(--gold)}
+.footer{
+  margin-top:45px;padding:25px 10px;text-align:center;
+  border-top:1px solid var(--border);color:var(--muted);font-size:11px;
+}
+.footer strong{color:var(--gold)}
+
+@media(max-width:850px){
+  .shelf{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .hero{grid-template-columns:1fr .55fr}
+  .featured-collection{grid-template-columns:210px 1fr}
+  .featured-cover{height:275px}
+}
+@media(max-width:620px){
+  .topbar{min-height:65px;padding:9px 4%}
+  .brand-name{font-size:18px}
+  .header-link{padding:8px 10px;font-size:10px}
+  .hero{grid-template-columns:1fr;padding:30px 23px;min-height:0}
+  .hero-art{min-height:205px;grid-row:1}
+  .hero-book{width:135px;height:180px}
+  .hero-orbit{width:205px;height:205px}
+  .hero h1{font-size:30px}
+  .hero p{font-size:12px}
+  .stats-strip{grid-template-columns:repeat(2,1fr);gap:8px}
+  .stat-box{padding:12px 7px}
+  .stat-box strong{font-size:20px}
+  .section-heading h2{font-size:19px}
+  .search-row{grid-template-columns:1fr}
+  .library-tools{padding:13px}
+  .featured-collection{grid-template-columns:1fr;padding:16px;gap:17px}
+  .featured-cover{width:190px;height:245px;margin:auto}
+  .featured-details{text-align:center}
+  .featured-meta{justify-content:center}
+  .shelf{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 10px;padding:10px 5px 18px}
+  .book-info h4{font-size:11px}
+  .book-info p{font-size:9px}
+}
+@media(max-width:370px){
+  .shelf{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 13px}
+  .hero-actions a{width:100%}
+}
+</style>
 </head>
 
 <body>
-  <main class="page">
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand-mark">ش</span>
+    <span>
+      <span class="brand-name">HANOON</span>
+      <span class="brand-caption">مكتبة المعرفة والأدب</span>
+    </span>
+  </a>
+  <nav class="header-links">
+    <a class="header-link" href="../index.html">الرئيسية ←</a>
+    <a class="header-link" href="books.html">مكتبة الكتب</a>
+  </nav>
+</header>
 
-    <header class="topbar">
-      <a class="brand" href="../index.html" aria-label="هنون">
-        <div class="brand-mark">هـ</div>
-        <div>
-          <div class="brand-name">هنون</div>
-          <div class="brand-caption">منصة المعرفة والإبداع</div>
-        </div>
-      </a>
+<main class="page">
 
-      <a class="back-link" href="../index.html">
-        <span>←</span>
-        العودة للرئيسية
-      </a>
-    </header>
-
-    <section class="hero">
-      <div class="hero-content">
-        <div class="eyebrow">مساحة الكلمة والإحساس</div>
-        <h1>هنا تسكن <span>الكلمات</span></h1>
-        <p>
-          مكتبة الشعر والأدب في هنون؛ مساحة تجمع القصائد والدواوين
-          بمختلف ألوانها، من الحب والحنين إلى الحياة والصداقة والحكمة.
-          كل قصيدة حكاية، وكل ديوان عالم مستقل.
-        </p>
-
-        <div class="hero-actions">
-          <a href="#collections" class="primary-btn">اكتشف الدواوين <span>↓</span></a>
-          <a href="#featured" class="secondary-btn">قصائد مختارة <span>✦</span></a>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" aria-label="إحصائيات المكتبة">
-      <div class="section-heading">
-        <div>
-          <h2>أرقام المكتبة</h2>
-          <p>إحصائيات المحتوى الموجود فعليًا</p>
-        </div>
-        <span class="section-count" id="completionLabel">جارٍ فحص البيانات</span>
-      </div>
-
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-circle" id="collectionsCircle"><span id="collectionsPercent">0%</span></div>
-          <div>
-            <div class="stat-number" id="collectionsCount">0</div>
-            <div class="stat-label">ديوان من أصل 20</div>
-          </div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-circle" id="poemsCircle"><span id="poemsPercent">0%</span></div>
-          <div>
-            <div class="stat-number" id="poemsCount">0</div>
-            <div class="stat-label">قصيدة من أصل 400</div>
-          </div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-circle" id="linesCircle"><span id="linesPercent">0%</span></div>
-          <div>
-            <div class="stat-number" id="linesCount">0</div>
-            <div class="stat-label">سطر من أصل 8,000</div>
-          </div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-circle" id="favoritesCircle"><span>♥</span></div>
-          <div>
-            <div class="stat-number" id="favoritesCount">0</div>
-            <div class="stat-label">قصيدة في المفضلة</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="collections">
-      <div class="section-heading">
-        <div>
-          <h2>مكتبة الدواوين</h2>
-          <p>اختار العالم الشعري اللي تحب تدخله</p>
-        </div>
-        <span class="section-count" id="visibleCount">0 ديوان</span>
-      </div>
-
-      <div class="toolbar">
-        <div class="search-wrap">
-          <span class="search-icon">⌕</span>
-          <input
-            type="search"
-            id="searchInput"
-            placeholder="ابحث عن ديوان أو قصيدة أو موضوع..."
-            autocomplete="off"
-            aria-label="البحث في الدواوين والقصائد"
-          >
-        </div>
-
-        <select class="sort-select" id="sortSelect" aria-label="ترتيب الدواوين">
-          <option value="default">الترتيب الافتراضي</option>
-          <option value="title">ترتيب أبجدي</option>
-          <option value="count">الأكثر قصائد</option>
-        </select>
-      </div>
-
-      <div class="categories" id="categories">
-        <button class="category-btn active" data-category="all">كل الدواوين</button>
-      </div>
-
-      <div class="collections-grid" id="collectionsGrid">
-        <div class="loading-state">جارٍ تحميل مكتبة الشعر...</div>
-      </div>
-    </section>
-
-    <section class="section" id="featured">
-      <div class="section-heading">
-        <div>
-          <h2>من القصائد</h2>
-          <p>قصائد من داخل الدواوين المتاحة</p>
-        </div>
-        <span class="section-count">مختارات المكتبة</span>
-      </div>
-
-      <div class="featured-panel">
-        <div class="featured-list" id="featuredList">
-          <div class="loading-state">جارٍ تجهيز القصائد...</div>
-        </div>
-      </div>
-    </section>
-
-    <div class="integrity-note" id="integrityNote">
-      <strong>تنبيه المكتبة:</strong>
-      يتم احتساب أعداد الدواوين والقصائد والأسطر من ملفات البيانات الفعلية،
-      ولا يتم عرض أي محتوى غير مكتمل على أنه مكتمل.
+<section class="hero">
+  <div class="hero-content">
+    <div class="eyebrow">HANOON • POETRY LIBRARY</div>
+    <h1>حين تصبح الكلمات <span>قصائد</span></h1>
+    <p>
+      ادخل إلى مكتبة الشعر والأدب، واكتشف دواوين تحمل حكايات الحب
+      والحنين والحياة والناس. اختر ديوانك، افتح صفحاته، واقرأ كل قصيدة
+      في تجربة تشبه القراءة من كتاب حقيقي.
+    </p>
+    <div class="hero-actions">
+      <a class="primary-btn" href="#collections">تصفّح الدواوين</a>
+      <a class="outline-btn" href="#featured">الديوان المميز</a>
     </div>
+  </div>
+  <div class="hero-art" aria-hidden="true">
+    <div class="hero-orbit"></div>
+    <div class="hero-book">
+      <div class="book-cover-content">
+        <small>HANOON LIBRARY</small>
+        <strong>ديوان<br>الشعر</strong>
+        <span></span>
+        <em>كلمات من القلب</em>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <footer class="footer">
-      <div>هنون — مساحة تجمع المعرفة والإبداع</div>
-      <div style="margin-top:5px">الشعر والأدب · جميع الحقوق محفوظة</div>
-    </footer>
+<section class="stats-strip" aria-label="إحصائيات المكتبة">
+  <div class="stat-box"><strong id="collectionsCount">0</strong><span>ديوان شعري</span></div>
+  <div class="stat-box"><strong id="poemsCount">0</strong><span>قصيدة</span></div>
+  <div class="stat-box"><strong id="linesCount">0</strong><span>سطر شعري</span></div>
+  <div class="stat-box"><strong id="favoritesCount">0</strong><span>قصيدة مفضلة</span></div>
+</section>
 
-  </main>
+<section id="featured">
+  <div class="section-heading">
+    <div>
+      <div class="section-kicker">اختيار المكتبة</div>
+      <h2>ديوان تحت الضوء</h2>
+      <div class="heading-line"></div>
+    </div>
+  </div>
+  <div id="featuredCollection"></div>
+</section>
 
-  <!-- ملفات الدواوين: يجب تحميلها قبل ملف الربط المركزي -->
-  <script src="../data/poetry-01.js"></script>
-  <script src="../data/poetry-02.js"></script>
-  <script src="../data/poetry-03.js"></script>
-  <script src="../data/poetry-04.js"></script>
-  <script src="../data/poetry.js"></script>
+<section id="collections">
+  <div class="section-heading">
+    <div>
+      <div class="section-kicker">رفوف هنون الأدبية</div>
+      <h2>تصفّح مكتبة الدواوين</h2>
+      <p>كل ديوان كتاب مستقل، بداخله فهرس قصائده</p>
+      <div class="heading-line"></div>
+    </div>
+    <span id="visibleCount" class="section-kicker">0 ديوان</span>
+  </div>
 
-  <script>
-  (() => {
-    "use strict";
+  <div class="library-tools">
+    <div class="search-row">
+      <label class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <circle cx="10.8" cy="10.8" r="6.8"></circle>
+          <path d="m16 16 5 5"></path>
+        </svg>
+        <input id="searchInput" class="search-input" type="search" placeholder="ابحث عن ديوان أو قصيدة أو موضوع..." autocomplete="off">
+      </label>
+      <select id="sortSelect" class="sort-select" aria-label="ترتيب الدواوين">
+        <option value="default">الترتيب الافتراضي</option>
+        <option value="title">ترتيب أبجدي</option>
+        <option value="count">الأكثر قصائد</option>
+      </select>
+    </div>
+    <div id="categories" class="category-list"></div>
+  </div>
 
-    const API = window.HANOON_POETRY_API;
+  <div id="collectionsShelves"></div>
+</section>
 
-    const elements = {
-      grid: document.getElementById("collectionsGrid"),
-      featured: document.getElementById("featuredList"),
-      categories: document.getElementById("categories"),
-      search: document.getElementById("searchInput"),
-      sort: document.getElementById("sortSelect"),
-      visible: document.getElementById("visibleCount"),
-      integrity: document.getElementById("integrityNote")
-    };
+<div class="integrity-note" id="integrityNote">
+  <strong>مكتبة هنون:</strong> يتم احتساب الإحصائيات من الدواوين والقصائد الموجودة بالفعل.
+</div>
 
-    const state = {
-      category: "all",
-      search: "",
-      sort: "default"
-    };
+<footer class="footer">
+  <strong>HANOON</strong> — الكلمة الجميلة تستحق مكتبة تليق بها
+</footer>
+</main>
 
-    const number = value => Number(value || 0).toLocaleString("en-US");
+<script src="../data/poetry-01.js"></script>
+<script src="../data/poetry-02.js"></script>
+<script src="../data/poetry-03.js"></script>
+<script src="../data/poetry-04.js"></script>
+<script src="../data/poetry.js"></script>
 
-    const escapeHTML = value => String(value ?? "").replace(/[&<>"']/g, char => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;"
-    })[char]);
+<script>
+(function(){
+"use strict";
 
-    const normalize = value => String(value || "")
-      .toLowerCase()
-      .replace(/[أإآ]/g, "ا")
-      .replace(/ة/g, "ه")
-      .replace(/ى/g, "ي")
-      .replace(/[ًٌٍَُِّْـ]/g, "")
-      .trim();
+const API=window.HANOON_POETRY_API;
+const $=id=>document.getElementById(id);
 
-    function getCollections() {
-      if (!API || typeof API.getAllCollections !== "function") return [];
-      return API.getAllCollections();
-    }
+const state={category:"all",search:"",sort:"default"};
 
-    function getAllPoems() {
-      if (!API || typeof API.getAllPoems !== "function") return [];
-      return API.getAllPoems();
-    }
+const labels={
+  love:"الحب والعشق",romance:"الحب والعشق",
+  separation:"الفراق والغياب",nostalgia:"الحنين والذكريات",
+  friendship:"الصحاب والجدعنة",mother:"الأم",father:"الأب",
+  family:"العيلة",life:"الحياة",ambition:"الطموح",
+  success:"النجاح",pain:"الوجع والخذلان",patience:"الصبر",
+  hope:"الأمل",exile:"الغربة",street:"الشارع",
+  dignity:"الكرامة",youth:"الشباب",homeland:"الوطن",
+  wisdom:"الحكمة",humor:"الضحك وخفة الدم"
+};
 
-    function getStats() {
-      if (!API || typeof API.getStats !== "function") {
-        return { collections: 0, poems: 0, lines: 0 };
-      }
-      return API.getStats();
-    }
+const escapeHTML=value=>String(value??"").replace(/[&<>"']/g,c=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+}[c]));
 
-    function getCategoryLabel(category) {
-      const labels = {
-        love: "الحب والعشق",
-        romance: "الحب والعشق",
-        separation: "الفراق والغياب",
-        nostalgia: "الحنين والذكريات",
-        friendship: "الصحاب والجدعنة",
-        mother: "الأم",
-        father: "الأب",
-        family: "العيلة",
-        life: "الحياة",
-        ambition: "الطموح",
-        success: "النجاح",
-        pain: "الوجع والخذلان",
-        patience: "الصبر",
-        hope: "الأمل",
-        exile: "الغربة",
-        street: "الشارع",
-        dignity: "الكرامة",
-        youth: "الشباب",
-        homeland: "الوطن",
-        wisdom: "الحكمة",
-        humor: "الضحك وخفة الدم"
-      };
+const normalize=value=>String(value||"")
+  .toLowerCase()
+  .replace(/[أإآ]/g,"ا")
+  .replace(/ة/g,"ه")
+  .replace(/ى/g,"ي")
+  .replace(/[ًٌٍَُِّْـ]/g,"")
+  .trim();
 
-      return labels[category] || category || "شعر متنوع";
-    }
+function getCollections(){
+  return API&&typeof API.getAllCollections==="function"
+    ? API.getAllCollections() : [];
+}
+function getPoems(){
+  return API&&typeof API.getAllPoems==="function"
+    ? API.getAllPoems() : [];
+}
+function getStats(){
+  return API&&typeof API.getStats==="function"
+    ? API.getStats() : {collections:0,poems:0,lines:0};
+}
+function label(category){return labels[category]||category||"شعر متنوع"}
 
-    function updateCircle(id, percentageId, value, total) {
-      const percent = total ? Math.min(100, Math.round(value / total * 100)) : 0;
-      const circle = document.getElementById(id);
-      const text = document.getElementById(percentageId);
+function renderStats(){
+  const stats=getStats();
+  const collections=getCollections();
+  const poems=getPoems();
+  const lines=stats.lines??poems.reduce((sum,p)=>sum+(p.lines?.length||0),0);
+  const favorites=API&&typeof API.getFavorites==="function"
+    ? API.getFavorites().length : 0;
 
-      if (circle) {
-        circle.style.setProperty("--progress", `${percent * 3.6}deg`);
-      }
+  $("collectionsCount").textContent=Number(stats.collections??collections.length).toLocaleString("en-US");
+  $("poemsCount").textContent=Number(stats.poems??poems.length).toLocaleString("en-US");
+  $("linesCount").textContent=Number(lines).toLocaleString("en-US");
+  $("favoritesCount").textContent=Number(favorites).toLocaleString("en-US");
+}
 
-      if (text) text.textContent = `${percent}%`;
-    }
+function renderCategories(){
+  let categories=API&&typeof API.getCategories==="function"
+    ? API.getCategories()
+    : [...new Set(getCollections().map(c=>c.category).filter(Boolean))];
 
-    function renderStats() {
-      const stats = getStats();
-      const collections = getCollections();
-      const poems = getAllPoems();
+  const html=[
+    `<button class="category-btn ${state.category==="all"?"active":""}" data-category="all">كل الدواوين</button>`,
+    ...categories.map(category=>`
+      <button class="category-btn ${state.category===category?"active":""}" data-category="${escapeHTML(category)}">
+        ${escapeHTML(label(category))}
+      </button>
+    `)
+  ];
+  $("categories").innerHTML=html.join("");
+}
 
-      const collectionCount = Number(stats.collections ?? collections.length);
-      const poemCount = Number(stats.poems ?? poems.length);
-      const lineCount = Number(
-        stats.lines ??
-        poems.reduce((sum, poem) => sum + (Array.isArray(poem.lines) ? poem.lines.length : 0), 0)
+function getFiltered(){
+  let list=[...getCollections()];
+
+  if(state.category!=="all")
+    list=list.filter(c=>c.category===state.category);
+
+  if(state.search){
+    const q=normalize(state.search);
+    list=list.filter(c=>{
+      const base=normalize([c.title,c.subtitle,c.description,c.category].join(" "));
+      const poems=(c.poems||[]).some(p=>
+        normalize([p.title,p.description,p.category].join(" ")).includes(q)
       );
-
-      const favorites = API && typeof API.getFavorites === "function"
-        ? API.getFavorites().length
-        : 0;
-
-      document.getElementById("collectionsCount").textContent = number(collectionCount);
-      document.getElementById("poemsCount").textContent = number(poemCount);
-      document.getElementById("linesCount").textContent = number(lineCount);
-      document.getElementById("favoritesCount").textContent = number(favorites);
-
-      updateCircle("collectionsCircle", "collectionsPercent", collectionCount, 20);
-      updateCircle("poemsCircle", "poemsPercent", poemCount, 400);
-      updateCircle("linesCircle", "linesPercent", lineCount, 8000);
-
-      const complete = collectionCount === 20 &&
-        poemCount === 400 &&
-        lineCount === 8000;
-
-      document.getElementById("completionLabel").textContent =
-        complete ? "المكتبة مكتملة" : "المكتبة قيد الإكمال";
-    }
-
-    function renderCategories() {
-      let categories = [];
-
-      if (API && typeof API.getCategories === "function") {
-        categories = API.getCategories();
-      } else {
-        categories = [...new Set(getCollections().map(item => item.category).filter(Boolean))];
-      }
-
-      const buttons = [
-        `<button class="category-btn ${state.category === "all" ? "active" : ""}" data-category="all">كل الدواوين</button>`,
-        ...categories.map(category => `
-          <button
-            class="category-btn ${state.category === category ? "active" : ""}"
-            data-category="${escapeHTML(category)}">
-            ${escapeHTML(getCategoryLabel(category))}
-          </button>
-        `)
-      ];
-
-      elements.categories.innerHTML = buttons.join("");
-    }
-
-    function getFilteredCollections() {
-      let collections = [...getCollections()];
-
-      if (state.category !== "all") {
-        collections = collections.filter(item => item.category === state.category);
-      }
-
-      if (state.search) {
-        const query = normalize(state.search);
-
-        collections = collections.filter(collection => {
-          const collectionText = normalize([
-            collection.title,
-            collection.subtitle,
-            collection.description,
-            collection.category
-          ].join(" "));
-
-          const poemText = (collection.poems || []).some(poem =>
-            normalize([
-              poem.title,
-              poem.description,
-              poem.category
-            ].join(" ")).includes(query)
-          );
-
-          return collectionText.includes(query) || poemText;
-        });
-      }
-
-      if (state.sort === "title") {
-        collections.sort((a, b) => String(a.title).localeCompare(String(b.title), "ar"));
-      } else if (state.sort === "count") {
-        collections.sort((a, b) =>
-          (b.poems?.length || 0) - (a.poems?.length || 0)
-        );
-      }
-
-      return collections;
-    }
-
-    function collectionCard(collection) {
-      const image = collection.cover
-        ? `<img src="${escapeHTML(collection.cover)}" alt="${escapeHTML(collection.title)}" loading="lazy" onerror="this.remove()">`
-        : "";
-
-      const count = Array.isArray(collection.poems) ? collection.poems.length : 0;
-
-      return `
-        <article class="collection-card">
-          <div class="collection-cover">
-            ${image}
-            <div class="cover-overlay">
-              <span class="cover-symbol">ش</span>
-            </div>
-          </div>
-
-          <div class="collection-body">
-            <div class="collection-meta">
-              <span class="collection-category">
-                ${escapeHTML(getCategoryLabel(collection.category))}
-              </span>
-              <span class="poem-count">${number(count)} قصيدة</span>
-            </div>
-
-            <h3 class="collection-title">${escapeHTML(collection.title)}</h3>
-
-            <div class="collection-subtitle">
-              ${escapeHTML(collection.subtitle || "ديوان شعري")}
-            </div>
-
-            <p class="collection-description">
-              ${escapeHTML(collection.description || "مجموعة من القصائد الشعرية.")}
-            </p>
-
-            <div class="collection-footer">
-              <span class="author-name">
-                ${escapeHTML(collection.author || "Yousef Elgorf")}
-              </span>
-
-              <a class="open-collection"
-                 href="poem.html?collection=${encodeURIComponent(collection.id)}">
-                استكشف الديوان <span>←</span>
-              </a>
-            </div>
-          </div>
-        </article>
-      `;
-    }
-
-    function renderCollections() {
-      const collections = getFilteredCollections();
-
-      elements.visible.textContent = `${number(collections.length)} ديوان`;
-
-      if (!collections.length) {
-        elements.grid.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-icon">⌕</div>
-            <strong>ملقيناش نتيجة مطابقة</strong>
-            <p>جرّب كلمة بحث تانية أو اختار تصنيف مختلف.</p>
-          </div>
-        `;
-        return;
-      }
-
-      elements.grid.innerHTML = collections.map(collectionCard).join("");
-    }
-
-    function renderFeatured() {
-      const poems = getAllPoems().slice(0, 6);
-
-      if (!poems.length) {
-        elements.featured.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-icon">✦</div>
-            <strong>القصائد هتظهر هنا</strong>
-            <p>بعد إضافة ملفات الدواوين واحتوائها على القصائد الفعلية.</p>
-          </div>
-        `;
-        return;
-      }
-
-      elements.featured.innerHTML = poems.map((poem, index) => {
-        const collection = getCollections().find(item =>
-          (item.poems || []).some(entry => entry.id === poem.id)
-        );
-
-        return `
-          <a class="featured-item" href="poem.html?id=${encodeURIComponent(poem.id)}">
-            <span class="featured-number">${String(index + 1).padStart(2, "0")}</span>
-            <span class="featured-info">
-              <strong>${escapeHTML(poem.title)}</strong>
-              <span>${escapeHTML(collection?.title || "ديوان شعري")}</span>
-            </span>
-            <span class="featured-arrow">←</span>
-          </a>
-        `;
-      }).join("");
-    }
-
-    function renderIntegrity() {
-      const stats = getStats();
-      const errors = API && typeof API.getValidationErrors === "function"
-        ? API.getValidationErrors()
-        : [];
-
-      const complete = stats.collections === 20 &&
-        stats.poems === 400 &&
-        stats.lines === 8000 &&
-        (!errors || errors.length === 0);
-
-      if (complete) {
-        elements.integrity.innerHTML = `
-          <strong>المكتبة مكتملة:</strong>
-          تم التحقق من وجود 20 ديوانًا و400 قصيدة و8,000 سطر دون أخطاء في البيانات.
-        `;
-      } else {
-        elements.integrity.innerHTML = `
-          <strong>حالة بناء المكتبة:</strong>
-          الأرقام المعروضة محسوبة من المحتوى الموجود بالفعل.
-          لن تظهر المكتبة كمكتملة إلا بعد إضافة الدواوين والقصائد والأسطر المطلوبة والتحقق منها.
-        `;
-      }
-    }
-
-    function renderAll() {
-      renderStats();
-      renderCategories();
-      renderCollections();
-      renderFeatured();
-      renderIntegrity();
-    }
-
-    elements.search.addEventListener("input", event => {
-      state.search = event.target.value;
-      renderCollections();
+      return base.includes(q)||poems;
     });
+  }
 
-    elements.sort.addEventListener("change", event => {
-      state.sort = event.target.value;
-      renderCollections();
-    });
+  if(state.sort==="title")
+    list.sort((a,b)=>String(a.title).localeCompare(String(b.title),"ar"));
+  if(state.sort==="count")
+    list.sort((a,b)=>(b.poems?.length||0)-(a.poems?.length||0));
 
-    elements.categories.addEventListener("click", event => {
-      const button = event.target.closest("[data-category]");
-      if (!button) return;
+  return list;
+}
 
-      state.category = button.dataset.category;
-      renderCategories();
-      renderCollections();
-    });
+function coverMarkup(collection,featured){
+  const title=escapeHTML(collection.title||"ديوان شعري");
+  const image=collection.cover
+    ? `<img src="${escapeHTML(collection.cover)}" alt="غلاف ${title}" loading="lazy" onerror="this.style.display='none'">`
+    : "";
 
-    if (API) {
-      renderAll();
-    } else {
-      elements.grid.innerHTML = `
-        <div class="empty-state">
-          <div class="empty-icon">!</div>
-          <strong>ملفات بيانات الشعر غير جاهزة</strong>
-          <p>تأكد من وجود ملفات الدواوين وملف الربط المركزي في المسارات المحددة أسفل الصفحة.</p>
+  if(featured){
+    return `<div class="featured-cover">
+      ${image}
+      <div class="cover-fallback" style="display:${collection.cover?"none":"flex"}">
+        <small>HANOON POETRY</small><strong>${title}</strong><span></span>
+      </div>
+    </div>`;
+  }
+
+  return `<div class="book-cover">
+    ${image}
+    <div class="cover-fallback" style="display:${collection.cover?"none":"flex"}">
+      <small>HANOON</small><strong>${title}</strong><span></span>
+    </div>
+  </div>`;
+}
+
+function collectionCard(c){
+  const count=Array.isArray(c.poems)?c.poems.length:0;
+  return `<a class="book-item" href="poem-collection.html?id=${encodeURIComponent(c.id)}" aria-label="فتح ${escapeHTML(c.title)}">
+    ${coverMarkup(c,false)}
+    <div class="book-info">
+      <h4>${escapeHTML(c.title)}</h4>
+      <p>${escapeHTML(label(c.category))}</p>
+      <span class="book-count">${count.toLocaleString("en-US")} قصيدة</span>
+    </div>
+  </a>`;
+}
+
+function renderShelves(){
+  const list=getFiltered();
+  $("visibleCount").textContent=`${list.length.toLocaleString("en-US")} ديوان`;
+
+  if(!list.length){
+    $("collectionsShelves").innerHTML=`
+      <div class="empty-state">
+        <strong>لا توجد دواوين مطابقة</strong>
+        <p>جرّب البحث بكلمة مختلفة أو اختر تصنيفًا آخر.</p>
+      </div>`;
+    return;
+  }
+
+  const groups=[];
+  for(let i=0;i<list.length;i+=5) groups.push(list.slice(i,i+5));
+
+  $("collectionsShelves").innerHTML=groups.map((group,index)=>`
+    <section class="shelf-section">
+      <div class="shelf-heading">
+        <h3>${index===0?"رفوف الدواوين":"المزيد من الدواوين"}</h3>
+        <span>${group.length} ديوان</span>
+      </div>
+      <div class="shelf">${group.map(collectionCard).join("")}</div>
+    </section>
+  `).join("");
+}
+
+function renderFeatured(){
+  const collections=getCollections();
+  const chosen=collections.find(c=>c.featured)||collections[0];
+
+  if(!chosen){
+    $("featuredCollection").innerHTML=`<div class="empty-state"><strong>لا توجد دواوين بعد</strong><p>ستظهر الدواوين هنا عند توفر بياناتها.</p></div>`;
+    return;
+  }
+
+  const count=chosen.poems?.length||0;
+  $("featuredCollection").innerHTML=`
+    <article class="featured-collection">
+      ${coverMarkup(chosen,true)}
+      <div class="featured-details">
+        <div class="featured-label">✦ ديوان مختار من مكتبة هنون</div>
+        <h3>${escapeHTML(chosen.title)}</h3>
+        <p>${escapeHTML(chosen.description||chosen.subtitle||"مجموعة من القصائد الشعرية التي تجمع بين الكلمة والإحساس.")}</p>
+        <div class="featured-meta">
+          <span class="meta-chip">${escapeHTML(label(chosen.category))}</span>
+          <span class="meta-chip">${count.toLocaleString("en-US")} قصيدة</span>
+          <span class="meta-chip">${escapeHTML(chosen.author||"Yousef Elgorf")}</span>
         </div>
-      `;
+        <a class="featured-open" href="poem-collection.html?id=${encodeURIComponent(chosen.id)}">افتح الديوان ←</a>
+      </div>
+    </article>`;
+}
 
-      elements.featured.innerHTML = `
-        <div class="empty-state">
-          <strong>في انتظار تحميل البيانات</strong>
-          <p>سيتم عرض القصائد هنا بمجرد تحميل ملفات المكتبة.</p>
-        </div>
-      `;
-    }
+function renderIntegrity(){
+  const stats=getStats();
+  const errors=API&&typeof API.getValidationErrors==="function"
+    ? API.getValidationErrors() : [];
+  const complete=stats.collections===20&&stats.poems===400&&stats.lines===8000&&(!errors||!errors.length);
 
-    window.addEventListener("hanoon:poetry-ready", renderAll);
-    window.addEventListener("hanoon:poetry-part-ready", () => {
-      if (API) renderAll();
-    });
+  $("integrityNote").innerHTML=complete
+    ? `<strong>حالة المكتبة:</strong> تم التحقق من 20 ديوانًا و400 قصيدة و8,000 سطر شعري.`
+    : `<strong>حالة المكتبة:</strong> الإحصائيات محسوبة من المحتوى الموجود حاليًا، ولن توصف المكتبة بالمكتملة إلا بعد اكتمال الدواوين والقصائد والتحقق منها.`;
+}
 
-  })();
-  </script>
+function renderAll(){
+  renderStats();
+  renderCategories();
+  renderFeatured();
+  renderShelves();
+  renderIntegrity();
+}
+
+$("searchInput").addEventListener("input",event=>{
+  state.search=event.target.value;
+  renderShelves();
+});
+$("sortSelect").addEventListener("change",event=>{
+  state.sort=event.target.value;
+  renderShelves();
+});
+$("categories").addEventListener("click",event=>{
+  const button=event.target.closest("[data-category]");
+  if(!button)return;
+  state.category=button.dataset.category;
+  renderCategories();
+  renderShelves();
+});
+
+if(API) renderAll();
+else{
+  $("collectionsShelves").innerHTML=`
+    <div class="empty-state">
+      <strong>تعذر تحميل بيانات الدواوين</strong>
+      <p>راجع مسارات ملفات بيانات الشعر وملف الربط المركزي.</p>
+    </div>`;
+  $("featuredCollection").innerHTML="";
+}
+
+window.addEventListener("hanoon:poetry-ready",renderAll);
+window.addEventListener("hanoon:poetry-part-ready",renderAll);
+
+})();
+</script>
 </body>
 </html>
