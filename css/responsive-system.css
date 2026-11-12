@@ -1,0 +1,450 @@
+
+/* ==========================================
+   HANOON — UNIVERSAL RESPONSIVE SYSTEM
+   Mobile / Tablet / Laptop / Desktop
+========================================== */
+
+:root {
+  --page-width: 1240px;
+  --page-gutter: clamp(14px, 3vw, 34px);
+  --section-gap: clamp(28px, 5vw, 65px);
+  --card-radius: clamp(14px, 2vw, 24px);
+}
+
+/* منع العناصر من تجاوز الشاشة */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  width: 100%;
+  min-width: 320px;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+body {
+  width: 100%;
+  min-width: 320px;
+  max-width: 100%;
+  margin: 0;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+img,
+video,
+iframe,
+svg {
+  max-width: 100%;
+}
+
+img,
+video {
+  height: auto;
+}
+
+button,
+input,
+textarea,
+select {
+  max-width: 100%;
+  font: inherit;
+}
+
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* الحاويات الرئيسية */
+main {
+  width: 100%;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+.content-section,
+.hero-inner,
+.footer-main,
+.footer-bottom {
+  width: min(
+    calc(100% - (var(--page-gutter) * 2)),
+    var(--page-width)
+  );
+  margin-inline: auto;
+}
+
+.content-section {
+  padding-block: var(--section-gap);
+}
+
+/* النصوص تتغير حسب مساحة الشاشة */
+h1 {
+  font-size: clamp(27px, 4.5vw, 58px);
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+h2 {
+  font-size: clamp(22px, 3vw, 38px);
+  line-height: 1.4;
+}
+
+h3 {
+  font-size: clamp(17px, 2vw, 23px);
+  line-height: 1.5;
+}
+
+p {
+  font-size: clamp(13px, 1.4vw, 17px);
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+
+/* ==========================================
+   الرأس والقائمة الدائرية
+========================================== */
+
+.site-header {
+  width: 100%;
+  max-width: 100%;
+  padding-inline: var(--page-gutter) !important;
+}
+
+/* حجم المدار يتكيف مع الشاشة */
+.site-header > .main-navigation {
+  width: clamp(290px, 58vw, 510px) !important;
+  height: auto !important;
+  aspect-ratio: 1 / 1;
+  flex-shrink: 0;
+}
+
+/* أحجام أزرار المدار */
+.site-header > .main-navigation a {
+  width: clamp(56px, 8.5vw, 78px);
+  height: clamp(56px, 8.5vw, 78px);
+  min-width: 0;
+  min-height: 0;
+  padding: 6px !important;
+  font-size: clamp(8px, 1.15vw, 11px);
+  line-height: 1.4;
+}
+
+/* الرئيسية في المركز */
+.site-header > .main-navigation a:nth-child(1) {
+  width: clamp(74px, 12vw, 100px);
+  height: clamp(74px, 12vw, 100px);
+  font-size: clamp(11px, 1.5vw, 14px);
+}
+
+/* الرأس على الشاشات الواسعة */
+.site-header > .brand img {
+  width: clamp(36px, 5vw, 55px);
+  height: clamp(36px, 5vw, 55px);
+}
+
+/* ==========================================
+   الواجهة الرئيسية
+========================================== */
+
+.hero-section {
+  width: 100%;
+  min-height: clamp(430px, 65vh, 760px);
+  overflow: hidden;
+}
+
+.hero-inner {
+  min-height: inherit;
+  display: flex;
+  align-items: center;
+  gap: clamp(20px, 4vw, 60px);
+}
+
+.hero-copy {
+  min-width: 0;
+  max-width: 760px;
+}
+
+.hero-copy p {
+  max-width: 680px;
+}
+
+.hero-emblem {
+  flex-shrink: 0;
+  width: clamp(110px, 22vw, 250px);
+}
+
+.hero-emblem img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.hero-actions a {
+  max-width: 100%;
+}
+
+/* ==========================================
+   البطاقات والشبكات
+========================================== */
+
+.sections-grid,
+.books-grid,
+.articles-grid,
+.learning-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit, minmax(min(100%, 245px), 1fr));
+  gap: clamp(12px, 2vw, 24px);
+  width: 100%;
+}
+
+.section-card,
+.learning-card,
+.personal-card,
+.community-card {
+  min-width: 0;
+  max-width: 100%;
+  border-radius: var(--card-radius);
+}
+
+.section-card {
+  padding: clamp(17px, 2.5vw, 28px);
+}
+
+.section-card p,
+.learning-card p {
+  overflow-wrap: anywhere;
+}
+
+/* ==========================================
+   التذييل
+========================================== */
+
+.footer-main {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  gap: clamp(20px, 3vw, 40px);
+}
+
+/* ==========================================
+   التابلت
+========================================== */
+
+@media (min-width: 601px) and (max-width: 1024px) {
+
+  :root {
+    --page-gutter: 22px;
+    --section-gap: 38px;
+  }
+
+  .site-header {
+    gap: 12px !important;
+  }
+
+  .site-header > .main-navigation {
+    width: clamp(340px, 48vw, 470px) !important;
+  }
+
+  .hero-inner {
+    gap: 24px;
+  }
+
+  .hero-copy {
+    flex: 1;
+  }
+
+  .hero-emblem {
+    width: clamp(115px, 18vw, 190px);
+  }
+
+  .sections-grid,
+  .books-grid,
+  .articles-grid,
+  .learning-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ==========================================
+   الموبايل
+========================================== */
+
+@media (max-width: 600px) {
+
+  :root {
+    --page-gutter: 13px;
+    --section-gap: 30px;
+  }
+
+  .site-header {
+    padding-inline: 10px !important;
+  }
+
+  .site-header > .main-navigation {
+    width: min(92vw, 390px) !important;
+  }
+
+  .site-header > .main-navigation a {
+    width: clamp(54px, 16vw, 66px);
+    height: clamp(54px, 16vw, 66px);
+    font-size: clamp(8px, 2.4vw, 10px);
+  }
+
+  .site-header > .main-navigation a:nth-child(1) {
+    width: clamp(70px, 20vw, 84px);
+    height: clamp(70px, 20vw, 84px);
+    font-size: 12px;
+  }
+
+  .hero-section {
+    min-height: 550px;
+  }
+
+  .hero-inner {
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    text-align: center;
+    gap: 20px;
+    padding-block: 45px;
+  }
+
+  .hero-copy {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .hero-copy p {
+    margin-inline: auto;
+  }
+
+  .hero-emblem {
+    width: 110px;
+    margin-inline: auto;
+  }
+
+  .hero-actions {
+    justify-content: center;
+  }
+
+  .hero-bottom {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    padding-inline: 12px;
+  }
+
+  .sections-grid,
+  .books-grid,
+  .articles-grid,
+  .learning-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .section-heading {
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .personal-card {
+    padding: 22px;
+  }
+
+  .footer-main {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ==========================================
+   الموبايلات الصغيرة جدًا
+========================================== */
+
+@media (max-width: 360px) {
+
+  :root {
+    --page-gutter: 10px;
+  }
+
+  .site-header > .main-navigation {
+    width: 94vw !important;
+  }
+
+  .site-header > .main-navigation a {
+    width: 52px;
+    height: 52px;
+    font-size: 7.5px;
+  }
+
+  .site-header > .main-navigation a:nth-child(1) {
+    width: 68px;
+    height: 68px;
+    font-size: 11px;
+  }
+
+  .site-header .account-button {
+    min-width: 66px;
+    padding-inline: 6px;
+  }
+
+  .footer-main {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================
+   الشاشات الكبيرة
+========================================== */
+
+@media (min-width: 1025px) {
+
+  :root {
+    --page-gutter: 35px;
+    --section-gap: 65px;
+  }
+
+  .site-header > .main-navigation {
+    width: min(38vw, 500px) !important;
+  }
+
+  .hero-inner {
+    max-width: 1240px;
+  }
+}
+
+/* الشاشات فائقة العرض */
+@media (min-width: 1500px) {
+
+  .content-section,
+  .hero-inner,
+  .footer-main,
+  .footer-bottom {
+    max-width: 1320px;
+  }
+
+  .site-header > .main-navigation {
+    width: 500px !important;
+  }
+}
+
+/* احترام إعداد تقليل الحركة */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
