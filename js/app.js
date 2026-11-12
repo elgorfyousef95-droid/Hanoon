@@ -3,8 +3,12 @@
   "use strict";
 
   const HANOON = window.HANOON || {};
+  const appScript = document.currentScript;
+  const headerAccountScript = appScript
+    ? new URL("header-account.js", appScript.src).href
+    : null;
 
-  HANOON.version = "1.2.0";
+  HANOON.version = "1.3.0";
   HANOON.initialized = false;
 
   const $ = (selector, parent = document) =>
@@ -114,7 +118,6 @@
     });
   };
 
-  // البحث مع الاحتفاظ بالكلمة المكتوبة
   HANOON.initSearch = function () {
     const panel = HANOON.elements.searchPanel;
     const toggle = $("#searchToggle");
@@ -168,7 +171,6 @@
       if (event.key === "Escape") closeSearch();
     });
 
-    // استعادة آخر كلمة بحث عند الرجوع للصفحة
     try {
       const savedQuery = sessionStorage.getItem("hanoon-search-query");
       const urlQuery = new URLSearchParams(location.search).get("q");
@@ -193,7 +195,6 @@
         sessionStorage.setItem("hanoon-search-query", query);
       } catch (_) {}
 
-      // لا نمسح الكلمة ولا نغلق البحث قبل الانتقال
       if (results) {
         results.setAttribute("aria-busy", "true");
       }
@@ -203,7 +204,6 @@
       window.location.assign(url.href);
     });
 
-    // منع الضغط داخل نافذة البحث من إغلاقها
     panel.addEventListener("click", event => {
       event.stopPropagation();
     });
@@ -347,13 +347,14 @@
     document.head.appendChild(style);
   };
 
-  // عرض الاسم واسم المستخدم بجانب الصورة
   HANOON.initHeaderAccount = function () {
     const profileLink = $("#headerProfileLink");
     const profileName = $("#headerProfileName");
     const accountButton = $("#accountButton");
 
     if (!profileLink || !profileName) return;
+
+    if ($("#headerProfileUsername")) return;
 
     const copy = document.createElement("span");
     copy.className = "header-profile-copy";
@@ -413,10 +414,12 @@
       attributeFilter: ["hidden"]
     });
 
-    observer.observe(accountButton, {
-      attributes: true,
-      attributeFilter: ["hidden"]
-    });
+    if (accountButton) {
+      observer.observe(accountButton, {
+        attributes: true,
+        attributeFilter: ["hidden"]
+      });
+    }
 
     if (accountButton?.hidden && !profileLink.hidden) {
       applyUsername();
@@ -424,6 +427,26 @@
 
     window.addEventListener("hanoon:supabase-ready", applyUsername);
     window.addEventListener("pageshow", applyUsername);
+  };
+
+  HANOON.loadHeaderAccount = function () {
+    if (!headerAccountScript) {
+      console.error("HANOON: header account script path is unavailable.");
+      return;
+    }
+
+    if (document.querySelector("[data-hanoon-header-account]")) return;
+
+    const script = document.createElement("script");
+    script.src = headerAccountScript;
+    script.dataset.hanoonHeaderAccount = "true";
+    script.async = true;
+
+    script.onerror = () => {
+      console.error("HANOON: could not load header-account.js");
+    };
+
+    document.body.appendChild(script);
   };
 
   HANOON.initTheme = function () {
@@ -544,8 +567,8 @@
     HANOON.initImages();
     HANOON.initKeyboard();
 
-    // تشغيل واجهة الحساب بعد تحميل جلسة Supabase
     HANOON.initHeaderAccount();
+    HANOON.loadHeaderAccount();
 
     HANOON.initialized = true;
 
