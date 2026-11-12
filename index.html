@@ -301,25 +301,29 @@
         <svg viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M12 13v5m-4 3h8m-6-3h4"/></svg>
         <span>إنجازاتي</span>
       </a>
+
+      <!-- المجتمع للمجموعات فقط -->
       <a href="pages/community.html">
         <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20v-1a6 6 0 0 1 12 0v1zM16 15a5 5 0 0 1 5 5"/></svg>
         <span>المجتمع</span>
       </a>
-      <a href="#homePosts">
+
+      <!-- كل قسم له صفحة مستقلة -->
+      <a href="pages/posts.html">
         <svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
         <span>المنشورات</span>
       </a>
-      <a href="pages/community.html?tab=chats">
+      <a href="pages/messages.html">
         <svg viewBox="0 0 24 24"><path d="M4 5h16v12H9l-5 4z"/><path d="M8 9h8M8 13h5"/></svg>
-        <span>المراسلة</span>
+        <span>المراسلات</span>
       </a>
-      <a href="pages/community.html?tab=groups">
-        <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20v-1a6 6 0 0 1 12 0v1zM16 15a5 5 0 0 1 5 5"/></svg>
-        <span>الجروبات</span>
-      </a>
-      <a href="pages/community.html?tab=friends">
+      <a href="pages/friends.html">
         <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M17 8v6m-3-3h6"/></svg>
         <span>الأصدقاء</span>
+      </a>
+      <a href="pages/friend-requests.html">
+        <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6m-3-3h6"/></svg>
+        <span>طلبات الصداقة</span>
       </a>
       <a href="pages/exams.html?mode=competition">
         <svg viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M12 13v5m-4 3h8m-6-3h4"/></svg>
@@ -400,7 +404,7 @@
           <h2>المنشورات والمشاركات</h2>
           <p>شارك فكرة أو صورة أو فيديو وتفاعل مع مجتمع المعرفة.</p>
         </div>
-        <a href="pages/community.html" class="text-link">المجتمع ←</a>
+        <a href="pages/posts.html" class="text-link">كل المنشورات ←</a>
       </div>
       <div id="homePostsFeed"></div>
     </section>
@@ -444,7 +448,7 @@
         </a>
         <a href="pages/community.html" class="section-card">
           <span class="section-icon">08</span><h3>مجتمع هنون</h3>
-          <p>شارك الأفكار وناقش الموضوعات مع مجتمع المعرفة.</p><span class="card-link">انضم للمجتمع ←</span>
+          <p>اكتشف المجموعات وانضم إلى النقاشات المشتركة.</p><span class="card-link">اكتشف المجموعات ←</span>
         </a>
       </div>
     </section>
@@ -513,8 +517,8 @@
       <div class="community-card">
         <span class="eyebrow">المعرفة تنمو بالمشاركة</span>
         <h2>فكرتك قد تلهم شخصًا آخر</h2>
-        <p>شارك ما تعلمته، ناقش الأفكار، وكن جزءًا من مجتمع هنون.</p>
-        <a href="pages/community.html" class="button button-gold">اكتشف المجتمع</a>
+        <p>اكتشف المجموعات وناقش الأفكار مع أعضاء هنون.</p>
+        <a href="pages/community.html" class="button button-gold">اكتشف المجموعات</a>
       </div>
     </section>
   </main>
@@ -538,13 +542,20 @@
         <h3>تعلّم</h3>
         <a href="pages/learning.html">مسارات التعلم</a>
         <a href="pages/exams.html">الاختبارات</a>
-        <a href="pages/community.html">المجتمع</a>
+        <a href="pages/community.html">المجموعات</a>
       </div>
       <div class="footer-column">
         <h3>حسابك</h3>
         <a href="pages/auth.html">تسجيل الدخول</a>
         <a href="pages/profile.html">الملف الشخصي</a>
         <a href="pages/settings.html">الإعدادات</a>
+      </div>
+      <div class="footer-column">
+        <h3>التواصل</h3>
+        <a href="pages/friends.html">الأصدقاء</a>
+        <a href="pages/friend-requests.html">طلبات الصداقة</a>
+        <a href="pages/messages.html">المراسلات</a>
+        <a href="pages/posts.html">المنشورات</a>
       </div>
     </div>
     <div class="footer-bottom">
