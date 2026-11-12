@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#0C1020">
   <title>HANOON | الحسابات</title>
@@ -31,7 +32,7 @@
       color:var(--white);
       background:
         radial-gradient(circle at 15% 10%,rgba(140,117,245,.16),transparent 35%),
-        radial-gradient(circle at 90% 90%,rgba(213,179,108,.12),transparent 35%),
+        radial-gradient(circle at 90% 90%,rgba(213,179,108,.12),transparent 35%,
         var(--bg);
     }
 
@@ -177,10 +178,9 @@
 
     .field input::placeholder,.field textarea::placeholder{color:#777F98}
 
-    .field input[type="tel"]{
-      text-align:left;
+    .field input.username-input{
       direction:ltr;
-      letter-spacing:1px;
+      text-align:left;
     }
 
     .hint{font-size:11px;color:var(--muted);margin-top:6px}
@@ -240,14 +240,6 @@
       margin-top:10px;
     }
 
-    .forgot{
-      display:block;
-      color:var(--gold);
-      text-decoration:none;
-      font-size:12px;
-      margin:0 0 15px;
-    }
-
     .message{
       display:none;
       padding:12px;
@@ -269,26 +261,6 @@
       font-size:12px;
       text-decoration:none;
     }
-
-    .interest-list{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:9px;
-      margin:12px 0 20px;
-    }
-
-    .interest{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      padding:10px;
-      border:1px solid var(--border);
-      border-radius:10px;
-      font-size:12px;
-      background:rgba(7,11,25,.4);
-    }
-
-    .interest input{accent-color:var(--gold)}
 
     @media(max-width:850px){
       .page{grid-template-columns:1fr}
@@ -356,29 +328,28 @@
       <!-- تسجيل الدخول -->
       <form id="loginForm">
         <div class="field">
-          <label for="loginPhone">رقم الهاتف المصري</label>
+          <label for="loginUsername">اسم المستخدم</label>
           <input
-            id="loginPhone"
-            type="tel"
-            inputmode="tel"
-            dir="ltr"
-            autocomplete="tel"
-            maxlength="16"
-            placeholder="01xxxxxxxxx"
+            id="loginUsername"
+            class="username-input"
+            type="text"
+            autocomplete="username"
+            maxlength="24"
+            placeholder="username"
             required
           >
-          <p class="hint">اكتب رقمك المصري الذي يبدأ بـ 01</p>
         </div>
 
         <div class="field">
           <label for="loginPassword">كلمة المرور</label>
-          <input id="loginPassword" type="password"
-            autocomplete="current-password" placeholder="كلمة المرور" required>
+          <input
+            id="loginPassword"
+            type="password"
+            autocomplete="current-password"
+            placeholder="كلمة المرور"
+            required
+          >
         </div>
-
-        <a href="#" class="forgot" id="forgotPassword">
-          نسيت كلمة المرور؟
-        </a>
 
         <button class="main-btn" type="submit" id="loginButton">
           تسجيل الدخول
@@ -394,39 +365,52 @@
           <span class="step-dot"></span>
         </div>
 
-        <!-- الخطوة الأولى -->
+        <!-- الخطوة الأولى: اسم المستخدم وكلمة المرور -->
         <section class="step active" data-step="1">
           <div class="heading">
-            <h2>بيانات الحساب</h2>
-            <p>أدخل رقم هاتفك المصري واختر كلمة مرور آمنة</p>
+            <h2>إنشاء حسابك</h2>
+            <p>اختر اسم المستخدم وكلمة المرور الخاصة بك</p>
           </div>
 
           <div class="field">
-            <label for="registerPhone">رقم الهاتف المصري</label>
+            <label for="registerUsername">اسم المستخدم</label>
             <input
-              id="registerPhone"
-              type="tel"
-              inputmode="tel"
-              dir="ltr"
-              autocomplete="tel"
-              maxlength="16"
-              placeholder="01xxxxxxxxx"
+              id="registerUsername"
+              class="username-input"
+              type="text"
+              autocomplete="username"
+              minlength="3"
+              maxlength="24"
+              pattern="[A-Za-z0-9_]+"
+              placeholder="username"
               required
             >
-            <p class="hint">مثال: 01012345678 أو +201012345678</p>
+            <p class="hint">
+              استخدم 3 إلى 24 حرفًا إنجليزيًا أو رقمًا أو _
+            </p>
           </div>
 
           <div class="field">
             <label for="registerPassword">كلمة المرور</label>
-            <input id="registerPassword" type="password"
-              autocomplete="new-password" minlength="8"
-              placeholder="8 أحرف على الأقل" required>
+            <input
+              id="registerPassword"
+              type="password"
+              autocomplete="new-password"
+              minlength="8"
+              placeholder="8 أحرف على الأقل"
+              required
+            >
           </div>
 
           <div class="field">
             <label for="confirmPassword">تأكيد كلمة المرور</label>
-            <input id="confirmPassword" type="password"
-              autocomplete="new-password" placeholder="أعد كتابة كلمة المرور" required>
+            <input
+              id="confirmPassword"
+              type="password"
+              autocomplete="new-password"
+              placeholder="أعد كتابة كلمة المرور"
+              required
+            >
           </div>
 
           <button class="main-btn" type="button" id="nextStep1">
@@ -434,48 +418,53 @@
           </button>
         </section>
 
-        <!-- الخطوة الثانية -->
+        <!-- الخطوة الثانية: بيانات البروفايل -->
         <section class="step" data-step="2">
           <div class="heading">
             <h2>ملفك الشخصي</h2>
-            <p>اختر صورة واسمًا واسم مستخدم خاصًا بك</p>
+            <p>أضف صورتك واسمك الذي سيظهر للأعضاء</p>
           </div>
 
           <div class="photo-area">
             <div class="photo-preview" id="photoPreview">＋</div>
+
             <label class="upload-btn" for="profilePhoto">
               اختيار الصورة الشخصية
             </label>
-            <input id="profilePhoto" type="file"
-              accept="image/jpeg,image/png,image/webp" hidden required>
-            <p class="hint">صورة مربعة أو مستطيلة، حتى 5 ميجابايت</p>
+
+            <input
+              id="profilePhoto"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              hidden
+              required
+            >
+
+            <p class="hint">صورة شخصية حتى 5 ميجابايت</p>
           </div>
 
           <div class="field">
-            <label for="displayName">الاسم</label>
-            <input id="displayName" type="text"
-              autocomplete="name" maxlength="60"
-              placeholder="اكتب اسمك" required>
-          </div>
-
-          <div class="field">
-            <label for="username">اسم المستخدم</label>
-            <input id="username" type="text"
-              autocomplete="username" minlength="3" maxlength="24"
-              pattern="[A-Za-z0-9_]+"
-              placeholder="@username" required>
-            <p class="hint">حروف إنجليزية وأرقام وشرطة سفلية فقط</p>
+            <label for="displayName">اسمك</label>
+            <input
+              id="displayName"
+              type="text"
+              autocomplete="name"
+              maxlength="60"
+              placeholder="اكتب اسمك"
+              required
+            >
           </div>
 
           <button class="main-btn" type="button" id="nextStep2">
             التالي
           </button>
+
           <button class="secondary-btn" type="button" id="backStep2">
             رجوع
           </button>
         </section>
 
-        <!-- الخطوة الثالثة -->
+        <!-- الخطوة الثالثة: الاهتمامات -->
         <section class="step" data-step="3">
           <div class="heading">
             <h2>اهتماماتك وهواياتك</h2>
@@ -483,30 +472,44 @@
           </div>
 
           <div class="field">
-            <label>هواياتك</label>
-            <input id="hobbies" type="text"
-              placeholder="القراءة، الكتابة، الرسم...">
+            <label for="hobbies">هواياتك</label>
+            <input
+              id="hobbies"
+              type="text"
+              placeholder="القراءة، الكتابة، الرسم..."
+            >
           </div>
 
           <div class="field">
-            <label>ماذا تحب أن تقرأ؟</label>
-            <input id="readingInterests" type="text"
-              placeholder="العلوم، التاريخ، الأدب...">
+            <label for="readingInterests">ماذا تحب أن تقرأ؟</label>
+            <input
+              id="readingInterests"
+              type="text"
+              placeholder="العلوم، التاريخ، الأدب..."
+            >
           </div>
 
           <div class="field">
-            <label>نبذة عنك</label>
-            <textarea id="bio" maxlength="300"
-              placeholder="اكتب نبذة قصيرة عن نفسك"></textarea>
+            <label for="bio">نبذة عنك</label>
+            <textarea
+              id="bio"
+              maxlength="300"
+              placeholder="اكتب نبذة قصيرة عن نفسك"
+            ></textarea>
           </div>
 
           <p class="hint">
-            بإنشاء الحساب، أنت توافق على شروط الاستخدام وسياسة الخصوصية.
+            بعد إنشاء حسابك ستحصل على رقم عضوية خاص ورمز QR.
           </p>
 
-          <button class="main-btn" type="submit" id="createAccountButton">
+          <button
+            class="main-btn"
+            type="submit"
+            id="createAccountButton"
+          >
             إنشاء الحساب
           </button>
+
           <button class="secondary-btn" type="button" id="backStep3">
             رجوع
           </button>
