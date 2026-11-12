@@ -3,55 +3,48 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-
-  <meta name="theme-color" content="#090D1B">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#090817">
   <title>ملفي الشخصي | HANOON</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg:#090D1B;
-      --panel:rgba(24,31,54,.76);
-      --panel2:rgba(32,41,68,.8);
-      --gold:#D9B978;
-      --purple:#947DFB;
-      --teal:#43D1C1;
-      --text:#F8F4EA;
-      --muted:#AEB4C9;
-      --border:rgba(255,255,255,.10);
-      --danger:#F07886;
-      --glass:rgba(255,255,255,.045);
+      --bg:#090817;
+      --panel:rgba(22,19,43,.82);
+      --panel2:rgba(34,27,62,.78);
+      --gold:#e5c27d;
+      --purple:#a58aff;
+      --teal:#53d9cb;
+      --text:#fbf8ff;
+      --muted:#b7b2ca;
+      --border:rgba(255,255,255,.11);
+      --danger:#ff8295;
     }
 
-    * { box-sizing:border-box; margin:0; padding:0; }
+    * {
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
 
     html {
       min-height:100%;
-      background:var(--bg);
       scroll-behavior:smooth;
+      background:var(--bg);
     }
 
     body {
       min-height:100vh;
       color:var(--text);
-      background:#080615 url("https://images.unsplash.com/photo-1754851539824-5a87c5c7cb86?auto=format&fit=crop&fm=jpg&ixid=NHwxMJA3fDA%3D&ixlib=rb-4.1.0&q=85&w=2400") center center / cover fixed no-repeat;
       font-family:"Cairo",sans-serif;
       overflow-x:hidden;
-      isolation:isolate;
-    }
-
-    body::after {
-      content:"";
-      position:fixed;
-      inset:0;
-      z-index:-1;
-      pointer-events:none;
       background:
-        linear-gradient(180deg,rgba(5,4,18,.62),rgba(7,5,24,.78) 48%,rgba(5,4,18,.92)),
-        radial-gradient(ellipse at 80% 12%,rgba(157,82,255,.24),transparent 42%),
-        radial-gradient(ellipse at 12% 65%,rgba(91,54,190,.18),transparent 40%);
+        linear-gradient(180deg,rgba(8,6,23,.70),rgba(8,6,23,.91)),
+        url("https://images.unsplash.com/photo-1754851539824-5a87c5c7cb86?auto=format&fit=crop&fm=jpg&ixlib=rb-4.1.0&q=85&w=2400") center center / cover fixed no-repeat;
     }
 
     body::before {
@@ -60,23 +53,20 @@
       inset:0;
       z-index:-1;
       pointer-events:none;
-      opacity:.28;
-      background-image:
-        radial-gradient(1px 1px at 12% 18%,#fff 50%,transparent 100%),
-        radial-gradient(2px 2px at 80% 22%,#D9B978 50%,transparent 100%),
-        radial-gradient(1px 1px at 62% 70%,#fff 50%,transparent 100%),
-        radial-gradient(2px 2px at 25% 82%,#947DFB 50%,transparent 100%),
-        radial-gradient(1px 1px at 92% 88%,#fff 50%,transparent 100%);
-      background-size:330px 330px;
+      background:
+        radial-gradient(ellipse at 80% 12%,rgba(151,92,255,.22),transparent 42%),
+        radial-gradient(ellipse at 12% 70%,rgba(85,57,190,.18),transparent 40%);
     }
 
     button,input,textarea { font:inherit; }
     button { cursor:pointer; }
     a { color:inherit;text-decoration:none; }
+    [hidden] { display:none !important; }
 
+    /* الشريط العلوي */
     .topbar {
-      min-height:74px;
-      padding:12px 5%;
+      min-height:70px;
+      padding:11px 5%;
       display:flex;
       align-items:center;
       justify-content:space-between;
@@ -84,8 +74,8 @@
       position:sticky;
       top:0;
       z-index:20;
-      border-bottom:1px solid rgba(217,185,120,.16);
-      background:rgba(8,5,24,.76);
+      border-bottom:1px solid rgba(229,194,125,.16);
+      background:rgba(8,6,23,.82);
       backdrop-filter:blur(22px);
       -webkit-backdrop-filter:blur(22px);
     }
@@ -93,10 +83,9 @@
     .brand {
       color:var(--gold);
       font-family:Georgia,serif;
-      font-size:27px;
+      font-size:26px;
       font-weight:900;
       letter-spacing:3px;
-      text-shadow:0 0 25px rgba(217,185,120,.2);
     }
 
     .top-actions {
@@ -106,44 +95,40 @@
     }
 
     .top-btn {
-      min-height:40px;
-      padding:8px 15px;
-      border:1px solid rgba(217,185,120,.23);
+      min-height:39px;
+      padding:7px 15px;
+      border:1px solid rgba(229,194,125,.25);
       border-radius:12px;
-      background:rgba(20,12,43,.58);
+      background:rgba(31,24,55,.7);
       color:var(--text);
       font-size:12px;
-      transition:.25s;
+      font-weight:800;
     }
 
     .top-btn:hover {
       border-color:var(--gold);
-      background:rgba(217,185,120,.09);
       color:var(--gold);
     }
 
     .container {
-      position:relative;
-      width:min(1050px,92%);
-      margin:35px auto 65px;
+      width:min(1080px,92%);
+      margin:30px auto 65px;
     }
 
     .heading {
       margin-bottom:22px;
-      padding:4px 5px;
     }
 
     .heading small {
       color:var(--teal);
       font-weight:900;
-      letter-spacing:.4px;
     }
 
     .heading h1 {
       margin-top:5px;
-      font-size:clamp(27px,5vw,39px);
+      font-size:clamp(27px,5vw,38px);
       font-weight:900;
-      background:linear-gradient(90deg,#fff,var(--gold),#C7B8FF);
+      background:linear-gradient(90deg,#fff,var(--gold),#c6b3ff);
       -webkit-background-clip:text;
       background-clip:text;
       color:transparent;
@@ -155,100 +140,118 @@
       font-size:13px;
     }
 
-    .hero {
+    /* غلاف الملف الشخصي */
+    .profile-cover {
       position:relative;
+      min-height:370px;
       overflow:hidden;
-      min-height:225px;
-      padding:32px;
+      border:1px solid rgba(229,194,125,.34);
+      border-radius:30px;
+      background:
+        linear-gradient(100deg,rgba(8,5,24,.82),rgba(24,12,55,.55),rgba(8,5,24,.83)),
+        url("https://images.unsplash.com/photo-1754851539824-5a87c5c7cb86?auto=format&fit=crop&fm=jpg&ixlib=rb-4.1.0&q=85&w=2400") center 42% / cover;
+      box-shadow:0 24px 70px rgba(0,0,0,.32);
+    }
+
+    .profile-cover::before {
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background:
+        radial-gradient(circle at 15% 20%,rgba(190,142,255,.27),transparent 33%),
+        linear-gradient(0deg,rgba(7,5,20,.45),transparent 70%);
+    }
+
+    .cover-decoration {
+      position:absolute;
+      left:25px;
+      top:8px;
+      color:rgba(229,194,125,.12);
+      font-family:Georgia,serif;
+      font-size:190px;
+      font-weight:900;
+      line-height:1;
+      pointer-events:none;
+    }
+
+    .profile-cover-content {
+      position:relative;
+      z-index:1;
+      min-height:370px;
+      padding:35px;
       display:flex;
       align-items:center;
       gap:27px;
-      border:1px solid rgba(217,185,120,.28);
-      border-radius:27px;
-      background:
-        linear-gradient(110deg,rgba(10,7,28,.82),rgba(33,18,66,.67)),
-        url("https://images.unsplash.com/photo-1754851539824-5a87c5c7cb86?auto=format&fit=crop&fm=jpg&ixid=NHwxMJA3fDA%3D&ixlib=rb-4.1.0&q=85&w=2400") center 42% / cover;
-      box-shadow:
-        0 22px 65px rgba(0,0,0,.22),
-        inset 0 1px 0 rgba(255,255,255,.07);
-      backdrop-filter:blur(18px);
-    }
-
-    .hero::before {
-      content:"";
-      position:absolute;
-      width:300px;
-      height:300px;
-      left:-100px;
-      top:-190px;
-      border:1px solid rgba(217,185,120,.19);
-      border-radius:50%;
-      box-shadow:
-        0 0 0 24px rgba(217,185,120,.025),
-        0 0 0 52px rgba(217,185,120,.02),
-        0 0 0 85px rgba(217,185,120,.015);
-      pointer-events:none;
-    }
-
-    .hero::after {
-      content:"H";
-      position:absolute;
-      left:30px;
-      bottom:-100px;
-      color:rgba(217,185,120,.045);
-      font-family:Georgia,serif;
-      font-size:260px;
-      font-weight:900;
-      pointer-events:none;
     }
 
     .avatar-wrap {
-      position:relative;
-      z-index:1;
-      flex-shrink:0;
+      flex:0 0 auto;
+      width:172px;
+      height:172px;
+      display:grid;
+      place-items:center;
       padding:7px;
-      border:1px solid rgba(217,185,120,.45);
+      border:2px solid rgba(229,194,125,.85);
       border-radius:50%;
-      background:rgba(255,255,255,.035);
-      box-shadow:0 0 35px rgba(217,185,120,.13);
+      background:rgba(255,255,255,.09);
+      box-shadow:
+        0 0 0 7px rgba(229,194,125,.09),
+        0 0 45px rgba(167,124,255,.38);
     }
 
     .avatar {
-      width:125px;
-      height:125px;
+      width:100%;
+      height:100%;
       display:grid;
       place-items:center;
       overflow:hidden;
-      border:3px solid var(--gold);
+      border:3px solid rgba(255,255,255,.9);
       border-radius:50%;
-      background:linear-gradient(135deg,var(--purple),#35466f);
+      background:linear-gradient(135deg,#a58aff,#35466f);
       color:white;
-      font-size:40px;
+      font-size:53px;
       font-weight:900;
     }
 
     .avatar img {
+      display:block;
       width:100%;
       height:100%;
       object-fit:cover;
+      border-radius:50%;
     }
 
     .profile-info {
       min-width:0;
       flex:1;
-      position:relative;
-      z-index:1;
+    }
+
+    .profile-label {
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      margin-bottom:9px;
+      padding:6px 12px;
+      border:1px solid rgba(229,194,125,.35);
+      border-radius:30px;
+      color:#f0d69e;
+      background:rgba(229,194,125,.10);
+      font-size:11px;
+      font-weight:900;
     }
 
     .profile-info h2 {
-      font-size:29px;
+      color:#fff;
+      font-size:clamp(26px,4vw,37px);
       font-weight:900;
       overflow-wrap:anywhere;
+      text-shadow:0 3px 20px rgba(0,0,0,.5);
     }
 
     .username {
-      margin-top:3px;
-      color:var(--gold);
+      margin-top:4px;
+      color:#e8c985;
       font-size:13px;
       direction:ltr;
       text-align:right;
@@ -256,8 +259,8 @@
 
     .bio {
       max-width:650px;
-      margin-top:13px;
-      color:#C1C7D9;
+      margin-top:12px;
+      color:#e1dcef;
       font-size:13px;
       line-height:2;
     }
@@ -266,11 +269,11 @@
       display:inline-flex;
       align-items:center;
       gap:10px;
-      margin-top:15px;
+      margin-top:14px;
       padding:8px 14px;
-      border:1px solid rgba(217,185,120,.32);
+      border:1px solid rgba(229,194,125,.35);
       border-radius:30px;
-      background:rgba(217,185,120,.09);
+      background:rgba(229,194,125,.10);
       color:var(--gold);
       font-size:12px;
       direction:ltr;
@@ -279,23 +282,84 @@
     .copy-code {
       border:0;
       background:transparent;
-      color:white;
+      color:#fff;
       font-size:12px;
+      font-weight:800;
     }
 
+    /* أزرار الملف الشخصي الدائرية */
+    .profile-actions {
+      position:relative;
+      z-index:2;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      flex-wrap:wrap;
+      gap:23px;
+      margin:-31px auto 25px;
+      padding:0 15px;
+    }
+
+    .profile-action {
+      width:82px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:8px;
+      border:0;
+      background:transparent;
+      color:var(--text);
+      font-size:11px;
+      font-weight:800;
+      text-align:center;
+      cursor:pointer;
+    }
+
+    .action-circle {
+      width:65px;
+      height:65px;
+      display:grid;
+      place-items:center;
+      border:1px solid rgba(229,194,125,.42);
+      border-radius:50%;
+      background:linear-gradient(145deg,rgba(44,34,76,.97),rgba(17,15,39,.96));
+      color:#e9ce98;
+      box-shadow:0 9px 27px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.12);
+      transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease;
+    }
+
+    .action-circle svg {
+      width:25px;
+      height:25px;
+      fill:none;
+      stroke:currentColor;
+      stroke-width:1.7;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+    }
+
+    .profile-action:hover .action-circle {
+      transform:translateY(-5px);
+      border-color:var(--teal);
+      color:var(--teal);
+      box-shadow:0 13px 32px rgba(83,217,203,.14);
+    }
+
+    .profile-action span:last-child {
+      color:#e9e3f4;
+      white-space:nowrap;
+    }
+
+    /* البطاقات */
     .section {
       position:relative;
       overflow:hidden;
       margin-top:22px;
       padding:25px;
-      border:1px solid rgba(195,164,255,.18);
-      border-radius:22px;
-      background:
-        linear-gradient(145deg,rgba(20,13,43,.79),rgba(9,8,27,.81));
-      box-shadow:
-        0 18px 48px rgba(0,0,0,.25),
-        inset 0 1px 0 rgba(255,255,255,.09),
-        0 0 28px rgba(137,83,255,.06);
+      border:1px solid rgba(195,164,255,.17);
+      border-radius:23px;
+      background:linear-gradient(145deg,rgba(26,19,51,.88),rgba(10,8,28,.88));
+      box-shadow:0 18px 48px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.08);
       backdrop-filter:blur(18px);
       -webkit-backdrop-filter:blur(18px);
     }
@@ -305,10 +369,9 @@
       position:absolute;
       top:0;
       right:0;
-      width:85px;
+      width:90px;
       height:2px;
       background:linear-gradient(90deg,transparent,var(--gold));
-      opacity:.8;
     }
 
     .section-head {
@@ -337,18 +400,11 @@
 
     .tag {
       padding:8px 15px;
-      border:1px solid rgba(148,125,251,.29);
+      border:1px solid rgba(165,138,255,.3);
       border-radius:25px;
-      background:rgba(148,125,251,.10);
-      color:#D2C9FF;
+      background:rgba(165,138,255,.11);
+      color:#ddd2ff;
       font-size:12px;
-      transition:.2s;
-    }
-
-    .tag:hover {
-      border-color:var(--teal);
-      background:rgba(67,209,193,.1);
-      color:var(--teal);
     }
 
     .empty-text {
@@ -356,6 +412,7 @@
       font-size:13px;
     }
 
+    /* QR */
     .qr-layout {
       display:flex;
       align-items:center;
@@ -369,10 +426,9 @@
       padding:13px;
       display:grid;
       place-items:center;
-      border:1px solid rgba(217,185,120,.25);
+      border:1px solid rgba(229,194,125,.28);
       border-radius:18px;
-      background:white;
-      box-shadow:0 10px 35px rgba(0,0,0,.2);
+      background:#fff;
     }
 
     #profileQR {
@@ -391,8 +447,8 @@
     }
 
     .qr-info h4 {
-      color:var(--gold);
       margin-bottom:8px;
+      color:var(--gold);
       font-size:17px;
     }
 
@@ -402,6 +458,7 @@
       line-height:2.1;
     }
 
+    /* نموذج التعديل */
     .form-grid {
       display:grid;
       grid-template-columns:repeat(2,minmax(0,1fr));
@@ -417,7 +474,7 @@
     .field.full { grid-column:1/-1; }
 
     .field label {
-      color:#C7CBE0;
+      color:#d8d2e7;
       font-size:12px;
       font-weight:800;
     }
@@ -425,21 +482,21 @@
     .field input,.field textarea {
       width:100%;
       padding:14px 15px;
-      border:1px solid rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.11);
       border-radius:13px;
       outline:none;
-      background:rgba(8,5,24,.68);
+      background:rgba(8,5,24,.72);
       color:var(--text);
       transition:.2s;
     }
 
     .field input:focus,.field textarea:focus {
       border-color:var(--gold);
-      box-shadow:0 0 0 3px rgba(217,185,120,.09);
+      box-shadow:0 0 0 3px rgba(229,194,125,.09);
     }
 
     .field input::placeholder,.field textarea::placeholder {
-      color:#7E859C;
+      color:#88839d;
     }
 
     .field input[type="file"] {
@@ -473,20 +530,20 @@
     .btn:hover { transform:translateY(-2px); }
 
     .btn-gold {
-      background:linear-gradient(135deg,#F3DDA9,var(--gold));
+      background:linear-gradient(135deg,#f3dda9,var(--gold));
       color:#171522;
-      box-shadow:0 7px 22px rgba(217,185,120,.15);
+      box-shadow:0 7px 22px rgba(229,194,125,.15);
     }
 
     .btn-outline {
-      border:1px solid rgba(217,185,120,.32);
-      background:rgba(217,185,120,.07);
+      border:1px solid rgba(229,194,125,.32);
+      background:rgba(229,194,125,.07);
       color:var(--gold);
     }
 
     .btn-danger {
-      border:1px solid rgba(240,120,134,.25);
-      background:rgba(240,120,134,.08);
+      border:1px solid rgba(255,130,149,.25);
+      background:rgba(255,130,149,.08);
       color:var(--danger);
     }
 
@@ -494,10 +551,9 @@
       padding:50px 15px;
       border:1px solid var(--border);
       border-radius:20px;
-      background:var(--glass);
+      background:rgba(255,255,255,.04);
       color:var(--muted);
       text-align:center;
-      backdrop-filter:blur(12px);
     }
 
     .message {
@@ -510,14 +566,15 @@
     }
 
     .message.show { display:block; }
+
     .message.error {
-      color:#FFB0B8;
-      background:rgba(240,120,134,.09);
-      border:1px solid rgba(240,120,134,.18);
+      color:#ffb0b8;
+      background:rgba(255,130,149,.09);
+      border:1px solid rgba(255,130,149,.18);
     }
 
     .message.success {
-      color:#8BE0C4;
+      color:#8be0c4;
       background:rgba(53,189,176,.09);
       border:1px solid rgba(53,189,176,.18);
     }
@@ -552,28 +609,128 @@
       font-size:11px;
     }
 
-    [hidden] { display:none !important; }
-
+    /* شاشات الموبايل */
     @media(max-width:650px) {
-      .container { margin-top:22px; }
-      .hero {
-        padding:24px 17px;
+      .container { margin-top:21px; }
+
+      .profile-cover {
+        min-height:440px;
+        border-radius:23px;
+      }
+
+      .profile-cover-content {
+        min-height:440px;
+        padding:28px 16px 52px;
         flex-direction:column;
+        justify-content:center;
+        gap:17px;
         text-align:center;
       }
 
-      .profile-info .username { text-align:center; }
-      .avatar { width:108px;height:108px; }
-      .member-code { justify-content:center; }
-      .section { padding:21px 15px; }
-      .form-grid { grid-template-columns:1fr; }
-      .field.full { grid-column:auto; }
-      .qr-layout { justify-content:center;text-align:center; }
-      .qr-info { min-width:100%; }
-      .topbar { padding:12px 4%; }
-      .top-actions { gap:6px; }
-      .top-btn { padding:8px 10px;font-size:11px; }
-      .heading h1 { font-size:29px; }
+      .avatar-wrap {
+        width:154px;
+        height:154px;
+      }
+
+      .profile-info {
+        width:100%;
+      }
+
+      .profile-info h2 {
+        font-size:27px;
+      }
+
+      .username {
+        text-align:center;
+      }
+
+      .bio {
+        margin-inline:auto;
+      }
+
+      .member-code {
+        justify-content:center;
+      }
+
+      .cover-decoration {
+        left:5px;
+        top:5px;
+        font-size:140px;
+      }
+
+      .profile-actions {
+        gap:15px 9px;
+        margin-top:-30px;
+        padding-inline:5px;
+      }
+
+      .profile-action {
+        width:75px;
+        font-size:10px;
+      }
+
+      .action-circle {
+        width:59px;
+        height:59px;
+      }
+
+      .action-circle svg {
+        width:23px;
+        height:23px;
+      }
+
+      .section {
+        padding:21px 15px;
+      }
+
+      .form-grid {
+        grid-template-columns:1fr;
+      }
+
+      .field.full {
+        grid-column:auto;
+      }
+
+      .qr-layout {
+        justify-content:center;
+        text-align:center;
+      }
+
+      .qr-info {
+        min-width:100%;
+      }
+
+      .topbar {
+        padding:11px 4%;
+      }
+
+      .top-actions {
+        gap:6px;
+      }
+
+      .top-btn {
+        padding:7px 10px;
+        font-size:10px;
+      }
+
+      .heading h1 {
+        font-size:29px;
+      }
+    }
+
+    @media(max-width:360px) {
+      .profile-actions {
+        gap:13px 4px;
+      }
+
+      .profile-action {
+        width:69px;
+      }
+
+      .action-circle {
+        width:55px;
+        height:55px;
+      }
     }
 
     @media(prefers-reduced-motion:reduce) {
@@ -586,6 +743,7 @@
 </head>
 
 <body>
+
   <header class="topbar">
     <a href="../index.html" class="brand">HANOON</a>
     <div class="top-actions">
@@ -595,32 +753,103 @@
   </header>
 
   <main class="container">
+
     <div class="heading">
       <small>هويتك داخل مجتمع هنون</small>
-      <h1>الملف الشخصي</h1>
+      <h1>ملفي الشخصي</h1>
       <p>مساحتك الخاصة للتعريف بنفسك ومشاركة اهتماماتك.</p>
     </div>
 
-    <div class="loading" id="profileLoading">جارٍ تحميل الملف الشخصي...</div>
+    <div class="loading" id="profileLoading">
+      جارٍ تحميل الملف الشخصي...
+    </div>
 
     <div id="profileContent" hidden>
-      <section class="hero">
-        <div class="avatar-wrap">
-          <div class="avatar" id="profileAvatar">H</div>
-        </div>
 
-        <div class="profile-info">
-          <h2 id="profileName">---</h2>
-          <div class="username" id="profileUsername">@---</div>
-          <p class="bio" id="profileBio">---</p>
+      <!-- الغلاف والصورة والاسم -->
+      <section class="profile-cover">
+        <div class="cover-decoration" aria-hidden="true">H</div>
 
-          <div class="member-code">
-            <span id="memberCode">HN-----------</span>
-            <button class="copy-code" id="copyMemberCode" type="button" title="نسخ رقم العضوية">نسخ</button>
+        <div class="profile-cover-content">
+
+          <div class="avatar-wrap">
+            <div class="avatar" id="profileAvatar">H</div>
           </div>
+
+          <div class="profile-info">
+            <span class="profile-label">✦ عضو في مجتمع هنون</span>
+            <h2 id="profileName">جارٍ تحميل الاسم...</h2>
+            <div class="username" id="profileUsername">@---</div>
+            <p class="bio" id="profileBio">---</p>
+
+            <div class="member-code">
+              <span id="memberCode">HN-----------</span>
+              <button class="copy-code" id="copyMemberCode" type="button">نسخ</button>
+            </div>
+          </div>
+
         </div>
       </section>
 
+      <!-- أزرار دائرية متجاورة -->
+      <nav class="profile-actions" aria-label="اختصارات الملف الشخصي">
+
+        <button class="profile-action" id="editProfileShortcut" type="button">
+          <span class="action-circle">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 20h9"/>
+              <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/>
+            </svg>
+          </span>
+          <span>تعديل الملف</span>
+        </button>
+
+        <a class="profile-action" href="achievements.html">
+          <span class="action-circle">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="8" r="5"/>
+              <path d="m8.2 12-1.1 9 4.9-2.8 4.9 2.8-1.1-9"/>
+              <path d="m10 8 1.3 1.3L14 6.7"/>
+            </svg>
+          </span>
+          <span>الإنجازات</span>
+        </a>
+
+        <a class="profile-action" href="settings.html">
+          <span class="action-circle">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="m19.4 15 .1.1a1.7 1.7 0 0 1-2.4 2.4l-.1-.1a1.7 1.7 0 0 0-2.9 1.2v.2a1.7 1.7 0 0 1-3.4 0v-.2a1.7 1.7 0 0 0-2.9-1.2l-.1.1a1.7 1.7 0 0 1-2.4-2.4l.1-.1a1.7 1.7 0 0 0-1.2-2.9H4a1.7 1.7 0 0 1 0-3.4h.2a1.7 1.7 0 0 0 1.2-2.9l-.1-.1a1.7 1.7 0 0 1 2.4-2.4l.1.1a1.7 1.7 0 0 0 2.9-1.2V2a1.7 1.7 0 0 1 3.4 0v.2a1.7 1.7 0 0 0 2.9 1.2l.1-.1a1.7 1.7 0 0 1 2.4 2.4l-.1.1a1.7 1.7 0 0 0 1.2 2.9h.2a1.7 1.7 0 0 1 0 3.4h-.2a1.7 1.7 0 0 0-1.2 2.9Z"/>
+            </svg>
+          </span>
+          <span>الإعدادات</span>
+        </a>
+
+        <a class="profile-action" href="community.html">
+          <span class="action-circle">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </span>
+          <span>المجتمع</span>
+        </a>
+
+        <a class="profile-action" href="library.html">
+          <span class="action-circle">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/>
+              <path d="M8 7h8M8 11h8"/>
+            </svg>
+          </span>
+          <span>مكتبتي</span>
+        </a>
+
+      </nav>
+
+      <!-- الهوايات -->
       <section class="section">
         <div class="section-head">
           <h3>هواياتي</h3>
@@ -631,6 +860,7 @@
         </div>
       </section>
 
+      <!-- اهتمامات القراءة -->
       <section class="section">
         <div class="section-head">
           <h3>ماذا أحب أن أقرأ؟</h3>
@@ -641,6 +871,7 @@
         </div>
       </section>
 
+      <!-- رمز QR -->
       <section class="section">
         <div class="section-head">
           <h3>بطاقة هويتي ورمز QR</h3>
@@ -659,12 +890,15 @@
               لا يحتوي الرمز على بريدك الإلكتروني أو كلمة مرورك.
             </p>
             <div class="actions">
-              <button class="btn btn-outline" id="copyProfileLink" type="button">نسخ رابط الملف</button>
+              <button class="btn btn-outline" id="copyProfileLink" type="button">
+                نسخ رابط الملف
+              </button>
             </div>
           </div>
         </div>
       </section>
 
+      <!-- تعديل البيانات -->
       <section class="section" id="editSection">
         <div class="section-head">
           <h3>تعديل الملف الشخصي</h3>
@@ -673,6 +907,7 @@
 
         <form id="profileForm">
           <div class="form-grid">
+
             <div class="field">
               <label for="editName">الاسم</label>
               <input id="editName" type="text" maxlength="80" required>
@@ -702,15 +937,19 @@
               <label for="avatarInput">تغيير الصورة الشخصية</label>
               <input id="avatarInput" type="file" accept="image/jpeg,image/png,image/webp">
             </div>
+
           </div>
 
           <div class="message" id="profileMessage" role="status"></div>
 
           <div class="actions">
-            <button class="btn btn-gold" id="saveProfileButton" type="submit">حفظ التعديلات</button>
+            <button class="btn btn-gold" id="saveProfileButton" type="submit">
+              حفظ التعديلات
+            </button>
           </div>
         </form>
       </section>
+
     </div>
 
     <div class="message error" id="pageError" role="alert"></div>
@@ -727,5 +966,15 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script type="module" src="../js/supabase-client.js"></script>
   <script src="../js/profile.js" defer></script>
+
+  <script>
+    document.getElementById("editProfileShortcut")?.addEventListener("click", () => {
+      document.getElementById("editSection")?.scrollIntoView({
+        behavior:"smooth",
+        block:"start"
+      });
+    });
+  </script>
+
 </body>
 </html>
