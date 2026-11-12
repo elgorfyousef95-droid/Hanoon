@@ -5,17 +5,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#0C1020">
-
   <title>HANOON | المعرفة تصنع الفرق</title>
   <meta name="description" content="هنون منصة معرفية متكاملة للقراءة والتعلم والثقافة والتطوير.">
-
   <link rel="icon" href="assets/logo/logo.svg" type="image/svg+xml">
   <link rel="manifest" href="manifest.json">
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="css/theme.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/components.css">
@@ -53,17 +49,14 @@
       pointer-events: none;
       transform: translate(-50%,-22px) scale(.97);
     }
-
     .competition-notice.is-visible {
       visibility: visible;
       pointer-events: auto;
       animation: competitionNoticeIn .55s cubic-bezier(.2,.8,.2,1) forwards;
     }
-
     .competition-notice.is-leaving {
       animation: competitionNoticeOut .45s ease forwards;
     }
-
     .competition-notice-avatar {
       flex: 0 0 58px;
       width: 58px;
@@ -74,7 +67,6 @@
       box-shadow: 0 0 0 4px rgba(229,194,125,.12);
       background: #24243a;
     }
-
     .competition-notice-copy {
       min-width: 0;
       display: flex;
@@ -82,38 +74,32 @@
       flex-direction: column;
       gap: 3px;
     }
-
     .competition-notice-kicker {
       color: #e6c783;
       font-size: 10px;
       font-weight: 800;
       letter-spacing: .3px;
     }
-
     .competition-notice-copy strong {
       color: #fff;
       font-size: 15px;
       font-weight: 900;
       line-height: 1.5;
     }
-
     .competition-notice-date {
       color: #f2d9a5;
       font-size: 12px;
       font-weight: 800;
     }
-
     .competition-notice-copy small {
       color: rgba(255,255,255,.72);
       font-size: 10px;
     }
-
     .competition-notice-mark {
       align-self: flex-start;
       color: #e8c77f;
       font-size: 19px;
     }
-
     @keyframes competitionNoticeIn {
       from {
         opacity: 0;
@@ -124,7 +110,6 @@
         transform: translate(-50%,0) scale(1);
       }
     }
-
     @keyframes competitionNoticeOut {
       from {
         opacity: 1;
@@ -136,31 +121,25 @@
         visibility: hidden;
       }
     }
-
     @media(max-width:380px) {
       .competition-notice {
         gap: 10px;
         padding: 11px 12px;
       }
-
       .competition-notice-avatar {
         flex-basis: 50px;
         width: 50px;
         height: 50px;
       }
-
       .competition-notice-copy strong {
         font-size: 13px;
       }
     }
-
-    /* أزرار الحساب في رأس الصفحة */
     .header-controls {
       display: flex;
       align-items: center;
       gap: 10px;
     }
-
     .account-button {
       display: inline-flex;
       align-items: center;
@@ -178,7 +157,6 @@
       text-decoration: none;
       white-space: nowrap;
     }
-
     .header-profile-link {
       display: inline-flex;
       align-items: center;
@@ -192,12 +170,10 @@
       background: rgba(255,255,255,.07);
       text-decoration: none;
     }
-
     .header-profile-link[hidden],
     .account-button[hidden] {
       display: none !important;
     }
-
     #headerProfileInitial,
     #headerProfileImage {
       width: 34px;
@@ -211,12 +187,10 @@
       background: linear-gradient(135deg,#397fdb,#7958cf);
       font-weight: 900;
     }
-
     #headerProfileImage[hidden],
     #headerProfileInitial[hidden] {
       display: none !important;
     }
-
     .header-profile-link strong {
       max-width: 125px;
       overflow: hidden;
@@ -225,27 +199,22 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-
     @media(max-width:600px) {
       .header-controls {
         gap: 6px;
       }
-
       .account-button {
         min-height: 36px;
         padding: 0 11px;
         font-size: 10px;
       }
-
       .header-profile-link {
         max-width: 125px;
       }
-
       .header-profile-link strong {
         max-width: 72px;
       }
     }
-
     @media(prefers-reduced-motion:reduce) {
       .competition-notice.is-visible,
       .competition-notice.is-leaving {
@@ -256,63 +225,36 @@
 </head>
 
 <body>
-
-  <!-- شاشة البداية -->
   <div class="splash-screen" id="splashScreen">
     <div class="splash-overlay"></div>
-
     <div class="splash-content">
       <img src="assets/logo/logo.svg" alt="شعار HANOON" class="splash-logo">
       <h1>HANOON</h1>
       <div class="splash-line"></div>
       <h2>المعرفة تصنع الفرق</h2>
-
-      <p class="splash-motto">
-        اقرأ .. تعلم .. اكتشف .. وحقق أحلامك
-      </p>
-
+      <p class="splash-motto">اقرأ .. تعلم .. اكتشف .. وحقق أحلامك</p>
       <p class="splash-quote">
         كل صفحة تقرؤها تقرّبك من حلمك،
         وكل معرفة تكتسبها تصنع مستقبلك.
       </p>
-
       <div class="splash-owner">YOUSEF ELGORF</div>
-
-      <div class="splash-loading">
-        <span></span>
-      </div>
-
+      <div class="splash-loading"><span></span></div>
       <small>رحلتك نحو المعرفة تبدأ الآن</small>
     </div>
   </div>
 
-  <!-- إشعار المسابقة -->
-  <aside
-    class="competition-notice"
-    id="competitionNotice"
-    role="status"
-    aria-live="polite"
-    aria-hidden="true"
-  >
-    <img
-      class="competition-notice-avatar"
-      src="assets/avatars/yousef.jpg"
-      alt="صورة صاحب منصة هنون"
-    >
-
+  <aside class="competition-notice" id="competitionNotice" role="status" aria-live="polite" aria-hidden="true">
+    <img class="competition-notice-avatar" src="assets/avatars/yousef.jpg" alt="صورة صاحب منصة هنون">
     <div class="competition-notice-copy">
       <span class="competition-notice-kicker">موعد التحدي يقترب</span>
       <strong>جهّز نفسك للمسابقة!</strong>
       <span class="competition-notice-date">11 يناير 2027</span>
       <small id="competitionCountdown">استعد للانطلاق</small>
     </div>
-
     <span class="competition-notice-mark" aria-hidden="true">✦</span>
   </aside>
 
-  <!-- رأس الموقع -->
   <header class="site-header" id="siteHeader">
-
     <a class="brand" href="index.html">
       <img src="assets/logo/logo.svg" alt="HANOON">
       <span>
@@ -321,13 +263,7 @@
       </span>
     </a>
 
-    <button
-      class="menu-toggle"
-      id="menuToggle"
-      aria-label="فتح القائمة"
-      aria-expanded="false"
-      type="button"
-    >
+    <button class="menu-toggle" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false" type="button">
       <span></span><span></span><span></span>
     </button>
 
@@ -345,136 +281,68 @@
     </nav>
 
     <div class="header-controls">
-
-      <button
-        id="searchToggle"
-        class="icon-button"
-        aria-label="البحث"
-        aria-expanded="false"
-        type="button"
-      >
+      <button id="searchToggle" class="icon-button" aria-label="البحث" aria-expanded="false" type="button">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <circle cx="10.8" cy="10.8" r="6.8"></circle>
           <path d="m16 16 5 5"></path>
         </svg>
       </button>
-
-      <button
-        id="themeToggle"
-        class="icon-button"
-        aria-label="تغيير المظهر"
-        type="button"
-      >
+      <button id="themeToggle" class="icon-button" aria-label="تغيير المظهر" type="button">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <circle cx="12" cy="12" r="4"></circle>
           <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l-1.42 1.42m11.3-11.3 1.42-1.42"></path>
         </svg>
       </button>
-
-      <a
-        class="account-button"
-        href="pages/auth.html"
-        id="accountButton"
-      >
-        تسجيل الدخول
-      </a>
-
-      <a
-        class="header-profile-link"
-        id="headerProfileLink"
-        href="pages/profile.html"
-        aria-label="ملفي الشخصي"
-        title="ملفي الشخصي"
-        hidden
-      >
+      <a class="account-button" href="pages/auth.html" id="accountButton">تسجيل الدخول</a>
+      <a class="header-profile-link" id="headerProfileLink" href="pages/profile.html" aria-label="ملفي الشخصي" title="ملفي الشخصي" hidden>
         <span id="headerProfileInitial">م</span>
-        <img
-          id="headerProfileImage"
-          src=""
-          alt="صورة المستخدم"
-          hidden
-        >
+        <img id="headerProfileImage" src="" alt="صورة المستخدم" hidden>
         <strong id="headerProfileName">حسابي</strong>
       </a>
-
     </div>
   </header>
 
-  <!-- البحث -->
-  <section
-    class="search-panel"
-    id="searchPanel"
-    aria-hidden="true"
-    hidden
-  >
+  <section class="search-panel" id="searchPanel" aria-hidden="true" hidden>
     <form id="globalSearchForm">
       <label for="globalSearchInput">ابحث في عالم هنون</label>
-
       <div class="search-field">
-        <input
-          id="globalSearchInput"
-          type="search"
-          placeholder="كتاب، مقال، درس، موضوع..."
-          autocomplete="off"
-        >
+        <input id="globalSearchInput" type="search" placeholder="كتاب، مقال، درس، موضوع..." autocomplete="off">
         <button type="submit">بحث</button>
       </div>
-
       <div id="searchResults" aria-live="polite"></div>
     </form>
   </section>
 
   <main>
-
-    <!-- الواجهة الرئيسية -->
     <section class="hero-section">
       <div class="hero-background"></div>
       <div class="hero-shade"></div>
-
       <div class="hero-inner">
         <div class="hero-copy">
           <span class="eyebrow">مرحبًا بك في عالم المعرفة</span>
-
-          <h1>
-            المعرفة بداية كل شيء،
-            <span>والتطور رحلة لا تنتهي</span>
-          </h1>
-
+          <h1>المعرفة بداية كل شيء، <span>والتطور رحلة لا تنتهي</span></h1>
           <p>
             مساحة تجمع الكتب والأفكار والعلوم والتجارب الإنسانية،
             وتمنحك رحلة متكاملة لاكتشاف نفسك وفهم العالم من حولك.
           </p>
-
           <div class="hero-actions">
-            <a href="pages/library.html" class="button button-gold">
-              اكتشف المكتبة
-            </a>
-            <a href="pages/learning.html" class="button button-glass">
-              ابدأ التعلم
-            </a>
+            <a href="pages/library.html" class="button button-gold">اكتشف المكتبة</a>
+            <a href="pages/learning.html" class="button button-glass">ابدأ التعلم</a>
           </div>
-
           <div class="hero-motto">
-            <span>اكتشف</span>
-            <i></i>
-            <span>تعلّم</span>
-            <i></i>
-            <span>تطوّر</span>
+            <span>اكتشف</span><i></i><span>تعلّم</span><i></i><span>تطوّر</span>
           </div>
         </div>
-
         <div class="hero-emblem">
           <img src="assets/logo/logo.svg" alt="شعار هنون">
         </div>
       </div>
-
       <div class="hero-bottom">
         <span>رحلتك نحو معرفة أعمق تبدأ من هنا</span>
         <a href="#platformSections" aria-label="اكتشف أقسام الموقع">اكتشف الأقسام ↓</a>
       </div>
     </section>
 
-    <!-- أقسام المنصة -->
     <section class="content-section" id="platformSections">
       <div class="section-heading">
         <div>
@@ -483,69 +351,42 @@
           <p>كل مجال يفتح أمامك بابًا جديدًا للفهم والتعلم.</p>
         </div>
       </div>
-
       <div class="sections-grid">
-
         <a href="pages/library.html" class="section-card">
-          <span class="section-icon">01</span>
-          <h3>المكتبة المعرفية</h3>
-          <p>كتب متخصصة ورحلات قراءة في مختلف مجالات الحياة.</p>
-          <span class="card-link">استكشف المكتبة ←</span>
+          <span class="section-icon">01</span><h3>المكتبة المعرفية</h3>
+          <p>كتب متخصصة ورحلات قراءة في مختلف مجالات الحياة.</p><span class="card-link">استكشف المكتبة ←</span>
         </a>
-
         <a href="pages/articles.html" class="section-card">
-          <span class="section-icon">02</span>
-          <h3>المقالات والأفكار</h3>
-          <p>موضوعات وتحليلات وأفكار تساعدك على توسيع مداركك.</p>
-          <span class="card-link">اكتشف المقالات ←</span>
+          <span class="section-icon">02</span><h3>المقالات والأفكار</h3>
+          <p>موضوعات وتحليلات وأفكار تساعدك على توسيع مداركك.</p><span class="card-link">اكتشف المقالات ←</span>
         </a>
-
         <a href="pages/stories.html" class="section-card">
-          <span class="section-icon">03</span>
-          <h3>القصص والروايات</h3>
-          <p>حكايات وتجارب إنسانية وأعمال أدبية متنوعة.</p>
-          <span class="card-link">ابدأ القراءة ←</span>
+          <span class="section-icon">03</span><h3>القصص والروايات</h3>
+          <p>حكايات وتجارب إنسانية وأعمال أدبية متنوعة.</p><span class="card-link">ابدأ القراءة ←</span>
         </a>
-
         <a href="pages/poetry.html" class="section-card">
-          <span class="section-icon">04</span>
-          <h3>الشعر والأدب</h3>
-          <p>مساحة للكلمة الجميلة والنصوص الأدبية والإبداع.</p>
-          <span class="card-link">اكتشف الأدب ←</span>
+          <span class="section-icon">04</span><h3>الشعر والأدب</h3>
+          <p>مساحة للكلمة الجميلة والنصوص الأدبية والإبداع.</p><span class="card-link">اكتشف الأدب ←</span>
         </a>
-
         <a href="pages/research.html" class="section-card">
-          <span class="section-icon">05</span>
-          <h3>الأبحاث والمعرفة</h3>
-          <p>موضوعات بحثية منظمة ومعلومات قابلة للاستكشاف.</p>
-          <span class="card-link">تصفح الأبحاث ←</span>
+          <span class="section-icon">05</span><h3>الأبحاث والمعرفة</h3>
+          <p>موضوعات بحثية منظمة ومعلومات قابلة للاستكشاف.</p><span class="card-link">تصفح الأبحاث ←</span>
         </a>
-
         <a href="pages/learning.html" class="section-card">
-          <span class="section-icon">06</span>
-          <h3>مسارات التعلم</h3>
-          <p>تعلم تدريجي منظم من الأساسيات إلى المستويات المتقدمة.</p>
-          <span class="card-link">اختر مسارك ←</span>
+          <span class="section-icon">06</span><h3>مسارات التعلم</h3>
+          <p>تعلم تدريجي منظم من الأساسيات إلى المستويات المتقدمة.</p><span class="card-link">اختر مسارك ←</span>
         </a>
-
         <a href="pages/exams.html" class="section-card">
-          <span class="section-icon">07</span>
-          <h3>الاختبارات والتحديات</h3>
-          <p>اختبر معرفتك وتابع تقدمك وحقق إنجازات جديدة.</p>
-          <span class="card-link">ابدأ الاختبار ←</span>
+          <span class="section-icon">07</span><h3>الاختبارات والتحديات</h3>
+          <p>اختبر معرفتك وتابع تقدمك وحقق إنجازات جديدة.</p><span class="card-link">ابدأ الاختبار ←</span>
         </a>
-
         <a href="pages/community.html" class="section-card">
-          <span class="section-icon">08</span>
-          <h3>مجتمع هنون</h3>
-          <p>شارك الأفكار وناقش الموضوعات مع مجتمع المعرفة.</p>
-          <span class="card-link">انضم للمجتمع ←</span>
+          <span class="section-icon">08</span><h3>مجتمع هنون</h3>
+          <p>شارك الأفكار وناقش الموضوعات مع مجتمع المعرفة.</p><span class="card-link">انضم للمجتمع ←</span>
         </a>
-
       </div>
     </section>
 
-    <!-- الكتب المميزة -->
     <section class="content-section featured-section">
       <div class="section-heading">
         <div>
@@ -555,13 +396,9 @@
         </div>
         <a href="pages/library.html" class="text-link">المكتبة كاملة ←</a>
       </div>
-
-      <div class="books-grid" id="featuredBooks">
-        <!-- تُحمّل بيانات الكتب من مصدر المحتوى المركزي -->
-      </div>
+      <div class="books-grid" id="featuredBooks"></div>
     </section>
 
-    <!-- مسارات التعلم -->
     <section class="content-section learning-section">
       <div class="section-heading">
         <div>
@@ -571,29 +408,19 @@
         </div>
         <a href="pages/learning.html" class="text-link">كل المسارات ←</a>
       </div>
-
       <div class="learning-grid">
         <a href="pages/learning.html" class="learning-card">
-          <span>01</span>
-          <h3>تطوير الذات</h3>
-          <p>الوعي، التفكير، العادات، وإدارة الحياة.</p>
+          <span>01</span><h3>تطوير الذات</h3><p>الوعي، التفكير، العادات، وإدارة الحياة.</p>
         </a>
-
         <a href="pages/learning.html" class="learning-card">
-          <span>02</span>
-          <h3>البرمجة والتقنية</h3>
-          <p>أساسيات البرمجة والتطبيقات والتكنولوجيا.</p>
+          <span>02</span><h3>البرمجة والتقنية</h3><p>أساسيات البرمجة والتطبيقات والتكنولوجيا.</p>
         </a>
-
         <a href="pages/learning.html" class="learning-card">
-          <span>03</span>
-          <h3>الثقافة والعلوم</h3>
-          <p>اكتشف العلوم والمجتمع والتاريخ والفكر.</p>
+          <span>03</span><h3>الثقافة والعلوم</h3><p>اكتشف العلوم والمجتمع والتاريخ والفكر.</p>
         </a>
       </div>
     </section>
 
-    <!-- أحدث المقالات -->
     <section class="content-section">
       <div class="section-heading">
         <div>
@@ -602,13 +429,9 @@
         </div>
         <a href="pages/articles.html" class="text-link">جميع المقالات ←</a>
       </div>
-
-      <div class="articles-grid" id="latestArticles">
-        <!-- تُحمّل المقالات من قاعدة المحتوى -->
-      </div>
+      <div class="articles-grid" id="latestArticles"></div>
     </section>
 
-    <!-- مساحة المستخدم -->
     <section class="content-section personal-section">
       <div class="personal-card">
         <div>
@@ -618,39 +441,28 @@
             أنشئ حسابك، واحفظ قراءاتك، وتابع تقدمك،
             واجمع النقاط والإنجازات مع كل خطوة.
           </p>
-          <a href="pages/auth.html" class="button button-gold">
-            أنشئ حسابك
-          </a>
+          <a href="pages/auth.html" class="button button-gold">أنشئ حسابك</a>
         </div>
         <div class="personal-decoration">H</div>
       </div>
     </section>
 
-    <!-- المجتمع -->
     <section class="content-section community-section">
       <div class="community-card">
         <span class="eyebrow">المعرفة تنمو بالمشاركة</span>
         <h2>فكرتك قد تلهم شخصًا آخر</h2>
         <p>شارك ما تعلمته، ناقش الأفكار، وكن جزءًا من مجتمع هنون.</p>
-        <a href="pages/community.html" class="button button-gold">
-          اكتشف المجتمع
-        </a>
+        <a href="pages/community.html" class="button button-gold">اكتشف المجتمع</a>
       </div>
     </section>
-
   </main>
 
-  <!-- التذييل -->
   <footer class="site-footer">
     <div class="footer-main">
-
       <div class="footer-brand">
         <img src="assets/logo/logo.svg" alt="شعار HANOON" class="brand-icon">
-        <h2>HANOON</h2>
-        <p>المعرفة تصنع الفرق</p>
-        <span>اكتشف، تعلّم، تطوّر.</span>
+        <h2>HANOON</h2><p>المعرفة تصنع الفرق</p><span>اكتشف، تعلّم، تطوّر.</span>
       </div>
-
       <div class="footer-column">
         <h3>استكشف</h3>
         <a href="pages/library.html">المكتبة</a>
@@ -658,33 +470,27 @@
         <a href="pages/stories.html">القصص</a>
         <a href="pages/research.html">الأبحاث</a>
       </div>
-
       <div class="footer-column">
         <h3>تعلّم</h3>
         <a href="pages/learning.html">مسارات التعلم</a>
         <a href="pages/exams.html">الاختبارات</a>
         <a href="pages/community.html">المجتمع</a>
       </div>
-
       <div class="footer-column">
         <h3>حسابك</h3>
         <a href="pages/auth.html">تسجيل الدخول</a>
         <a href="pages/profile.html">الملف الشخصي</a>
         <a href="pages/settings.html">الإعدادات</a>
       </div>
-
     </div>
-
     <div class="footer-bottom">
       <p>© <span id="currentYear">2026</span> HANOON. جميع الحقوق محفوظة.</p>
       <span>صُنع بشغف من أجل المعرفة.</span>
     </div>
   </footer>
 
-  <!-- تشغيل Supabase أولاً -->
   <script type="module" src="js/supabase-client.js"></script>
 
-  <!-- تحديث الحساب حسب جلسة المستخدم -->
   <script type="module">
     const accountButton = document.getElementById("accountButton");
     const profileLink = document.getElementById("headerProfileLink");
@@ -702,12 +508,10 @@
 
     function showUser(name, avatarUrl) {
       const cleanName = (name || "عضو هنون").trim();
-
       accountButton.hidden = true;
       profileLink.hidden = false;
       profileName.textContent = cleanName;
       profileInitial.textContent = cleanName.charAt(0) || "م";
-
       profileImage.hidden = true;
       profileInitial.hidden = false;
 
@@ -716,12 +520,10 @@
           profileImage.hidden = false;
           profileInitial.hidden = true;
         };
-
         profileImage.onerror = () => {
           profileImage.hidden = true;
           profileInitial.hidden = false;
         };
-
         profileImage.src = avatarUrl;
       } else {
         profileImage.removeAttribute("src");
@@ -730,7 +532,6 @@
 
     async function updateHeaderAccount() {
       const supabase = window.HANOON?.supabase;
-
       if (!supabase) {
         showGuest();
         return;
@@ -746,13 +547,11 @@
         }
 
         const user = sessionData.session.user;
-
         let name =
           user.user_metadata?.full_name ||
           user.user_metadata?.name ||
           user.email?.split("@")[0] ||
           "عضو هنون";
-
         let avatarUrl =
           user.user_metadata?.avatar_url ||
           user.user_metadata?.picture ||
@@ -765,22 +564,15 @@
           .maybeSingle();
 
         if (profile) {
-          name =
-            profile.full_name ||
-            profile.username ||
-            name;
-
+          name = profile.full_name || profile.username || name;
           if (profile.avatar_path) {
             const { data: imageData } = supabase.storage
               .from("avatars")
               .getPublicUrl(profile.avatar_path);
-
             avatarUrl = imageData?.publicUrl || avatarUrl;
           }
         }
-
         showUser(name, avatarUrl);
-
       } catch (error) {
         console.error("HANOON account header error:", error);
         showGuest();
@@ -789,87 +581,60 @@
 
     function startAccountHeader() {
       updateHeaderAccount();
-
       const supabase = window.HANOON?.supabase;
-
       if (supabase) {
-        supabase.auth.onAuthStateChange(() => {
-          updateHeaderAccount();
-        });
+        supabase.auth.onAuthStateChange(() => updateHeaderAccount());
       }
     }
 
     if (window.HANOON?.supabase) {
       startAccountHeader();
     } else {
-      window.addEventListener(
-        "hanoon:supabase-ready",
-        startAccountHeader,
-        { once: true }
-      );
-
-      window.addEventListener(
-        "hanoon:supabase-error",
-        showGuest,
-        { once: true }
-      );
+      window.addEventListener("hanoon:supabase-ready", startAccountHeader, { once: true });
+      window.addEventListener("hanoon:supabase-error", showGuest, { once: true });
     }
-
     window.addEventListener("pageshow", updateHeaderAccount);
   </script>
 
-  <!-- إشعار المسابقة بعد شاشة البداية -->
   <script>
     (function () {
       "use strict";
-
       const notice = document.getElementById("competitionNotice");
       const countdown = document.getElementById("competitionCountdown");
-
       if (!notice) return;
 
       const competitionDate = new Date(2027, 0, 11, 0, 0, 0);
 
       function updateCountdown() {
         if (!countdown) return;
-
         const remaining = competitionDate.getTime() - Date.now();
-
         if (remaining <= 0) {
           countdown.textContent = "موعد المسابقة اليوم أو قد حان";
           return;
         }
-
         const days = Math.ceil(remaining / (1000 * 60 * 60 * 24));
         countdown.textContent = "متبقي " + days + " يومًا على موعد المسابقة";
       }
 
       let noticeShown = false;
-
       function showCompetitionNotice() {
         if (noticeShown || !document.body.contains(notice)) return;
-
         noticeShown = true;
         updateCountdown();
-
         notice.setAttribute("aria-hidden", "false");
         notice.classList.add("is-visible");
-
         window.setTimeout(() => {
           notice.classList.remove("is-visible");
           notice.classList.add("is-leaving");
-
           window.setTimeout(() => notice.remove(), 500);
         }, 5000);
       }
 
       const splash = document.getElementById("splashScreen");
-
       if (!splash) {
         window.addEventListener("load", () => {
           window.setTimeout(showCompetitionNotice, 250);
         }, { once: true });
-
         return;
       }
 
@@ -878,22 +643,17 @@
           splash.classList.contains("is-hidden") ||
           splash.classList.contains("splash-hidden") ||
           !document.body.contains(splash);
-
         if (splashHidden) {
           observer.disconnect();
           window.setTimeout(showCompetitionNotice, 850);
         }
       });
-
-      observer.observe(splash, {
-        attributes: true,
-        attributeFilter: ["class"]
-      });
+      observer.observe(splash, { attributes: true, attributeFilter: ["class"] });
     })();
   </script>
 
   <script src="js/app.js"></script>
+  <script src="js/home-feed.js"></script>
   <script src="js/global-back.js"></script>
-
 </body>
 </html>
