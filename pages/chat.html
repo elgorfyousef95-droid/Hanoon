@@ -2,422 +2,315 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#101522">
-  <title>المراسلة | هنون</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101522">
+<title>المراسلة | هنون</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --bg: #0c1220;
-      --panel: #141e30;
-      --panel2: #19263a;
-      --line: rgba(255,255,255,.08);
-      --text: #f3f5ff;
-      --muted: #9aa8bd;
-      --accent: #42cdbb;
-      --purple: #9179f5;
-      --mine: linear-gradient(135deg,#6553bd,#51429e);
-      --other: #1c2b40;
-    }
-
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      overflow: hidden;
-      font-family: Cairo,sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    body {
-      background:
-        radial-gradient(ellipse at 15% 5%,rgba(100,76,190,.19),transparent 42%),
-        radial-gradient(ellipse at 90% 90%,rgba(30,180,170,.12),transparent 38%),
-        var(--bg);
-    }
-
-    button, input {
-      font: inherit;
-    }
-
-    button {
-      border: 0;
-      cursor: pointer;
-      color: inherit;
-    }
-
-    .chat-shell {
-      width: 100%;
-      height: 100%;
-      height: 100dvh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      max-width: 900px;
-      margin: auto;
-      background: rgba(12,18,32,.78);
-      border-inline: 1px solid var(--line);
-      position: relative;
-    }
-
-    .chat-header {
-      min-height: 72px;
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      padding: 10px 13px;
-      background: rgba(20,30,48,.94);
-      border-bottom: 1px solid var(--line);
-      flex-shrink: 0;
-      z-index: 5;
-      backdrop-filter: blur(18px);
-    }
-
-    .back-button, .header-action {
-      width: 40px;
-      height: 40px;
-      flex-shrink: 0;
-      border-radius: 13px;
-      background: rgba(255,255,255,.06);
-      display: grid;
-      place-items: center;
-    }
-
-    .back-button svg, .header-action svg {
-      width: 21px;
-      height: 21px;
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 1.8;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .person-avatar {
-      width: 43px;
-      height: 43px;
-      border-radius: 50%;
-      flex-shrink: 0;
-      background: linear-gradient(135deg,#7866d9,#32b9ac);
-      display: grid;
-      place-items: center;
-      overflow: hidden;
-      font-weight: 800;
-      font-size: 18px;
-    }
-
-    .person-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .person-info {
-      min-width: 0;
-      flex: 1;
-    }
-
-    .person-name {
-      font-size: 14px;
-      font-weight: 800;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .person-status {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 1px;
-    }
-
-    .person-status.online {
-      color: #48d8a8;
-    }
-
-    .header-actions {
-      display: flex;
-      gap: 7px;
-    }
-
-    .chat-notice {
-      margin: 10px 13px 0;
-      padding: 9px 12px;
-      border-radius: 12px;
-      background: rgba(145,121,245,.12);
-      color: #d9d0ff;
-      font-size: 12px;
-      display: none;
-      flex-shrink: 0;
-    }
-
-    .chat-notice.show {
-      display: block;
-    }
-
-    .message-area {
-      flex: 1;
-      min-height: 0;
-      overflow-y: auto;
-      overflow-x: hidden;
-      padding: 17px 13px 22px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      overscroll-behavior: contain;
-      background:
-        radial-gradient(circle at 20% 30%,rgba(120,100,210,.07),transparent 32%),
-        radial-gradient(circle at 80% 70%,rgba(40,180,165,.06),transparent 35%);
-    }
-
-    .date-divider {
-      align-self: center;
-      font-size: 10px;
-      color: #c1c7d8;
-      background: rgba(28,43,64,.85);
-      padding: 5px 13px;
-      border-radius: 20px;
-      margin: 5px 0;
-    }
-
-    .message {
-      max-width: min(82%,520px);
-      align-self: flex-start;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      min-width: 70px;
-      padding: 9px 12px 7px;
-      background: var(--other);
-      border: 1px solid rgba(255,255,255,.045);
-      border-radius: 16px 16px 16px 5px;
-      box-shadow: 0 5px 18px rgba(0,0,0,.12);
-      overflow-wrap: anywhere;
-    }
-
-    .message.mine {
-      align-self: flex-end;
-      background: var(--mine);
-      border-color: rgba(255,255,255,.08);
-      border-radius: 16px 16px 5px 16px;
-    }
-
-    .message-body {
-      font-size: 13px;
-      line-height: 1.85;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
-    .message-time {
-      font-size: 9px;
-      color: rgba(255,255,255,.66);
-      text-align: left;
-      direction: ltr;
-    }
-
-    .message-status {
-      font-size: 9px;
-      color: #bcefe7;
-      text-align: left;
-    }
-
-    .message-image {
-      max-width: 100%;
-      max-height: 300px;
-      object-fit: cover;
-      border-radius: 11px;
-    }
-
-    .empty-chat {
-      margin: auto;
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-      padding: 25px;
-    }
-
-    .composer {
-      flex-shrink: 0;
-      display: flex;
-      align-items: flex-end;
-      gap: 9px;
-      padding: 11px 12px calc(11px + env(safe-area-inset-bottom));
-      background: rgba(20,30,48,.97);
-      border-top: 1px solid var(--line);
-      backdrop-filter: blur(18px);
-    }
-
-    .composer-input-wrap {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      align-items: center;
-      background: #202d43;
-      border: 1px solid rgba(255,255,255,.07);
-      border-radius: 19px;
-      padding: 0 13px;
-      min-height: 45px;
-    }
-
-    #messageInput {
-      width: 100%;
-      min-width: 0;
-      height: 43px;
-      border: 0;
-      outline: 0;
-      resize: none;
-      color: white;
-      background: transparent;
-      font-size: 13px;
-      font-family: inherit;
-      padding: 10px 0;
-    }
-
-    #messageInput::placeholder {
-      color: #91a0b7;
-    }
-
-    .send-button {
-      width: 47px;
-      height: 47px;
-      flex-shrink: 0;
-      border-radius: 16px;
-      background: linear-gradient(135deg,#4bcdbb,#279caa);
-      display: grid;
-      place-items: center;
-      box-shadow: 0 5px 18px rgba(48,190,174,.2);
-    }
-
-    .send-button:disabled {
-      opacity: .45;
-      cursor: not-allowed;
-    }
-
-    .send-button svg {
-      width: 21px;
-      height: 21px;
-      fill: none;
-      stroke: white;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .loading-screen {
-      position: absolute;
-      inset: 0;
-      z-index: 20;
-      display: grid;
-      place-items: center;
-      background: #0c1220;
-      color: #bdb1ff;
-      font-size: 13px;
-    }
-
-    @media (min-width: 760px) {
-      body {
-        padding: 15px;
-      }
-
-      .chat-shell {
-        height: calc(100dvh - 30px);
-        border: 1px solid var(--line);
-        border-radius: 22px;
-        overflow: hidden;
-        box-shadow: 0 20px 70px rgba(0,0,0,.3);
-      }
-    }
-  </style>
+<style>
+:root{
+  --bg:#0c1220;
+  --panel:#141e30;
+  --panel2:#1b2940;
+  --line:rgba(255,255,255,.08);
+  --text:#f3f5ff;
+  --muted:#9aa8bd;
+  --accent:#42cdbb;
+  --purple:#9179f5;
+  --mine:linear-gradient(135deg,#6553bd,#51429e);
+  --other:#1c2b40;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{
+  width:100%;height:100%;margin:0;overflow:hidden;
+  font-family:Cairo,sans-serif;background:var(--bg);color:var(--text)
+}
+button,input,textarea{font:inherit}
+button{border:0;cursor:pointer;color:inherit}
+.chat-shell{
+  width:100%;height:100%;height:100dvh;max-width:900px;margin:auto;
+  display:flex;flex-direction:column;overflow:hidden;position:relative;
+  background:rgba(12,18,32,.88);border-inline:1px solid var(--line)
+}
+.chat-header{
+  min-height:72px;display:flex;align-items:center;gap:10px;
+  padding:9px 12px;background:rgba(20,30,48,.96);
+  border-bottom:1px solid var(--line);flex-shrink:0;z-index:5;
+  backdrop-filter:blur(18px)
+}
+.back-button,.header-action,.tool-button{
+  width:40px;height:40px;flex-shrink:0;border-radius:13px;
+  background:rgba(255,255,255,.06);display:grid;place-items:center
+}
+.back-button svg,.header-action svg,.tool-button svg,
+.send-button svg,.menu-item svg{
+  width:21px;height:21px;fill:none;stroke:currentColor;
+  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round
+}
+.person-avatar{
+  width:43px;height:43px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,#7866d9,#32b9ac);
+  display:grid;place-items:center;overflow:hidden;font-weight:800
+}
+.person-avatar img{width:100%;height:100%;object-fit:cover}
+.person-info{min-width:0;flex:1}
+.person-name{font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.person-status{font-size:11px;color:var(--muted);margin-top:1px}
+.person-status.online{color:#48d8a8}
+.header-actions{display:flex;gap:6px}
+.chat-notice{
+  margin:9px 12px 0;padding:9px 12px;border-radius:12px;
+  background:rgba(145,121,245,.12);color:#d9d0ff;
+  font-size:12px;display:none;flex-shrink:0
+}
+.chat-notice.show{display:block}
+.message-area{
+  flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;
+  padding:17px 13px 22px;display:flex;flex-direction:column;
+  gap:10px;overscroll-behavior:contain;
+  background:radial-gradient(circle at 20% 30%,rgba(120,100,210,.07),transparent 32%),
+             radial-gradient(circle at 80% 70%,rgba(40,180,165,.06),transparent 35%)
+}
+.date-divider{
+  align-self:center;font-size:10px;color:#c1c7d8;
+  background:rgba(28,43,64,.85);padding:5px 13px;border-radius:20px
+}
+.message{
+  max-width:min(82%,520px);align-self:flex-start;
+  display:flex;flex-direction:column;gap:4px;min-width:70px;
+  padding:9px 12px 7px;background:var(--other);
+  border:1px solid rgba(255,255,255,.045);
+  border-radius:16px 16px 16px 5px;
+  box-shadow:0 5px 18px rgba(0,0,0,.12);overflow-wrap:anywhere
+}
+.message.mine{
+  align-self:flex-end;background:var(--mine);
+  border-color:rgba(255,255,255,.08);
+  border-radius:16px 16px 5px 16px
+}
+.message-body{font-size:13px;line-height:1.85;white-space:pre-wrap;word-break:break-word}
+.message-time{font-size:9px;color:rgba(255,255,255,.66);text-align:left;direction:ltr}
+.message-status{font-size:10px;color:#bcefe7;text-align:left}
+.message-image{max-width:100%;max-height:300px;object-fit:cover;border-radius:11px}
+.message-audio{width:min(250px,65vw);height:38px}
+.message-sticker{width:125px;height:125px;object-fit:contain}
+.empty-chat{margin:auto;text-align:center;color:var(--muted);font-size:13px;padding:25px}
+.composer{
+  flex-shrink:0;display:flex;align-items:flex-end;gap:7px;
+  padding:9px 10px calc(9px + env(safe-area-inset-bottom));
+  background:rgba(20,30,48,.98);border-top:1px solid var(--line);
+  backdrop-filter:blur(18px);z-index:4
+}
+.composer-input-wrap{
+  flex:1;min-width:0;display:flex;align-items:center;
+  background:#202d43;border:1px solid rgba(255,255,255,.07);
+  border-radius:19px;padding:0 10px;min-height:46px
+}
+#messageInput{
+  width:100%;min-width:0;height:44px;border:0;outline:0;
+  resize:none;color:white;background:transparent;font-size:13px;
+  font-family:inherit;padding:11px 0
+}
+#messageInput::placeholder{color:#91a0b7}
+.send-button,.record-button{
+  width:46px;height:46px;flex-shrink:0;border-radius:15px;
+  display:grid;place-items:center;background:linear-gradient(135deg,#4bcdbb,#279caa);
+  box-shadow:0 5px 18px rgba(48,190,174,.17)
+}
+.record-button{background:rgba(145,121,245,.16);color:#c5b8ff;box-shadow:none}
+.record-button.recording{background:#b92e4d;color:white;animation:pulse 1s infinite}
+.send-button:disabled,.record-button:disabled{opacity:.4;cursor:not-allowed}
+@keyframes pulse{50%{box-shadow:0 0 0 8px rgba(255,60,90,.12)}}
+.composer-tools{display:flex;gap:5px;align-items:center}
+.tool-button{width:35px;height:40px;border-radius:12px;background:transparent;color:#aebbd0}
+.tool-button:active,.header-action:active{background:rgba(255,255,255,.13)}
+.hidden{display:none!important}
+.loading-screen{
+  position:absolute;inset:0;z-index:20;display:grid;place-items:center;
+  background:#0c1220;color:#bdb1ff;font-size:13px
+}
+.panel-overlay{
+  position:absolute;inset:0;z-index:10;background:rgba(0,0,0,.42);
+  display:flex;align-items:flex-end
+}
+.bottom-panel{
+  width:100%;max-height:65%;overflow:auto;background:#172338;
+  border:1px solid var(--line);border-radius:22px 22px 0 0;
+  padding:17px 15px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -15px 45px rgba(0,0,0,.3)
+}
+.panel-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}
+.panel-heading strong{font-size:14px}
+.close-panel{width:34px;height:34px;border-radius:11px;background:#ffffff12;font-size:20px}
+.sticker-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.sticker-choice{
+  min-height:68px;border-radius:15px;background:#ffffff09;
+  border:1px solid var(--line);font-size:35px
+}
+.menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.menu-item{
+  min-height:78px;border-radius:15px;background:#ffffff09;
+  border:1px solid var(--line);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:7px;font-size:11px;color:#dce4f5
+}
+.menu-item svg{color:#9e8bff}
+.recording-strip{
+  display:flex;align-items:center;gap:9px;padding:8px 13px;
+  background:#4c2032;color:#ffdce5;font-size:12px
+}
+.record-dot{width:8px;height:8px;border-radius:50%;background:#ff5278;animation:pulse 1s infinite}
+.reply-preview{
+  padding:8px 12px;background:#1b2940;border-right:3px solid var(--accent);
+  font-size:11px;color:#dce4f5;display:flex;justify-content:space-between
+}
+@media(min-width:760px){
+  body{padding:15px}
+  .chat-shell{height:calc(100dvh - 30px);border:1px solid var(--line);border-radius:22px;box-shadow:0 20px 70px #0005}
+}
+</style>
 </head>
 
 <body>
-  <main class="chat-shell">
-    <div id="loadingScreen" class="loading-screen">
-      جارٍ فتح المحادثة...
+<main class="chat-shell">
+
+  <div id="loadingScreen" class="loading-screen">جارٍ فتح المحادثة...</div>
+
+  <header class="chat-header">
+    <button class="back-button" id="mobileBackBtn" type="button" aria-label="رجوع">
+      <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+    </button>
+
+    <div class="person-avatar" id="chatAvatar">هـ</div>
+
+    <div class="person-info">
+      <div class="person-name" id="chatName">المحادثة</div>
+      <div class="person-status" id="chatStatus">هنون</div>
     </div>
 
-    <header class="chat-header">
-      <button class="back-button" id="mobileBackBtn" type="button" aria-label="رجوع">
-        <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
-      </button>
-
-      <div class="person-avatar" id="chatAvatar">هـ</div>
-
-      <div class="person-info">
-        <div class="person-name" id="chatName">المحادثة</div>
-        <div class="person-status" id="chatStatus">هنون</div>
-      </div>
-
-      <div class="header-actions">
-        <button class="header-action" id="chatMoreBtn" type="button" aria-label="المزيد">
-          <svg viewBox="0 0 24 24">
-            <circle cx="5" cy="12" r="1"/>
-            <circle cx="12" cy="12" r="1"/>
-            <circle cx="19" cy="12" r="1"/>
-          </svg>
-        </button>
-      </div>
-    </header>
-
-    <div id="authNotice" class="chat-notice">
-      سجل الدخول أولاً لفتح المحادثة.
-      <a href="../index.html">تسجيل الدخول</a>
-    </div>
-
-    <div id="globalNotice" class="chat-notice"></div>
-
-    <section
-      class="message-area"
-      id="messageList"
-      aria-live="polite"
-      aria-label="الرسائل"
-    >
-      <div class="empty-chat">ابدأ محادثتك الآن</div>
-    </section>
-
-    <form class="composer" id="messageForm">
-      <div class="composer-input-wrap">
-        <input
-          id="messageInput"
-          type="text"
-          autocomplete="off"
-          maxlength="5000"
-          placeholder="اكتب رسالتك..."
-          aria-label="اكتب رسالتك"
-        >
-      </div>
-
-      <button
-        class="send-button"
-        id="sendMessageBtn"
-        type="submit"
-        aria-label="إرسال الرسالة"
-      >
+    <div class="header-actions">
+      <button class="header-action" id="chatMoreBtn" type="button" aria-label="المزيد">
         <svg viewBox="0 0 24 24">
-          <path d="m22 2-7 20-4-9-9-4Z"/>
-          <path d="M22 2 11 13"/>
+          <circle cx="5" cy="12" r="1"/>
+          <circle cx="12" cy="12" r="1"/>
+          <circle cx="19" cy="12" r="1"/>
         </svg>
       </button>
-    </form>
-  </main>
+    </div>
+  </header>
+
+  <div id="authNotice" class="chat-notice">
+    سجل الدخول أولاً لفتح المحادثة.
+    <a href="../index.html">تسجيل الدخول</a>
+  </div>
+  <div id="globalNotice" class="chat-notice"></div>
+
+  <div id="recordingStrip" class="recording-strip hidden">
+    <span class="record-dot"></span>
+    <span id="recordingTime">00:00</span>
+    <span>جارٍ تسجيل الرسالة الصوتية</span>
+    <button id="cancelRecordingBtn" type="button" style="margin-right:auto;background:transparent;color:white">إلغاء</button>
+  </div>
+
+  <div id="replyPreview" class="reply-preview hidden">
+    <span id="replyPreviewText">الرد على رسالة</span>
+    <button id="cancelReplyBtn" type="button">×</button>
+  </div>
+
+  <section class="message-area" id="messageList" aria-live="polite" aria-label="الرسائل">
+    <div class="empty-chat">ابدأ محادثتك الآن</div>
+  </section>
+
+  <form class="composer" id="messageForm">
+    <div class="composer-tools">
+      <button class="tool-button" id="attachBtn" type="button" aria-label="إرفاق ملف">
+        <svg viewBox="0 0 24 24"><path d="m21 11.5-9.5 9.5a6 6 0 0 1-8.5-8.5l10-10a4 4 0 0 1 5.7 5.7l-10 10a2 2 0 0 1-2.8-2.8l9-9"/></svg>
+      </button>
+      <button class="tool-button" id="stickerBtn" type="button" aria-label="الملصقات">
+        <svg viewBox="0 0 24 24"><path d="M20 13V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7"/><path d="M14 21v-5a2 2 0 0 1 2-2h5"/><path d="M8 9h8M8 13h4"/></svg>
+      </button>
+    </div>
+
+    <div class="composer-input-wrap">
+      <input id="messageInput" type="text" autocomplete="off" maxlength="5000"
+        placeholder="اكتب رسالتك..." aria-label="اكتب رسالتك">
+    </div>
+
+    <button class="record-button" id="recordVoiceBtn" type="button" aria-label="تسجيل صوتي">
+      <svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="13" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8"/></svg>
+    </button>
+
+    <button class="send-button" id="sendMessageBtn" type="submit" aria-label="إرسال الرسالة">
+      <svg viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+    </button>
+  </form>
+
+  <input id="chatImageInput" class="hidden" type="file" accept="image/*">
+  <input id="chatFileInput" class="hidden" type="file" accept="image/*,video/*,.pdf,.doc,.docx,.txt">
+
+  <div id="stickerPanel" class="panel-overlay hidden">
+    <div class="bottom-panel">
+      <div class="panel-heading">
+        <strong>الملصقات</strong>
+        <button class="close-panel" type="button" data-close-panel="stickerPanel">×</button>
+      </div>
+      <div class="sticker-grid" id="stickerGrid">
+        <button class="sticker-choice" type="button" data-sticker="❤️">❤️</button>
+        <button class="sticker-choice" type="button" data-sticker="😍">😍</button>
+        <button class="sticker-choice" type="button" data-sticker="🥰">🥰</button>
+        <button class="sticker-choice" type="button" data-sticker="😂">😂</button>
+        <button class="sticker-choice" type="button" data-sticker="👏">👏</button>
+        <button class="sticker-choice" type="button" data-sticker="🔥">🔥</button>
+        <button class="sticker-choice" type="button" data-sticker="🌹">🌹</button>
+        <button class="sticker-choice" type="button" data-sticker="👍">👍</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="attachPanel" class="panel-overlay hidden">
+    <div class="bottom-panel">
+      <div class="panel-heading">
+        <strong>إرسال مرفق</strong>
+        <button class="close-panel" type="button" data-close-panel="attachPanel">×</button>
+      </div>
+      <div class="menu-grid">
+        <button class="menu-item" id="chooseImageBtn" type="button">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+          صورة
+        </button>
+        <button class="menu-item" id="chooseFileBtn" type="button">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+          ملف
+        </button>
+        <button class="menu-item" id="chooseCameraBtn" type="button">
+          <svg viewBox="0 0 24 24"><path d="M4 7h3l2-3h6l2 3h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z"/><circle cx="12" cy="13" r="4"/></svg>
+          الكاميرا
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="chatActionsPanel" class="panel-overlay hidden">
+    <div class="bottom-panel">
+      <div class="panel-heading">
+        <strong>إعدادات المحادثة</strong>
+        <button class="close-panel" type="button" data-close-panel="chatActionsPanel">×</button>
+      </div>
+      <div class="menu-grid">
+        <button class="menu-item" id="chatSearchBtn" type="button">بحث داخل الشات</button>
+        <button class="menu-item" id="chatWallpaperBtn" type="button">خلفية المحادثة</button>
+        <button class="menu-item" id="chatPrivacyBtn" type="button">الخصوصية والظهور</button>
+        <button class="menu-item" id="chatMediaBtn" type="button">الوسائط والملفات</button>
+        <button class="menu-item" id="chatClearBtn" type="button">مسح المحادثة</button>
+        <button class="menu-item" id="chatBlockBtn" type="button">حظر المستخدم</button>
+      </div>
+    </div>
+  </div>
 
   <script type="module" src="../js/supabase-client.js"></script>
   <script type="module" src="../js/chat.js"></script>
   <script src="../js/chat-preferences.js"></script>
+</main>
 </body>
 </html>
