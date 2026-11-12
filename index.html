@@ -101,40 +101,14 @@
       font-size: 19px;
     }
     @keyframes competitionNoticeIn {
-      from {
-        opacity: 0;
-        transform: translate(-50%,-22px) scale(.97);
-      }
-      to {
-        opacity: 1;
-        transform: translate(-50%,0) scale(1);
-      }
+      from { opacity: 0; transform: translate(-50%,-22px) scale(.97); }
+      to { opacity: 1; transform: translate(-50%,0) scale(1); }
     }
     @keyframes competitionNoticeOut {
-      from {
-        opacity: 1;
-        transform: translate(-50%,0) scale(1);
-      }
-      to {
-        opacity: 0;
-        transform: translate(-50%,-16px) scale(.98);
-        visibility: hidden;
-      }
+      from { opacity: 1; transform: translate(-50%,0) scale(1); }
+      to { opacity: 0; transform: translate(-50%,-16px) scale(.98); visibility: hidden; }
     }
-    @media(max-width:380px) {
-      .competition-notice {
-        gap: 10px;
-        padding: 11px 12px;
-      }
-      .competition-notice-avatar {
-        flex-basis: 50px;
-        width: 50px;
-        height: 50px;
-      }
-      .competition-notice-copy strong {
-        font-size: 13px;
-      }
-    }
+
     .header-controls {
       display: flex;
       align-items: center;
@@ -162,7 +136,7 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      max-width: 190px;
+      max-width: 230px;
       min-height: 42px;
       padding: 4px 10px;
       border: 1px solid rgba(255,255,255,.12);
@@ -171,9 +145,7 @@
       text-decoration: none;
     }
     .header-profile-link[hidden],
-    .account-button[hidden] {
-      display: none !important;
-    }
+    .account-button[hidden] { display: none !important; }
     #headerProfileInitial,
     #headerProfileImage {
       width: 34px;
@@ -188,10 +160,15 @@
       font-weight: 900;
     }
     #headerProfileImage[hidden],
-    #headerProfileInitial[hidden] {
-      display: none !important;
+    #headerProfileInitial[hidden] { display: none !important; }
+    .header-profile-copy {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      line-height: 1.35;
     }
-    .header-profile-link strong {
+    .header-profile-copy strong {
       max-width: 125px;
       overflow: hidden;
       color: var(--text-primary,#fff);
@@ -199,27 +176,150 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    @media(max-width:600px) {
-      .header-controls {
-        gap: 6px;
-      }
-      .account-button {
-        min-height: 36px;
-        padding: 0 11px;
-        font-size: 10px;
-      }
-      .header-profile-link {
-        max-width: 125px;
-      }
-      .header-profile-link strong {
-        max-width: 72px;
-      }
+    .header-profile-copy small {
+      max-width: 135px;
+      overflow: hidden;
+      color: #b9addc;
+      font-size: 9px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* اختصارات الصفحة الرئيسية */
+    .home-shortcuts {
+      position: relative;
+      z-index: 2;
+      width: min(1180px,94%);
+      margin: 26px auto 12px;
+      padding: 22px 18px;
+      border: 1px solid rgba(190,169,255,.18);
+      border-radius: 26px;
+      background:
+        linear-gradient(125deg,rgba(22,19,48,.94),rgba(32,24,61,.88)),
+        url("https://images.unsplash.com/photo-1519682337058-a94d519337bc?auto=format&fit=crop&w=1800&q=85") center/cover;
+      box-shadow: 0 18px 48px rgba(0,0,0,.2);
+      overflow: hidden;
+    }
+    .home-shortcuts::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(115deg,rgba(12,12,29,.86),rgba(30,20,58,.83));
+      pointer-events: none;
+    }
+    .home-shortcuts-inner { position: relative; z-index: 1; }
+    .home-shortcuts-heading {
+      margin: 0 0 17px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .home-shortcuts-heading h2 {
+      margin: 0;
+      color: #fff;
+      font-size: 19px;
+      font-weight: 900;
+    }
+    .home-shortcuts-heading p {
+      margin: 4px 0 0;
+      color: #c3b9dd;
+      font-size: 11px;
+    }
+    .home-shortcuts-grid {
+      display: grid;
+      grid-template-columns: repeat(6,minmax(0,1fr));
+      gap: 16px 10px;
+    }
+    .home-shortcut {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: #f8f5ff;
+      text-decoration: none;
+      text-align: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .home-shortcut-circle {
+      width: 66px;
+      height: 66px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #e9dcff;
+      background: linear-gradient(145deg,rgba(157,128,255,.28),rgba(65,48,119,.68));
+      border: 1px solid rgba(214,196,255,.36);
+      box-shadow: 0 8px 24px rgba(0,0,0,.25),inset 0 1px rgba(255,255,255,.16);
+      transition: transform .22s ease,box-shadow .22s ease;
+    }
+    .home-shortcut:hover .home-shortcut-circle {
+      transform: translateY(-4px);
+      box-shadow: 0 13px 28px rgba(137,103,255,.25);
+    }
+    .home-shortcut-circle svg {
+      width: 27px;
+      height: 27px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .home-shortcut-label {
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.5;
+    }
+    .home-shortcut.competition .home-shortcut-circle {
+      width: 76px;
+      height: 76px;
+      color: #ffe8a8;
+      background: linear-gradient(145deg,#b88735,#72501c);
+      border: 2px solid rgba(255,224,155,.8);
+      box-shadow: 0 0 0 5px rgba(221,178,91,.1),0 10px 30px rgba(170,117,33,.25);
+    }
+    .home-shortcut.competition .home-shortcut-label {
+      color: #ffe3a0;
+      font-size: 12px;
+    }
+    .home-shortcut.communication .home-shortcut-circle {
+      color: #a8e8ff;
+      background: linear-gradient(145deg,rgba(47,151,191,.38),rgba(35,66,115,.8));
+      border-color: rgba(132,220,255,.42);
+    }
+    .home-shortcut.group .home-shortcut-circle {
+      color: #b9f4dc;
+      background: linear-gradient(145deg,rgba(44,158,119,.36),rgba(30,89,88,.8));
+      border-color: rgba(123,235,197,.42);
+    }
+
+    @media(max-width:760px) {
+      .header-controls { gap: 6px; }
+      .account-button { min-height: 36px; padding: 0 11px; font-size: 10px; }
+      .header-profile-link { max-width: 145px; }
+      .header-profile-copy strong { max-width: 82px; }
+      .header-profile-copy small { max-width: 100px; }
+      .home-shortcuts { width: calc(100% - 22px); padding: 18px 11px; margin-top: 18px; }
+      .home-shortcuts-grid { grid-template-columns: repeat(4,minmax(0,1fr)); gap: 17px 7px; }
+      .home-shortcut-circle { width: 58px; height: 58px; }
+      .home-shortcut-circle svg { width: 24px; height: 24px; }
+      .home-shortcut.competition .home-shortcut-circle { width: 66px; height: 66px; }
+      .home-shortcut-label { font-size: 10px; }
+    }
+    @media(max-width:380px) {
+      .competition-notice { gap: 10px; padding: 11px 12px; }
+      .competition-notice-avatar { flex-basis: 50px; width: 50px; height: 50px; }
+      .competition-notice-copy strong { font-size: 13px; }
+      .header-profile-link { max-width: 118px; }
+      .header-profile-copy strong { max-width: 66px; }
+      .header-profile-copy small { max-width: 78px; }
     }
     @media(prefers-reduced-motion:reduce) {
       .competition-notice.is-visible,
-      .competition-notice.is-leaving {
-        animation-duration: .01ms;
-      }
+      .competition-notice.is-leaving { animation-duration: .01ms; }
+      .home-shortcut-circle { transition: none; }
     }
   </style>
 </head>
@@ -297,7 +397,10 @@
       <a class="header-profile-link" id="headerProfileLink" href="pages/profile.html" aria-label="ملفي الشخصي" title="ملفي الشخصي" hidden>
         <span id="headerProfileInitial">م</span>
         <img id="headerProfileImage" src="" alt="صورة المستخدم" hidden>
-        <strong id="headerProfileName">حسابي</strong>
+        <span class="header-profile-copy">
+          <strong id="headerProfileName">حسابي</strong>
+          <small id="headerProfileMeta">معرّف العضوية: —</small>
+        </span>
       </a>
     </div>
   </header>
@@ -306,7 +409,7 @@
     <form id="globalSearchForm">
       <label for="globalSearchInput">ابحث في عالم هنون</label>
       <div class="search-field">
-        <input id="globalSearchInput" type="search" placeholder="كتاب، مقال، درس، موضوع..." autocomplete="off">
+        <input id="globalSearchInput" type="search" placeholder="كتاب، فصل، عضو، مقال، موضوع..." autocomplete="off">
         <button type="submit">بحث</button>
       </div>
       <div id="searchResults" aria-live="polite"></div>
@@ -339,8 +442,103 @@
       </div>
       <div class="hero-bottom">
         <span>رحلتك نحو معرفة أعمق تبدأ من هنا</span>
-        <a href="#platformSections" aria-label="اكتشف أقسام الموقع">اكتشف الأقسام ↓</a>
+        <a href="#homeShortcuts" aria-label="اكتشف خدمات هنون">اكتشف خدمات هنون ↓</a>
       </div>
+    </section>
+
+    <section class="home-shortcuts" id="homeShortcuts" aria-label="اختصارات هنون">
+      <div class="home-shortcuts-inner">
+        <div class="home-shortcuts-heading">
+          <div>
+            <h2>عالمك في هنون</h2>
+            <p>كل ما تحتاجه في مكان واحد</p>
+          </div>
+        </div>
+
+        <div class="home-shortcuts-grid">
+          <a class="home-shortcut" href="#homePosts">
+            <span class="home-shortcut-circle">
+              <svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+            </span>
+            <span class="home-shortcut-label">المنشورات</span>
+          </a>
+
+          <a class="home-shortcut" href="pages/articles.html">
+            <span class="home-shortcut-circle">
+              <svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5z"/><path d="M4 17.5A2.5 2.5 0 0 1 6.5 15H20M8 7h8M8 10h8"/></svg>
+            </span>
+            <span class="home-shortcut-label">المقالات</span>
+          </a>
+
+          <a class="home-shortcut" href="pages/achievements.html">
+            <span class="home-shortcut-circle">
+              <svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>
+            </span>
+            <span class="home-shortcut-label">الإنجازات</span>
+          </a>
+
+          <a class="home-shortcut" href="pages/library.html">
+            <span class="home-shortcut-circle">
+              <svg viewBox="0 0 24 24"><path d="M4 4h5v16H4zM10 4h5v16h-5zM16 4h4v16h-4z"/></svg>
+            </span>
+            <span class="home-shortcut-label">المكتبة</span>
+          </a>
+
+          <a class="home-shortcut" href="pages/stories.html">
+            <span class="home-shortcut-circle">
+              <svg viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+            </span>
+            <span class="home-shortcut-label">القصص</span>
+          </a>
+
+          <a class="home-shortcut" href="pages/exams.html">
+            <span class="home-shortcut-circle">
+              <svg viewBox="0 0 24 24"><path d="M8 4h8M9 3h6v3H9zM6 5H4v16h16V5h-2"/><path d="m8 13 2.5 2.5L16 10"/></svg>
+            </span>
+            <span class="home-shortcut-label">الاختبارات</span>
+          </a>
+
+          <a class="home-shortcut competition" href="pages/exams.html?mode=competition">
+            <span class="home-shortcut-circle">
+              <svg viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M12 13v5m-4 3h8m-6-3h4"/></svg>
+            </span>
+            <span class="home-shortcut-label">المسابقة</span>
+          </a>
+
+          <a class="home-shortcut group" href="pages/community.html#groups">
+            <span class="home-shortcut-circle">
+              <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20v-1a6 6 0 0 1 12 0v1zM16 15a5 5 0 0 1 5 5"/></svg>
+            </span>
+            <span class="home-shortcut-label">الجروبات</span>
+          </a>
+
+          <a class="home-shortcut communication" href="pages/community.html#messages">
+            <span class="home-shortcut-circle">
+              <svg viewBox="0 0 24 24"><path d="M4 5h16v12H9l-5 4z"/><path d="M8 9h8M8 13h5"/></svg>
+            </span>
+            <span class="home-shortcut-label">المراسلة</span>
+          </a>
+
+          <a class="home-shortcut" href="pages/profile.html">
+            <span class="home-shortcut-circle">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+            </span>
+            <span class="home-shortcut-label">الملف الشخصي</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section" id="homePosts">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">مجتمع هنون</span>
+          <h2>المنشورات والمشاركات</h2>
+          <p>شارك فكرة أو صورة أو فيديو وتفاعل مع مجتمع المعرفة.</p>
+        </div>
+        <a href="pages/community.html" class="text-link">المجتمع ←</a>
+      </div>
+      <div id="homePostsFeed"></div>
     </section>
 
     <section class="content-section" id="platformSections">
@@ -497,6 +695,7 @@
     const profileInitial = document.getElementById("headerProfileInitial");
     const profileImage = document.getElementById("headerProfileImage");
     const profileName = document.getElementById("headerProfileName");
+    const profileMeta = document.getElementById("headerProfileMeta");
 
     function showGuest() {
       accountButton.hidden = false;
@@ -504,14 +703,19 @@
       profileImage.hidden = true;
       profileInitial.hidden = false;
       profileName.textContent = "حسابي";
+      profileMeta.textContent = "معرّف العضوية: —";
     }
 
-    function showUser(name, avatarUrl) {
+    function showUser(name, username, memberCode, avatarUrl) {
       const cleanName = (name || "عضو هنون").trim();
       accountButton.hidden = true;
       profileLink.hidden = false;
       profileName.textContent = cleanName;
       profileInitial.textContent = cleanName.charAt(0) || "م";
+      profileMeta.textContent =
+        (username ? "@" + username : "عضو هنون") +
+        " · ID: " + (memberCode || "قيد التحديث");
+
       profileImage.hidden = true;
       profileInitial.hidden = false;
 
@@ -552,6 +756,8 @@
           user.user_metadata?.name ||
           user.email?.split("@")[0] ||
           "عضو هنون";
+        let username = user.user_metadata?.username || "";
+        let memberCode = "";
         let avatarUrl =
           user.user_metadata?.avatar_url ||
           user.user_metadata?.picture ||
@@ -559,12 +765,14 @@
 
         const { data: profile } = await supabase
           .from("profiles")
-          .select("full_name, username, avatar_path")
+          .select("full_name, username, member_code, avatar_path")
           .eq("id", user.id)
           .maybeSingle();
 
         if (profile) {
           name = profile.full_name || profile.username || name;
+          username = profile.username || username;
+          memberCode = profile.member_code || "";
           if (profile.avatar_path) {
             const { data: imageData } = supabase.storage
               .from("avatars")
@@ -572,7 +780,8 @@
             avatarUrl = imageData?.publicUrl || avatarUrl;
           }
         }
-        showUser(name, avatarUrl);
+
+        showUser(name, username, memberCode, avatarUrl);
       } catch (error) {
         console.error("HANOON account header error:", error);
         showGuest();
@@ -593,6 +802,7 @@
       window.addEventListener("hanoon:supabase-ready", startAccountHeader, { once: true });
       window.addEventListener("hanoon:supabase-error", showGuest, { once: true });
     }
+
     window.addEventListener("pageshow", updateHeaderAccount);
   </script>
 
@@ -655,5 +865,17 @@
   <script src="js/app.js"></script>
   <script src="js/home-feed.js"></script>
   <script src="js/global-back.js"></script>
+  <script type="module">
+    const feed = document.getElementById("homePostsFeed");
+    if (feed) {
+      const startFeed = () => {
+        if (window.HANOON_POSTS?.renderInto) {
+          window.HANOON_POSTS.renderInto(feed, null);
+        }
+      };
+      startFeed();
+      window.addEventListener("hanoon:supabase-ready", startFeed);
+    }
+  </script>
 </body>
 </html>
