@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#0C1020">
-  <title>HANOON | الحسابات</title>
+  <title>HANOON | تسجيل الدخول</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,266 +12,565 @@
 
   <style>
     :root {
-      --bg:#0C1020;
-      --panel:#171D32;
-      --gold:#D5B36C;
-      --purple:#8C75F5;
-      --blue:#2879D8;
-      --red:#D94350;
-      --white:#F5EAD1;
-      --muted:#A9AEC2;
-      --border:rgba(255,255,255,.1);
+      --bg: #0C1020;
+      --panel: #171D32;
+      --gold: #D5B36C;
+      --purple: #8C75F5;
+      --blue: #2879D8;
+      --red: #D94350;
+      --white: #F5EAD1;
+      --muted: #A9AEC2;
+      --border: rgba(255,255,255,.12);
     }
 
-    *{box-sizing:border-box;margin:0;padding:0}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-    body{
-      min-height:100vh;
-      font-family:'Cairo',sans-serif;
-      color:var(--white);
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      overscroll-behavior: none;
+      touch-action: pan-y;
+      font-family: 'Cairo', sans-serif;
+      color: var(--white);
+      background: var(--bg);
+    }
+
+    body {
+      position: fixed;
+      inset: 0;
       background:
-        radial-gradient(circle at 15% 10%,rgba(140,117,245,.16),transparent 35%),
-        radial-gradient(circle at 90% 90%,rgba(213,179,108,.12),transparent 35%,
-        var(--bg);
+        linear-gradient(rgba(8,12,27,.78),rgba(8,12,27,.91)),
+        url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=2000&q=90')
+        center center / cover no-repeat fixed;
     }
 
-    button,input,textarea{font:inherit}
-    button{cursor:pointer}
-
-    .page{
-      min-height:100vh;
-      display:grid;
-      grid-template-columns:1fr 1fr;
+    button,
+    input,
+    textarea {
+      font: inherit;
     }
 
-    .visual{
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      padding:55px;
+    button {
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .page {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+    }
+
+    /* الخلفية الخارجية */
+
+    .visual {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: clamp(25px,4vw,65px);
+      overflow: hidden;
       background:
-        linear-gradient(180deg,rgba(12,16,32,.3),rgba(12,16,32,.96)),
-        url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1400&q=85') center/cover;
+        linear-gradient(
+          180deg,
+          rgba(8,12,27,.12),
+          rgba(8,12,27,.38) 45%,
+          rgba(8,12,27,.95)
+        ),
+        url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1600&q=90')
+        center / cover no-repeat;
     }
 
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:14px;
+    .visual::before {
+      content: "";
+      position: absolute;
+      width: 380px;
+      height: 380px;
+      border-radius: 50%;
+      background: rgba(140,117,245,.17);
+      filter: blur(90px);
+      top: 20%;
+      right: -150px;
+      pointer-events: none;
     }
 
-    .brand img{width:65px;height:65px;object-fit:contain}
-    .brand strong{font-size:24px;letter-spacing:2px}
-    .brand small{display:block;color:var(--gold);font-size:12px}
-
-    .visual-copy h1{
-      font-size:clamp(35px,5vw,65px);
-      line-height:1.5;
-      font-weight:900;
+    .visual::after {
+      content: "";
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: rgba(213,179,108,.13);
+      filter: blur(85px);
+      bottom: -120px;
+      left: -100px;
+      pointer-events: none;
     }
 
-    .visual-copy h1 span{color:var(--gold)}
-
-    .visual-copy p{
-      max-width:470px;
-      color:#D4D5E1;
-      line-height:2.2;
-      margin-top:18px;
+    .brand,
+    .visual-copy,
+    .visual-footer {
+      position: relative;
+      z-index: 2;
     }
 
-    .visual-footer{color:var(--gold);font-size:13px}
-
-    .form-side{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:35px 20px;
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
     }
 
-    .card{
-      width:100%;
-      max-width:510px;
-      padding:35px;
-      border:1px solid rgba(213,179,108,.2);
-      border-radius:27px;
-      background:linear-gradient(145deg,rgba(30,37,62,.96),rgba(17,22,40,.98));
-      box-shadow:0 25px 90px rgba(0,0,0,.4);
+    .brand img {
+      width: 65px;
+      height: 65px;
+      object-fit: contain;
     }
 
-    .mobile-brand{display:none;text-align:center;margin-bottom:20px}
-    .mobile-brand img{width:65px;height:65px}
-
-    .heading{text-align:center;margin-bottom:25px}
-    .heading span{color:var(--gold);font-size:12px;font-weight:800}
-    .heading h2{font-size:27px;font-weight:900;margin:7px 0}
-    .heading p{font-size:13px;color:var(--muted)}
-
-    .tabs{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:9px;
-      margin-bottom:25px;
+    .brand strong {
+      font-size: 24px;
+      letter-spacing: 2px;
     }
 
-    .tab{
-      border:1px solid var(--border);
-      border-radius:12px;
-      padding:13px 8px;
-      color:white;
-      background:#11182B;
-      font-weight:800;
-      transition:.2s;
+    .brand small {
+      display: block;
+      color: var(--gold);
+      font-size: 12px;
     }
 
-    .tab.login.active{background:var(--red);border-color:var(--red)}
-    .tab.register.active{background:var(--blue);border-color:var(--blue)}
-
-    .step-indicator{
-      display:flex;
-      justify-content:center;
-      gap:9px;
-      margin:15px 0 25px;
+    .visual-copy h1 {
+      font-size: clamp(35px,5vw,65px);
+      line-height: 1.5;
+      font-weight: 900;
     }
 
-    .step-dot{
-      width:32px;height:5px;border-radius:10px;
-      background:#343B53;
+    .visual-copy h1 span {
+      color: var(--gold);
     }
 
-    .step-dot.active{background:var(--gold)}
-
-    .step{display:none}
-    .step.active{display:block;animation:appear .3s ease}
-
-    @keyframes appear{
-      from{opacity:0;transform:translateY(8px)}
-      to{opacity:1;transform:translateY(0)}
+    .visual-copy p {
+      max-width: 470px;
+      color: #D4D5E1;
+      line-height: 2.2;
+      margin-top: 18px;
+      font-size: 15px;
     }
 
-    .field{margin-bottom:16px}
-
-    .field label{
-      display:block;
-      font-size:13px;
-      font-weight:700;
-      margin-bottom:8px;
+    .visual-footer {
+      color: var(--gold);
+      font-size: 13px;
     }
 
-    .field input,.field textarea{
-      width:100%;
-      min-height:51px;
-      padding:12px 15px;
-      border:1px solid var(--border);
-      border-radius:12px;
-      outline:none;
-      color:white;
-      background:rgba(7,11,25,.65);
+    /* منطقة تسجيل الدخول */
+
+    .form-side {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      min-height: 0;
+      padding: 20px;
+      overflow: hidden;
+      background: rgba(9,13,28,.25);
+      backdrop-filter: blur(3px);
     }
 
-    .field textarea{resize:vertical;min-height:90px}
-
-    .field input:focus,.field textarea:focus{
-      border-color:var(--gold);
-      box-shadow:0 0 0 3px rgba(213,179,108,.1);
+    .card {
+      position: relative;
+      width: min(100%, 510px);
+      max-height: calc(100% - 20px);
+      padding: 32px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: none;
+      border: 1px solid rgba(213,179,108,.25);
+      border-radius: 27px;
+      background:
+        linear-gradient(
+          145deg,
+          rgba(30,37,62,.97),
+          rgba(17,22,40,.98)
+        );
+      box-shadow:
+        0 25px 90px rgba(0,0,0,.48),
+        0 0 50px rgba(140,117,245,.08),
+        inset 0 1px 0 rgba(255,255,255,.08);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
     }
 
-    .field input::placeholder,.field textarea::placeholder{color:#777F98}
-
-    .field input.username-input{
-      direction:ltr;
-      text-align:left;
+    .card::-webkit-scrollbar {
+      display: none;
     }
 
-    .hint{font-size:11px;color:var(--muted);margin-top:6px}
-
-    .photo-area{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:12px;
-      margin:15px 0 22px;
+    .mobile-brand {
+      display: none;
+      text-align: center;
+      margin-bottom: 18px;
     }
 
-    .photo-preview{
-      width:115px;height:115px;
-      border-radius:50%;
-      border:2px dashed var(--gold);
-      background:#10172A;
-      display:grid;
-      place-items:center;
-      overflow:hidden;
-      color:var(--gold);
-      font-size:35px;
+    .mobile-brand img {
+      width: 68px;
+      height: 68px;
+      object-fit: contain;
+      filter: drop-shadow(0 5px 15px rgba(213,179,108,.2));
     }
 
-    .photo-preview img{
-      width:100%;height:100%;object-fit:cover;
+    .heading {
+      text-align: center;
+      margin-bottom: 25px;
     }
 
-    .upload-btn{
-      padding:9px 18px;
-      border-radius:10px;
-      color:var(--gold);
-      border:1px solid rgba(213,179,108,.4);
-      background:transparent;
+    .heading span {
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 800;
     }
 
-    .main-btn{
-      width:100%;
-      min-height:53px;
-      border:0;
-      border-radius:13px;
-      color:white;
-      background:linear-gradient(110deg,#9A80F8,#7055DB);
-      font-weight:900;
-      margin-top:8px;
+    .heading h2 {
+      font-size: 27px;
+      font-weight: 900;
+      margin: 7px 0;
     }
 
-    .main-btn:disabled{opacity:.6;cursor:not-allowed}
-
-    .secondary-btn{
-      width:100%;
-      min-height:48px;
-      border:1px solid var(--border);
-      border-radius:12px;
-      color:var(--white);
-      background:transparent;
-      margin-top:10px;
+    .heading p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.9;
     }
 
-    .message{
-      display:none;
-      padding:12px;
-      border-radius:10px;
-      font-size:13px;
-      line-height:1.8;
-      margin-bottom:15px;
+    /* أزرار التبديل */
+
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-bottom: 25px;
     }
 
-    .message.show{display:block}
-    .message.error{background:rgba(217,67,80,.13);color:#FF9AA3}
-    .message.success{background:rgba(66,214,164,.12);color:#72E5B7}
-
-    .back-home{
-      display:block;
-      text-align:center;
-      margin-top:22px;
-      color:var(--muted);
-      font-size:12px;
-      text-decoration:none;
+    .tab {
+      min-height: 48px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 8px;
+      color: white;
+      background: #11182B;
+      font-weight: 800;
+      transition: background .2s,border-color .2s;
     }
 
-    @media(max-width:850px){
-      .page{grid-template-columns:1fr}
-      .visual{display:none}
-      .form-side{min-height:100vh;padding:22px 14px}
-      .card{padding:28px 21px}
-      .mobile-brand{display:block}
+    .tab.login.active {
+      background: var(--red);
+      border-color: var(--red);
     }
 
-    @media(max-width:380px){
-      .card{padding:23px 16px}
-      .heading h2{font-size:23px}
+    .tab.register.active {
+      background: var(--blue);
+      border-color: var(--blue);
+    }
+
+    /* مراحل التسجيل */
+
+    .step-indicator {
+      display: flex;
+      justify-content: center;
+      gap: 9px;
+      margin: 15px 0 25px;
+    }
+
+    .step-dot {
+      width: 32px;
+      height: 5px;
+      border-radius: 10px;
+      background: #343B53;
+    }
+
+    .step-dot.active {
+      background: var(--gold);
+    }
+
+    .step {
+      display: none;
+    }
+
+    .step.active {
+      display: block;
+      animation: appear .25s ease;
+    }
+
+    @keyframes appear {
+      from {
+        opacity: 0;
+        transform: translateY(5px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* الحقول */
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .field input,
+    .field textarea {
+      display: block;
+      width: 100%;
+      min-height: 51px;
+      padding: 12px 15px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      outline: none;
+      color: white;
+      background: rgba(7,11,25,.72);
+      transition: border-color .2s,box-shadow .2s;
+    }
+
+    .field textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .field input:focus,
+    .field textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(213,179,108,.1);
+    }
+
+    .field input::placeholder,
+    .field textarea::placeholder {
+      color: #777F98;
+    }
+
+    .field input.username-input {
+      direction: ltr;
+      text-align: left;
+    }
+
+    .hint {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 6px;
+      line-height: 1.8;
+    }
+
+    /* الصورة الشخصية */
+
+    .photo-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin: 15px 0 22px;
+    }
+
+    .photo-preview {
+      width: 115px;
+      height: 115px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      border: 2px dashed var(--gold);
+      background: #10172A;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      color: var(--gold);
+      font-size: 35px;
+    }
+
+    .photo-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .upload-btn {
+      padding: 9px 18px;
+      border-radius: 10px;
+      color: var(--gold);
+      border: 1px solid rgba(213,179,108,.4);
+      background: transparent;
+      cursor: pointer;
+    }
+
+    /* الأزرار الرئيسية */
+
+    .main-btn {
+      width: 100%;
+      min-height: 53px;
+      border: 0;
+      border-radius: 13px;
+      color: white;
+      background: linear-gradient(110deg,#9A80F8,#7055DB);
+      font-weight: 900;
+      margin-top: 8px;
+      transition: filter .2s,transform .2s;
+    }
+
+    .main-btn:active {
+      transform: scale(.99);
+    }
+
+    .main-btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .secondary-btn {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--white);
+      background: transparent;
+      margin-top: 10px;
+    }
+
+    /* رسائل النظام */
+
+    .message {
+      display: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.8;
+      margin-bottom: 15px;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    .message.error {
+      background: rgba(217,67,80,.13);
+      color: #FF9AA3;
+    }
+
+    .message.success {
+      background: rgba(66,214,164,.12);
+      color: #72E5B7;
+    }
+
+    .back-home {
+      display: block;
+      text-align: center;
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 12px;
+      text-decoration: none;
+    }
+
+    /* الموبايل والتابلت */
+
+    @media(max-width:850px) {
+      .page {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .visual {
+        display: none;
+      }
+
+      .form-side {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        padding: 14px;
+        background: rgba(8,12,27,.48);
+        backdrop-filter: blur(2px);
+      }
+
+      .card {
+        width: min(100%, 480px);
+        max-height: calc(100% - 12px);
+        padding: 27px 23px;
+        border-radius: 24px;
+        background: rgba(18,24,44,.91);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+      }
+
+      .mobile-brand {
+        display: block;
+      }
+    }
+
+    @media(max-width:400px) {
+      .form-side {
+        padding: 9px;
+      }
+
+      .card {
+        padding: 22px 17px;
+        border-radius: 20px;
+      }
+
+      .heading h2 {
+        font-size: 23px;
+      }
+
+      .mobile-brand img {
+        width: 58px;
+        height: 58px;
+      }
+    }
+
+    @media(max-height:650px) {
+      .card {
+        padding-top: 17px;
+        padding-bottom: 17px;
+      }
+
+      .mobile-brand {
+        margin-bottom: 8px;
+      }
+
+      .mobile-brand img {
+        width: 48px;
+        height: 48px;
+      }
+
+      .heading {
+        margin-bottom: 15px;
+      }
+
+      .tabs {
+        margin-bottom: 15px;
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
     }
   </style>
 </head>
@@ -326,6 +624,7 @@
       <div id="authMessage" class="message" role="alert"></div>
 
       <!-- تسجيل الدخول -->
+
       <form id="loginForm">
         <div class="field">
           <label for="loginUsername">اسم المستخدم</label>
@@ -356,7 +655,8 @@
         </button>
       </form>
 
-      <!-- إنشاء الحساب متعدد الخطوات -->
+      <!-- إنشاء الحساب -->
+
       <form id="registerForm" hidden>
 
         <div class="step-indicator" id="stepIndicator">
@@ -365,7 +665,8 @@
           <span class="step-dot"></span>
         </div>
 
-        <!-- الخطوة الأولى: اسم المستخدم وكلمة المرور -->
+        <!-- الخطوة الأولى -->
+
         <section class="step active" data-step="1">
           <div class="heading">
             <h2>إنشاء حسابك</h2>
@@ -418,7 +719,8 @@
           </button>
         </section>
 
-        <!-- الخطوة الثانية: بيانات البروفايل -->
+        <!-- الخطوة الثانية -->
+
         <section class="step" data-step="2">
           <div class="heading">
             <h2>ملفك الشخصي</h2>
@@ -464,7 +766,8 @@
           </button>
         </section>
 
-        <!-- الخطوة الثالثة: الاهتمامات -->
+        <!-- الخطوة الثالثة -->
+
         <section class="step" data-step="3">
           <div class="heading">
             <h2>اهتماماتك وهواياتك</h2>
