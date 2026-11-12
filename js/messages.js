@@ -57,7 +57,6 @@
 
   function avatarURL(path) {
     if (!path) return "";
-
     if (/^https?:\/\//i.test(path)) return path;
 
     return state.db.storage
@@ -91,7 +90,6 @@
     if (!value) return "";
 
     const date = new Date(value);
-
     if (Number.isNaN(date.getTime())) return "";
 
     return date.toLocaleTimeString("ar-EG", {
@@ -107,7 +105,6 @@
 
   function getOtherUserId(conversation) {
     const ids = String(conversation.direct_key || "").split(":");
-
     return ids.find(id => id && id !== state.user.id) || null;
   }
 
@@ -131,7 +128,6 @@
     )];
   }
 
-  // تحميل المحادثات من direct_key دون محاولة قراءة عضوية الصديق.
   async function loadConversations() {
     showEmpty(ui.list, "جارٍ تحميل المحادثات...");
 
@@ -156,7 +152,7 @@
     const { data: conversations, error: conversationError } =
       await state.db
         .from("conversations")
-        .select("id,title,conversation_type,direct_key,updated_at")
+        .select("id,title,conversation_type,direct_key,created_by,updated_at")
         .in("id", ids)
         .eq("conversation_type", "direct")
         .order("updated_at", { ascending: false });
@@ -180,7 +176,6 @@
         .in("id", otherIds);
 
       if (error) throw error;
-
       profiles = data || [];
     }
 
@@ -191,17 +186,12 @@
     state.conversations = (conversations || [])
       .map(conversation => {
         const friendId = getOtherUserId(conversation);
-
         if (!friendId || !acceptedIds.has(friendId)) return null;
 
         const friend = profileMap.get(friendId);
-
         if (!friend) return null;
 
-        return {
-          ...conversation,
-          friend
-        };
+        return { ...conversation, friend };
       })
       .filter(Boolean);
 
@@ -210,7 +200,6 @@
 
   function filteredConversations() {
     const query = ui.search.value.trim().toLowerCase();
-
     if (!query) return state.conversations;
 
     return state.conversations.filter(conversation => {
@@ -281,14 +270,79 @@
     });
   }
 
-  // إنشاء المحادثة دون طلب SELECT قبل إضافة الأعضاء.
+  // يتأكد من تسجيل عضوية المستخدم الحالي أولاً.
+  // لا يحاول إضافة عضوية الصديق إلا إذا كان المستخدم هو منشئ المحادثة.
+  async function ensureOwnMembership(conversation, friend) {
+    const { data: existingMembership, error: checkError } =
+      await state.db
+        .from("conversation_members")
+        .select("conversation_id")
+        .eq("conversation_id", conversation.id)
+        .eq("user_id", state.user.id)
+        .maybeSingle();
+
+    if (checkError) throw checkError;
+
+    if (!existingMembership) {
+      const { error: insertOwnError } = await state.db
+        .from("conversation_members")
+        .insert({
+          conversation_id: conversation.id,
+          user_id: state.user.id,
+          member_role: "member"
+        });
+
+      if (insertOwnError && insertOwnError.code !== "23505") {
+        throw insertOwnError;
+      }
+    }
+
+    // إذا كان المستخدم هو المنشئ، يتأكد من إضافة الطرف الآخر.
+    // خطأ التكرار هنا طبيعي إذا كانت عضويته موجودة بالفعل.
+    if (conversation.created_by === state.user.id && friend?.id) {
+      const { error: insertFriendError } = await state.db
+        .from("conversation_members")
+        .insert({
+          conversation_id: conversation.id,
+          user_id: friend.id,
+          member_role: "member"
+        });
+
+      if (
+        insertFriendError &&
+        insertFriendError.code !== "23505"
+      ) {
+        throw insertFriendError;
+      }
+    }
+
+    // تحقق نهائي: لا نفتح المحادثة قبل التأكد من عضويتنا.
+    const { data: verifiedMembership, error: verifyError } =
+      await state.db
+        .from("conversation_members")
+        .select("conversation_id")
+        .eq("conversation_id", conversation.id)
+        .eq("user_id", state.user.id)
+        .maybeSingle();
+
+    if (verifyError) throw verifyError;
+
+    if (!verifiedMembership) {
+      throw new Error(
+        "لم تكتمل عضويتك في المحادثة. تأكد من قبول الصداقة ثم حاول مرة أخرى."
+      );
+    }
+
+    return true;
+  }
+
   async function getOrCreateConversation(friend) {
     const ids = [state.user.id, friend.id].sort();
     const directKey = ids.join(":");
 
     const { data: existing, error: findError } = await state.db
       .from("conversations")
-      .select("id,title,conversation_type,direct_key,updated_at")
+      .select("id,title,conversation_type,direct_key,created_by,updated_at")
       .eq("conversation_type", "direct")
       .eq("direct_key", directKey)
       .maybeSingle();
@@ -296,19 +350,7 @@
     if (findError) throw findError;
 
     if (existing) {
-      const { data: ownMembership, error: ownError } =
-        await state.db
-          .from("conversation_members")
-          .select("conversation_id")
-          .eq("conversation_id", existing.id)
-          .eq("user_id", state.user.id)
-          .maybeSingle();
-
-      if (ownError) throw ownError;
-
-      if (!ownMembership) {
-        throw new Error("المحادثة موجودة لكن عضويتك غير مكتملة. حدّث الصفحة وحاول مرة أخرى.");
-      }
+      await ensureOwnMembership(existing, friend);
 
       return {
         ...existing,
@@ -316,8 +358,6 @@
       };
     }
 
-    // مهم: لا نستخدم select هنا؛ لأن سياسة القراءة لا تسمح
-    // بقراءة المحادثة قبل إضافة عضوية المستخدم إليها.
     const { error: createError } = await state.db
       .from("conversations")
       .insert({
@@ -330,13 +370,13 @@
       throw createError;
     }
 
-    // ننتظر ظهور المحادثة إذا أنشأها الطرف الآخر في نفس اللحظة.
+    // نبحث عن المحادثة بعد الإنشاء، مع مراعاة احتمال إنشائها بالتزامن.
     let created = null;
 
-    for (let attempt = 0; attempt < 6; attempt++) {
+    for (let attempt = 0; attempt < 8; attempt++) {
       const { data, error } = await state.db
         .from("conversations")
-        .select("id,title,conversation_type,direct_key,updated_at")
+        .select("id,title,conversation_type,direct_key,created_by,updated_at")
         .eq("conversation_type", "direct")
         .eq("direct_key", directKey)
         .maybeSingle();
@@ -348,47 +388,14 @@
         break;
       }
 
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await new Promise(resolve => setTimeout(resolve, 350));
     }
 
     if (!created) {
-      throw new Error("تعذر العثور على المحادثة بعد إنشائها. حاول تحديث الصفحة.");
+      throw new Error("تعذر العثور على المحادثة بعد إنشائها.");
     }
 
-    // إذا كانت عضويتي موجودة بالفعل فلا نكرر الإضافة.
-    const { data: ownMembership, error: ownError } =
-      await state.db
-        .from("conversation_members")
-        .select("conversation_id")
-        .eq("conversation_id", created.id)
-        .eq("user_id", state.user.id)
-        .maybeSingle();
-
-    if (ownError) throw ownError;
-
-    if (!ownMembership) {
-      const { error: membersError } = await state.db
-        .from("conversation_members")
-        .insert([
-          {
-            conversation_id: created.id,
-            user_id: state.user.id,
-            member_role: "member"
-          },
-          {
-            conversation_id: created.id,
-            user_id: friend.id,
-            member_role: "member"
-          }
-        ]);
-
-      if (membersError) {
-        // قد تكون العضوية أُنشئت من الطرف الآخر بالتزامن.
-        if (membersError.code !== "23505") {
-          throw membersError;
-        }
-      }
-    }
+    await ensureOwnMembership(created, friend);
 
     return {
       ...created,
