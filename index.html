@@ -302,17 +302,26 @@
         <span>إنجازاتي</span>
       </a>
 
-      <!-- المجتمع للمجموعات فقط -->
       <a href="pages/community.html">
         <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20v-1a6 6 0 0 1 12 0v1zM16 15a5 5 0 0 1 5 5"/></svg>
         <span>المجتمع</span>
       </a>
 
-      <!-- كل قسم له صفحة مستقلة -->
       <a href="pages/posts.html">
         <svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
         <span>المنشورات</span>
       </a>
+
+      <!-- الفيديوهات القصيرة -->
+      <a href="pages/shorts.html" aria-label="الفيديوهات القصيرة">
+        <svg viewBox="0 0 24 24">
+          <rect x="4" y="3" width="16" height="18" rx="3"/>
+          <path d="m10 8 5 4-5 4z"/>
+          <path d="M8 3l8 18M16 3 8 21"/>
+        </svg>
+        <span>الفيديوهات القصيرة</span>
+      </a>
+
       <a href="pages/messages.html">
         <svg viewBox="0 0 24 24"><path d="M4 5h16v12H9l-5 4z"/><path d="M8 9h8M8 13h5"/></svg>
         <span>المراسلات</span>
@@ -450,6 +459,10 @@
           <span class="section-icon">08</span><h3>مجتمع هنون</h3>
           <p>اكتشف المجموعات وانضم إلى النقاشات المشتركة.</p><span class="card-link">اكتشف المجموعات ←</span>
         </a>
+        <a href="pages/shorts.html" class="section-card">
+          <span class="section-icon">09</span><h3>الفيديوهات القصيرة</h3>
+          <p>شاهد مقاطع قصيرة وشارك فيديوهاتك مع أعضاء هنون.</p><span class="card-link">شاهد الفيديوهات ←</span>
+        </a>
       </div>
     </section>
 
@@ -543,6 +556,7 @@
         <a href="pages/learning.html">مسارات التعلم</a>
         <a href="pages/exams.html">الاختبارات</a>
         <a href="pages/community.html">المجموعات</a>
+        <a href="pages/shorts.html">الفيديوهات القصيرة</a>
       </div>
       <div class="footer-column">
         <h3>حسابك</h3>
@@ -564,7 +578,6 @@
     </div>
   </footer>
 
-  <!-- تهيئة Supabase فقط، وإدارة الهيدر أصبحت في ملف مستقل -->
   <script type="module" src="js/supabase-client.js"></script>
 
   <script>
