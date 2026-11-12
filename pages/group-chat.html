@@ -1,0 +1,544 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#090d20">
+  <title>محادثة المجموعة | هنون</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #090d20;
+      --panel: rgba(15,23,48,.88);
+      --line: rgba(151,169,255,.16);
+      --purple: #a18bff;
+      --cyan: #5bd9df;
+      --text: #f4f3ff;
+      --muted: #a5aec9;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: Cairo, sans-serif;
+      background:
+        radial-gradient(ellipse at 15% 10%,#33256a66,transparent 38%),
+        radial-gradient(ellipse at 90% 80%,#075e7760,transparent 35%),
+        linear-gradient(145deg,#080d20,#10152e 55%,#090d20);
+    }
+
+    button, textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .topbar {
+      height: 55px;
+      padding: 7px 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(8,13,31,.88);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(18px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: white;
+      font-size: 15px;
+      font-weight: 900;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+      background: linear-gradient(135deg,#50cbdc,#8063db);
+    }
+
+    .brand-mark svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: white;
+      stroke-width: 1.8;
+    }
+
+    .back-link {
+      padding: 6px 11px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #ffffff0b;
+      color: #d9dcff;
+      text-decoration: none;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .page {
+      width: min(1000px,96%);
+      margin: 17px auto;
+    }
+
+    .group-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 15px;
+      border: 1px solid var(--line);
+      border-radius: 19px;
+      background:
+        radial-gradient(circle at 15% 15%,#6c5bdc40,transparent 45%),
+        linear-gradient(120deg,#111b3cdd,#102e45cc);
+      box-shadow: 0 12px 35px #0004;
+    }
+
+    .group-avatar {
+      flex: 0 0 52px;
+      width: 52px;
+      height: 52px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #9a9cff55;
+      border-radius: 16px;
+      background: linear-gradient(145deg,#5dc8dc,#7658c9);
+    }
+
+    .group-avatar svg {
+      width: 27px;
+      height: 27px;
+      fill: none;
+      stroke: white;
+      stroke-width: 1.7;
+    }
+
+    .group-heading {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .group-heading h1 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 900;
+      overflow-wrap: anywhere;
+    }
+
+    .group-heading p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .member-count {
+      color: var(--cyan);
+      font-size: 10px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 250px minmax(0,1fr);
+      gap: 13px;
+      margin-top: 13px;
+      align-items: start;
+    }
+
+    .panel {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: var(--panel);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 12px 35px #0003;
+    }
+
+    .members-panel {
+      padding: 14px;
+    }
+
+    .panel-title {
+      margin: 0 0 12px;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .member-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .member-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+      padding: 8px;
+      border: 1px solid #ffffff0c;
+      border-radius: 12px;
+      background: #ffffff07;
+    }
+
+    .member-avatar {
+      flex: 0 0 34px;
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border-radius: 50%;
+      background: linear-gradient(135deg,#5dc8dc,#7658c9);
+      color: white;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .member-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .member-name {
+      min-width: 0;
+      overflow: hidden;
+      color: #e7e7ff;
+      font-size: 10px;
+      font-weight: 800;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .member-role {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 9px;
+    }
+
+    .chat-panel {
+      height: min(690px,calc(100vh - 180px));
+      min-height: 430px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .chat-top {
+      min-height: 48px;
+      padding: 10px 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .chat-top strong {
+      font-size: 12px;
+    }
+
+    .chat-top span {
+      color: var(--muted);
+      font-size: 9px;
+    }
+
+    .message-list {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+      padding: 15px;
+      scroll-behavior: smooth;
+    }
+
+    .message {
+      max-width: min(82%,460px);
+      padding: 9px 12px;
+      border: 1px solid #ffffff13;
+      border-radius: 14px;
+      background: linear-gradient(135deg,#242a4a,#1b2941);
+      align-self: flex-start;
+      overflow-wrap: anywhere;
+    }
+
+    .message.mine {
+      align-self: flex-end;
+      border-color: #8c7aff55;
+      border-radius: 14px 14px 4px 14px;
+      background: linear-gradient(135deg,#51439a,#303c72);
+    }
+
+    .message-sender {
+      margin-bottom: 4px;
+      color: #9fe4ec;
+      font-size: 9px;
+      font-weight: 900;
+    }
+
+    .message-body {
+      color: #f5f4ff;
+      font-size: 12px;
+      line-height: 1.9;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .message-time {
+      margin-top: 5px;
+      color: #c0c4dc;
+      font-size: 8px;
+      text-align: left;
+    }
+
+    .composer {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      padding: 11px;
+      border-top: 1px solid var(--line);
+      background: #080e20a8;
+    }
+
+    .message-input {
+      flex: 1;
+      min-width: 0;
+      min-height: 42px;
+      max-height: 120px;
+      padding: 10px 12px;
+      resize: none;
+      outline: none;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      color: white;
+      background: #ffffff09;
+      font-size: 11px;
+    }
+
+    .message-input:focus {
+      border-color: #8c7aff;
+    }
+
+    .send-btn {
+      flex: 0 0 43px;
+      width: 43px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #a18bff66;
+      border-radius: 13px;
+      color: white;
+      background: linear-gradient(135deg,#8066e7,#4a8db8);
+    }
+
+    .send-btn svg {
+      width: 19px;
+      height: 19px;
+      fill: none;
+      stroke: white;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .notice {
+      margin-top: 12px;
+      padding: 11px 13px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: #dce4ff;
+      background: #111a35;
+      font-size: 11px;
+      line-height: 1.9;
+    }
+
+    .notice.error {
+      color: #ffc0ce;
+      border-color: #ff718555;
+    }
+
+    .empty-state {
+      margin: auto;
+      padding: 20px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 11px;
+      line-height: 2;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media(max-width:700px) {
+      .page {
+        width: 95%;
+        margin: 11px auto;
+      }
+
+      .group-header {
+        padding: 11px;
+        gap: 9px;
+      }
+
+      .group-avatar {
+        width: 43px;
+        height: 43px;
+        flex-basis: 43px;
+      }
+
+      .group-heading h1 {
+        font-size: 13px;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .members-panel {
+        order: 2;
+      }
+
+      .member-list {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+      }
+
+      .chat-panel {
+        height: calc(100dvh - 190px);
+        min-height: 390px;
+      }
+
+      .message {
+        max-width: 88%;
+      }
+    }
+
+    @media(max-width:360px) {
+      .member-list {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand-mark">
+      <svg viewBox="0 0 24 24">
+        <path d="M4 18 12 4l8 14M7 13h10M9 18h6"/>
+      </svg>
+    </span>
+    HANOON
+  </a>
+
+  <a class="back-link" href="community.html">العودة للمجموعات</a>
+</header>
+
+<main class="page">
+
+  <section class="group-header">
+    <div class="group-avatar">
+      <svg viewBox="0 0 24 24">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+    </div>
+
+    <div class="group-heading">
+      <h1 id="groupTitle">محادثة المجموعة</h1>
+      <p id="groupDescription">مساحة خاصة بأعضاء المجموعة</p>
+    </div>
+
+    <div class="member-count" id="memberCount">0 أعضاء</div>
+  </section>
+
+  <div id="authNotice" class="notice hidden">
+    سجّل الدخول أولاً لاستخدام محادثات المجموعات.
+    <a href="auth.html">تسجيل الدخول</a>
+  </div>
+
+  <section id="groupChatApp" class="layout hidden">
+
+    <aside class="panel members-panel">
+      <h2 class="panel-title">أعضاء المجموعة</h2>
+      <div class="member-list" id="memberList">
+        <div class="empty-state">جارٍ تحميل الأعضاء...</div>
+      </div>
+    </aside>
+
+    <section class="panel chat-panel">
+
+      <div class="chat-top">
+        <strong>النقاش الجماعي</strong>
+        <span>رسائل أعضاء المجموعة</span>
+      </div>
+
+      <div class="message-list" id="messageList">
+        <div class="empty-state">جارٍ تحميل الرسائل...</div>
+      </div>
+
+      <form class="composer" id="messageForm">
+        <textarea
+          class="message-input"
+          id="messageInput"
+          rows="1"
+          maxlength="5000"
+          placeholder="اكتب رسالة للمجموعة..."
+          required
+        ></textarea>
+
+        <button class="send-btn" id="sendMessageBtn" type="submit" aria-label="إرسال الرسالة">
+          <svg viewBox="0 0 24 24">
+            <path d="m22 2-7 20-4-9-9-4Z"/>
+            <path d="M22 2 11 13"/>
+          </svg>
+        </button>
+      </form>
+
+    </section>
+
+  </section>
+
+  <div id="globalNotice" class="notice hidden" role="status"></div>
+
+</main>
+
+<script type="module" src="../js/supabase-client.js"></script>
+<script type="module" src="../js/group-chat.js"></script>
+
+</body>
+</html>
