@@ -1,0 +1,404 @@
+
+/* ==========================================
+   HANOON — CIRCULAR ORBIT NAVIGATION
+   القائمة الدائرية الرئيسية
+========================================== */
+
+.site-header {
+  position: sticky !important;
+  top: 0;
+  z-index: 1000;
+  display: grid !important;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "brand controls"
+    "navigation navigation";
+  align-items: center;
+  gap: 10px 22px;
+  min-height: auto !important;
+  padding: 12px clamp(14px, 4vw, 55px) 15px !important;
+  background:
+    radial-gradient(
+      ellipse at 50% 100%,
+      rgba(213,179,108,.09),
+      transparent 58%
+    ),
+    rgba(10,15,30,.97) !important;
+  border-bottom: 1px solid rgba(213,179,108,.25);
+  box-shadow: 0 12px 35px rgba(0,0,0,.24);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  overflow: visible;
+}
+
+.site-header > .brand {
+  grid-area: brand;
+  justify-self: start;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 !important;
+  order: initial !important;
+}
+
+.site-header > .brand img {
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 13px rgba(213,179,108,.3));
+}
+
+.site-header > .brand strong {
+  color: #f1d99f;
+  font-size: 19px;
+  letter-spacing: 2px;
+}
+
+.site-header > .brand small {
+  color: #aaa9b8;
+  font-size: 10px;
+}
+
+.site-header > .header-controls {
+  grid-area: controls;
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 !important;
+  order: initial !important;
+}
+
+.site-header .icon-button,
+.site-header .header-profile-link {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(213,179,108,.4);
+  border-radius: 50%;
+  background: rgba(213,179,108,.09);
+  color: #f1d99f;
+  transition: .3s ease;
+}
+
+.site-header .icon-button:hover,
+.site-header .header-profile-link:hover {
+  transform: translateY(-3px);
+  background: rgba(213,179,108,.22);
+  box-shadow: 0 0 20px rgba(213,179,108,.2);
+}
+
+.site-header .icon-button svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.site-header .header-profile-link {
+  overflow: hidden;
+  font-weight: 900;
+}
+
+.site-header .header-profile-link img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.site-header .account-button {
+  position: static !important;
+  transform: none !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 112px;
+  min-height: 40px;
+  padding: 7px 15px;
+  border: 1px solid #d5b36c;
+  border-radius: 30px;
+  background: linear-gradient(135deg,#e7cb8a,#b18a4d);
+  color: #101629;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+/* إخفاء زر القائمة القديم */
+.site-header > .menu-toggle {
+  display: none !important;
+}
+
+/* المدار الدائري */
+.site-header > .main-navigation {
+  grid-area: navigation;
+  position: relative !important;
+  inset: auto !important;
+  justify-self: center;
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: min(100%, 1050px);
+  min-width: 0;
+  min-height: 76px;
+  margin: 0 auto;
+  padding: 15px 22px !important;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(213,179,108,.075),
+      transparent 68%
+    );
+  border: 1px solid rgba(213,179,108,.17);
+  border-radius: 50px;
+  box-shadow:
+    inset 0 0 24px rgba(213,179,108,.035),
+    0 8px 24px rgba(0,0,0,.13);
+}
+
+/* مسار المدار */
+.site-header > .main-navigation::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 88%;
+  height: 48px;
+  left: 6%;
+  top: 50%;
+  transform: translateY(-50%) rotate(-2deg);
+  border: 1px dashed rgba(213,179,108,.23);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: hanoonOrbitTrack 18s ease-in-out infinite alternate;
+}
+
+.site-header > .main-navigation::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 7px;
+  height: 7px;
+  top: 13px;
+  left: 13%;
+  border-radius: 50%;
+  background: #e8ca84;
+  box-shadow:
+    0 0 12px rgba(232,202,132,.8),
+    0 0 24px rgba(232,202,132,.35);
+  animation: hanoonOrbitDot 12s linear infinite;
+  pointer-events: none;
+}
+
+/* روابط الأقسام */
+.site-header > .main-navigation a {
+  position: relative;
+  z-index: 1;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  min-height: 39px;
+  padding: 8px 15px !important;
+  margin: 0;
+  color: #e8e1d1;
+  background: rgba(18,25,43,.82);
+  border: 1px solid rgba(213,179,108,.25);
+  border-radius: 30px;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,.16);
+  transition:
+    color .3s ease,
+    background .3s ease,
+    border-color .3s ease,
+    transform .3s ease,
+    box-shadow .3s ease;
+}
+
+.site-header > .main-navigation a::after {
+  display: none !important;
+}
+
+.site-header > .main-navigation a:hover,
+.site-header > .main-navigation a.active {
+  color: #151523;
+  background: linear-gradient(135deg,#f4dfa9,#d5b36c);
+  border-color: #f4dfa9;
+  transform: translateY(-3px) scale(1.035);
+  box-shadow:
+    0 7px 20px rgba(213,179,108,.2),
+    0 0 13px rgba(213,179,108,.12);
+}
+
+/* حركة بسيطة للمدار */
+@keyframes hanoonOrbitTrack {
+  0% {
+    transform: translateY(-50%) rotate(-2deg) scaleX(.98);
+  }
+  100% {
+    transform: translateY(-50%) rotate(2deg) scaleX(1.02);
+  }
+}
+
+@keyframes hanoonOrbitDot {
+  from {
+    transform: rotate(0deg) translateX(20px);
+  }
+  to {
+    transform: rotate(360deg) translateX(20px);
+  }
+}
+
+/* الأجهزة المتوسطة */
+@media (max-width: 900px) {
+  .site-header {
+    gap: 9px;
+    padding-inline: 14px !important;
+  }
+
+  .site-header > .main-navigation {
+    gap: 7px;
+    min-height: 70px;
+    padding: 13px !important;
+  }
+
+  .site-header > .main-navigation a {
+    min-height: 36px;
+    padding: 7px 12px !important;
+    font-size: 10px;
+  }
+}
+
+/* الهواتف */
+@media (max-width: 600px) {
+  .site-header {
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    padding: 9px 10px 12px !important;
+  }
+
+  .site-header > .brand {
+    gap: 6px;
+  }
+
+  .site-header > .brand img {
+    width: 39px;
+    height: 39px;
+  }
+
+  .site-header > .brand strong {
+    font-size: 14px;
+  }
+
+  .site-header > .brand small {
+    font-size: 8px;
+  }
+
+  .site-header > .header-controls {
+    gap: 5px;
+  }
+
+  .site-header .icon-button,
+  .site-header .header-profile-link {
+    width: 33px;
+    height: 33px;
+    min-width: 33px;
+  }
+
+  .site-header .icon-button svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .site-header .account-button {
+    min-width: 75px;
+    min-height: 32px;
+    padding: 4px 7px;
+    font-size: 9px;
+  }
+
+  .site-header > .main-navigation {
+    width: 100%;
+    min-height: 0;
+    gap: 7px;
+    padding: 13px 8px !important;
+    border-radius: 25px;
+  }
+
+  .site-header > .main-navigation::before {
+    width: 94%;
+    left: 3%;
+    height: 45px;
+  }
+
+  .site-header > .main-navigation a {
+    min-height: 34px;
+    padding: 7px 10px !important;
+    font-size: 10px;
+  }
+}
+
+/* الهواتف الصغيرة */
+@media (max-width: 380px) {
+  .site-header > .brand img {
+    width: 34px;
+    height: 34px;
+  }
+
+  .site-header > .brand strong {
+    font-size: 12px;
+  }
+
+  .site-header > .brand small {
+    display: none;
+  }
+
+  .site-header > .header-controls {
+    gap: 4px;
+  }
+
+  .site-header .icon-button,
+  .site-header .header-profile-link {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+  }
+
+  .site-header .account-button {
+    min-width: 68px;
+    font-size: 8px;
+  }
+
+  .site-header > .main-navigation {
+    gap: 5px;
+    padding-inline: 5px !important;
+  }
+
+  .site-header > .main-navigation a {
+    padding-inline: 8px !important;
+    font-size: 9px;
+  }
+}
+
+/* احترام إعداد تقليل الحركة */
+@media (prefers-reduced-motion: reduce) {
+  .site-header > .main-navigation::before,
+  .site-header > .main-navigation::after {
+    animation: none !important;
+  }
+
+  .site-header > .main-navigation a {
+    transition: none !important;
+  }
+}
