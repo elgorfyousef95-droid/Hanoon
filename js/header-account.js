@@ -18,11 +18,15 @@
     !profileImage ||
     !profileName ||
     !profileMeta
-  ) return;
+  ) {
+    console.error("HANOON: header account elements are missing.");
+    return;
+  }
 
   let supabase = null;
   let requestNumber = 0;
   let authSubscription = null;
+  let started = false;
 
   function showGuest() {
     accountButton.hidden = false;
@@ -34,7 +38,9 @@
     profileInitial.textContent = "م";
     profileName.textContent = "حسابي";
     profileMeta.textContent = "سجّل الدخول إلى هنون";
-    
+
+    profileImage.onload = null;
+    profileImage.onerror = null;
     profileImage.removeAttribute("src");
   }
 
@@ -43,14 +49,17 @@
     profileLink.hidden = false;
 
     const cleanName = String(name || "عضو هنون").trim();
-    const cleanUsername = String(username || "").replace(/^@/, "");
+    const cleanUsername = String(username || "")
+      .trim()
+      .replace(/^@/, "");
 
     profileName.textContent = cleanName;
     profileInitial.textContent = cleanName.charAt(0) || "م";
 
     profileMeta.textContent =
       (cleanUsername ? "@" + cleanUsername : "عضو هنون") +
-      "  ·  ID: " + (memberCode || "قيد التحديث");
+      "  ·  ID: " +
+      (memberCode || "قيد التحديث");
 
     profileImage.onload = () => {
       profileImage.hidden = false;
@@ -63,6 +72,8 @@
     };
 
     if (avatarUrl) {
+      profileImage.hidden = false;
+      profileInitial.hidden = true;
       profileImage.src = avatarUrl;
     } else {
       profileImage.removeAttribute("src");
@@ -79,18 +90,22 @@
       return;
     }
 
-    // إظهار الحساب وإخفاء زر الدخول فور تأكيد الجلسة
+    const metadata = user.user_metadata || {};
+
     showUser(
-      user.user_metadata?.full_name ||
-      user.user_metadata?.name ||
+      metadata.full_name ||
+      metadata.name ||
       user.email?.split("@")[0] ||
       "عضو هنون",
-      user.user_metadata?.username ||
-      user.user_metadata?.user_name ||
+
+      metadata.username ||
+      metadata.user_name ||
       "",
-      user.user_metadata?.member_code || "",
-      user.user_metadata?.avatar_url ||
-      user.user_metadata?.picture ||
+
+      metadata.member_code || "",
+
+      metadata.avatar_url ||
+      metadata.picture ||
       ""
     );
 
@@ -104,13 +119,16 @@
       if (currentRequest !== requestNumber) return;
 
       if (error) {
-        console.warn("HANOON profile header:", error.message);
+        console.warn(
+          "HANOON profile header:",
+          error.message
+        );
         return;
       }
 
       let avatarUrl =
-        user.user_metadata?.avatar_url ||
-        user.user_metadata?.picture ||
+        metadata.avatar_url ||
+        metadata.picture ||
         "";
 
       if (profile?.avatar_path) {
@@ -121,61 +139,88 @@
         avatarUrl = data?.publicUrl || avatarUrl;
       }
 
+      if (currentRequest !== requestNumber) return;
+
       showUser(
         profile?.full_name ||
-        user.user_metadata?.full_name ||
-        user.email?.split("@")[0],
+        metadata.full_name ||
+        metadata.name ||
+        user.email?.split("@")[0] ||
+        "عضو هنون",
+
         profile?.username ||
-        user.user_metadata?.username ||
+        metadata.username ||
+        metadata.user_name ||
         "",
+
         profile?.member_code ||
-        user.user_metadata?.member_code ||
+        metadata.member_code ||
         "",
+
         avatarUrl
       );
 
     } catch (error) {
-      console.error("HANOON account update:", error);
+      console.error(
+        "HANOON account update:",
+        error
+      );
     }
   }
 
   async function start() {
-    if (supabase) return;
+    if (started) return;
 
     supabase = window.HANOON?.supabase;
 
     if (!supabase) return;
 
+    started = true;
+
     try {
-      const { data, error } = await supabase.auth.getSession();
+      const { data, error } =
+        await supabase.auth.getSession();
 
       if (error) throw error;
 
-      await updateAccount(data?.session?.user || null);
-
-      const { data: listener } = supabase.auth.onAuthStateChange(
-        (event, session) => {
-          if (event === "SIGNED_OUT") {
-            requestNumber++;
-            showGuest();
-            return;
-          }
-
-          if (
-            event === "SIGNED_IN" ||
-            event === "TOKEN_REFRESHED" ||
-            event === "USER_UPDATED" ||
-            event === "INITIAL_SESSION"
-          ) {
-            updateAccount(session?.user || null);
-          }
-        }
+      await updateAccount(
+        data?.session?.user || null
       );
 
-      authSubscription = listener?.subscription || null;
+      const { data: listener } =
+        supabase.auth.onAuthStateChange(
+          (event, session) => {
+            if (event === "SIGNED_OUT") {
+              requestNumber++;
+              showGuest();
+              return;
+            }
+
+            if (
+              event === "SIGNED_IN" ||
+              event === "TOKEN_REFRESHED" ||
+              event === "USER_UPDATED" ||
+              event === "INITIAL_SESSION"
+            ) {
+              // نؤجل قراءة بيانات الحساب خارج callback المصادقة.
+              window.setTimeout(() => {
+                updateAccount(session?.user || null);
+              }, 0);
+            }
+          }
+        );
+
+      authSubscription =
+        listener?.subscription || null;
 
     } catch (error) {
-      console.error("HANOON header authentication:", error);
+      started = false;
+
+      console.error(
+        "HANOON header authentication:",
+        error
+      );
+
       showGuest();
     }
   }
@@ -185,22 +230,48 @@
   if (window.HANOON?.supabase) {
     start();
   } else {
-    window.addEventListener("hanoon:supabase-ready", start);
+    window.addEventListener(
+      "hanoon:supabase-ready",
+      start,
+      { once: true }
+    );
   }
 
-  window.addEventListener("pageshow", () => {
-    if (supabase) {
-      supabase.auth.getSession().then(({ data }) => {
-        updateAccount(data?.session?.user || null);
-      });
+  window.addEventListener("pageshow", async () => {
+    if (!supabase) return;
+
+    try {
+      const { data } = await supabase.auth.getSession();
+
+      await updateAccount(
+        data?.session?.user || null
+      );
+    } catch (error) {
+      console.warn(
+        "HANOON session refresh:",
+        error
+      );
     }
   });
 
   window.HANOON_HEADER_ACCOUNT = {
-    refresh: start,
+    refresh: async () => {
+      if (!supabase) {
+        await start();
+        return;
+      }
+
+      const { data } = await supabase.auth.getSession();
+
+      await updateAccount(
+        data?.session?.user || null
+      );
+    },
+
     destroy() {
       authSubscription?.unsubscribe();
       authSubscription = null;
+      started = false;
     }
   };
 })();
