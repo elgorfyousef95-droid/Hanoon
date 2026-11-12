@@ -1,8 +1,9 @@
 
 /* =====================================================
-   HANOON AUTHENTICATION
-   Supabase Phone Login / Registration / Profile
-   Egyptian phone numbers only
+   HANOON AUTH
+   Username + Password
+   Supabase Authentication
+   Profile + Avatar + Member Code + QR
 ===================================================== */
 
 (async () => {
@@ -13,7 +14,8 @@
   const state = {
     photo: null,
     compressedPhoto: null,
-    busy: false
+    busy: false,
+    existingUser: null
   };
 
   const elements = {
@@ -30,7 +32,10 @@
 
   let supabase;
 
-  /* انتظار اتصال Supabase */
+  /* =====================================================
+     Supabase connection
+  ===================================================== */
+
   function waitForSupabase() {
     return new Promise((resolve, reject) => {
       if (window.HANOON?.supabase) {
@@ -72,12 +77,13 @@
 
       window.addEventListener("hanoon:supabase-ready", onReady);
       window.addEventListener("hanoon:supabase-error", onError);
-
-      if (window.HANOON?.supabase) onReady();
     });
   }
 
-  /* الرسائل */
+  /* =====================================================
+     Messages and loading states
+  ===================================================== */
+
   function notify(message, type = "error") {
     if (!elements.message) return;
 
@@ -116,67 +122,52 @@
     }
   }
 
-  /* تحويل رقم الهاتف المصري إلى E.164 */
-  function normalizeEgyptianPhone(value) {
-    let phone = String(value || "")
+  /* =====================================================
+     Username authentication
+  ===================================================== */
+
+  function normalizeUsername(value) {
+    return String(value || "")
       .trim()
-      .replace(/[\s\-().]/g, "");
-
-    // قبول الأرقام العربية
-    phone = phone.replace(/[٠-٩]/g, digit =>
-      String("٠١٢٣٤٥٦٧٨٩".indexOf(digit))
-    );
-
-    // قبول الأرقام الفارسية
-    phone = phone.replace(/[۰-۹]/g, digit =>
-      String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit))
-    );
-
-    // حذف علامة الاتصال الدولية 00
-    if (phone.startsWith("00")) {
-      phone = "+" + phone.slice(2);
-    }
-
-    // الرقم المحلي المصري: 01xxxxxxxxx
-    if (/^01[0125]\d{8}$/.test(phone)) {
-      return "+20" + phone.slice(1);
-    }
-
-    // الصيغة الدولية: +201xxxxxxxxx
-    if (/^\+201[0125]\d{8}$/.test(phone)) {
-      return phone;
-    }
-
-    // قبول 20 بدون علامة +
-    if (/^201[0125]\d{8}$/.test(phone)) {
-      return "+" + phone;
-    }
-
-    throw new Error(
-      "رقم الهاتف غير صحيح. أدخل رقمًا مصريًا يبدأ بـ 010 أو 011 أو 012 أو 015."
-    );
+      .toLowerCase();
   }
 
-  /* رسائل أخطاء Supabase */
+  function validateUsername(value) {
+    const username = normalizeUsername(value);
+
+    if (!/^[a-z0-9_]{3,24}$/.test(username)) {
+      throw new Error(
+        "اسم المستخدم يجب أن يكون من 3 إلى 24 حرفًا إنجليزيًا أو رقمًا أو _."
+      );
+    }
+
+    return username;
+  }
+
+  /*
+    Supabase Auth requires email or phone credentials.
+    This hidden internal address lets the user use username/password.
+    It is never displayed to the user and is not a real mailbox.
+  */
+  function internalEmailForUsername(username) {
+    return `${normalizeUsername(username)}@hanoon.invalid`;
+  }
+
   function errorMessage(error) {
-    const message = error?.message || "";
+    const message = String(error?.message || "");
 
     const messages = [
       [
         "Invalid login credentials",
-        "رقم الهاتف أو كلمة المرور غير صحيحة."
+        "اسم المستخدم أو كلمة المرور غير صحيحة."
       ],
       [
         "User already registered",
-        "رقم الهاتف مسجل بالفعل. جرّب تسجيل الدخول."
+        "اسم المستخدم مسجل بالفعل. جرّب تسجيل الدخول."
       ],
       [
-        "Phone not confirmed",
-        "يجب تأكيد رقم الهاتف أولاً باستخدام كود الرسالة."
-      ],
-      [
-        "Invalid phone number",
-        "رقم الهاتف غير صحيح."
+        "Email not confirmed",
+        "تأكيد البريد الداخلي ما زال مفعّلًا. يجب إيقاف Confirm email في إعدادات Supabase."
       ],
       [
         "Signups not allowed",
@@ -195,20 +186,12 @@
         "اسم المستخدم مستخدم بالفعل."
       ],
       [
-        "Invalid OTP",
-        "كود التحقق غير صحيح أو انتهت صلاحيته."
+        "row-level security",
+        "قاعدة البيانات منعت العملية. راجع صلاحيات وسياسات الجدول."
       ],
       [
-        "Token has expired",
-        "انتهت صلاحية كود التحقق. اطلب كودًا جديدًا."
-      ],
-      [
-        "SMS provider",
-        "خدمة الرسائل النصية غير مضبوطة في Supabase."
-      ],
-      [
-        "phone_provider_disabled",
-        "تسجيل الدخول برقم الهاتف غير مفعّل في Supabase."
+        "Failed to fetch",
+        "تعذر الاتصال بالخادم. تحقق من الإنترنت وحاول مرة أخرى."
       ]
     ];
 
@@ -221,7 +204,10 @@
     return message || "حدث خطأ غير متوقع. حاول مرة أخرى.";
   }
 
-  /* التنقل بين التسجيل والدخول */
+  /* =====================================================
+     Tabs and registration steps
+  ===================================================== */
+
   function showLogin() {
     clearMessage();
 
@@ -249,7 +235,7 @@
     elements.subtitle.textContent =
       "أنشئ هويتك الخاصة في مجتمع هنون";
 
-    goToStep(1);
+    goToStep(state.existingUser ? 2 : 1);
   }
 
   function goToStep(number) {
@@ -264,12 +250,13 @@
     clearMessage();
   }
 
-  /* التحقق من بيانات الخطوة الأولى */
-  function validateStepOne() {
-    let phone;
+  /* =====================================================
+     Step validation
+  ===================================================== */
 
+  function validateStepOne() {
     try {
-      phone = normalizeEgyptianPhone($("#registerPhone").value);
+      validateUsername($("#registerUsername").value);
     } catch (error) {
       notify(error.message);
       return false;
@@ -277,11 +264,6 @@
 
     const password = $("#registerPassword").value;
     const confirm = $("#confirmPassword").value;
-
-    if (!phone) {
-      notify("أدخل رقم الهاتف.");
-      return false;
-    }
 
     if (password.length < 8) {
       notify("كلمة المرور يجب أن تكون 8 أحرف على الأقل.");
@@ -296,13 +278,16 @@
     return true;
   }
 
-  /* التحقق من بيانات الملف الشخصي */
   function validateStepTwo() {
     const name = $("#displayName").value.trim();
-    const username = $("#username").value.trim().toLowerCase();
 
-    if (!state.photo) {
+    if (!state.photo && !state.existingUser) {
       notify("اختَر صورة شخصية أولاً.");
+      return false;
+    }
+
+    if (!state.photo && state.existingUser) {
+      notify("اختَر صورة شخصية لإكمال حسابك.");
       return false;
     }
 
@@ -311,17 +296,13 @@
       return false;
     }
 
-    if (!/^[a-z0-9_]{3,24}$/.test(username)) {
-      notify(
-        "اسم المستخدم يجب أن يحتوي على 3 إلى 24 حرفًا إنجليزيًا أو رقمًا أو _."
-      );
-      return false;
-    }
-
     return true;
   }
 
-  /* ضغط الصورة */
+  /* =====================================================
+     Image processing
+  ===================================================== */
+
   async function compressImage(file) {
     if (!file || !file.type.startsWith("image/")) {
       throw new Error("الملف المختار ليس صورة.");
@@ -337,7 +318,9 @@
     try {
       await new Promise((resolve, reject) => {
         image.onload = resolve;
-        image.onerror = () => reject(new Error("تعذر قراءة الصورة."));
+        image.onerror = () => reject(
+          new Error("تعذر قراءة الصورة.")
+        );
         image.src = url;
       });
 
@@ -349,7 +332,9 @@
 
       const ctx = canvas.getContext("2d");
 
-      if (!ctx) throw new Error("تعذر تجهيز الصورة.");
+      if (!ctx) {
+        throw new Error("تعذر تجهيز الصورة.");
+      }
 
       const cropSize = Math.min(
         image.naturalWidth,
@@ -375,45 +360,25 @@
         canvas.toBlob(resolve, "image/webp", 0.86);
       });
 
-      if (!blob) throw new Error("تعذر تجهيز الصورة.");
+      if (!blob) {
+        throw new Error("تعذر تجهيز الصورة.");
+      }
 
       return blob;
+
     } finally {
       URL.revokeObjectURL(url);
     }
   }
 
-  /* حفظ الصورة مؤقتًا */
-  function readAsDataURL(blob) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
+  /* =====================================================
+     Avatar storage
+  ===================================================== */
 
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = () => reject(
-        new Error("تعذر تجهيز الصورة.")
-      );
-
-      reader.readAsDataURL(blob);
-    });
-  }
-
-  async function saveTemporaryPhoto(blob) {
-    const data = await readAsDataURL(blob);
-    sessionStorage.setItem("hanoon_pending_avatar", data);
-  }
-
-  async function getPendingPhoto() {
-    const data = sessionStorage.getItem("hanoon_pending_avatar");
-
-    if (!data) return null;
-
-    const response = await fetch(data);
-    return await response.blob();
-  }
-
-  /* رفع الصورة */
   async function uploadAvatar(userId, blob) {
-    if (!blob) throw new Error("الصورة الشخصية مطلوبة.");
+    if (!blob) {
+      throw new Error("الصورة الشخصية مطلوبة.");
+    }
 
     const path = `${userId}/avatar.webp`;
 
@@ -430,77 +395,117 @@
     return path;
   }
 
-  /* إنشاء ملف العضو */
-  async function createProfile(user, photoBlob) {
-    const metadata = user.user_metadata || {};
+  /* =====================================================
+     Profile data
+  ===================================================== */
 
-    const name = String(metadata.full_name || "").trim();
-    const username = String(metadata.username || "")
-      .trim()
-      .toLowerCase();
+  function splitList(value) {
+    return String(value || "")
+      .split(/[،,]/)
+      .map(item => item.trim())
+      .filter(Boolean);
+  }
 
-    if (!name || !username) {
-      throw new Error("بيانات الملف الشخصي غير مكتملة.");
+  async function saveProfile(user, photoBlob) {
+    const name = $("#displayName").value.trim();
+
+    const username = state.existingUser
+      ? normalizeUsername(user.user_metadata?.username)
+      : validateUsername($("#registerUsername").value);
+
+    if (!username) {
+      throw new Error("تعذر تحديد اسم المستخدم.");
     }
+
+    const hobbies = splitList($("#hobbies").value);
+    const readingInterests = splitList(
+      $("#readingInterests").value
+    );
+
+    const bio = $("#bio").value.trim();
 
     const avatarPath = await uploadAvatar(user.id, photoBlob);
 
-    const { data, error } = await supabase
-      .from("profiles")
-      .insert({
-        id: user.id,
-        full_name: name,
+    const profileData = {
+      id: user.id,
+      full_name: name,
+      username,
+      avatar_path: avatarPath,
+      bio,
+      hobbies,
+      reading_interests: readingInterests,
+      interests: [],
+      profile_completed: true
+    };
+
+    const { data: existingProfile, error: fetchError } =
+      await supabase
+        .from("profiles")
+        .select("id")
+        .eq("id", user.id)
+        .maybeSingle();
+
+    if (fetchError) throw fetchError;
+
+    let profile;
+
+    if (existingProfile) {
+      const { data, error } = await supabase
+        .from("profiles")
+        .update({
+          full_name: profileData.full_name,
+          username: profileData.username,
+          avatar_path: profileData.avatar_path,
+          bio: profileData.bio,
+          hobbies: profileData.hobbies,
+          reading_interests: profileData.reading_interests,
+          interests: profileData.interests,
+          profile_completed: true,
+          updated_at: new Date().toISOString()
+        })
+        .eq("id", user.id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      profile = data;
+
+    } else {
+      const { data, error } = await supabase
+        .from("profiles")
+        .insert(profileData)
+        .select()
+        .single();
+
+      if (error) throw error;
+      profile = data;
+    }
+
+    /*
+      Keep the account metadata synchronized with the profile.
+      Authorization must still rely on database policies, not metadata.
+    */
+    const { error: metadataError } = await supabase.auth.updateUser({
+      data: {
         username,
-        avatar_path: avatarPath,
-        bio: String(metadata.bio || ""),
-        hobbies: Array.isArray(metadata.hobbies)
-          ? metadata.hobbies
-          : [],
-        reading_interests: Array.isArray(metadata.reading_interests)
-          ? metadata.reading_interests
-          : [],
-        interests: [],
-        profile_completed: true
-      })
-      .select()
-      .single();
+        full_name: name,
+        hobbies,
+        reading_interests: readingInterests,
+        bio
+      }
+    });
 
-    if (error) throw error;
-
-    return data;
-  }
-
-  /* جلب الملف أو استكمال إنشائه */
-  async function getOrCreateProfile(user) {
-    const { data: existing, error } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user.id)
-      .maybeSingle();
-
-    if (error) throw error;
-    if (existing) return existing;
-
-    let photoBlob = state.compressedPhoto;
-
-    if (!photoBlob) {
-      photoBlob = await getPendingPhoto();
+    if (metadataError) {
+      console.warn("Profile metadata sync:", metadataError.message);
     }
-
-    if (!photoBlob) {
-      throw new Error(
-        "حسابك موجود، لكن ملفك الشخصي يحتاج صورة. أعد اختيار الصورة لإكمال الحساب."
-      );
-    }
-
-    const profile = await createProfile(user, photoBlob);
-
-    sessionStorage.removeItem("hanoon_pending_avatar");
 
     return profile;
   }
 
-  /* حماية النصوص */
+  /* =====================================================
+     Safe HTML
+  ===================================================== */
+
   function escapeHTML(value) {
     return String(value || "").replace(/[&<>"']/g, char => ({
       "&": "&amp;",
@@ -511,11 +516,15 @@
     })[char]);
   }
 
-  /* بطاقة الهوية ورمز QR */
+  /* =====================================================
+     Member identity and QR
+  ===================================================== */
+
   function showIdentity(profile) {
     $("#hanoonIdentity")?.remove();
 
     const overlay = document.createElement("div");
+
     overlay.id = "hanoonIdentity";
 
     overlay.style.cssText = `
@@ -525,14 +534,15 @@
       display:grid;
       place-items:center;
       padding:20px;
-      background:rgba(5,8,18,.94);
+      background:rgba(5,8,18,.96);
       backdrop-filter:blur(12px);
       font-family:Cairo,sans-serif;
       overflow-y:auto;
     `;
 
     const avatarURL = profile.avatar_path
-      ? supabase.storage.from("avatars")
+      ? supabase.storage
+          .from("avatars")
           .getPublicUrl(profile.avatar_path).data.publicUrl
       : "";
 
@@ -582,7 +592,7 @@
         ">
           <small style="color:#A9AEC2">رقم عضويتك</small>
           <h2 style="letter-spacing:2px;color:#D5B36C">
-            ${escapeHTML(profile.member_code)}
+            ${escapeHTML(profile.member_code || "جارٍ تجهيز الرقم")}
           </h2>
         </div>
 
@@ -621,9 +631,13 @@
     ).href;
 
     function createQR() {
-      if (!window.QRCode) return;
+      const target = $("#hanoonQR");
 
-      new QRCode($("#hanoonQR"), {
+      if (!window.QRCode || !target) return;
+
+      target.innerHTML = "";
+
+      new QRCode(target, {
         text: profileURL,
         width: 150,
         height: 150,
@@ -636,19 +650,19 @@
     if (window.QRCode) {
       createQR();
     } else {
-      const qr = document.createElement("script");
+      const script = document.createElement("script");
 
-      qr.src =
+      script.src =
         "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";
 
-      qr.onload = createQR;
+      script.onload = createQR;
 
-      qr.onerror = () => {
+      script.onerror = () => {
         $("#hanoonQR").textContent =
           "تعذر تحميل رمز QR حاليًا.";
       };
 
-      document.head.appendChild(qr);
+      document.head.appendChild(script);
     }
 
     $("#hanoonContinue").addEventListener("click", () => {
@@ -656,123 +670,93 @@
     });
   }
 
-  /* إدخال كود SMS */
-  async function requestVerificationCode() {
-    const code = window.prompt(
-      "أدخل كود التحقق الذي وصلك في رسالة SMS:"
-    );
+  /* =====================================================
+     Username availability
+  ===================================================== */
 
-    if (code === null) {
-      throw new Error(
-        "تم إلغاء التحقق. يمكنك تسجيل الدخول بعد إكمال التحقق من رقم الهاتف."
-      );
+  async function checkUsernameAvailable(username) {
+    const { data, error } = await supabase
+      .from("member_directory")
+      .select("id")
+      .eq("username", username)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    if (data) {
+      throw new Error("اسم المستخدم مستخدم بالفعل. اختر اسمًا آخر.");
     }
-
-    const token = code.trim();
-
-    if (!/^\d{6}$/.test(token)) {
-      throw new Error("كود التحقق يجب أن يتكون من 6 أرقام.");
-    }
-
-    return token;
   }
 
-  /* إنشاء الحساب */
+  /* =====================================================
+     Registration
+  ===================================================== */
+
   async function register(event) {
     event.preventDefault();
 
     if (state.busy) return;
 
     const button = $("#createAccountButton");
-    state.busy = true;
 
+    state.busy = true;
     setBusy(button, true, "جارٍ إنشاء الحساب...");
 
     try {
-      if (!validateStepOne() || !validateStepTwo()) return;
+      if (!validateStepTwo()) return;
 
-      const phone = normalizeEgyptianPhone(
-        $("#registerPhone").value
-      );
+      const photoBlob = await compressImage(state.photo);
 
-      const password = $("#registerPassword").value;
-      const name = $("#displayName").value.trim();
+      state.compressedPhoto = photoBlob;
 
-      const username = $("#username").value
-        .trim()
-        .toLowerCase();
+      let user = state.existingUser;
 
-      const hobbies = $("#hobbies").value
-        .split(/[،,]/)
-        .map(value => value.trim())
-        .filter(Boolean);
+      if (!user) {
+        if (!validateStepOne()) {
+          goToStep(1);
+          return;
+        }
 
-      const readingInterests = $("#readingInterests").value
-        .split(/[،,]/)
-        .map(value => value.trim())
-        .filter(Boolean);
+        const username = validateUsername(
+          $("#registerUsername").value
+        );
 
-      const bio = $("#bio").value.trim();
+        const password = $("#registerPassword").value;
 
-      state.compressedPhoto = await compressImage(state.photo);
+        await checkUsernameAvailable(username);
 
-      await saveTemporaryPhoto(state.compressedPhoto);
-
-      const { data, error } = await supabase.auth.signUp({
-        phone,
-        password,
-        options: {
-          data: {
-            full_name: name,
-            username,
-            hobbies,
-            reading_interests: readingInterests,
-            bio
+        const { data, error } = await supabase.auth.signUp({
+          email: internalEmailForUsername(username),
+          password,
+          options: {
+            data: {
+              username,
+              full_name: $("#displayName").value.trim()
+            }
           }
-        }
-      });
+        });
 
-      if (error) throw error;
+        if (error) throw error;
 
-      if (!data.user) {
-        throw new Error("لم يتم إنشاء الحساب.");
-      }
-
-      let user = data.user;
-
-      // إذا كان تأكيد الهاتف مفعّلًا، نتحقق من كود SMS
-      if (!data.session) {
-        notify("تم إرسال كود التحقق إلى هاتفك.", "success");
-
-        const token = await requestVerificationCode();
-
-        const { data: verified, error: verifyError } =
-          await supabase.auth.verifyOtp({
-            phone,
-            token,
-            type: "sms"
-          });
-
-        if (verifyError) throw verifyError;
-
-        if (!verified.user || !verified.session) {
-          throw new Error("لم يكتمل التحقق من رقم الهاتف.");
+        if (!data.user) {
+          throw new Error("لم يتم إنشاء الحساب.");
         }
 
-        user = verified.user;
+        if (!data.session) {
+          throw new Error(
+            "الحساب أُنشئ لكن تسجيل الدخول التلقائي لم يكتمل. افتح إعدادات Supabase ثم أوقف Confirm email، وبعدها حاول مرة أخرى."
+          );
+        }
+
+        user = data.user;
       }
 
-      const profile = await createProfile(
-        user,
-        state.compressedPhoto
-      );
-
-      sessionStorage.removeItem("hanoon_pending_avatar");
+      const profile = await saveProfile(user, photoBlob);
 
       showIdentity(profile);
 
     } catch (error) {
-      console.error("Registration error:", error);
+      console.error("HANOON registration error:", error);
       notify(errorMessage(error));
 
     } finally {
@@ -781,20 +765,55 @@
     }
   }
 
-  /* تسجيل الدخول برقم الهاتف وكلمة المرور */
+  /* =====================================================
+     Resume incomplete profile
+  ===================================================== */
+
+  function resumeProfile(user) {
+    state.existingUser = user;
+
+    const metadata = user.user_metadata || {};
+
+    $("#displayName").value = metadata.full_name || "";
+
+    $("#hobbies").value = Array.isArray(metadata.hobbies)
+      ? metadata.hobbies.join("، ")
+      : "";
+
+    $("#readingInterests").value =
+      Array.isArray(metadata.reading_interests)
+        ? metadata.reading_interests.join("، ")
+        : "";
+
+    $("#bio").value = metadata.bio || "";
+
+    showRegister();
+
+    goToStep(2);
+
+    notify(
+      "حسابك موجود. أكمل صورتك وبيانات ملفك الشخصي.",
+      "success"
+    );
+  }
+
+  /* =====================================================
+     Login
+  ===================================================== */
+
   async function login(event) {
     event.preventDefault();
 
     if (state.busy) return;
 
     const button = $("#loginButton");
-    state.busy = true;
 
+    state.busy = true;
     setBusy(button, true, "جارٍ تسجيل الدخول...");
 
     try {
-      const phone = normalizeEgyptianPhone(
-        $("#loginPhone").value
+      const username = validateUsername(
+        $("#loginUsername").value
       );
 
       const password = $("#loginPassword").value;
@@ -805,24 +824,30 @@
 
       const { data, error } = await supabase.auth
         .signInWithPassword({
-          phone,
+          email: internalEmailForUsername(username),
           password
         });
 
       if (error) throw error;
 
-      const profile = await getOrCreateProfile(data.user);
+      const { data: profile, error: profileError } =
+        await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", data.user.id)
+          .maybeSingle();
 
-      if (!profile.profile_completed) {
-        throw new Error(
-          "يجب إكمال بيانات ملفك الشخصي أولاً."
-        );
+      if (profileError) throw profileError;
+
+      if (!profile || !profile.profile_completed) {
+        resumeProfile(data.user);
+        return;
       }
 
       window.location.href = "profile.html";
 
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("HANOON login error:", error);
       notify(errorMessage(error));
 
     } finally {
@@ -831,93 +856,48 @@
     }
   }
 
-  /* استعادة كلمة المرور عن طريق الهاتف */
-  async function resetPassword() {
-    let phone;
+  /* =====================================================
+     Events
+  ===================================================== */
 
-    try {
-      phone = normalizeEgyptianPhone($("#loginPhone").value);
-    } catch (error) {
-      notify("اكتب رقم هاتفك المصري أولاً.");
-      return;
-    }
-
-    const button = $("#forgotPassword");
-
-    button.style.pointerEvents = "none";
-    button.style.opacity = ".6";
-
-    try {
-      const { error } = await supabase.auth.signInWithOtp({
-        phone,
-        options: {
-          shouldCreateUser: false
-        }
-      });
-
-      if (error) throw error;
-
-      const token = await requestVerificationCode();
-
-      const { error: verifyError } = await supabase.auth.verifyOtp({
-        phone,
-        token,
-        type: "sms"
-      });
-
-      if (verifyError) throw verifyError;
-
-      const newPassword = window.prompt(
-        "تم التحقق من رقمك. أدخل كلمة المرور الجديدة (8 أحرف على الأقل):"
-      );
-
-      if (newPassword === null) {
-        notify(
-          "تم التحقق من رقمك. يمكنك تغيير كلمة المرور لاحقًا من إعدادات الحساب.",
-          "success"
-        );
-        return;
-      }
-
-      if (newPassword.length < 8) {
-        throw new Error(
-          "كلمة المرور الجديدة يجب أن تكون 8 أحرف على الأقل."
-        );
-      }
-
-      const { error: updateError } = await supabase.auth.updateUser({
-        password: newPassword
-      });
-
-      if (updateError) throw updateError;
-
-      notify("تم تغيير كلمة المرور بنجاح.", "success");
-
-    } catch (error) {
-      console.error("Password recovery error:", error);
-      notify(errorMessage(error));
-
-    } finally {
-      button.style.pointerEvents = "";
-      button.style.opacity = "";
-    }
-  }
-
-  /* ربط الأزرار */
   function bindEvents() {
     elements.loginTab.addEventListener("click", showLogin);
     elements.registerTab.addEventListener("click", showRegister);
 
-    $("#nextStep1").addEventListener("click", () => {
-      if (validateStepOne()) goToStep(2);
+    $("#nextStep1").addEventListener("click", async () => {
+      if (!validateStepOne()) return;
+
+      try {
+        const username = validateUsername(
+          $("#registerUsername").value
+        );
+
+        await checkUsernameAvailable(username);
+
+        goToStep(2);
+
+      } catch (error) {
+        notify(errorMessage(error));
+      }
     });
 
     $("#nextStep2").addEventListener("click", () => {
-      if (validateStepTwo()) goToStep(3);
+      if (validateStepTwo()) {
+        goToStep(3);
+      }
     });
 
-    $("#backStep2").addEventListener("click", () => goToStep(1));
-    $("#backStep3").addEventListener("click", () => goToStep(2));
+    $("#backStep2").addEventListener("click", () => {
+      if (state.existingUser) {
+        showLogin();
+      } else {
+        goToStep(1);
+      }
+    });
+
+    $("#backStep3").addEventListener("click", () => {
+      goToStep(2);
+    });
 
     $("#profilePhoto").addEventListener("change", event => {
       const file = event.target.files?.[0];
@@ -944,25 +924,25 @@
       preview.innerHTML = "";
 
       const image = document.createElement("img");
+
       image.src = url;
       image.alt = "معاينة الصورة الشخصية";
 
       image.onload = () => URL.revokeObjectURL(url);
 
       preview.appendChild(image);
+
       clearMessage();
     });
 
     elements.loginForm.addEventListener("submit", login);
     elements.registerForm.addEventListener("submit", register);
-
-    $("#forgotPassword").addEventListener("click", event => {
-      event.preventDefault();
-      resetPassword();
-    });
   }
 
-  /* تشغيل الصفحة */
+  /* =====================================================
+     Initialization
+  ===================================================== */
+
   async function init() {
     bindEvents();
 
@@ -970,29 +950,37 @@
 
     if (error) throw error;
 
-    if (data.session) {
-      const user = data.session.user;
+    if (!data.session) return;
 
-      const { data: profile, error: profileError } =
-        await supabase
-          .from("profiles")
-          .select("id,profile_completed")
-          .eq("id", user.id)
-          .maybeSingle();
+    const user = data.session.user;
 
-      if (profileError) throw profileError;
+    const { data: profile, error: profileError } =
+      await supabase
+        .from("profiles")
+        .select("id,profile_completed")
+        .eq("id", user.id)
+        .maybeSingle();
 
-      if (profile?.profile_completed) {
-        window.location.href = "profile.html";
-      }
+    if (profileError) throw profileError;
+
+    if (profile?.profile_completed) {
+      window.location.href = "profile.html";
+      return;
     }
+
+    resumeProfile(user);
   }
+
+  /* =====================================================
+     Start
+  ===================================================== */
 
   try {
     supabase = await waitForSupabase();
+
     await init();
 
-    console.info("HANOON: Phone authentication is ready.");
+    console.info("HANOON: Username authentication is ready.");
 
   } catch (error) {
     console.error("HANOON initialization error:", error);
