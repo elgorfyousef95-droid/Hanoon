@@ -41,7 +41,7 @@
     clearTimeout(notify.timer);
     notify.timer = setTimeout(() => {
       ui.notice.classList.add("hidden");
-    }, 4500);
+    }, 5000);
   }
 
   function showEmpty(container, message) {
@@ -60,11 +60,9 @@
 
     if (/^https?:\/\//i.test(path)) return path;
 
-    const { data } = state.db.storage
+    return state.db.storage
       .from("avatars")
-      .getPublicUrl(path);
-
-    return data?.publicUrl || "";
+      .getPublicUrl(path).data?.publicUrl || "";
   }
 
   function setAvatar(container, member) {
@@ -108,21 +106,15 @@
   }
 
   function getOtherUserId(conversation) {
-    return conversation.members?.find(
-      member => member.user_id !== state.user.id
-    )?.user_id;
-  }
+    const ids = String(conversation.direct_key || "").split(":");
 
-  function getFriendId(request) {
-    return request.sender_id === state.user.id
-      ? request.receiver_id
-      : request.sender_id;
+    return ids.find(id => id && id !== state.user.id) || null;
   }
 
   async function loadAcceptedFriends() {
     const { data, error } = await state.db
       .from("friend_requests")
-      .select("sender_id,receiver_id,status")
+      .select("sender_id,receiver_id")
       .eq("status", "accepted")
       .or(
         `sender_id.eq.${state.user.id},receiver_id.eq.${state.user.id}`
@@ -130,16 +122,23 @@
 
     if (error) throw error;
 
-    return [...new Set((data || []).map(getFriendId))];
+    return [...new Set(
+      (data || []).map(item =>
+        item.sender_id === state.user.id
+          ? item.receiver_id
+          : item.sender_id
+      )
+    )];
   }
 
+  // تحميل المحادثات من direct_key دون محاولة قراءة عضوية الصديق.
   async function loadConversations() {
     showEmpty(ui.list, "جارٍ تحميل المحادثات...");
 
     const { data: memberships, error: membershipError } =
       await state.db
         .from("conversation_members")
-        .select("conversation_id,user_id,last_read_at")
+        .select("conversation_id")
         .eq("user_id", state.user.id);
 
     if (membershipError) throw membershipError;
@@ -164,28 +163,12 @@
 
     if (conversationError) throw conversationError;
 
-    const directConversations = conversations || [];
-
-    if (!directConversations.length) {
-      state.conversations = [];
-      renderConversations();
-      return;
-    }
-
-    const conversationIds = directConversations.map(item => item.id);
-
-    const { data: allMembers, error: allMembersError } =
-      await state.db
-        .from("conversation_members")
-        .select("conversation_id,user_id")
-        .in("conversation_id", conversationIds);
-
-    if (allMembersError) throw allMembersError;
+    const acceptedIds = new Set(await loadAcceptedFriends());
 
     const otherIds = [...new Set(
-      (allMembers || [])
-        .map(item => item.user_id)
-        .filter(id => id !== state.user.id)
+      (conversations || [])
+        .map(getOtherUserId)
+        .filter(id => id && acceptedIds.has(id))
     )];
 
     let profiles = [];
@@ -205,35 +188,22 @@
       profiles.map(profile => [profile.id, profile])
     );
 
-    const membersMap = new Map();
-
-    (allMembers || []).forEach(item => {
-      if (!membersMap.has(item.conversation_id)) {
-        membersMap.set(item.conversation_id, []);
-      }
-
-      membersMap.get(item.conversation_id).push(item);
-    });
-
-    const acceptedIds = new Set(await loadAcceptedFriends());
-
-    state.conversations = directConversations
+    state.conversations = (conversations || [])
       .map(conversation => {
-        const members = membersMap.get(conversation.id) || [];
+        const friendId = getOtherUserId(conversation);
 
-        const other = members.find(
-          item => item.user_id !== state.user.id
-        );
+        if (!friendId || !acceptedIds.has(friendId)) return null;
 
-        if (!other || !acceptedIds.has(other.user_id)) return null;
+        const friend = profileMap.get(friendId);
+
+        if (!friend) return null;
 
         return {
           ...conversation,
-          members,
-          friend: profileMap.get(other.user_id)
+          friend
         };
       })
-      .filter(item => item?.friend);
+      .filter(Boolean);
 
     renderConversations();
   }
@@ -258,7 +228,6 @@
 
   function renderConversations() {
     ui.list.replaceChildren();
-
     ui.count.textContent = String(state.conversations.length);
 
     const conversations = filteredConversations();
@@ -294,7 +263,7 @@
 
       const last = document.createElement("div");
       last.className = "conversation-last";
-      last.textContent = "افتح المحادثة لعرض الرسائل";
+      last.textContent = "اضغط لفتح المحادثة";
 
       info.append(name, last);
 
@@ -312,6 +281,7 @@
     });
   }
 
+  // إنشاء المحادثة دون طلب SELECT قبل إضافة الأعضاء.
   async function getOrCreateConversation(friend) {
     const ids = [state.user.id, friend.id].sort();
     const directKey = ids.join(":");
@@ -326,61 +296,78 @@
     if (findError) throw findError;
 
     if (existing) {
-      const { data: memberships, error } = await state.db
-        .from("conversation_members")
-        .select("conversation_id,user_id")
-        .eq("conversation_id", existing.id);
+      const { data: ownMembership, error: ownError } =
+        await state.db
+          .from("conversation_members")
+          .select("conversation_id")
+          .eq("conversation_id", existing.id)
+          .eq("user_id", state.user.id)
+          .maybeSingle();
 
-      if (error) throw error;
+      if (ownError) throw ownError;
 
-      const memberIds = new Set(
-        (memberships || []).map(item => item.user_id)
-      );
-
-      if (
-        !memberIds.has(state.user.id) ||
-        !memberIds.has(friend.id)
-      ) {
-        throw new Error("بيانات عضوية المحادثة غير مكتملة.");
+      if (!ownMembership) {
+        throw new Error("المحادثة موجودة لكن عضويتك غير مكتملة. حدّث الصفحة وحاول مرة أخرى.");
       }
 
       return {
         ...existing,
-        members: memberships,
         friend
       };
     }
 
-    const { data: created, error: createError } = await state.db
+    // مهم: لا نستخدم select هنا؛ لأن سياسة القراءة لا تسمح
+    // بقراءة المحادثة قبل إضافة عضوية المستخدم إليها.
+    const { error: createError } = await state.db
       .from("conversations")
       .insert({
         conversation_type: "direct",
         direct_key: directKey,
         created_by: state.user.id
-      })
-      .select("id,title,conversation_type,direct_key,updated_at")
-      .single();
+      });
 
-    if (createError) {
-      // قد يكون المستخدم الآخر أنشأ المحادثة في نفس اللحظة.
-      if (createError.code === "23505") {
-        const { data: retry, error: retryError } = await state.db
-          .from("conversations")
-          .select("id,title,conversation_type,direct_key,updated_at")
-          .eq("conversation_type", "direct")
-          .eq("direct_key", directKey)
-          .single();
-
-        if (retryError) throw retryError;
-
-        return getConversationMembers(retry, friend);
-      }
-
+    if (createError && createError.code !== "23505") {
       throw createError;
     }
 
-    const { data: insertedMembers, error: membersError } =
+    // ننتظر ظهور المحادثة إذا أنشأها الطرف الآخر في نفس اللحظة.
+    let created = null;
+
+    for (let attempt = 0; attempt < 6; attempt++) {
+      const { data, error } = await state.db
+        .from("conversations")
+        .select("id,title,conversation_type,direct_key,updated_at")
+        .eq("conversation_type", "direct")
+        .eq("direct_key", directKey)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (data) {
+        created = data;
+        break;
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 300));
+    }
+
+    if (!created) {
+      throw new Error("تعذر العثور على المحادثة بعد إنشائها. حاول تحديث الصفحة.");
+    }
+
+    // إذا كانت عضويتي موجودة بالفعل فلا نكرر الإضافة.
+    const { data: ownMembership, error: ownError } =
       await state.db
+        .from("conversation_members")
+        .select("conversation_id")
+        .eq("conversation_id", created.id)
+        .eq("user_id", state.user.id)
+        .maybeSingle();
+
+    if (ownError) throw ownError;
+
+    if (!ownMembership) {
+      const { error: membersError } = await state.db
         .from("conversation_members")
         .insert([
           {
@@ -393,29 +380,18 @@
             user_id: friend.id,
             member_role: "member"
           }
-        ])
-        .select("conversation_id,user_id");
+        ]);
 
-    if (membersError) throw membersError;
+      if (membersError) {
+        // قد تكون العضوية أُنشئت من الطرف الآخر بالتزامن.
+        if (membersError.code !== "23505") {
+          throw membersError;
+        }
+      }
+    }
 
     return {
       ...created,
-      members: insertedMembers || [],
-      friend
-    };
-  }
-
-  async function getConversationMembers(conversation, friend) {
-    const { data, error } = await state.db
-      .from("conversation_members")
-      .select("conversation_id,user_id")
-      .eq("conversation_id", conversation.id);
-
-    if (error) throw error;
-
-    return {
-      ...conversation,
-      members: data || [],
       friend
     };
   }
@@ -465,6 +441,8 @@
     article.classList.add(
       message.sender_id === state.user.id ? "mine" : "theirs"
     );
+
+    article.dataset.messageId = message.id;
 
     const body = document.createElement("div");
     body.className = "message-body";
@@ -531,19 +509,16 @@
             payload.new.deleted_at
           ) return;
 
-          const existing = ui.messages.querySelector(
+          const exists = ui.messages.querySelector(
             `[data-message-id="${CSS.escape(payload.new.id)}"]`
           );
 
-          if (existing) return;
+          if (exists) return;
 
           const emptyState = ui.messages.querySelector(".chat-empty");
           if (emptyState) emptyState.remove();
 
-          const messageElement = renderMessage(payload.new);
-          messageElement.dataset.messageId = payload.new.id;
-
-          ui.messages.appendChild(messageElement);
+          ui.messages.appendChild(renderMessage(payload.new));
           scrollMessagesToBottom();
 
           loadConversations().catch(error => {
@@ -587,22 +562,24 @@
       const emptyState = ui.messages.querySelector(".chat-empty");
       if (emptyState) emptyState.remove();
 
-      const existing = ui.messages.querySelector(
+      const exists = ui.messages.querySelector(
         `[data-message-id="${CSS.escape(data.id)}"]`
       );
 
-      if (!existing) {
-        const element = renderMessage(data);
-        element.dataset.messageId = data.id;
-        ui.messages.appendChild(element);
+      if (!exists) {
+        ui.messages.appendChild(renderMessage(data));
       }
 
       scrollMessagesToBottom();
 
-      await state.db
+      const { error: updateError } = await state.db
         .from("conversations")
         .update({ updated_at: new Date().toISOString() })
         .eq("id", state.activeConversation.id);
+
+      if (updateError) {
+        console.warn("Conversation timestamp:", updateError);
+      }
 
       await loadConversations();
 
@@ -626,14 +603,15 @@
       return;
     }
 
-    const { data: friendship, error: friendshipError } = await state.db
-      .from("friend_requests")
-      .select("id,status,sender_id,receiver_id")
-      .eq("status", "accepted")
-      .or(
-        `and(sender_id.eq.${state.user.id},receiver_id.eq.${friendId}),and(sender_id.eq.${friendId},receiver_id.eq.${state.user.id})`
-      )
-      .maybeSingle();
+    const { data: friendship, error: friendshipError } =
+      await state.db
+        .from("friend_requests")
+        .select("id,status,sender_id,receiver_id")
+        .eq("status", "accepted")
+        .or(
+          `and(sender_id.eq.${state.user.id},receiver_id.eq.${friendId}),and(sender_id.eq.${friendId},receiver_id.eq.${state.user.id})`
+        )
+        .maybeSingle();
 
     if (friendshipError) throw friendshipError;
 
@@ -690,6 +668,7 @@
         notify("تم تحديث المحادثات.", "success");
 
       } catch (error) {
+        console.error("HANOON refresh:", error);
         notify(error.message || "تعذر تحديث المحادثات.", "error");
       } finally {
         ui.refresh.disabled = false;
@@ -768,7 +747,6 @@
       ui.app.classList.remove("hidden");
 
       setComposerEnabled(false);
-
       bindEvents();
 
       await loadConversations();
@@ -777,8 +755,8 @@
     } catch (error) {
       console.error("HANOON messages:", error);
 
-      ui.auth.classList.remove("hidden");
-      ui.app.classList.add("hidden");
+      ui.auth.classList.add("hidden");
+      ui.app.classList.remove("hidden");
 
       notify(error.message || "تعذر تشغيل المراسلات.", "error");
     }
@@ -800,6 +778,7 @@
       "hanoon:supabase-error",
       event => {
         ui.auth.classList.remove("hidden");
+        ui.app.classList.add("hidden");
         ui.auth.textContent =
           event.detail?.message || "تعذر الاتصال بقاعدة البيانات.";
       },
