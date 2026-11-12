@@ -3,9 +3,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#0C1020">
 
   <title>HANOON | المعرفة تصنع الفرق</title>
@@ -31,7 +29,6 @@
   <link rel="stylesheet" href="css/circular-navigation.css">
   <link rel="stylesheet" href="css/responsive-system.css">
 
-  <!-- إضافات تصميم إشعار المسابقة فقط -->
   <style>
     .competition-notice {
       position: fixed;
@@ -45,28 +42,22 @@
       padding: 13px 15px;
       direction: rtl;
       color: #fff9e9;
-      background: linear-gradient(
-        135deg,
-        rgba(25, 31, 53, .97),
-        rgba(48, 39, 67, .96)
-      );
-      border: 1px solid rgba(226, 190, 119, .58);
+      background: linear-gradient(135deg,rgba(25,31,53,.97),rgba(48,39,67,.96));
+      border: 1px solid rgba(226,190,119,.58);
       border-radius: 19px;
-      box-shadow:
-        0 18px 55px rgba(0, 0, 0, .38),
-        0 0 28px rgba(216, 181, 109, .12);
+      box-shadow: 0 18px 55px rgba(0,0,0,.38),0 0 28px rgba(216,181,109,.12);
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
-      transform: translate(-50%, -22px) scale(.97);
+      transform: translate(-50%,-22px) scale(.97);
     }
 
     .competition-notice.is-visible {
       visibility: visible;
       pointer-events: auto;
-      animation: competitionNoticeIn .55s cubic-bezier(.2, .8, .2, 1) forwards;
+      animation: competitionNoticeIn .55s cubic-bezier(.2,.8,.2,1) forwards;
     }
 
     .competition-notice.is-leaving {
@@ -80,7 +71,7 @@
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid #e5c27d;
-      box-shadow: 0 0 0 4px rgba(229, 194, 125, .12);
+      box-shadow: 0 0 0 4px rgba(229,194,125,.12);
       background: #24243a;
     }
 
@@ -113,7 +104,7 @@
     }
 
     .competition-notice-copy small {
-      color: rgba(255, 255, 255, .72);
+      color: rgba(255,255,255,.72);
       font-size: 10px;
     }
 
@@ -126,27 +117,27 @@
     @keyframes competitionNoticeIn {
       from {
         opacity: 0;
-        transform: translate(-50%, -22px) scale(.97);
+        transform: translate(-50%,-22px) scale(.97);
       }
       to {
         opacity: 1;
-        transform: translate(-50%, 0) scale(1);
+        transform: translate(-50%,0) scale(1);
       }
     }
 
     @keyframes competitionNoticeOut {
       from {
         opacity: 1;
-        transform: translate(-50%, 0) scale(1);
+        transform: translate(-50%,0) scale(1);
       }
       to {
         opacity: 0;
-        transform: translate(-50%, -16px) scale(.98);
+        transform: translate(-50%,-16px) scale(.98);
         visibility: hidden;
       }
     }
 
-    @media (max-width: 380px) {
+    @media(max-width:380px) {
       .competition-notice {
         gap: 10px;
         padding: 11px 12px;
@@ -163,7 +154,99 @@
       }
     }
 
-    @media (prefers-reduced-motion: reduce) {
+    /* أزرار الحساب في رأس الصفحة */
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .account-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 0 17px;
+      border: 1px solid rgba(80,160,255,.45);
+      border-radius: 13px;
+      color: #fff !important;
+      background: linear-gradient(135deg,#3194f4,#1768cb) !important;
+      box-shadow: 0 7px 22px rgba(31,119,218,.24);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 900;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .header-profile-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      max-width: 190px;
+      min-height: 42px;
+      padding: 4px 10px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 30px;
+      background: rgba(255,255,255,.07);
+      text-decoration: none;
+    }
+
+    .header-profile-link[hidden],
+    .account-button[hidden] {
+      display: none !important;
+    }
+
+    #headerProfileInitial,
+    #headerProfileImage {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      object-fit: cover;
+      color: #fff;
+      background: linear-gradient(135deg,#397fdb,#7958cf);
+      font-weight: 900;
+    }
+
+    #headerProfileImage[hidden],
+    #headerProfileInitial[hidden] {
+      display: none !important;
+    }
+
+    .header-profile-link strong {
+      max-width: 125px;
+      overflow: hidden;
+      color: var(--text-primary,#fff);
+      font-size: 12px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    @media(max-width:600px) {
+      .header-controls {
+        gap: 6px;
+      }
+
+      .account-button {
+        min-height: 36px;
+        padding: 0 11px;
+        font-size: 10px;
+      }
+
+      .header-profile-link {
+        max-width: 125px;
+      }
+
+      .header-profile-link strong {
+        max-width: 72px;
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce) {
       .competition-notice.is-visible,
       .competition-notice.is-leaving {
         animation-duration: .01ms;
@@ -175,47 +258,35 @@
 <body>
 
   <!-- شاشة البداية -->
-  
-<div class="splash-screen" id="splashScreen">
-  <div class="splash-overlay"></div>
+  <div class="splash-screen" id="splashScreen">
+    <div class="splash-overlay"></div>
 
-  <div class="splash-content">
+    <div class="splash-content">
+      <img src="assets/logo/logo.svg" alt="شعار HANOON" class="splash-logo">
+      <h1>HANOON</h1>
+      <div class="splash-line"></div>
+      <h2>المعرفة تصنع الفرق</h2>
 
-    <img
-      src="assets/logo/logo.svg"
-      alt="شعار HANOON"
-      class="splash-logo"
-    >
+      <p class="splash-motto">
+        اقرأ .. تعلم .. اكتشف .. وحقق أحلامك
+      </p>
 
-    <h1>HANOON</h1>
+      <p class="splash-quote">
+        كل صفحة تقرؤها تقرّبك من حلمك،
+        وكل معرفة تكتسبها تصنع مستقبلك.
+      </p>
 
-    <div class="splash-line"></div>
+      <div class="splash-owner">YOUSEF ELGORF</div>
 
-    <h2>المعرفة تصنع الفرق</h2>
+      <div class="splash-loading">
+        <span></span>
+      </div>
 
-    <p class="splash-motto">
-      اقرأ .. تعلم .. اكتشف .. وحقق أحلامك
-    </p>
-
-    <p class="splash-quote">
-      كل صفحة تقرؤها تقرّبك من حلمك،
-      وكل معرفة تكتسبها تصنع مستقبلك.
-    </p>
-
-    <div class="splash-owner">
-      YOUSEF ELGORF
+      <small>رحلتك نحو المعرفة تبدأ الآن</small>
     </div>
-
-    <div class="splash-loading">
-      <span></span>
-    </div>
-
-    <small>رحلتك نحو المعرفة تبدأ الآن</small>
-
   </div>
-</div>
 
-  <!-- إضافة إشعار المسابقة -->
+  <!-- إشعار المسابقة -->
   <aside
     class="competition-notice"
     id="competitionNotice"
@@ -230,99 +301,125 @@
     >
 
     <div class="competition-notice-copy">
-      <span class="competition-notice-kicker">
-        موعد التحدي يقترب
-      </span>
-
+      <span class="competition-notice-kicker">موعد التحدي يقترب</span>
       <strong>جهّز نفسك للمسابقة!</strong>
-
-      <span class="competition-notice-date">
-        11 يناير 2027
-      </span>
-
-      <small id="competitionCountdown">
-        استعد للانطلاق
-      </small>
+      <span class="competition-notice-date">11 يناير 2027</span>
+      <small id="competitionCountdown">استعد للانطلاق</small>
     </div>
 
     <span class="competition-notice-mark" aria-hidden="true">✦</span>
   </aside>
 
   <!-- رأس الموقع -->
-  
-<header class="site-header" id="siteHeader">
+  <header class="site-header" id="siteHeader">
 
-  <a class="brand" href="index.html">
-    <img src="assets/logo/logo.svg" alt="HANOON">
-    <span>
-      <strong>HANOON</strong>
-      <small>المعرفة تصنع الفرق</small>
-    </span>
-  </a>
-
-  <button class="menu-toggle" id="menuToggle"
-    aria-label="فتح القائمة" aria-expanded="false" type="button">
-    <span></span><span></span><span></span>
-  </button>
-
-  <nav class="main-navigation" id="mainNavigation">
-    <a class="active" href="index.html">الرئيسية</a>
-    <a href="pages/library.html">المكتبة</a>
-    <a href="pages/articles.html">المقالات</a>
-    <a href="pages/stories.html">القصص</a>
-    <a href="pages/poetry.html">الشعر والأدب</a>
-    <a href="pages/research.html">الأبحاث</a>
-    <a href="pages/learning.html">التعلم</a>
-    <a href="pages/exams.html">الاختبارات</a>
-    <a href="pages/achievements.html">إنجازاتي</a>
-    <a href="pages/community.html">المجتمع</a>
-  </nav>
-
-  <div class="header-controls">
-
-    <button id="searchToggle" class="icon-button"
-      aria-label="البحث" type="button">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <circle cx="10.8" cy="10.8" r="6.8"></circle>
-        <path d="m16 16 5 5"></path>
-      </svg>
-    </button>
-
-    <button id="themeToggle" class="icon-button"
-      aria-label="تغيير المظهر" type="button">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <circle cx="12" cy="12" r="4"></circle>
-        <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path>
-      </svg>
-    </button>
-
-    <a class="header-profile-link"
-      id="headerProfileLink"
-      href="pages/profile.html"
-      aria-label="ملفي الشخصي"
-      title="ملفي الشخصي">
-      <span id="headerProfileInitial">م</span>
-      <img id="headerProfileImage" src="" alt="صورة المستخدم" hidden>
+    <a class="brand" href="index.html">
+      <img src="assets/logo/logo.svg" alt="HANOON">
+      <span>
+        <strong>HANOON</strong>
+        <small>المعرفة تصنع الفرق</small>
+      </span>
     </a>
 
-    <a class="account-button" href="pages/auth.html" id="accountButton">
-      تسجيل الدخول
-    </a>
+    <button
+      class="menu-toggle"
+      id="menuToggle"
+      aria-label="فتح القائمة"
+      aria-expanded="false"
+      type="button"
+    >
+      <span></span><span></span><span></span>
+    </button>
 
-  </div>
-</header>
+    <nav class="main-navigation" id="mainNavigation">
+      <a class="active" href="index.html">الرئيسية</a>
+      <a href="pages/library.html">المكتبة</a>
+      <a href="pages/articles.html">المقالات</a>
+      <a href="pages/stories.html">القصص</a>
+      <a href="pages/poetry.html">الشعر والأدب</a>
+      <a href="pages/research.html">الأبحاث</a>
+      <a href="pages/learning.html">التعلم</a>
+      <a href="pages/exams.html">الاختبارات</a>
+      <a href="pages/achievements.html">إنجازاتي</a>
+      <a href="pages/community.html">المجتمع</a>
+    </nav>
 
-  
+    <div class="header-controls">
+
+      <button
+        id="searchToggle"
+        class="icon-button"
+        aria-label="البحث"
+        aria-expanded="false"
+        type="button"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="10.8" cy="10.8" r="6.8"></circle>
+          <path d="m16 16 5 5"></path>
+        </svg>
+      </button>
+
+      <button
+        id="themeToggle"
+        class="icon-button"
+        aria-label="تغيير المظهر"
+        type="button"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l-1.42 1.42m11.3-11.3 1.42-1.42"></path>
+        </svg>
+      </button>
+
+      <a
+        class="account-button"
+        href="pages/auth.html"
+        id="accountButton"
+      >
+        تسجيل الدخول
+      </a>
+
+      <a
+        class="header-profile-link"
+        id="headerProfileLink"
+        href="pages/profile.html"
+        aria-label="ملفي الشخصي"
+        title="ملفي الشخصي"
+        hidden
+      >
+        <span id="headerProfileInitial">م</span>
+        <img
+          id="headerProfileImage"
+          src=""
+          alt="صورة المستخدم"
+          hidden
+        >
+        <strong id="headerProfileName">حسابي</strong>
+      </a>
+
+    </div>
+  </header>
 
   <!-- البحث -->
-  <section class="search-panel" id="searchPanel" hidden>
+  <section
+    class="search-panel"
+    id="searchPanel"
+    aria-hidden="true"
+    hidden
+  >
     <form id="globalSearchForm">
       <label for="globalSearchInput">ابحث في عالم هنون</label>
+
       <div class="search-field">
-        <input id="globalSearchInput" type="search"
-          placeholder="كتاب، مقال، درس، موضوع..." autocomplete="off">
+        <input
+          id="globalSearchInput"
+          type="search"
+          placeholder="كتاب، مقال، درس، موضوع..."
+          autocomplete="off"
+        >
         <button type="submit">بحث</button>
       </div>
+
       <div id="searchResults" aria-live="polite"></div>
     </form>
   </section>
@@ -548,9 +645,7 @@
     <div class="footer-main">
 
       <div class="footer-brand">
-        
-<img src="assets/logo/logo.svg" alt="شعار HANOON" class="brand-icon">
-
+        <img src="assets/logo/logo.svg" alt="شعار HANOON" class="brand-icon">
         <h2>HANOON</h2>
         <p>المعرفة تصنع الفرق</p>
         <span>اكتشف، تعلّم، تطوّر.</span>
@@ -586,136 +681,218 @@
     </div>
   </footer>
 
-<script>
-(function () {
-  const image = document.getElementById("headerProfileImage");
-  const initial = document.getElementById("headerProfileInitial");
+  <!-- تشغيل Supabase أولاً -->
+  <script type="module" src="js/supabase-client.js"></script>
 
-  function updateProfileImage() {
-    try {
-      const saved = localStorage.getItem("hanoon_user_profile");
-      if (!saved) return;
+  <!-- تحديث الحساب حسب جلسة المستخدم -->
+  <script type="module">
+    const accountButton = document.getElementById("accountButton");
+    const profileLink = document.getElementById("headerProfileLink");
+    const profileInitial = document.getElementById("headerProfileInitial");
+    const profileImage = document.getElementById("headerProfileImage");
+    const profileName = document.getElementById("headerProfileName");
 
-      const profile = JSON.parse(saved);
-      const name = profile.name || profile.username || "مستخدم";
-      const avatar = profile.avatar || profile.photoURL || profile.photo || "";
-
-      initial.textContent = name.trim().charAt(0) || "م";
-
-      if (!avatar) return;
-
-      image.onload = function () {
-        image.hidden = false;
-        initial.hidden = true;
-      };
-
-      image.onerror = function () {
-        image.hidden = true;
-        initial.hidden = false;
-      };
-
-      image.src = avatar;
-    } catch (error) {
-      console.error("Profile image error:", error);
+    function showGuest() {
+      accountButton.hidden = false;
+      profileLink.hidden = true;
+      profileImage.hidden = true;
+      profileInitial.hidden = false;
+      profileName.textContent = "حسابي";
     }
-  }
 
-  updateProfileImage();
+    function showUser(name, avatarUrl) {
+      const cleanName = (name || "عضو هنون").trim();
 
-  window.addEventListener("pageshow", updateProfileImage);
+      accountButton.hidden = true;
+      profileLink.hidden = false;
+      profileName.textContent = cleanName;
+      profileInitial.textContent = cleanName.charAt(0) || "م";
 
-  window.addEventListener("storage", function (event) {
-    if (event.key === "hanoon_user_profile") {
-      updateProfileImage();
+      profileImage.hidden = true;
+      profileInitial.hidden = false;
+
+      if (avatarUrl) {
+        profileImage.onload = () => {
+          profileImage.hidden = false;
+          profileInitial.hidden = true;
+        };
+
+        profileImage.onerror = () => {
+          profileImage.hidden = true;
+          profileInitial.hidden = false;
+        };
+
+        profileImage.src = avatarUrl;
+      } else {
+        profileImage.removeAttribute("src");
+      }
     }
-  });
-})();
-</script>
 
-  <!-- إضافة تشغيل إشعار المسابقة بعد شاشة البداية -->
-  <script>
-  (function () {
-    "use strict";
+    async function updateHeaderAccount() {
+      const supabase = window.HANOON?.supabase;
 
-    const notice = document.getElementById("competitionNotice");
-    const countdown = document.getElementById("competitionCountdown");
-
-    if (!notice) return;
-
-    // موعد المسابقة: 11 يناير 2027
-    const competitionDate = new Date(2027, 0, 11, 0, 0, 0);
-
-    function updateCountdown() {
-      if (!countdown) return;
-
-      const now = new Date();
-      const remaining = competitionDate.getTime() - now.getTime();
-
-      if (remaining <= 0) {
-        countdown.textContent = "موعد المسابقة اليوم أو قد حان";
+      if (!supabase) {
+        showGuest();
         return;
       }
 
-      const days = Math.ceil(remaining / (1000 * 60 * 60 * 24));
-      countdown.textContent = "متبقي " + days + " يومًا على موعد المسابقة";
-    }
+      try {
+        const { data: sessionData, error: sessionError } =
+          await supabase.auth.getSession();
 
-    let noticeShown = false;
+        if (sessionError || !sessionData?.session?.user) {
+          showGuest();
+          return;
+        }
 
-    function showCompetitionNotice() {
-      if (noticeShown || !document.body.contains(notice)) return;
+        const user = sessionData.session.user;
 
-      noticeShown = true;
-      updateCountdown();
+        let name =
+          user.user_metadata?.full_name ||
+          user.user_metadata?.name ||
+          user.email?.split("@")[0] ||
+          "عضو هنون";
 
-      notice.setAttribute("aria-hidden", "false");
-      notice.classList.add("is-visible");
+        let avatarUrl =
+          user.user_metadata?.avatar_url ||
+          user.user_metadata?.picture ||
+          "";
 
-      // تختفي الرسالة تلقائيًا بعد خمس ثوانٍ
-      window.setTimeout(function () {
-        notice.classList.remove("is-visible");
-        notice.classList.add("is-leaving");
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("full_name, username, avatar_path")
+          .eq("id", user.id)
+          .maybeSingle();
 
-        window.setTimeout(function () {
-          notice.remove();
-        }, 500);
-      }, 5000);
-    }
+        if (profile) {
+          name =
+            profile.full_name ||
+            profile.username ||
+            name;
 
-    const splash = document.getElementById("splashScreen");
+          if (profile.avatar_path) {
+            const { data: imageData } = supabase.storage
+              .from("avatars")
+              .getPublicUrl(profile.avatar_path);
 
-    if (!splash) {
-      window.addEventListener("load", function () {
-        window.setTimeout(showCompetitionNotice, 250);
-      }, { once: true });
+            avatarUrl = imageData?.publicUrl || avatarUrl;
+          }
+        }
 
-      return;
-    }
+        showUser(name, avatarUrl);
 
-    // نراقب شاشة البداية الموجودة بالفعل دون تعديل كودها
-    const observer = new MutationObserver(function () {
-      const splashHidden =
-        splash.classList.contains("is-hidden") ||
-        splash.classList.contains("splash-hidden") ||
-        !document.body.contains(splash);
-
-      if (splashHidden) {
-        observer.disconnect();
-
-        // ننتظر انتهاء انتقال شاشة البداية قبل إظهار الرسالة
-        window.setTimeout(showCompetitionNotice, 850);
+      } catch (error) {
+        console.error("HANOON account header error:", error);
+        showGuest();
       }
-    });
+    }
 
-    observer.observe(splash, {
-      attributes: true,
-      attributeFilter: ["class"]
-    });
+    function startAccountHeader() {
+      updateHeaderAccount();
 
-  })();
+      const supabase = window.HANOON?.supabase;
+
+      if (supabase) {
+        supabase.auth.onAuthStateChange(() => {
+          updateHeaderAccount();
+        });
+      }
+    }
+
+    if (window.HANOON?.supabase) {
+      startAccountHeader();
+    } else {
+      window.addEventListener(
+        "hanoon:supabase-ready",
+        startAccountHeader,
+        { once: true }
+      );
+
+      window.addEventListener(
+        "hanoon:supabase-error",
+        showGuest,
+        { once: true }
+      );
+    }
+
+    window.addEventListener("pageshow", updateHeaderAccount);
   </script>
 
-  <script type="module" src="js/app.js"></script>
+  <!-- إشعار المسابقة بعد شاشة البداية -->
+  <script>
+    (function () {
+      "use strict";
+
+      const notice = document.getElementById("competitionNotice");
+      const countdown = document.getElementById("competitionCountdown");
+
+      if (!notice) return;
+
+      const competitionDate = new Date(2027, 0, 11, 0, 0, 0);
+
+      function updateCountdown() {
+        if (!countdown) return;
+
+        const remaining = competitionDate.getTime() - Date.now();
+
+        if (remaining <= 0) {
+          countdown.textContent = "موعد المسابقة اليوم أو قد حان";
+          return;
+        }
+
+        const days = Math.ceil(remaining / (1000 * 60 * 60 * 24));
+        countdown.textContent = "متبقي " + days + " يومًا على موعد المسابقة";
+      }
+
+      let noticeShown = false;
+
+      function showCompetitionNotice() {
+        if (noticeShown || !document.body.contains(notice)) return;
+
+        noticeShown = true;
+        updateCountdown();
+
+        notice.setAttribute("aria-hidden", "false");
+        notice.classList.add("is-visible");
+
+        window.setTimeout(() => {
+          notice.classList.remove("is-visible");
+          notice.classList.add("is-leaving");
+
+          window.setTimeout(() => notice.remove(), 500);
+        }, 5000);
+      }
+
+      const splash = document.getElementById("splashScreen");
+
+      if (!splash) {
+        window.addEventListener("load", () => {
+          window.setTimeout(showCompetitionNotice, 250);
+        }, { once: true });
+
+        return;
+      }
+
+      const observer = new MutationObserver(() => {
+        const splashHidden =
+          splash.classList.contains("is-hidden") ||
+          splash.classList.contains("splash-hidden") ||
+          !document.body.contains(splash);
+
+        if (splashHidden) {
+          observer.disconnect();
+          window.setTimeout(showCompetitionNotice, 850);
+        }
+      });
+
+      observer.observe(splash, {
+        attributes: true,
+        attributeFilter: ["class"]
+      });
+    })();
+  </script>
+
+  <script src="js/app.js"></script>
   <script src="js/global-back.js"></script>
 
 </body>
