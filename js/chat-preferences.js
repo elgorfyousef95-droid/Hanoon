@@ -3,6 +3,7 @@
   "use strict";
 
   const STORAGE_KEY = "hanoon_chat_preferences_v1";
+
   const defaults = {
     wallpaper: "dark",
     theme: "dark",
@@ -40,9 +41,47 @@
   let currentArea = null;
   let applying = false;
 
+  function installVisibilityStyles() {
+    if (document.getElementById("hanoon-chat-visibility-fix")) return;
+
+    const style = document.createElement("style");
+    style.id = "hanoon-chat-visibility-fix";
+    style.textContent = `
+      .hidden {
+        display: none !important;
+      }
+
+      .panel-overlay.hidden,
+      .recording-strip.hidden,
+      .reply-preview.hidden {
+        display: none !important;
+      }
+
+      .chat-notice:not(.show) {
+        display: none !important;
+      }
+
+      .loading-screen.hidden {
+        display: none !important;
+      }
+
+      button:focus-visible,
+      a:focus-visible,
+      input:focus-visible {
+        outline: 2px solid #55cdb9;
+        outline-offset: 3px;
+      }
+    `;
+
+    document.head.appendChild(style);
+  }
+
   function getSettings() {
     try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      const saved = JSON.parse(
+        localStorage.getItem(STORAGE_KEY) || "{}"
+      );
+
       return { ...defaults, ...saved };
     } catch {
       return { ...defaults };
@@ -73,8 +112,12 @@
 
   function applyMessageStyles(area, settings) {
     const light = isLightTheme(settings.theme);
-    const fontSize = fontSizes[settings.fontSize] || fontSizes.medium;
-    const radius = bubbleRadii[settings.bubbleStyle] || bubbleRadii.rounded;
+
+    const fontSize =
+      fontSizes[settings.fontSize] || fontSizes.medium;
+
+    const radius =
+      bubbleRadii[settings.bubbleStyle] || bubbleRadii.rounded;
 
     const privateWallpaper = getConversationWallpaper();
 
@@ -82,20 +125,26 @@
       area.style.backgroundImage = "none";
       area.style.backgroundColor = privateWallpaper;
     } else {
-      area.style.background = wallpapers[settings.wallpaper] || wallpapers.dark;
+      area.style.background =
+        wallpapers[settings.wallpaper] || wallpapers.dark;
+
       area.style.backgroundSize = "cover";
       area.style.backgroundPosition = "center";
     }
 
     area.style.color = light ? "#17252d" : "#f2f8fa";
     area.style.fontSize = fontSize;
-    area.style.transition = settings.reduceMotion ? "none" : "background .25s ease";
+
+    area.style.transition = settings.reduceMotion
+      ? "none"
+      : "background .25s ease";
 
     area.querySelectorAll(".message").forEach(message => {
       const mine = message.classList.contains("mine");
 
       message.style.borderRadius = radius;
       message.style.color = light ? "#17252d" : "#effbfc";
+
       message.style.background = light
         ? mine
           ? "linear-gradient(135deg,#b7eee5,#8bd9ce)"
@@ -109,26 +158,29 @@
         : "1px solid #76dcd52b";
 
       const body = message.querySelector(".message-body");
+
       if (body) {
         body.style.fontSize = fontSize;
         body.style.color = "inherit";
       }
 
       const time = message.querySelector(".message-time");
+
       if (time) {
         time.style.color = light ? "#526a70" : "#a5cfca";
       }
 
       const status = message.querySelector(".message-status");
+
       if (status) {
         status.style.color = light ? "#147e9a" : "#70d9ed";
       }
     });
 
     document.documentElement.dataset.chatTheme = settings.theme;
-    document.documentElement.dataset.chatMotion = settings.reduceMotion
-      ? "reduced"
-      : "normal";
+
+    document.documentElement.dataset.chatMotion =
+      settings.reduceMotion ? "reduced" : "normal";
 
     if (settings.reduceMotion) {
       area.querySelectorAll("*").forEach(element => {
@@ -140,9 +192,13 @@
 
   function addSettingsButton() {
     const header = document.querySelector(".chat-header");
-    if (!header || document.getElementById("chatSettingsLink")) return;
+
+    if (!header || document.getElementById("chatSettingsLink")) {
+      return;
+    }
 
     const link = document.createElement("a");
+
     link.id = "chatSettingsLink";
     link.href = "chat-settings.html";
     link.title = "إعدادات الشات";
@@ -197,6 +253,7 @@
 
   function observeMessages() {
     const area = document.getElementById("messageList");
+
     if (!area || area === currentArea) return;
 
     observer?.disconnect();
@@ -220,6 +277,7 @@
   }
 
   function start() {
+    installVisibilityStyles();
     addSettingsButton();
     observeMessages();
     applySettings();
@@ -247,14 +305,21 @@
 
     window.matchMedia?.("(prefers-color-scheme: light)")
       .addEventListener?.("change", () => {
-        if (getSettings().theme === "system") applySettings();
+        if (getSettings().theme === "system") {
+          applySettings();
+        }
       });
 
-    window.addEventListener("hanoon:chat-preferences-changed", applySettings);
+    window.addEventListener(
+      "hanoon:chat-preferences-changed",
+      applySettings
+    );
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start, { once: true });
+    document.addEventListener("DOMContentLoaded", start, {
+      once: true
+    });
   } else {
     start();
   }
