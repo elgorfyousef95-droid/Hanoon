@@ -1,8 +1,8 @@
 
 /* =====================================================
    HANOON AUTHENTICATION
-   Supabase Login / Registration / Profile
-   Email confirmation: DISABLED
+   Supabase Phone Login / Registration / Profile
+   Egyptian phone numbers only
 ===================================================== */
 
 (async () => {
@@ -116,24 +116,74 @@
     }
   }
 
+  /* تحويل رقم الهاتف المصري إلى E.164 */
+  function normalizeEgyptianPhone(value) {
+    let phone = String(value || "")
+      .trim()
+      .replace(/[\s\-().]/g, "");
+
+    // قبول الأرقام العربية
+    phone = phone.replace(/[٠-٩]/g, digit =>
+      String("٠١٢٣٤٥٦٧٨٩".indexOf(digit))
+    );
+
+    // قبول الأرقام الفارسية
+    phone = phone.replace(/[۰-۹]/g, digit =>
+      String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit))
+    );
+
+    // حذف علامة الاتصال الدولية 00
+    if (phone.startsWith("00")) {
+      phone = "+" + phone.slice(2);
+    }
+
+    // الرقم المحلي المصري: 01xxxxxxxxx
+    if (/^01[0125]\d{8}$/.test(phone)) {
+      return "+20" + phone.slice(1);
+    }
+
+    // الصيغة الدولية: +201xxxxxxxxx
+    if (/^\+201[0125]\d{8}$/.test(phone)) {
+      return phone;
+    }
+
+    // قبول 20 بدون علامة +
+    if (/^201[0125]\d{8}$/.test(phone)) {
+      return "+" + phone;
+    }
+
+    throw new Error(
+      "رقم الهاتف غير صحيح. أدخل رقمًا مصريًا يبدأ بـ 010 أو 011 أو 012 أو 015."
+    );
+  }
+
+  /* رسائل أخطاء Supabase */
   function errorMessage(error) {
     const message = error?.message || "";
 
     const messages = [
       [
         "Invalid login credentials",
-        "البريد الإلكتروني أو كلمة المرور غير صحيحة."
+        "رقم الهاتف أو كلمة المرور غير صحيحة."
       ],
       [
         "User already registered",
-        "هذا البريد الإلكتروني مسجل بالفعل. جرّب تسجيل الدخول."
+        "رقم الهاتف مسجل بالفعل. جرّب تسجيل الدخول."
       ],
       [
-        "Email not confirmed",
-        "إعداد Confirm email ما زال مفعّلًا في Supabase. عطّله ثم حاول مرة أخرى."
+        "Phone not confirmed",
+        "يجب تأكيد رقم الهاتف أولاً باستخدام كود الرسالة."
       ],
       [
-        "Password should be at least 6 characters",
+        "Invalid phone number",
+        "رقم الهاتف غير صحيح."
+      ],
+      [
+        "Signups not allowed",
+        "إنشاء الحسابات متوقف حاليًا في إعدادات Supabase."
+      ],
+      [
+        "Password should be at least",
         "كلمة المرور قصيرة جدًا."
       ],
       [
@@ -143,11 +193,29 @@
       [
         "duplicate key",
         "اسم المستخدم مستخدم بالفعل."
+      ],
+      [
+        "Invalid OTP",
+        "كود التحقق غير صحيح أو انتهت صلاحيته."
+      ],
+      [
+        "Token has expired",
+        "انتهت صلاحية كود التحقق. اطلب كودًا جديدًا."
+      ],
+      [
+        "SMS provider",
+        "خدمة الرسائل النصية غير مضبوطة في Supabase."
+      ],
+      [
+        "phone_provider_disabled",
+        "تسجيل الدخول برقم الهاتف غير مفعّل في Supabase."
       ]
     ];
 
     for (const [key, value] of messages) {
-      if (message.includes(key)) return value;
+      if (message.toLowerCase().includes(key.toLowerCase())) {
+        return value;
+      }
     }
 
     return message || "حدث خطأ غير متوقع. حاول مرة أخرى.";
@@ -196,18 +264,22 @@
     clearMessage();
   }
 
-  /* التحقق من البيانات */
-  function validateEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  }
-
+  /* التحقق من بيانات الخطوة الأولى */
   function validateStepOne() {
-    const email = $("#registerEmail").value.trim().toLowerCase();
+    let phone;
+
+    try {
+      phone = normalizeEgyptianPhone($("#registerPhone").value);
+    } catch (error) {
+      notify(error.message);
+      return false;
+    }
+
     const password = $("#registerPassword").value;
     const confirm = $("#confirmPassword").value;
 
-    if (!validateEmail(email)) {
-      notify("أدخل بريدًا إلكترونيًا صحيحًا.");
+    if (!phone) {
+      notify("أدخل رقم الهاتف.");
       return false;
     }
 
@@ -224,6 +296,7 @@
     return true;
   }
 
+  /* التحقق من بيانات الملف الشخصي */
   function validateStepTwo() {
     const name = $("#displayName").value.trim();
     const username = $("#username").value.trim().toLowerCase();
@@ -310,7 +383,7 @@
     }
   }
 
-  /* الاحتفاظ بالصورة لاستكمال الملف عند حدوث خطأ */
+  /* حفظ الصورة مؤقتًا */
   function readAsDataURL(blob) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -583,7 +656,28 @@
     });
   }
 
-  /* إنشاء الحساب بدون تأكيد البريد */
+  /* إدخال كود SMS */
+  async function requestVerificationCode() {
+    const code = window.prompt(
+      "أدخل كود التحقق الذي وصلك في رسالة SMS:"
+    );
+
+    if (code === null) {
+      throw new Error(
+        "تم إلغاء التحقق. يمكنك تسجيل الدخول بعد إكمال التحقق من رقم الهاتف."
+      );
+    }
+
+    const token = code.trim();
+
+    if (!/^\d{6}$/.test(token)) {
+      throw new Error("كود التحقق يجب أن يتكون من 6 أرقام.");
+    }
+
+    return token;
+  }
+
+  /* إنشاء الحساب */
   async function register(event) {
     event.preventDefault();
 
@@ -597,9 +691,9 @@
     try {
       if (!validateStepOne() || !validateStepTwo()) return;
 
-      const email = $("#registerEmail").value
-        .trim()
-        .toLowerCase();
+      const phone = normalizeEgyptianPhone(
+        $("#registerPhone").value
+      );
 
       const password = $("#registerPassword").value;
       const name = $("#displayName").value.trim();
@@ -625,7 +719,7 @@
       await saveTemporaryPhoto(state.compressedPhoto);
 
       const { data, error } = await supabase.auth.signUp({
-        email,
+        phone,
         password,
         options: {
           data: {
@@ -644,15 +738,32 @@
         throw new Error("لم يتم إنشاء الحساب.");
       }
 
-      /* لا نكمل إلا بوجود جلسة مباشرة */
+      let user = data.user;
+
+      // إذا كان تأكيد الهاتف مفعّلًا، نتحقق من كود SMS
       if (!data.session) {
-        throw new Error(
-          "لم يتم تسجيل الدخول تلقائيًا. راجع إعداد Confirm email في Supabase وتأكد أنه متوقف، ثم حاول مرة أخرى."
-        );
+        notify("تم إرسال كود التحقق إلى هاتفك.", "success");
+
+        const token = await requestVerificationCode();
+
+        const { data: verified, error: verifyError } =
+          await supabase.auth.verifyOtp({
+            phone,
+            token,
+            type: "sms"
+          });
+
+        if (verifyError) throw verifyError;
+
+        if (!verified.user || !verified.session) {
+          throw new Error("لم يكتمل التحقق من رقم الهاتف.");
+        }
+
+        user = verified.user;
       }
 
       const profile = await createProfile(
-        data.user,
+        user,
         state.compressedPhoto
       );
 
@@ -670,7 +781,7 @@
     }
   }
 
-  /* تسجيل الدخول */
+  /* تسجيل الدخول برقم الهاتف وكلمة المرور */
   async function login(event) {
     event.preventDefault();
 
@@ -682,21 +793,19 @@
     setBusy(button, true, "جارٍ تسجيل الدخول...");
 
     try {
-      const email = $("#loginEmail").value
-        .trim()
-        .toLowerCase();
+      const phone = normalizeEgyptianPhone(
+        $("#loginPhone").value
+      );
 
       const password = $("#loginPassword").value;
 
-      if (!validateEmail(email) || !password) {
-        throw new Error(
-          "أدخل البريد الإلكتروني وكلمة المرور بصورة صحيحة."
-        );
+      if (!password) {
+        throw new Error("أدخل كلمة المرور.");
       }
 
       const { data, error } = await supabase.auth
         .signInWithPassword({
-          email,
+          phone,
           password
         });
 
@@ -722,34 +831,75 @@
     }
   }
 
-  /* استعادة كلمة المرور */
+  /* استعادة كلمة المرور عن طريق الهاتف */
   async function resetPassword() {
-    const email = $("#loginEmail").value
-      .trim()
-      .toLowerCase();
+    let phone;
 
-    if (!validateEmail(email)) {
-      notify("اكتب بريدك الإلكتروني أولاً.");
+    try {
+      phone = normalizeEgyptianPhone($("#loginPhone").value);
+    } catch (error) {
+      notify("اكتب رقم هاتفك المصري أولاً.");
       return;
     }
 
+    const button = $("#forgotPassword");
+
+    button.style.pointerEvents = "none";
+    button.style.opacity = ".6";
+
     try {
-      const { error } = await supabase.auth
-        .resetPasswordForEmail(email, {
-          redirectTo:
-            window.location.origin +
-            window.location.pathname
-        });
+      const { error } = await supabase.auth.signInWithOtp({
+        phone,
+        options: {
+          shouldCreateUser: false
+        }
+      });
 
       if (error) throw error;
 
-      notify(
-        "إذا كان البريد مسجلاً، سيصلك رابط استعادة كلمة المرور.",
-        "success"
+      const token = await requestVerificationCode();
+
+      const { error: verifyError } = await supabase.auth.verifyOtp({
+        phone,
+        token,
+        type: "sms"
+      });
+
+      if (verifyError) throw verifyError;
+
+      const newPassword = window.prompt(
+        "تم التحقق من رقمك. أدخل كلمة المرور الجديدة (8 أحرف على الأقل):"
       );
 
+      if (newPassword === null) {
+        notify(
+          "تم التحقق من رقمك. يمكنك تغيير كلمة المرور لاحقًا من إعدادات الحساب.",
+          "success"
+        );
+        return;
+      }
+
+      if (newPassword.length < 8) {
+        throw new Error(
+          "كلمة المرور الجديدة يجب أن تكون 8 أحرف على الأقل."
+        );
+      }
+
+      const { error: updateError } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+
+      if (updateError) throw updateError;
+
+      notify("تم تغيير كلمة المرور بنجاح.", "success");
+
     } catch (error) {
+      console.error("Password recovery error:", error);
       notify(errorMessage(error));
+
+    } finally {
+      button.style.pointerEvents = "";
+      button.style.opacity = "";
     }
   }
 
@@ -842,11 +992,10 @@
     supabase = await waitForSupabase();
     await init();
 
-    console.info("HANOON: Authentication is ready.");
+    console.info("HANOON: Phone authentication is ready.");
 
   } catch (error) {
     console.error("HANOON initialization error:", error);
-
     notify(errorMessage(error));
   }
 
