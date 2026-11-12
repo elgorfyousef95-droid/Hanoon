@@ -1,26 +1,51 @@
 
-/* HANOON — Compact Premium Space Header */
+/* HANOON — Compact Space Header */
 
 .site-header {
+  width: 100% !important;
   display: grid !important;
-  grid-template-columns: minmax(0,1fr) auto !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
   grid-template-areas:
     "brand controls"
     "navigation navigation" !important;
   align-items: center !important;
-  gap: 10px !important;
-  padding: 10px 16px !important;
+  gap: 7px !important;
+  padding: 7px 12px !important;
   background:
-    linear-gradient(120deg,rgba(10,14,35,.97),rgba(22,18,48,.96)),
+    linear-gradient(120deg, rgba(9,13,34,.97), rgba(28,19,57,.96)),
     url("https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1600&q=80")
     center/cover !important;
   border-bottom: 1px solid rgba(175,145,255,.3) !important;
-  box-shadow: 0 8px 28px rgba(0,0,0,.35) !important;
+  box-shadow: 0 5px 22px rgba(0,0,0,.3) !important;
 }
 
 .site-header > .brand {
   grid-area: brand !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 7px !important;
   min-width: 0 !important;
+}
+
+.site-header > .brand img {
+  width: 36px !important;
+  height: 36px !important;
+  object-fit: contain !important;
+}
+
+.site-header > .brand strong {
+  font-size: 13px !important;
+  line-height: 1.2 !important;
+}
+
+.site-header > .brand small {
+  display: block !important;
+  font-size: 9px !important;
+  line-height: 1.3 !important;
+}
+
+.site-header > .menu-toggle {
+  display: none !important;
 }
 
 .site-header > .header-controls {
@@ -29,33 +54,151 @@
   align-items: center !important;
   justify-content: flex-end !important;
   flex-wrap: nowrap !important;
-  gap: 7px !important;
+  gap: 6px !important;
   min-width: 0 !important;
 }
+
+.site-header .icon-button {
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  padding: 7px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 10px !important;
+  background: linear-gradient(
+    145deg,
+    rgba(112,83,190,.35),
+    rgba(33,42,78,.9)
+  ) !important;
+  border: 1px solid rgba(190,170,255,.35) !important;
+}
+
+.site-header .icon-button svg {
+  width: 19px !important;
+  height: 19px !important;
+}
+
+.site-header .account-button {
+  min-width: 88px !important;
+  min-height: 34px !important;
+  padding: 0 9px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 10px !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  white-space: nowrap !important;
+  background: linear-gradient(135deg,#8060d5,#49358e) !important;
+  border: 1px solid rgba(220,205,255,.4) !important;
+}
+
+.site-header .account-button[hidden],
+.site-header .header-profile-link[hidden] {
+  display: none !important;
+}
+
+/* Profile account */
+
+.site-header .header-profile-link {
+  width: auto !important;
+  max-width: 150px !important;
+  min-width: 0 !important;
+  min-height: 37px !important;
+  height: auto !important;
+  flex: 0 1 auto !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 6px !important;
+  padding: 3px 7px !important;
+  overflow: hidden !important;
+  border-radius: 25px !important;
+  text-decoration: none !important;
+  background: linear-gradient(
+    135deg,
+    rgba(111,78,190,.4),
+    rgba(30,42,75,.95)
+  ) !important;
+  border: 1px solid rgba(213,195,255,.45) !important;
+}
+
+.site-header .header-profile-link #headerProfileInitial,
+.site-header .header-profile-link #headerProfileImage {
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  flex: 0 0 30px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  border: 1px solid rgba(225,205,255,.7) !important;
+}
+
+.site-header .header-profile-copy {
+  min-width: 0 !important;
+  max-width: 100px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  gap: 1px !important;
+  line-height: 1.3 !important;
+}
+
+.site-header .header-profile-copy strong {
+  display: block !important;
+  max-width: 95px !important;
+  overflow: hidden !important;
+  color: #f7e6bd !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.site-header .header-profile-copy small {
+  display: block !important;
+  max-width: 95px !important;
+  overflow: hidden !important;
+  color: rgba(255,255,255,.72) !important;
+  font-size: 8px !important;
+  font-weight: 700 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* Navigation grid */
 
 .site-header > .main-navigation {
   grid-area: navigation !important;
   position: relative !important;
   inset: auto !important;
   display: grid !important;
-  grid-template-columns: repeat(5,minmax(0,1fr)) !important;
-  gap: 9px !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 7px !important;
   width: 100% !important;
   height: auto !important;
   min-height: 0 !important;
   max-height: none !important;
-  margin: 5px 0 0 !important;
-  padding: 12px !important;
+  margin: 2px 0 0 !important;
+  padding: 8px !important;
   overflow: visible !important;
-  border: 1px solid rgba(185,160,255,.3) !important;
-  border-radius: 19px !important;
+  aspect-ratio: auto !important;
+  border: 1px solid rgba(185,160,255,.27) !important;
+  border-radius: 15px !important;
   background:
-    linear-gradient(135deg,rgba(12,17,40,.9),rgba(24,22,53,.88)),
+    linear-gradient(
+      135deg,
+      rgba(12,17,40,.91),
+      rgba(24,22,53,.9)
+    ),
     url("https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1400&q=80")
     center/cover !important;
   box-shadow:
-    0 10px 30px rgba(0,0,0,.35),
-    inset 0 0 25px rgba(142,110,255,.12) !important;
+    0 7px 22px rgba(0,0,0,.3),
+    inset 0 0 20px rgba(142,110,255,.1) !important;
 }
 
 .site-header > .main-navigation::before,
@@ -71,27 +214,32 @@
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 5px !important;
+  gap: 3px !important;
   width: 100% !important;
-  height: 65px !important;
-  min-height: 65px !important;
-  padding: 6px 3px !important;
+  height: 48px !important;
+  min-width: 0 !important;
+  min-height: 48px !important;
+  padding: 4px 2px !important;
   margin: 0 !important;
   overflow: hidden !important;
-  border: 1px solid rgba(255,255,255,.2) !important;
-  border-radius: 13px !important;
+  border: 1px solid rgba(255,255,255,.17) !important;
+  border-radius: 10px !important;
   color: #fff !important;
-  background: linear-gradient(145deg,rgba(102,76,175,.9),rgba(30,38,78,.96)) !important;
+  background: linear-gradient(
+    145deg,
+    rgba(102,76,175,.9),
+    rgba(30,38,78,.96)
+  ) !important;
   box-shadow:
-    0 5px 13px rgba(0,0,0,.27),
-    inset 0 1px 0 rgba(255,255,255,.15) !important;
-  font-size: 11px !important;
+    0 3px 9px rgba(0,0,0,.23),
+    inset 0 1px 0 rgba(255,255,255,.12) !important;
+  font-size: 9px !important;
   font-weight: 800 !important;
-  line-height: 1.3 !important;
+  line-height: 1.2 !important;
   text-align: center !important;
   text-decoration: none !important;
   white-space: normal !important;
-  transition: transform .2s ease,filter .2s ease !important;
+  transition: filter .2s ease, border-color .2s ease !important;
 }
 
 .site-header > .main-navigation a:nth-child(3n+1) {
@@ -103,202 +251,209 @@
 }
 
 .site-header > .main-navigation a:nth-child(3n) {
-  background: linear-gradient(145deg,#9a5b9e,#49366f) !important;
+  background: linear-gradient(145deg,#92528f,#49366f) !important;
 }
 
 .site-header > .main-navigation a:nth-child(11),
 .site-header > .main-navigation a:nth-child(15) {
-  border: 1px solid rgba(255,219,139,.8) !important;
-  background: linear-gradient(145deg,#b98232,#70451c) !important;
+  border-color: rgba(255,219,139,.7) !important;
+  background: linear-gradient(145deg,#a97832,#70451c) !important;
 }
 
 .site-header > .main-navigation a svg {
-  width: 21px !important;
-  height: 21px !important;
+  display: block !important;
+  width: 18px !important;
+  height: 18px !important;
+  flex: 0 0 auto !important;
   margin: 0 !important;
   stroke: #fff !important;
   stroke-width: 1.8 !important;
 }
 
+.site-header > .main-navigation a span {
+  display: block !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
 .site-header > .main-navigation a:hover {
-  transform: translateY(-2px) !important;
-  filter: brightness(1.15) !important;
+  filter: brightness(1.18) !important;
 }
 
 .site-header > .main-navigation a.active {
-  outline: 2px solid rgba(255,255,255,.7) !important;
-  outline-offset: 1px !important;
+  border-color: rgba(255,255,255,.8) !important;
+  box-shadow:
+    0 0 0 1px rgba(210,190,255,.3),
+    0 4px 12px rgba(0,0,0,.25) !important;
 }
 
-/* Compact account button */
-.site-header .account-button {
-  min-width: 95px !important;
-  min-height: 36px !important;
-  padding: 0 10px !important;
-  border-radius: 11px !important;
-  font-size: 10px !important;
-}
+/* Tablet */
 
-/* Compact profile */
-html body .site-header .header-profile-link {
-  width: auto !important;
-  max-width: 145px !important;
-  min-width: 0 !important;
-  min-height: 38px !important;
-  height: auto !important;
-  flex: 0 1 auto !important;
-  gap: 6px !important;
-  padding: 3px 7px !important;
-  overflow: hidden !important;
-  border-radius: 25px !important;
-  background: linear-gradient(135deg,rgba(111,78,190,.35),rgba(30,42,75,.95)) !important;
-  border: 1px solid rgba(213,195,255,.45) !important;
-}
-
-html body .site-header .header-profile-link #headerProfileInitial,
-html body .site-header .header-profile-link #headerProfileImage {
-  width: 30px !important;
-  height: 30px !important;
-  min-width: 30px !important;
-  flex: 0 0 30px !important;
-  border-radius: 50% !important;
-  object-fit: cover !important;
-}
-
-html body .site-header .header-profile-copy {
-  min-width: 0 !important;
-  max-width: 95px !important;
-  gap: 1px !important;
-}
-
-html body .site-header .header-profile-copy strong {
-  max-width: 92px !important;
-  font-size: 10px !important;
-}
-
-html body .site-header .header-profile-copy small {
-  max-width: 92px !important;
-  font-size: 8px !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-}
-
-.site-header .account-button[hidden],
-.site-header .header-profile-link[hidden] {
-  display: none !important;
-}
-
-@media(max-width:760px) {
+@media (max-width: 760px) {
   .site-header {
-    gap: 8px !important;
-    padding: 8px 10px !important;
-  }
-
-  .site-header > .main-navigation {
-    grid-template-columns: repeat(4,minmax(0,1fr)) !important;
-    gap: 7px !important;
-    padding: 9px !important;
-    border-radius: 15px !important;
-  }
-
-  .site-header > .main-navigation a {
-    height: 57px !important;
-    min-height: 57px !important;
-    border-radius: 10px !important;
-    font-size: 9px !important;
-    gap: 3px !important;
-  }
-
-  .site-header > .main-navigation a svg {
-    width: 19px !important;
-    height: 19px !important;
-  }
-
-  .site-header .icon-button {
-    width: 34px !important;
-    height: 34px !important;
-    min-width: 34px !important;
-  }
-}
-
-@media(max-width:430px) {
-  .site-header {
-    gap: 7px !important;
-    padding: 7px 8px !important;
-  }
-
-  .site-header > .main-navigation {
-    grid-template-columns: repeat(4,minmax(0,1fr)) !important;
     gap: 6px !important;
-    padding: 8px !important;
+    padding: 6px 9px !important;
+  }
+
+  .site-header > .main-navigation {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+    padding: 7px !important;
   }
 
   .site-header > .main-navigation a {
-    height: 53px !important;
-    min-height: 53px !important;
-    padding: 4px 2px !important;
+    height: 45px !important;
+    min-height: 45px !important;
     font-size: 8px !important;
   }
 
   .site-header > .main-navigation a svg {
-    width: 18px !important;
-    height: 18px !important;
+    width: 17px !important;
+    height: 17px !important;
+  }
+
+  .site-header .icon-button {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 430px) {
+  .site-header {
+    gap: 5px !important;
+    padding: 6px 7px !important;
+  }
+
+  .site-header > .brand img {
+    width: 31px !important;
+    height: 31px !important;
+  }
+
+  .site-header > .brand strong {
+    font-size: 11px !important;
+  }
+
+  .site-header > .brand small {
+    font-size: 8px !important;
   }
 
   .site-header > .header-controls {
     gap: 4px !important;
   }
 
-  .site-header .account-button {
-    min-width: 78px !important;
-    min-height: 33px !important;
-    padding: 0 7px !important;
-    font-size: 9px !important;
+  .site-header .icon-button {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    padding: 6px !important;
   }
 
-  html body .site-header .header-profile-link {
-    max-width: 112px !important;
-    min-height: 34px !important;
+  .site-header .account-button {
+    min-width: 72px !important;
+    min-height: 30px !important;
+    padding: 0 6px !important;
+    font-size: 8px !important;
+  }
+
+  .site-header .header-profile-link {
+    max-width: 115px !important;
+    min-height: 32px !important;
     gap: 4px !important;
     padding: 2px 5px !important;
   }
 
-  html body .site-header .header-profile-link #headerProfileInitial,
-  html body .site-header .header-profile-link #headerProfileImage {
-    width: 27px !important;
-    height: 27px !important;
-    min-width: 27px !important;
-    flex-basis: 27px !important;
+  .site-header .header-profile-link #headerProfileInitial,
+  .site-header .header-profile-link #headerProfileImage {
+    width: 26px !important;
+    height: 26px !important;
+    min-width: 26px !important;
+    flex-basis: 26px !important;
   }
 
-  html body .site-header .header-profile-copy {
-    max-width: 72px !important;
+  .site-header .header-profile-copy {
+    max-width: 75px !important;
   }
 
-  html body .site-header .header-profile-copy strong,
-  html body .site-header .header-profile-copy small {
-    max-width: 72px !important;
+  .site-header .header-profile-copy strong,
+  .site-header .header-profile-copy small {
+    max-width: 75px !important;
+    font-size: 8px !important;
   }
-}
 
-@media(max-width:350px) {
   .site-header > .main-navigation {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
     gap: 5px !important;
     padding: 6px !important;
+    border-radius: 12px !important;
   }
 
   .site-header > .main-navigation a {
-    height: 49px !important;
-    min-height: 49px !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    padding: 3px 1px !important;
+    border-radius: 8px !important;
     font-size: 7px !important;
+    gap: 2px !important;
   }
 
-  .site-header .brand small {
+  .site-header > .main-navigation a svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+}
+
+/* Very small phones */
+
+@media (max-width: 350px) {
+  .site-header {
+    padding-inline: 5px !important;
+  }
+
+  .site-header > .brand small {
     display: none !important;
   }
 
-  html body .site-header .header-profile-link {
-    max-width: 94px !important;
+  .site-header .header-profile-link {
+    max-width: 96px !important;
+  }
+
+  .site-header .header-profile-copy {
+    max-width: 57px !important;
+  }
+
+  .site-header .header-profile-copy strong,
+  .site-header .header-profile-copy small {
+    max-width: 57px !important;
+  }
+
+  .site-header > .main-navigation {
+    gap: 4px !important;
+    padding: 5px !important;
+  }
+
+  .site-header > .main-navigation a {
+    height: 39px !important;
+    min-height: 39px !important;
+    font-size: 6.5px !important;
+  }
+
+  .site-header > .main-navigation a svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+}
+
+/* Reduce motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header *,
+  .site-header *::before,
+  .site-header *::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
   }
 }
