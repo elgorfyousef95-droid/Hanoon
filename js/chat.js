@@ -11,8 +11,21 @@
     conversation: null,
     channel: null,
     sending: false,
-    loading: false,
-    messageIds: new Set()
+    messageIds: new Set(),
+    recorder: null,
+    recordingStream: null,
+    recordingChunks: [],
+    recordingStarted: 0,
+    recordingTimer: null,
+    typingTimer: null,
+    typingActive: false,
+    presenceTimer: null,
+    settings: {
+      read_receipts: true,
+      last_seen_visibility: "contacts",
+      online_visibility: "contacts"
+    },
+    wallpaperUrl: null
   };
 
   const ui = {
@@ -27,46 +40,53 @@
     input: $("messageInput"),
     send: $("sendMessageBtn"),
     back: $("mobileBackBtn"),
-    more: $("chatMoreBtn")
+    more: $("chatMoreBtn"),
+    attach: $("attachBtn"),
+    sticker: $("stickerBtn"),
+    record: $("recordVoiceBtn"),
+    recordingStrip: $("recordingStrip"),
+    recordingTime: $("recordingTime"),
+    cancelRecording: $("cancelRecordingBtn"),
+    imageInput: $("chatImageInput"),
+    fileInput: $("chatFileInput")
   };
 
+  const now = () => new Date().toISOString();
+
   function showNotice(message, type = "") {
+    if (!ui.notice) return;
+
     ui.notice.textContent = message;
     ui.notice.className = "chat-notice show";
-
-    if (type === "error") {
-      ui.notice.style.background = "rgba(255,80,105,.15)";
-      ui.notice.style.color = "#ffb3c0";
-    } else {
-      ui.notice.style.background = "rgba(65,200,180,.12)";
-      ui.notice.style.color = "#b9f4e9";
-    }
+    ui.notice.style.background = type === "error"
+      ? "rgba(255,80,105,.15)"
+      : "rgba(65,200,180,.12)";
+    ui.notice.style.color = type === "error"
+      ? "#ffb3c0"
+      : "#b9f4e9";
 
     clearTimeout(showNotice.timer);
-
     showNotice.timer = setTimeout(() => {
       ui.notice.classList.remove("show");
     }, 4500);
   }
 
   function hideLoading() {
-    ui.loading.classList.add("hidden");
+    ui.loading?.classList.add("hidden");
   }
 
   function showLoading(message) {
+    if (!ui.loading) return;
     ui.loading.textContent = message;
     ui.loading.classList.remove("hidden");
   }
 
   function displayName(member) {
-    return member?.full_name ||
-      member?.username ||
-      "عضو هنون";
+    return member?.full_name || member?.username || "عضو هنون";
   }
 
   function avatarURL(path) {
     if (!path) return "";
-
     if (/^https?:\/\//i.test(path)) return path;
 
     return state.db.storage
@@ -81,29 +101,20 @@
 
     if (url) {
       const image = document.createElement("img");
-
       image.src = url;
       image.alt = displayName(member);
-      image.loading = "lazy";
-
       image.onerror = () => {
-        ui.avatar.replaceChildren();
-        ui.avatar.textContent =
-          displayName(member).charAt(0) || "هـ";
+        ui.avatar.textContent = displayName(member).charAt(0);
       };
-
       ui.avatar.appendChild(image);
     } else {
-      ui.avatar.textContent =
-        displayName(member).charAt(0) || "هـ";
+      ui.avatar.textContent = displayName(member).charAt(0) || "هـ";
     }
   }
 
   function formatTime(value) {
     if (!value) return "";
-
     const date = new Date(value);
-
     if (Number.isNaN(date.getTime())) return "";
 
     return date.toLocaleTimeString("ar-EG", {
@@ -112,12 +123,15 @@
     });
   }
 
+  function formatDuration(seconds) {
+    const value = Math.max(0, Math.floor(seconds || 0));
+    return `${String(Math.floor(value / 60)).padStart(2, "0")}:${String(value % 60).padStart(2, "0")}`;
+  }
+
   function showEmpty(message) {
     const element = document.createElement("div");
-
     element.className = "empty-chat";
     element.textContent = message;
-
     ui.messages.replaceChildren(element);
   }
 
@@ -130,12 +144,15 @@
   function setComposerEnabled(enabled) {
     ui.input.disabled = !enabled;
     ui.send.disabled = !enabled;
+    ui.attach.disabled = !enabled;
+    ui.sticker.disabled = !enabled;
+    ui.record.disabled = !enabled;
   }
 
   function getFriendIdFromKey(key) {
-    const ids = String(key || "").split(":");
-
-    return ids.find(id => id && id !== state.user.id) || null;
+    return String(key || "")
+      .split(":")
+      .find(id => id && id !== state.user.id) || null;
   }
 
   async function verifyFriendship(friendId) {
@@ -151,9 +168,7 @@
     if (error) throw error;
 
     if (!data) {
-      throw new Error(
-        "لا يمكن فتح المراسلة إلا بين الأصدقاء بعد قبول طلب الصداقة."
-      );
+      throw new Error("لا يمكن فتح المراسلة إلا بين الأصدقاء بعد قبول طلب الصداقة.");
     }
 
     return data;
@@ -167,36 +182,27 @@
       .maybeSingle();
 
     if (error) throw error;
-
-    if (!data) {
-      throw new Error("لم يتم العثور على حساب الصديق.");
-    }
+    if (!data) throw new Error("لم يتم العثور على حساب الصديق.");
 
     return data;
   }
 
-  async function findConversationById(conversationId) {
+  async function findConversationById(id) {
     const { data, error } = await state.db
       .from("conversations")
       .select("id,title,conversation_type,direct_key,created_by,updated_at")
-      .eq("id", conversationId)
+      .eq("id", id)
       .eq("conversation_type", "direct")
       .maybeSingle();
 
     if (error) throw error;
-
-    if (!data) {
-      throw new Error("المحادثة غير موجودة أو لا يمكن الوصول إليها.");
-    }
+    if (!data) throw new Error("المحادثة غير موجودة أو لا يمكن الوصول إليها.");
 
     return data;
   }
 
   async function findConversationByFriend(friendId) {
-    const directKey = [
-      state.user.id,
-      friendId
-    ].sort().join(":");
+    const directKey = [state.user.id, friendId].sort().join(":");
 
     const { data, error } = await state.db
       .from("conversations")
@@ -206,22 +212,21 @@
       .maybeSingle();
 
     if (error) throw error;
-
     return data;
   }
 
   async function ensureMembership(conversation, friend) {
-    const { data: existing, error: checkError } = await state.db
+    const { data: existing, error } = await state.db
       .from("conversation_members")
       .select("conversation_id,last_read_at")
       .eq("conversation_id", conversation.id)
       .eq("user_id", state.user.id)
       .maybeSingle();
 
-    if (checkError) throw checkError;
+    if (error) throw error;
 
     if (!existing) {
-      const { error } = await state.db
+      const { error: insertError } = await state.db
         .from("conversation_members")
         .insert({
           conversation_id: conversation.id,
@@ -229,13 +234,13 @@
           member_role: "member"
         });
 
-      if (error && error.code !== "23505") {
-        throw error;
+      if (insertError && insertError.code !== "23505") {
+        throw insertError;
       }
     }
 
     if (conversation.created_by === state.user.id && friend?.id) {
-      const { error } = await state.db
+      const { error: friendError } = await state.db
         .from("conversation_members")
         .insert({
           conversation_id: conversation.id,
@@ -243,33 +248,24 @@
           member_role: "member"
         });
 
-      if (error && error.code !== "23505") {
-        console.warn("Friend membership:", error);
+      if (friendError && friendError.code !== "23505") {
+        console.warn("Friend membership:", friendError);
       }
     }
 
-    const { data: verified, error: verifyError } =
-      await state.db
-        .from("conversation_members")
-        .select("conversation_id")
-        .eq("conversation_id", conversation.id)
-        .eq("user_id", state.user.id)
-        .maybeSingle();
+    const { data: verified, error: verifyError } = await state.db
+      .from("conversation_members")
+      .select("conversation_id")
+      .eq("conversation_id", conversation.id)
+      .eq("user_id", state.user.id)
+      .maybeSingle();
 
     if (verifyError) throw verifyError;
-
-    if (!verified) {
-      throw new Error(
-        "عضويتك في المحادثة غير مكتملة. حدّث الصفحة وحاول مرة أخرى."
-      );
-    }
+    if (!verified) throw new Error("عضويتك في المحادثة غير مكتملة.");
   }
 
   async function createConversation(friend) {
-    const directKey = [
-      state.user.id,
-      friend.id
-    ].sort().join(":");
+    const directKey = [state.user.id, friend.id].sort().join(":");
 
     const { error } = await state.db
       .from("conversations")
@@ -279,26 +275,19 @@
         created_by: state.user.id
       });
 
-    if (error && error.code !== "23505") {
-      throw error;
-    }
+    if (error && error.code !== "23505") throw error;
 
     let conversation = null;
 
     for (let attempt = 0; attempt < 8; attempt++) {
       conversation = await findConversationByFriend(friend.id);
-
       if (conversation) break;
-
       await new Promise(resolve => setTimeout(resolve, 350));
     }
 
-    if (!conversation) {
-      throw new Error("تعذر إنشاء المحادثة.");
-    }
+    if (!conversation) throw new Error("تعذر إنشاء المحادثة.");
 
     await ensureMembership(conversation, friend);
-
     return conversation;
   }
 
@@ -307,52 +296,167 @@
 
     const { error } = await state.db
       .from("conversation_members")
-      .update({
-        last_read_at: new Date().toISOString()
-      })
+      .update({ last_read_at: now() })
       .eq("conversation_id", state.conversation.id)
       .eq("user_id", state.user.id);
 
+    if (error) console.warn("Read status:", error);
+  }
+
+  async function loadSettings() {
+    const { data, error } = await state.db
+      .from("chat_presence")
+      .select("is_online,last_seen_visibility,online_visibility,read_receipts")
+      .eq("user_id", state.user.id)
+      .maybeSingle();
+
     if (error) {
-      console.warn("HANOON read status:", error);
+      console.warn("Presence settings:", error);
+      return;
+    }
+
+    if (data) {
+      state.settings = {
+        read_receipts: data.read_receipts,
+        last_seen_visibility: data.last_seen_visibility,
+        online_visibility: data.online_visibility
+      };
     }
   }
 
-  function makeMessage(message) {
-    const article = document.createElement("article");
+  async function setMyPresence(online) {
+    if (!state.user) return;
 
+    const values = {
+      user_id: state.user.id,
+      is_online: online,
+      last_seen_at: online ? undefined : now(),
+      last_seen_visibility: state.settings.last_seen_visibility,
+      online_visibility: state.settings.online_visibility,
+      read_receipts: state.settings.read_receipts,
+      updated_at: now()
+    };
+
+    if (online) delete values.last_seen_at;
+
+    const { error } = await state.db
+      .from("chat_presence")
+      .upsert(values, { onConflict: "user_id" });
+
+    if (error) console.warn("Presence update:", error);
+  }
+
+  async function loadFriendPresence() {
+    if (!state.friend) return;
+
+    const { data, error } = await state.db
+      .from("chat_presence")
+      .select("is_online,last_seen_at,last_seen_visibility,online_visibility")
+      .eq("user_id", state.friend.id)
+      .maybeSingle();
+
+    if (error) {
+      ui.status.textContent = "محادثة خاصة";
+      return;
+    }
+
+    if (!data) {
+      ui.status.textContent = "محادثة خاصة";
+      return;
+    }
+
+    const canSeeOnline =
+      data.online_visibility === "everyone" ||
+      data.online_visibility === "contacts";
+
+    const canSeeLast =
+      data.last_seen_visibility === "everyone" ||
+      data.last_seen_visibility === "contacts";
+
+    if (data.is_online && canSeeOnline) {
+      ui.status.textContent = "متصل الآن";
+      ui.status.classList.add("online");
+    } else {
+      ui.status.classList.remove("online");
+
+      if (canSeeLast && data.last_seen_at) {
+        ui.status.textContent = "آخر ظهور " + formatTime(data.last_seen_at);
+      } else {
+        ui.status.textContent = "محادثة خاصة";
+      }
+    }
+  }
+
+  function getPrivateFileURL(path) {
+    return state.db.storage
+      .from("chat-media")
+      .createSignedUrl(path, 60 * 60);
+  }
+
+  async function resolveAttachment(path) {
+    if (!path) return "";
+
+    const { data, error } = await getPrivateFileURL(path);
+    if (error) {
+      console.warn("Attachment URL:", error);
+      return "";
+    }
+
+    return data?.signedUrl || "";
+  }
+
+  async function makeMessage(message) {
+    const article = document.createElement("article");
     article.className = "message";
     article.classList.add(
       message.sender_id === state.user.id ? "mine" : "theirs"
     );
-
     article.dataset.messageId = message.id;
 
     const body = document.createElement("div");
     body.className = "message-body";
 
-    if (message.message_type === "image") {
-      const image = document.createElement("img");
+    if (message.message_type === "image" || message.message_type === "video" || message.message_type === "audio") {
+      const url = await resolveAttachment(message.attachment_path);
 
-      image.className = "message-image";
-      image.src = message.body || "";
-      image.alt = "صورة مرسلة";
-      image.loading = "lazy";
-
-      body.appendChild(image);
-
-    } else if (message.message_type === "video") {
-      const video = document.createElement("video");
-
-      video.src = message.body || "";
-      video.controls = true;
-      video.playsInline = true;
-      video.style.maxWidth = "100%";
-      video.style.maxHeight = "280px";
-      video.style.borderRadius = "11px";
-
-      body.appendChild(video);
-
+      if (!url) {
+        body.textContent = "تعذر تحميل المرفق";
+      } else if (message.message_type === "image") {
+        const image = document.createElement("img");
+        image.className = "message-image";
+        image.src = url;
+        image.alt = "صورة مرسلة";
+        image.loading = "lazy";
+        body.appendChild(image);
+      } else if (message.message_type === "video") {
+        const video = document.createElement("video");
+        video.src = url;
+        video.controls = true;
+        video.playsInline = true;
+        video.style.maxWidth = "100%";
+        video.style.maxHeight = "280px";
+        video.style.borderRadius = "11px";
+        body.appendChild(video);
+      } else {
+        const audio = document.createElement("audio");
+        audio.src = url;
+        audio.controls = true;
+        audio.className = "message-audio";
+        body.appendChild(audio);
+      }
+    } else if (message.message_type === "sticker") {
+      body.style.fontSize = "54px";
+      body.style.textAlign = "center";
+      body.textContent = message.body || "❤️";
+    } else if (message.message_type === "file") {
+      const link = document.createElement("a");
+      const url = await resolveAttachment(message.attachment_path);
+      link.href = url || "#";
+      link.target = "_blank";
+      link.rel = "noopener";
+      link.textContent = message.body || "فتح الملف";
+      link.style.color = "white";
+      body.appendChild(link);
     } else {
       body.textContent = message.body || "";
     }
@@ -365,29 +469,33 @@
 
     if (message.sender_id === state.user.id) {
       const status = document.createElement("div");
-
       status.className = "message-status";
       status.textContent = "✓";
-
       article.appendChild(status);
     }
+
+    article.addEventListener("contextmenu", event => {
+      event.preventDefault();
+      showMessageActions(message);
+    });
+
+    article.addEventListener("dblclick", () => {
+      showMessageActions(message);
+    });
 
     return article;
   }
 
-  function appendMessage(message) {
-    if (!message?.id || state.messageIds.has(message.id)) {
-      return;
-    }
+  async function appendMessage(message) {
+    if (!message?.id || state.messageIds.has(message.id)) return;
 
     state.messageIds.add(message.id);
 
     const empty = ui.messages.querySelector(".empty-chat");
-
     if (empty) empty.remove();
 
-    ui.messages.appendChild(makeMessage(message));
-
+    const element = await makeMessage(message);
+    ui.messages.appendChild(element);
     scrollToBottom();
   }
 
@@ -395,12 +503,11 @@
     if (!state.conversation) return;
 
     showEmpty("جارٍ تحميل الرسائل...");
-
     state.messageIds.clear();
 
     const { data, error } = await state.db
       .from("messages")
-      .select("id,conversation_id,sender_id,body,message_type,created_at,deleted_at")
+      .select("id,conversation_id,sender_id,body,message_type,attachment_path,duration_seconds,created_at,deleted_at,reply_to")
       .eq("conversation_id", state.conversation.id)
       .is("deleted_at", null)
       .order("created_at", { ascending: true })
@@ -413,68 +520,304 @@
     if (!data?.length) {
       showEmpty("لا توجد رسائل بعد. ابدأ المحادثة الآن.");
     } else {
-      data.forEach(appendMessage);
+      for (const message of data) {
+        await appendMessage(message);
+      }
     }
 
     await updateReadStatus();
     scrollToBottom();
   }
 
+  async function insertMessage(values) {
+    const { data, error } = await state.db
+      .from("messages")
+      .insert({
+        conversation_id: state.conversation.id,
+        sender_id: state.user.id,
+        ...values
+      })
+      .select("id,conversation_id,sender_id,body,message_type,attachment_path,duration_seconds,created_at,deleted_at,reply_to")
+      .single();
+
+    if (error) throw error;
+
+    appendMessage(data);
+    updateConversationTime();
+    return data;
+  }
+
+  async function updateConversationTime() {
+    const { error } = await state.db
+      .from("conversations")
+      .update({ updated_at: now() })
+      .eq("id", state.conversation.id);
+
+    if (error) console.warn("Conversation timestamp:", error);
+  }
+
   async function sendMessage(event) {
     event.preventDefault();
 
     const body = ui.input.value.trim();
-
-    if (!body || !state.conversation || state.sending) {
-      return;
-    }
+    if (!body || !state.conversation || state.sending) return;
 
     state.sending = true;
-    setComposerEnabled(false);
+    ui.send.disabled = true;
 
     try {
-      const { data, error } = await state.db
-        .from("messages")
-        .insert({
-          conversation_id: state.conversation.id,
-          sender_id: state.user.id,
-          body,
-          message_type: "text"
-        })
-        .select("id,conversation_id,sender_id,body,message_type,created_at,deleted_at")
-        .single();
-
-      if (error) throw error;
+      await insertMessage({
+        body,
+        message_type: "text"
+      });
 
       ui.input.value = "";
-
-      appendMessage(data);
-
-      const { error: updateError } = await state.db
-        .from("conversations")
-        .update({
-          updated_at: new Date().toISOString()
-        })
-        .eq("id", state.conversation.id);
-
-      if (updateError) {
-        console.warn("Conversation timestamp:", updateError);
-      }
-
+      sendTyping(false);
       await updateReadStatus();
 
     } catch (error) {
-      console.error("HANOON send:", error);
-
-      showNotice(
-        error.message || "تعذر إرسال الرسالة.",
-        "error"
-      );
-
+      console.error("Send message:", error);
+      showNotice(error.message || "تعذر إرسال الرسالة.", "error");
     } finally {
       state.sending = false;
-      setComposerEnabled(true);
+      ui.send.disabled = false;
       ui.input.focus();
+    }
+  }
+
+  async function uploadAndSend(file, type) {
+    if (!file || !state.conversation) return;
+
+    if (file.size > 25 * 1024 * 1024) {
+      showNotice("حجم الملف يجب ألا يتجاوز 25 ميجابايت.", "error");
+      return;
+    }
+
+    const extension = (file.name?.split(".").pop() || "bin")
+      .toLowerCase().replace(/[^a-z0-9]/g, "");
+
+    const path = `${state.conversation.id}/${state.user.id}/${Date.now()}-${crypto.randomUUID()}.${extension}`;
+
+    showNotice("جارٍ رفع الملف...");
+
+    try {
+      const { error: uploadError } = await state.db.storage
+        .from("chat-media")
+        .upload(path, file, {
+          contentType: file.type || "application/octet-stream",
+          upsert: false
+        });
+
+      if (uploadError) throw uploadError;
+
+      await insertMessage({
+        body: file.name || "",
+        message_type: type,
+        attachment_path: path,
+        duration_seconds: null
+      });
+
+      showNotice("تم إرسال المرفق.");
+
+    } catch (error) {
+      console.error("Upload:", error);
+      showNotice(error.message || "تعذر رفع المرفق.", "error");
+    }
+  }
+
+  async function startVoiceRecording() {
+    if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
+      showNotice("تسجيل الصوت غير مدعوم في هذا المتصفح.", "error");
+      return;
+    }
+
+    try {
+      state.recordingStream = await navigator.mediaDevices.getUserMedia({
+        audio: true
+      });
+
+      state.recordingChunks = [];
+      state.recorder = new MediaRecorder(state.recordingStream);
+      state.recordingStarted = Date.now();
+
+      state.recorder.ondataavailable = event => {
+        if (event.data?.size) state.recordingChunks.push(event.data);
+      };
+
+      state.recorder.onstop = async () => {
+        const duration = Math.round((Date.now() - state.recordingStarted) / 1000);
+        const blob = new Blob(state.recordingChunks, {
+          type: state.recorder.mimeType || "audio/webm"
+        });
+
+        stopRecordingUI();
+
+        if (state.cancelRecording) {
+          state.cancelRecording = false;
+          return;
+        }
+
+        if (!blob.size) {
+          showNotice("لم يتم تسجيل صوت.");
+          return;
+        }
+
+        const extension = blob.type.includes("ogg") ? "ogg" :
+          blob.type.includes("mp4") ? "mp4" : "webm";
+
+        const file = new File(
+          [blob],
+          `voice-${Date.now()}.${extension}`,
+          { type: blob.type }
+        );
+
+        await uploadAndSend(file, "audio");
+
+        const { data: latest } = await state.db
+          .from("messages")
+          .select("id")
+          .eq("conversation_id", state.conversation.id)
+          .eq("sender_id", state.user.id)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (latest) {
+          await state.db.from("messages")
+            .update({ duration_seconds: duration })
+            .eq("id", latest.id);
+        }
+      };
+
+      state.recorder.start();
+      ui.record.classList.add("recording");
+      ui.recordingStrip.classList.remove("hidden");
+
+      state.recordingTimer = setInterval(() => {
+        ui.recordingTime.textContent = formatDuration(
+          (Date.now() - state.recordingStarted) / 1000
+        );
+      }, 500);
+
+    } catch (error) {
+      console.error("Microphone:", error);
+      showNotice("لم نتمكن من تشغيل الميكروفون. راجع إذن الوصول للصوت.", "error");
+      stopRecordingUI();
+    }
+  }
+
+  function stopRecordingUI() {
+    clearInterval(state.recordingTimer);
+    state.recordingTimer = null;
+    ui.record.classList.remove("recording");
+    ui.recordingStrip.classList.add("hidden");
+
+    if (state.recordingStream) {
+      state.recordingStream.getTracks().forEach(track => track.stop());
+      state.recordingStream = null;
+    }
+  }
+
+  function stopVoiceRecording(cancel = false) {
+    if (!state.recorder || state.recorder.state === "inactive") return;
+    state.cancelRecording = cancel;
+    state.recorder.stop();
+  }
+
+  async function sendSticker(sticker) {
+    if (!sticker || !state.conversation) return;
+
+    try {
+      await insertMessage({
+        body: sticker,
+        message_type: "sticker"
+      });
+
+      closePanel("stickerPanel");
+    } catch (error) {
+      showNotice("تعذر إرسال الملصق.", "error");
+    }
+  }
+
+  function ensurePanel(id, title) {
+    let panel = $(id);
+    if (panel) return panel;
+
+    panel = document.createElement("div");
+    panel.id = id;
+    panel.className = "panel-overlay hidden";
+
+    const box = document.createElement("div");
+    box.className = "bottom-panel";
+
+    const heading = document.createElement("div");
+    heading.className = "panel-heading";
+
+    const strong = document.createElement("strong");
+    strong.textContent = title;
+
+    const close = document.createElement("button");
+    close.className = "close-panel";
+    close.type = "button";
+    close.textContent = "×";
+    close.addEventListener("click", () => closePanel(id));
+
+    heading.append(strong, close);
+    box.appendChild(heading);
+    panel.appendChild(box);
+    document.querySelector(".chat-shell").appendChild(panel);
+
+    panel.addEventListener("click", event => {
+      if (event.target === panel) closePanel(id);
+    });
+
+    return panel;
+  }
+
+  function closePanel(id) {
+    $(id)?.classList.add("hidden");
+  }
+
+  function openPanel(id) {
+    $(id)?.classList.remove("hidden");
+  }
+
+  function sendTyping(active) {
+    if (!state.channel) return;
+
+    state.channel.send({
+      type: "broadcast",
+      event: "typing",
+      payload: {
+        user_id: state.user.id,
+        active: Boolean(active)
+      }
+    }).catch(() => {});
+  }
+
+  function bindTyping() {
+    ui.input.addEventListener("input", () => {
+      if (!state.channel) return;
+
+      if (!state.typingActive) {
+        state.typingActive = true;
+        sendTyping(true);
+      }
+
+      clearTimeout(state.typingTimer);
+      state.typingTimer = setTimeout(() => {
+        state.typingActive = false;
+        sendTyping(false);
+      }, 1800);
+    });
+  }
+
+  function showTyping(active) {
+    if (active) {
+      ui.status.textContent = "يكتب الآن...";
+      ui.status.classList.add("online");
+    } else {
+      loadFriendPresence();
     }
   }
 
@@ -487,43 +830,443 @@
     const conversationId = state.conversation.id;
 
     state.channel = state.db
-      .channel(`hanoon-chat-${conversationId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "messages",
-          filter: `conversation_id=eq.${conversationId}`
-        },
-        async payload => {
-          if (
-            state.conversation?.id !== conversationId ||
-            payload.new.deleted_at
-          ) {
-            return;
-          }
+      .channel(`hanoon-chat-${conversationId}`, {
+        config: { broadcast: { self: false } }
+      })
+      .on("postgres_changes", {
+        event: "INSERT",
+        schema: "public",
+        table: "messages",
+        filter: `conversation_id=eq.${conversationId}`
+      }, async payload => {
+        if (state.conversation?.id !== conversationId) return;
+        if (payload.new.deleted_at) return;
 
-          appendMessage(payload.new);
+        await appendMessage(payload.new);
 
-          if (
-            payload.new.sender_id !== state.user.id &&
-            document.visibilityState === "visible"
-          ) {
-            await updateReadStatus();
-          }
+        if (payload.new.sender_id !== state.user.id &&
+            document.visibilityState === "visible") {
+          await updateReadStatus();
         }
-      )
+      })
+      .on("broadcast", { event: "typing" }, event => {
+        if (event.payload?.user_id !== state.friend.id) return;
+        showTyping(Boolean(event.payload.active));
+      })
       .subscribe(status => {
+        if (status === "SUBSCRIBED") {
+          loadFriendPresence();
+        }
         if (status === "CHANNEL_ERROR") {
           console.warn("HANOON realtime connection error.");
         }
       });
   }
 
+  function showMessageActions(message) {
+    const panel = ensurePanel("messageActionsPanel", "خيارات الرسالة");
+    const box = panel.querySelector(".bottom-panel");
+
+    box.querySelectorAll(".message-action-item").forEach(item => item.remove());
+
+    const actions = [
+      ["نسخ الرسالة", async () => {
+        await navigator.clipboard?.writeText(message.body || "");
+        showNotice("تم نسخ الرسالة.");
+      }],
+      ["الرد على الرسالة", () => {
+        ui.input.value = `↩ ${message.body || "مرفق"}\n`;
+        ui.input.focus();
+      }],
+      ["حذف الرسالة لدي", async () => {
+        const { error } = await state.db.from("messages")
+          .update({ deleted_at: now() })
+          .eq("id", message.id)
+          .eq("sender_id", state.user.id);
+
+        if (error) {
+          showNotice("لا يمكن حذف هذه الرسالة.", "error");
+        } else {
+          document.querySelector(`[data-message-id="${message.id}"]`)?.remove();
+          showNotice("تم حذف الرسالة من عرضك.");
+        }
+      }]
+    ];
+
+    if (message.sender_id === state.user.id) {
+      actions.push(["حذف الرسالة", async () => {
+        const { error } = await state.db.from("messages")
+          .update({ deleted_at: now() })
+          .eq("id", message.id)
+          .eq("sender_id", state.user.id);
+
+        if (error) {
+          showNotice("تعذر حذف الرسالة.", "error");
+        } else {
+          document.querySelector(`[data-message-id="${message.id}"]`)?.remove();
+        }
+      }]);
+    }
+
+    actions.forEach(([label, callback]) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "menu-item message-action-item";
+      button.textContent = label;
+      button.addEventListener("click", async () => {
+        closePanel("messageActionsPanel");
+        await callback();
+      });
+      box.appendChild(button);
+    });
+
+    openPanel("messageActionsPanel");
+  }
+
+  function applyWallpaper(value) {
+    state.wallpaperUrl = value;
+
+    if (value) {
+      ui.messages.style.backgroundImage =
+        `linear-gradient(rgba(12,18,32,.30),rgba(12,18,32,.30)),url("${value}")`;
+      ui.messages.style.backgroundSize = "cover";
+      ui.messages.style.backgroundPosition = "center";
+    } else {
+      ui.messages.style.backgroundImage = "";
+      ui.messages.style.backgroundSize = "";
+      ui.messages.style.backgroundPosition = "";
+    }
+  }
+
+  function setupWallpaperOptions() {
+    const panel = ensurePanel("wallpaperPanel", "خلفية المحادثة");
+    const box = panel.querySelector(".bottom-panel");
+
+    const options = [
+      ["اللون الأصلي", "#0c1220"],
+      ["بنفسجي", "#211a3d"],
+      ["تركواز", "#102d32"],
+      ["ليلي", "#080d18"],
+      ["وردي داكن", "#351d30"]
+    ];
+
+    options.forEach(([label, color]) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "menu-item message-action-item";
+      button.textContent = label;
+      button.style.background = color;
+      button.addEventListener("click", () => {
+        applyWallpaper("");
+        ui.messages.style.backgroundColor = color;
+        localStorage.setItem(
+          `hanoon_wallpaper_${state.conversation.id}`,
+          color
+        );
+        closePanel("wallpaperPanel");
+        showNotice("تم تغيير خلفية المحادثة على هذا الجهاز.");
+      });
+      box.appendChild(button);
+    });
+
+    const upload = document.createElement("button");
+    upload.type = "button";
+    upload.className = "menu-item message-action-item";
+    upload.textContent = "اختيار صورة من الهاتف";
+
+    upload.addEventListener("click", () => {
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = "image/*";
+
+      input.addEventListener("change", () => {
+        const file = input.files?.[0];
+        if (!file) return;
+
+        if (state.wallpaperUrl?.startsWith("blob:")) {
+          URL.revokeObjectURL(state.wallpaperUrl);
+        }
+
+        const url = URL.createObjectURL(file);
+        applyWallpaper(url);
+        closePanel("wallpaperPanel");
+        showNotice("تم تطبيق الصورة كخلفية على هذا الجهاز.");
+      });
+
+      input.click();
+    });
+
+    box.appendChild(upload);
+    openPanel("wallpaperPanel");
+  }
+
+  async function setupPrivacyOptions() {
+    const panel = ensurePanel("privacyPanel", "الخصوصية والظهور");
+    const box = panel.querySelector(".bottom-panel");
+
+    box.querySelectorAll(".privacy-option").forEach(item => item.remove());
+
+    const fields = [
+      {
+        key: "online_visibility",
+        title: "من يمكنه رؤية اتصالك؟"
+      },
+      {
+        key: "last_seen_visibility",
+        title: "من يمكنه رؤية آخر ظهور؟"
+      }
+    ];
+
+    const choices = [
+      ["everyone", "الجميع"],
+      ["contacts", "الأصدقاء"],
+      ["nobody", "لا أحد"]
+    ];
+
+    fields.forEach(field => {
+      const heading = document.createElement("div");
+      heading.className = "privacy-option";
+      heading.style.padding = "12px 4px 5px";
+      heading.textContent = field.title;
+      box.appendChild(heading);
+
+      choices.forEach(([value, label]) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "menu-item privacy-option";
+        button.textContent =
+          `${label}${state.settings[field.key] === value ? " ✓" : ""}`;
+
+        button.addEventListener("click", async () => {
+          state.settings[field.key] = value;
+
+          const { error } = await state.db
+            .from("chat_presence")
+            .upsert({
+              user_id: state.user.id,
+              is_online: true,
+              last_seen_visibility: state.settings.last_seen_visibility,
+              online_visibility: state.settings.online_visibility,
+              read_receipts: state.settings.read_receipts,
+              updated_at: now()
+            }, { onConflict: "user_id" });
+
+          if (error) {
+            showNotice("تعذر حفظ إعداد الخصوصية.", "error");
+            return;
+          }
+
+          showNotice("تم حفظ إعداد الخصوصية.");
+          setupPrivacyOptions();
+        });
+
+        box.appendChild(button);
+      });
+    });
+
+    const receipt = document.createElement("button");
+    receipt.type = "button";
+    receipt.className = "menu-item privacy-option";
+    receipt.textContent = state.settings.read_receipts
+      ? "✓ مؤشرات القراءة مفعلة"
+      : "مؤشرات القراءة متوقفة";
+
+    receipt.addEventListener("click", async () => {
+      state.settings.read_receipts = !state.settings.read_receipts;
+
+      const { error } = await state.db
+        .from("chat_presence")
+        .upsert({
+          user_id: state.user.id,
+          is_online: true,
+          last_seen_visibility: state.settings.last_seen_visibility,
+          online_visibility: state.settings.online_visibility,
+          read_receipts: state.settings.read_receipts,
+          updated_at: now()
+        }, { onConflict: "user_id" });
+
+      if (error) {
+        showNotice("تعذر حفظ الإعداد.", "error");
+        return;
+      }
+
+      showNotice("تم تحديث مؤشرات القراءة.");
+      setupPrivacyOptions();
+    });
+
+    box.appendChild(receipt);
+    openPanel("privacyPanel");
+  }
+
+  function bindEvents() {
+    ui.form.addEventListener("submit", sendMessage);
+
+    ui.back.addEventListener("click", () => {
+      window.location.href = "messages.html";
+    });
+
+    ui.more.addEventListener("click", () => openPanel("chatActionsPanel"));
+
+    ui.attach.addEventListener("click", () => openPanel("attachPanel"));
+    ui.sticker.addEventListener("click", () => openPanel("stickerPanel"));
+
+    $("chooseImageBtn")?.addEventListener("click", () => {
+      closePanel("attachPanel");
+      ui.imageInput.click();
+    });
+
+    $("chooseFileBtn")?.addEventListener("click", () => {
+      closePanel("attachPanel");
+      ui.fileInput.click();
+    });
+
+    $("chooseCameraBtn")?.addEventListener("click", () => {
+      closePanel("attachPanel");
+      const input = ui.imageInput;
+      input.setAttribute("capture", "environment");
+      input.click();
+      input.addEventListener("change", () => input.removeAttribute("capture"), { once: true });
+    });
+
+    ui.imageInput.addEventListener("change", async () => {
+      const file = ui.imageInput.files?.[0];
+      if (file) await uploadAndSend(file, "image");
+      ui.imageInput.value = "";
+    });
+
+    ui.fileInput.addEventListener("change", async () => {
+      const file = ui.fileInput.files?.[0];
+      if (file) {
+        const type = file.type.startsWith("video/") ? "video" : "file";
+        await uploadAndSend(file, type);
+      }
+      ui.fileInput.value = "";
+    });
+
+    $("stickerGrid")?.addEventListener("click", event => {
+      const button = event.target.closest("[data-sticker]");
+      if (button) sendSticker(button.dataset.sticker);
+    });
+
+    document.querySelectorAll("[data-close-panel]").forEach(button => {
+      button.addEventListener("click", () => {
+        closePanel(button.dataset.closePanel);
+      });
+    });
+
+    document.querySelectorAll(".panel-overlay").forEach(panel => {
+      panel.addEventListener("click", event => {
+        if (event.target === panel) closePanel(panel.id);
+      });
+    });
+
+    ui.record.addEventListener("click", () => {
+      if (state.recorder?.state === "recording") {
+        stopVoiceRecording(false);
+      } else {
+        startVoiceRecording();
+      }
+    });
+
+    ui.cancelRecording.addEventListener("click", () => {
+      stopVoiceRecording(true);
+    });
+
+    $("chatWallpaperBtn")?.addEventListener("click", () => {
+      closePanel("chatActionsPanel");
+      setupWallpaperOptions();
+    });
+
+    $("chatPrivacyBtn")?.addEventListener("click", () => {
+      closePanel("chatActionsPanel");
+      setupPrivacyOptions();
+    });
+
+    $("chatSearchBtn")?.addEventListener("click", () => {
+      closePanel("chatActionsPanel");
+
+      const term = prompt("اكتب كلمة للبحث داخل المحادثة:");
+      if (!term) return;
+
+      const matches = [...ui.messages.querySelectorAll(".message")]
+        .filter(item => item.textContent.toLowerCase().includes(term.toLowerCase()));
+
+      ui.messages.querySelectorAll(".message").forEach(item => {
+        item.style.outline = "";
+      });
+
+      matches.forEach(item => {
+        item.style.outline = "2px solid #42cdbb";
+      });
+
+      showNotice(`تم العثور على ${matches.length} نتيجة.`);
+    });
+
+    $("chatMediaBtn")?.addEventListener("click", () => {
+      closePanel("chatActionsPanel");
+
+      const media = [...ui.messages.querySelectorAll("img,video,audio")];
+      if (!media.length) {
+        showNotice("لا توجد وسائط في هذه المحادثة.");
+        return;
+      }
+
+      const first = media[0];
+      first.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+
+    $("chatClearBtn")?.addEventListener("click", async () => {
+      closePanel("chatActionsPanel");
+
+      if (!confirm("هل تريد مسح الرسائل من عرضك؟")) return;
+
+      const { error } = await state.db
+        .from("messages")
+        .update({ deleted_at: now() })
+        .eq("conversation_id", state.conversation.id)
+        .eq("sender_id", state.user.id);
+
+      if (error) {
+        showNotice("تعذر مسح الرسائل.", "error");
+        return;
+      }
+
+      ui.messages.replaceChildren();
+      showEmpty("تم إخفاء رسائلك من هذه المحادثة.");
+      showNotice("تم تنفيذ طلب المسح للرسائل التي أرسلتها.");
+    });
+
+    $("chatBlockBtn")?.addEventListener("click", () => {
+      closePanel("chatActionsPanel");
+      showNotice("ميزة الحظر ستحتاج ربطها بنظام الحظر العام للأعضاء.", "error");
+    });
+
+    ui.input.addEventListener("keydown", event => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        ui.form.requestSubmit();
+      }
+    });
+
+    bindTyping();
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible" && state.conversation) {
+        updateReadStatus();
+        setMyPresence(true);
+      } else if (document.visibilityState === "hidden") {
+        setMyPresence(false);
+      }
+    });
+
+    window.addEventListener("pagehide", () => {
+      if (state.channel) state.db.removeChannel(state.channel);
+      setMyPresence(false);
+    });
+  }
+
   async function openConversation() {
     const params = new URLSearchParams(window.location.search);
-
     const conversationId = params.get("id");
     const friendIdFromURL = params.get("user");
 
@@ -536,16 +1279,9 @@
 
     if (conversationId) {
       conversation = await findConversationById(conversationId);
+      const idFromConversation = getFriendIdFromKey(conversation.direct_key);
 
-      const idFromConversation = getFriendIdFromKey(
-        conversation.direct_key
-      );
-
-      if (
-        friendId &&
-        idFromConversation &&
-        friendId !== idFromConversation
-      ) {
+      if (friendId && idFromConversation && friendId !== idFromConversation) {
         throw new Error("بيانات المحادثة غير متطابقة.");
       }
 
@@ -557,7 +1293,6 @@
     }
 
     await verifyFriendship(friendId);
-
     state.friend = await loadFriend(friendId);
 
     if (!conversation) {
@@ -575,54 +1310,33 @@
     state.conversation = conversation;
 
     setAvatar(state.friend);
-
     ui.name.textContent = displayName(state.friend);
     ui.status.textContent = "محادثة خاصة";
 
+    const savedWallpaper = localStorage.getItem(
+      `hanoon_wallpaper_${state.conversation.id}`
+    );
+
+    if (savedWallpaper) {
+      ui.messages.style.backgroundColor = savedWallpaper;
+    }
+
+    await loadSettings();
+    await setMyPresence(true);
     await loadMessages();
+
     subscribeToMessages();
+    await loadFriendPresence();
+
+    state.presenceTimer = setInterval(() => {
+      if (document.visibilityState === "visible") {
+        setMyPresence(true);
+      }
+    }, 60000);
 
     setComposerEnabled(true);
     hideLoading();
-
     ui.input.focus();
-  }
-
-  function bindEvents() {
-    ui.form.addEventListener("submit", sendMessage);
-
-    ui.back.addEventListener("click", () => {
-      window.location.href = "messages.html";
-    });
-
-    ui.more.addEventListener("click", () => {
-      window.location.href = "messages.html";
-    });
-
-    ui.input.addEventListener("keydown", event => {
-      if (
-        event.key === "Enter" &&
-        !event.shiftKey
-      ) {
-        event.preventDefault();
-        ui.form.requestSubmit();
-      }
-    });
-
-    document.addEventListener("visibilitychange", () => {
-      if (
-        document.visibilityState === "visible" &&
-        state.conversation
-      ) {
-        updateReadStatus();
-      }
-    });
-
-    window.addEventListener("pagehide", () => {
-      if (state.channel) {
-        state.db.removeChannel(state.channel);
-      }
-    });
   }
 
   async function initialize() {
@@ -636,7 +1350,6 @@
       }
 
       const { data, error } = await state.db.auth.getUser();
-
       if (error) throw error;
 
       if (!data.user) {
@@ -647,23 +1360,15 @@
       }
 
       state.user = data.user;
-
       bindEvents();
-
       setComposerEnabled(false);
 
       await openConversation();
 
     } catch (error) {
       console.error("HANOON chat:", error);
-
       hideLoading();
-
-      showNotice(
-        error.message || "تعذر فتح المحادثة.",
-        "error"
-      );
-
+      showNotice(error.message || "تعذر فتح المحادثة.", "error");
       setComposerEnabled(false);
     }
   }
@@ -674,30 +1379,19 @@
       return;
     }
 
-    window.addEventListener(
-      "hanoon:supabase-ready",
-      initialize,
-      { once: true }
-    );
+    window.addEventListener("hanoon:supabase-ready", initialize, { once: true });
 
-    window.addEventListener(
-      "hanoon:supabase-error",
-      event => {
-        hideLoading();
-
-        showNotice(
-          event.detail?.message || "تعذر الاتصال بقاعدة البيانات.",
-          "error"
-        );
-      },
-      { once: true }
-    );
+    window.addEventListener("hanoon:supabase-error", event => {
+      hideLoading();
+      showNotice(
+        event.detail?.message || "تعذر الاتصال بقاعدة البيانات.",
+        "error"
+      );
+    }, { once: true });
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start, {
-      once: true
-    });
+    document.addEventListener("DOMContentLoaded", start, { once: true });
   } else {
     start();
   }
