@@ -1,7 +1,7 @@
 
 /* =====================================================
    HANOON - PROFILE SYSTEM
-   Supabase Profile / Avatar / QR / Account
+   Profile / Avatar / QR / Account
 ===================================================== */
 
 (() => {
@@ -14,7 +14,6 @@
   let currentProfile = null;
   let busy = false;
 
-  /* انتظار اتصال Supabase دون ترك مستمعات معلّقة */
   function waitForSupabase() {
     return new Promise((resolve, reject) => {
       if (window.HANOON?.supabase) {
@@ -50,16 +49,13 @@
 
       timer = setTimeout(() => {
         cleanup();
-        reject(new Error(
-          "انتهت مهلة الاتصال. حاول تحديث الصفحة."
-        ));
+        reject(new Error("انتهت مهلة الاتصال. حاول تحديث الصفحة."));
       }, 15000);
 
       if (window.HANOON?.supabase) onReady();
     });
   }
 
-  /* الرسائل */
   function toast(message) {
     const element = $("toast");
     if (!element) return;
@@ -106,8 +102,9 @@
     return parseList(value).join("، ");
   }
 
-  /* عرض القوائم */
   function renderTags(container, items, emptyMessage) {
+    if (!container) return;
+
     container.replaceChildren();
 
     if (!items.length) {
@@ -126,7 +123,6 @@
     });
   }
 
-  /* الصورة الشخصية */
   function getAvatarURL(path) {
     if (!path) return "";
 
@@ -137,31 +133,34 @@
     return data?.publicUrl || "";
   }
 
-  function renderAvatar(path, name) {
+  function renderAvatar(path, name, fallbackURL = "") {
     const container = $("profileAvatar");
+    if (!container) return;
+
     container.replaceChildren();
 
-    const url = getAvatarURL(path);
+    const url = path
+      ? getAvatarURL(path)
+      : fallbackURL;
 
     if (!url) {
-      container.textContent = (name || "H").charAt(0);
+      container.textContent = (name || "H").trim().charAt(0) || "H";
       return;
     }
 
     const image = document.createElement("img");
     image.src = url;
     image.alt = "الصورة الشخصية";
-    image.loading = "lazy";
+    image.loading = "eager";
 
     image.onerror = () => {
       container.replaceChildren();
-      container.textContent = (name || "H").charAt(0);
+      container.textContent = (name || "H").trim().charAt(0) || "H";
     };
 
     container.appendChild(image);
   }
 
-  /* رابط الملف العام */
   function getPublicProfileURL(username) {
     return new URL(
       `member.html?user=${encodeURIComponent(username)}`,
@@ -169,9 +168,10 @@
     ).href;
   }
 
-  /* رمز QR */
   function renderQR(username) {
     const container = $("profileQR");
+    if (!container) return;
+
     container.replaceChildren();
 
     if (!window.QRCode) {
@@ -191,23 +191,62 @@
     });
   }
 
-  /* عرض الملف الشخصي */
+  /* الاسم الاحتياطي من حساب تسجيل الدخول */
+  function getAccountName() {
+    const metadata = currentUser?.user_metadata || {};
+
+    return (
+      metadata.full_name ||
+      metadata.name ||
+      metadata.display_name ||
+      currentUser?.email?.split("@")[0] ||
+      "عضو هنون"
+    );
+  }
+
+  function getAccountUsername() {
+    const metadata = currentUser?.user_metadata || {};
+
+    return (
+      metadata.username ||
+      currentUser?.email?.split("@")[0] ||
+      "member_" + String(currentUser?.id || "").slice(0, 8)
+    );
+  }
+
+  /* عرض الملف */
   function renderProfile(profile) {
     currentProfile = profile;
 
-    $("profileName").textContent =
-      profile.full_name || "عضو هنون";
+    const name = (
+      profile.full_name ||
+      getAccountName()
+    ).trim();
 
-    $("profileUsername").textContent =
-      "@" + (profile.username || "");
+    const username = (
+      profile.username ||
+      getAccountUsername()
+    ).trim();
+
+    const avatarFallback =
+      currentUser?.user_metadata?.avatar_url ||
+      currentUser?.user_metadata?.picture ||
+      "";
+
+    $("profileName").textContent = name;
+    $("profileUsername").textContent = "@" + username;
 
     $("profileBio").textContent =
-      profile.bio || "لم يضف العضو نبذة شخصية بعد.";
+      profile.bio || "لم تضف نبذة شخصية بعد.";
 
     $("memberCode").textContent =
       profile.member_code || "غير متاح";
 
-    renderAvatar(profile.avatar_path, profile.full_name);
+    renderAvatar(
+      profile.avatar_path,
+      name,
+      avatarFallback
+    );
 
     renderTags(
       $("hobbiesList"),
@@ -221,19 +260,19 @@
       "لم تتم إضافة اهتمامات قرائية بعد."
     );
 
-    $("editName").value = profile.full_name || "";
-    $("editUsername").value = profile.username || "";
+    $("editName").value = name;
+    $("editUsername").value = username;
     $("editBio").value = profile.bio || "";
     $("editHobbies").value = listToText(profile.hobbies);
     $("editReading").value = listToText(profile.reading_interests);
 
-    renderQR(profile.username);
+    renderQR(username);
 
     $("profileLoading").hidden = true;
     $("profileContent").hidden = false;
   }
 
-  /* تحميل الملف الشخصي */
+  /* تحميل بيانات الحساب */
   async function loadProfile() {
     const { data, error } = await supabase
       .from("profiles")
@@ -245,11 +284,11 @@
 
     if (!data) {
       throw new Error(
-        "لم نعثر على ملفك الشخصي. سجّل الدخول من جديد."
+        "لم نعثر على ملفك في قاعدة البيانات. تأكد من اكتمال إنشاء الحساب."
       );
     }
 
-    if (!data.profile_completed) {
+    if (data.profile_completed === false) {
       window.location.href = "auth.html";
       return;
     }
@@ -257,7 +296,7 @@
     renderProfile(data);
   }
 
-  /* ضغط الصورة إلى 512 × 512 */
+  /* تجهيز صورة مربعة بجودة مناسبة */
   async function compressImage(file) {
     if (!file || !file.type.startsWith("image/")) {
       throw new Error("اختر صورة صحيحة.");
@@ -320,7 +359,6 @@
     }
   }
 
-  /* رفع الصورة */
   async function uploadAvatar(file) {
     const blob = await compressImage(file);
     const path = `${currentUser.id}/avatar.webp`;
@@ -338,7 +376,7 @@
     return path;
   }
 
-  /* حفظ التعديلات */
+  /* حفظ بيانات الملف الشخصي */
   async function saveProfile(event) {
     event.preventDefault();
 
@@ -361,9 +399,7 @@
       const bio = $("editBio").value.trim();
 
       if (fullName.length < 2 || fullName.length > 80) {
-        throw new Error(
-          "الاسم يجب أن يكون بين حرفين و80 حرفًا."
-        );
+        throw new Error("الاسم يجب أن يكون بين حرفين و80 حرفًا.");
       }
 
       if (!/^[a-z0-9_]{3,24}$/.test(username)) {
@@ -421,7 +457,7 @@
       renderProfile(data);
 
       showMessage("تم حفظ بياناتك بنجاح.", "success");
-      toast("تم تحديث ملفك الشخصي.");
+      toast("تم تحديث اسمك وصورتك وبياناتك.");
 
     } catch (error) {
       console.error("Profile save error:", error);
@@ -437,8 +473,12 @@
     }
   }
 
-  /* النسخ */
   async function copyText(value, successMessage) {
+    if (!value) {
+      toast("لا توجد بيانات لنسخها.");
+      return;
+    }
+
     try {
       await navigator.clipboard.writeText(value);
       toast(successMessage);
@@ -464,11 +504,8 @@
     }
   }
 
-  /* تسجيل الخروج */
   async function logout() {
-    const confirmed = confirm(
-      "هل تريد تسجيل الخروج من هنون؟"
-    );
+    const confirmed = confirm("هل تريد تسجيل الخروج من هنون؟");
 
     if (!confirmed) return;
 
@@ -482,35 +519,53 @@
     window.location.href = "auth.html";
   }
 
-  /* ربط الأحداث */
   function bindEvents() {
-    $("profileForm").addEventListener(
-      "submit",
-      saveProfile
-    );
-
-    $("logoutButton").addEventListener(
-      "click",
-      logout
-    );
+    $("profileForm").addEventListener("submit", saveProfile);
+    $("logoutButton").addEventListener("click", logout);
 
     $("copyMemberCode").addEventListener("click", () => {
       copyText(
-        currentProfile.member_code,
+        currentProfile?.member_code,
         "تم نسخ رقم العضوية."
       );
     });
 
     $("copyProfileLink").addEventListener("click", () => {
       const url = getPublicProfileURL(
-        currentProfile.username
+        currentProfile?.username || getAccountUsername()
       );
 
       copyText(url, "تم نسخ رابط الملف الشخصي.");
     });
+
+    $("avatarInput").addEventListener("change", event => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      if (!file.type.startsWith("image/")) {
+        toast("اختر ملف صورة صحيحًا.");
+        event.target.value = "";
+        return;
+      }
+
+      const previewURL = URL.createObjectURL(file);
+      const container = $("profileAvatar");
+      const image = document.createElement("img");
+
+      image.src = previewURL;
+      image.alt = "معاينة الصورة الشخصية";
+
+      image.onload = () => URL.revokeObjectURL(previewURL);
+
+      image.onerror = () => {
+        URL.revokeObjectURL(previewURL);
+        toast("تعذرت معاينة الصورة.");
+      };
+
+      container.replaceChildren(image);
+    });
   }
 
-  /* بدء النظام */
   async function start() {
     try {
       supabase = await waitForSupabase();
@@ -528,12 +583,9 @@
       currentUser = data.session.user;
 
       bindEvents();
-
       await loadProfile();
 
-      console.info(
-        "HANOON: Profile system is ready."
-      );
+      console.info("HANOON: Profile system is ready.");
 
     } catch (error) {
       console.error("HANOON profile error:", error);
