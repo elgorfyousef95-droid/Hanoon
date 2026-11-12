@@ -1,0 +1,353 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0d20">
+  <meta name="description" content="منشورات مجتمع هنون">
+  <title>المنشورات | HANOON</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/fixed-viewport.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      min-height: 100%;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: #f5f0ff;
+      font-family: "Cairo", sans-serif;
+      background:
+        linear-gradient(135deg,rgba(8,10,29,.94),rgba(22,13,48,.88)),
+        url("https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1800&q=85")
+        center/cover fixed no-repeat;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+    .posts-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      min-height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px clamp(14px,4vw,55px);
+      background: rgba(10,11,29,.82);
+      border-bottom: 1px solid rgba(200,178,255,.16);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .posts-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #e5d5ff;
+      font-size: 19px;
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+
+    .posts-brand img {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 12px rgba(166,126,255,.4));
+    }
+
+    .posts-back {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 39px;
+      padding: 7px 15px;
+      border: 1px solid rgba(194,169,255,.32);
+      border-radius: 25px;
+      color: #e7dcff;
+      background: rgba(151,120,255,.1);
+      font-size: 11px;
+      font-weight: 800;
+      transition: .25s ease;
+    }
+
+    .posts-back:hover {
+      background: rgba(151,120,255,.22);
+      border-color: #cdbaff;
+    }
+
+    .posts-back svg {
+      width: 17px;
+      height: 17px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .posts-hero {
+      position: relative;
+      width: min(1120px,94%);
+      min-height: 245px;
+      display: flex;
+      align-items: center;
+      margin: 26px auto 0;
+      padding: 34px clamp(20px,5vw,55px);
+      overflow: hidden;
+      isolation: isolate;
+      border: 1px solid rgba(202,178,255,.24);
+      border-radius: 27px;
+      background:
+        linear-gradient(100deg,rgba(10,9,31,.95),rgba(30,17,61,.67)),
+        url("https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1600&q=85")
+        center/cover no-repeat;
+      box-shadow:
+        0 20px 60px rgba(0,0,0,.35),
+        inset 0 0 65px rgba(143,100,255,.12);
+    }
+
+    .posts-hero::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      width: 220px;
+      height: 220px;
+      left: -65px;
+      top: -90px;
+      border: 1px solid rgba(203,180,255,.3);
+      border-radius: 50%;
+      box-shadow:
+        0 0 0 24px rgba(183,146,255,.035),
+        0 0 0 48px rgba(183,146,255,.025);
+    }
+
+    .posts-hero-content {
+      max-width: 680px;
+    }
+
+    .posts-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #c8a9ff;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .posts-kicker::before {
+      content: "";
+      width: 25px;
+      height: 2px;
+      background: #a982ff;
+      box-shadow: 0 0 12px #a982ff;
+    }
+
+    .posts-hero h1 {
+      margin: 10px 0 7px;
+      color: #fff;
+      font-size: clamp(28px,5vw,43px);
+      line-height: 1.5;
+      font-weight: 900;
+    }
+
+    .posts-hero h1 span {
+      color: #c5a2ff;
+      text-shadow: 0 0 24px rgba(175,126,255,.3);
+    }
+
+    .posts-hero p {
+      margin: 0;
+      color: #d2cbe4;
+      font-size: 13px;
+      line-height: 2;
+    }
+
+    .posts-main {
+      width: min(940px,94%);
+      min-height: 300px;
+      margin: 0 auto 50px;
+    }
+
+    .posts-intro {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 28px 0 0;
+      padding: 15px 18px;
+      border: 1px solid rgba(196,171,255,.16);
+      border-radius: 17px;
+      background: rgba(20,17,43,.66);
+      backdrop-filter: blur(14px);
+    }
+
+    .posts-intro strong {
+      display: block;
+      color: #eee5ff;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .posts-intro small {
+      display: block;
+      margin-top: 4px;
+      color: #aaa0c5;
+      font-size: 10px;
+    }
+
+    .posts-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #8fe6c6;
+      font-size: 10px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .posts-live::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #58d9ad;
+      box-shadow: 0 0 12px #58d9ad;
+    }
+
+    .posts-footer {
+      padding: 25px 15px;
+      border-top: 1px solid rgba(200,178,255,.13);
+      color: #aaa0c5;
+      text-align: center;
+      font-size: 10px;
+      background: rgba(7,8,22,.5);
+    }
+
+    @media(max-width:600px) {
+      .posts-topbar {
+        min-height: 59px;
+        padding: 8px 12px;
+      }
+
+      .posts-brand {
+        gap: 7px;
+        font-size: 15px;
+      }
+
+      .posts-brand img {
+        width: 35px;
+        height: 35px;
+      }
+
+      .posts-back {
+        min-height: 34px;
+        padding: 5px 10px;
+        font-size: 10px;
+      }
+
+      .posts-hero {
+        min-height: 205px;
+        margin-top: 15px;
+        padding: 25px 19px;
+        border-radius: 20px;
+      }
+
+      .posts-hero p {
+        font-size: 11px;
+      }
+
+      .posts-main {
+        width: 96%;
+      }
+
+      .posts-intro {
+        padding: 12px;
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+      * {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="posts-topbar">
+    <a class="posts-brand" href="../index.html">
+      <img src="../assets/logo/logo.svg" alt="HANOON">
+      <span>HANOON</span>
+    </a>
+
+    <a class="posts-back" href="../index.html">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M19 12H5m7 7-7-7 7-7"/>
+      </svg>
+      الرئيسية
+    </a>
+  </header>
+
+  <section class="posts-hero">
+    <div class="posts-hero-content">
+      <span class="posts-kicker">عالم المشاركة والتواصل</span>
+      <h1>مساحة <span>المنشورات</span></h1>
+      <p>
+        شارك أفكارك وصورك وفيديوهاتك، وتفاعل مع مجتمع هنون.
+        كل فكرة تستحق أن تُشارك، وكل معرفة يمكن أن تلهم غيرك.
+      </p>
+    </div>
+  </section>
+
+  <main class="posts-main">
+    <div class="posts-intro">
+      <div>
+        <strong>منشورات مجتمع هنون</strong>
+        <small>أحدث المشاركات من أعضاء المنصة</small>
+      </div>
+      <span class="posts-live">مساحة المجتمع</span>
+    </div>
+  </main>
+
+  <footer class="posts-footer">
+    © 2026 HANOON — المعرفة تصنع الفرق
+  </footer>
+
+  <script type="module" src="../js/supabase-client.js"></script>
+  <script src="../js/home-feed.js"></script>
+  <script src="../js/global-back.js"></script>
+
+</body>
+</html>
