@@ -4,11 +4,12 @@
 
   const HANOON = window.HANOON || {};
   const appScript = document.currentScript;
+
   const headerAccountScript = appScript
     ? new URL("header-account.js", appScript.src).href
     : null;
 
-  HANOON.version = "1.3.0";
+  HANOON.version = "1.4.0";
   HANOON.initialized = false;
 
   const $ = (selector, parent = document) =>
@@ -94,6 +95,7 @@
 
     button.addEventListener("click", () => {
       const isOpen = navigation.classList.toggle("is-open");
+
       button.setAttribute("aria-expanded", String(isOpen));
       button.classList.toggle("active", isOpen);
     });
@@ -133,7 +135,9 @@
       panel.classList.add("is-open");
       panel.setAttribute("aria-hidden", "false");
 
-      if (toggle) toggle.setAttribute("aria-expanded", "true");
+      if (toggle) {
+        toggle.setAttribute("aria-expanded", "true");
+      }
 
       window.setTimeout(() => input?.focus(), 120);
     };
@@ -142,7 +146,15 @@
       panel.classList.remove("is-open");
       panel.setAttribute("aria-hidden", "true");
 
-      if (toggle) toggle.setAttribute("aria-expanded", "false");
+      if (toggle) {
+        toggle.setAttribute("aria-expanded", "false");
+      }
+
+      if (input) input.value = "";
+
+      try {
+        sessionStorage.removeItem("hanoon-search-query");
+      } catch (_) {}
 
       window.setTimeout(() => {
         if (!panel.classList.contains("is-open")) {
@@ -201,6 +213,7 @@
 
       const url = new URL("pages/library.html", document.baseURI);
       url.searchParams.set("q", query);
+
       window.location.assign(url.href);
     });
 
@@ -209,241 +222,30 @@
     });
   };
 
-  HANOON.injectHeaderStyles = function () {
-    if ($("#hanoon-header-runtime-styles")) return;
-
-    const style = document.createElement("style");
-    style.id = "hanoon-header-runtime-styles";
-
-    style.textContent = `
-      .site-header .header-profile-link {
-        width: auto !important;
-        min-width: 0 !important;
-        max-width: 190px !important;
-        height: auto !important;
-        min-height: 54px !important;
-        flex: 0 1 auto !important;
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: flex-start !important;
-        gap: 9px !important;
-        padding: 5px 11px 5px 7px !important;
-        overflow: visible !important;
-        border-radius: 30px !important;
-        text-decoration: none !important;
-        background: linear-gradient(
-          145deg,
-          rgba(213,179,108,.16),
-          rgba(255,255,255,.055)
-        ) !important;
-        border: 1px solid rgba(213,179,108,.42) !important;
-        box-shadow: 0 5px 18px rgba(0,0,0,.18) !important;
-      }
-
-      .site-header .header-profile-link #headerProfileInitial,
-      .site-header .header-profile-link #headerProfileImage {
-        width: 46px !important;
-        height: 46px !important;
-        min-width: 46px !important;
-        flex: 0 0 46px !important;
-        border: 2px solid rgba(241,217,159,.85) !important;
-        border-radius: 50% !important;
-        object-fit: cover !important;
-      }
-
-      .site-header .header-profile-copy {
-        min-width: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: center;
-        gap: 1px;
-        line-height: 1.35;
-      }
-
-      .site-header .header-profile-link #headerProfileName {
-        display: block !important;
-        max-width: 112px !important;
-        overflow: hidden !important;
-        color: #f7e6bd !important;
-        font-family: inherit;
-        font-size: 12px !important;
-        font-weight: 900 !important;
-        text-overflow: ellipsis !important;
-        white-space: nowrap !important;
-      }
-
-      .site-header .header-profile-username {
-        display: block;
-        max-width: 112px;
-        overflow: hidden;
-        color: rgba(255,255,255,.65);
-        font-family: inherit;
-        font-size: 10px;
-        font-weight: 700;
-        direction: ltr;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-
-      .site-header .account-button[hidden],
-      .site-header .header-profile-link[hidden] {
-        display: none !important;
-      }
-
-      @media(max-width:600px) {
-        .site-header .header-profile-link {
-          max-width: 142px !important;
-          min-height: 45px !important;
-          gap: 6px !important;
-          padding: 4px 8px 4px 5px !important;
-        }
-
-        .site-header .header-profile-link #headerProfileInitial,
-        .site-header .header-profile-link #headerProfileImage {
-          width: 39px !important;
-          height: 39px !important;
-          min-width: 39px !important;
-          flex-basis: 39px !important;
-        }
-
-        .site-header .header-profile-link #headerProfileName {
-          max-width: 82px !important;
-          font-size: 10px !important;
-        }
-
-        .site-header .header-profile-username {
-          max-width: 82px;
-          font-size: 9px;
-        }
-      }
-
-      @media(max-width:380px) {
-        .site-header .header-profile-link {
-          max-width: 118px !important;
-          gap: 5px !important;
-        }
-
-        .site-header .header-profile-link #headerProfileInitial,
-        .site-header .header-profile-link #headerProfileImage {
-          width: 35px !important;
-          height: 35px !important;
-          min-width: 35px !important;
-          flex-basis: 35px !important;
-        }
-
-        .site-header .header-profile-link #headerProfileName {
-          max-width: 68px !important;
-          font-size: 9px !important;
-        }
-
-        .site-header .header-profile-username {
-          max-width: 68px;
-          font-size: 8px;
-        }
-      }
-    `;
-
-    document.head.appendChild(style);
-  };
-
-  HANOON.initHeaderAccount = function () {
-    const profileLink = $("#headerProfileLink");
-    const profileName = $("#headerProfileName");
-    const accountButton = $("#accountButton");
-
-    if (!profileLink || !profileName) return;
-
-    if ($("#headerProfileUsername")) return;
-
-    const copy = document.createElement("span");
-    copy.className = "header-profile-copy";
-
-    const username = document.createElement("small");
-    username.className = "header-profile-username";
-    username.id = "headerProfileUsername";
-    username.textContent = "@member";
-
-    profileName.parentNode.insertBefore(copy, profileName);
-    copy.append(profileName, username);
-
-    const applyUsername = async () => {
-      const supabase = window.HANOON?.supabase;
-      if (!supabase) return;
-
-      try {
-        const { data } = await supabase.auth.getSession();
-        const user = data?.session?.user;
-        if (!user) return;
-
-        let handle =
-          user.user_metadata?.username ||
-          user.user_metadata?.user_name ||
-          "";
-
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("username")
-          .eq("id", user.id)
-          .maybeSingle();
-
-        handle = profile?.username || handle;
-
-        if (!handle) {
-          handle = user.email?.split("@")[0] || "member";
-        }
-
-        username.textContent = "@" + String(handle).replace(/^@/, "");
-      } catch (error) {
-        console.warn("HANOON username display:", error);
-      }
-    };
-
-    const observer = new MutationObserver(() => {
-      const loggedIn = accountButton?.hidden && !profileLink.hidden;
-
-      if (loggedIn) {
-        applyUsername();
-      } else {
-        username.textContent = "@member";
-      }
-    });
-
-    observer.observe(profileLink, {
-      attributes: true,
-      attributeFilter: ["hidden"]
-    });
-
-    if (accountButton) {
-      observer.observe(accountButton, {
-        attributes: true,
-        attributeFilter: ["hidden"]
-      });
-    }
-
-    if (accountButton?.hidden && !profileLink.hidden) {
-      applyUsername();
-    }
-
-    window.addEventListener("hanoon:supabase-ready", applyUsername);
-    window.addEventListener("pageshow", applyUsername);
-  };
-
   HANOON.loadHeaderAccount = function () {
     if (!headerAccountScript) {
-      console.error("HANOON: header account script path is unavailable.");
+      console.error(
+        "HANOON: header account script path is unavailable."
+      );
       return;
     }
 
-    if (document.querySelector("[data-hanoon-header-account]")) return;
+    if (
+      document.querySelector("[data-hanoon-header-account]")
+    ) {
+      return;
+    }
 
     const script = document.createElement("script");
+
     script.src = headerAccountScript;
     script.dataset.hanoonHeaderAccount = "true";
     script.async = true;
 
     script.onerror = () => {
-      console.error("HANOON: could not load header-account.js");
+      console.error(
+        "HANOON: could not load header-account.js"
+      );
     };
 
     document.body.appendChild(script);
@@ -464,7 +266,10 @@
 
     const theme = savedTheme || preferredTheme;
 
-    document.documentElement.setAttribute("data-theme", theme);
+    document.documentElement.setAttribute(
+      "data-theme",
+      theme
+    );
 
     const toggleButtons = [
       ...$$("[data-theme-toggle]"),
@@ -474,15 +279,23 @@
     toggleButtons.forEach(button => {
       button.setAttribute(
         "aria-label",
-        theme === "dark" ? "تفعيل الوضع النهاري" : "تفعيل الوضع الليلي"
+        theme === "dark"
+          ? "تفعيل الوضع النهاري"
+          : "تفعيل الوضع الليلي"
       );
 
       button.addEventListener("click", () => {
         const current =
-          document.documentElement.getAttribute("data-theme") || "dark";
-        const next = current === "dark" ? "light" : "dark";
+          document.documentElement.getAttribute("data-theme") ||
+          "dark";
 
-        document.documentElement.setAttribute("data-theme", next);
+        const next =
+          current === "dark" ? "light" : "dark";
+
+        document.documentElement.setAttribute(
+          "data-theme",
+          next
+        );
 
         try {
           localStorage.setItem("hanoon-theme", next);
@@ -490,7 +303,9 @@
 
         button.setAttribute(
           "aria-label",
-          next === "dark" ? "تفعيل الوضع النهاري" : "تفعيل الوضع الليلي"
+          next === "dark"
+            ? "تفعيل الوضع النهاري"
+            : "تفعيل الوضع الليلي"
         );
       });
     });
@@ -501,7 +316,10 @@
 
     $$("a[href]").forEach(link => {
       try {
-        const linkUrl = new URL(link.href, window.location.origin);
+        const linkUrl = new URL(
+          link.href,
+          window.location.origin
+        );
 
         if (
           linkUrl.origin === window.location.origin &&
@@ -522,25 +340,34 @@
     });
 
     const currentYear = $("#currentYear");
-    if (currentYear) currentYear.textContent = year;
+
+    if (currentYear) {
+      currentYear.textContent = year;
+    }
   };
 
   HANOON.initImages = function () {
     $$("img").forEach(img => {
-      img.addEventListener("error", () => {
-        const source = img.getAttribute("src") || "";
+      img.addEventListener(
+        "error",
+        () => {
+          const source = img.getAttribute("src") || "";
 
-        if (source.includes("logo.svg")) {
-          const fallback = document.createElement("span");
-          fallback.className = "logo-text-fallback";
-          fallback.textContent = "HANOON";
-          fallback.setAttribute("aria-label", "HANOON");
-          img.replaceWith(fallback);
-        } else {
-          img.classList.add("image-not-found");
-          img.style.display = "none";
-        }
-      }, { once: true });
+          if (source.includes("logo.svg")) {
+            const fallback = document.createElement("span");
+
+            fallback.className = "logo-text-fallback";
+            fallback.textContent = "HANOON";
+            fallback.setAttribute("aria-label", "HANOON");
+
+            img.replaceWith(fallback);
+          } else {
+            img.classList.add("image-not-found");
+            img.style.display = "none";
+          }
+        },
+        { once: true }
+      );
     });
   };
 
@@ -557,7 +384,6 @@
   HANOON.init = function () {
     if (HANOON.initialized) return;
 
-    HANOON.injectHeaderStyles();
     HANOON.initSplash();
     HANOON.initMobileMenu();
     HANOON.initSearch();
@@ -567,7 +393,7 @@
     HANOON.initImages();
     HANOON.initKeyboard();
 
-    HANOON.initHeaderAccount();
+    // إدارة الحساب أصبحت من ملف header-account.js فقط.
     HANOON.loadHeaderAccount();
 
     HANOON.initialized = true;
