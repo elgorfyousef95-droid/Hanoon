@@ -2,7 +2,7 @@
 (() => {
   "use strict";
 
-  const $ = (selector) => document.querySelector(selector);
+  const $ = selector => document.querySelector(selector);
 
   const ui = {
     app: $("#communityApp"),
@@ -61,7 +61,10 @@
       return "تعذر الاتصال بالإنترنت. حاول مرة أخرى.";
     }
 
-    if (message.includes("row-level security")) {
+    if (
+      message.includes("row-level security") ||
+      message.includes("permission denied")
+    ) {
       return "العملية مرفوضة بسبب صلاحيات قاعدة البيانات.";
     }
 
@@ -196,10 +199,6 @@
       const joined = state.memberships.has(group.id);
       const isOwner = group.created_by === state.user.id;
 
-      let actionLabel = "الانضمام للمجموعة";
-
-      if (joined) actionLabel = "أنت عضو بالفعل";
-
       return `
         <article class="group-card">
           <div class="group-cover">
@@ -221,14 +220,27 @@
             </div>
 
             <div class="group-actions">
-              <button
-                class="btn ${joined ? "secondary" : ""}"
-                type="button"
-                data-join-group="${escapeHTML(group.id)}"
-                ${joined ? "disabled" : ""}
-              >
-                ${actionLabel}
-              </button>
+              ${
+                joined
+                  ? `
+                    <button
+                      class="btn"
+                      type="button"
+                      data-open-group="${escapeHTML(group.id)}"
+                    >
+                      فتح المجموعة
+                    </button>
+                  `
+                  : `
+                    <button
+                      class="btn"
+                      type="button"
+                      data-join-group="${escapeHTML(group.id)}"
+                    >
+                      الانضمام للمجموعة
+                    </button>
+                  `
+              }
             </div>
           </div>
         </article>
@@ -242,6 +254,24 @@
           joinGroup(button.dataset.joinGroup, button);
         });
       });
+
+    ui.groupList
+      .querySelectorAll("[data-open-group]")
+      .forEach(button => {
+        button.addEventListener("click", () => {
+          openGroup(button.dataset.openGroup);
+        });
+      });
+  }
+
+  function openGroup(groupId) {
+    if (!state.memberships.has(groupId)) {
+      showNotice("يجب الانضمام إلى المجموعة أولاً.", "error");
+      return;
+    }
+
+    window.location.href =
+      `group-chat.html?id=${encodeURIComponent(groupId)}`;
   }
 
   async function joinGroup(groupId, button) {
@@ -392,10 +422,7 @@
         .insert(memberRows);
 
       if (membersError) {
-        console.error(
-          "Group created but adding members failed:",
-          membersError
-        );
+        console.error("Adding group members failed:", membersError);
 
         showNotice(
           "تم إنشاء المجموعة، لكن تعذرت إضافة بعض الأعضاء. راجع صلاحيات قاعدة البيانات.",
@@ -428,7 +455,10 @@
     ui.groupSearch?.addEventListener("input", renderGroups);
 
     document.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === "visible" && state.user) {
+      if (
+        document.visibilityState === "visible" &&
+        state.user
+      ) {
         loadGroups();
       }
     });
