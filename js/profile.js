@@ -1,7 +1,7 @@
 
 /* =====================================================
    HANOON - PROFILE SYSTEM
-   Profile / Avatar / QR / Account
+   Profile / Avatar / QR / Posts / Short Videos
 ===================================================== */
 
 (() => {
@@ -126,8 +126,22 @@
   function getAvatarURL(path) {
     if (!path) return "";
 
+    if (/^https?:\/\//i.test(path)) return path;
+
     const { data } = supabase.storage
       .from("avatars")
+      .getPublicUrl(path);
+
+    return data?.publicUrl || "";
+  }
+
+  function getMediaURL(path) {
+    if (!path) return "";
+
+    if (/^https?:\/\//i.test(path)) return path;
+
+    const { data } = supabase.storage
+      .from("post-media")
       .getPublicUrl(path);
 
     return data?.publicUrl || "";
@@ -191,7 +205,6 @@
     });
   }
 
-  /* الاسم الاحتياطي من حساب تسجيل الدخول */
   function getAccountName() {
     const metadata = currentUser?.user_metadata || {};
 
@@ -214,7 +227,456 @@
     );
   }
 
-  /* عرض الملف */
+  /* =====================================================
+     PROFILE MEDIA DESIGN
+  ===================================================== */
+
+  function installMediaStyles() {
+    if ($("profileMediaStyles")) return;
+
+    const style = document.createElement("style");
+    style.id = "profileMediaStyles";
+
+    style.textContent = `
+      .profile-media-section{
+        position:relative;
+        overflow:hidden;
+        margin-top:22px;
+        padding:22px;
+        border:1px solid rgba(195,164,255,.20);
+        border-radius:23px;
+        background:linear-gradient(145deg,rgba(26,19,51,.92),rgba(10,8,28,.94));
+        box-shadow:0 18px 48px rgba(0,0,0,.25);
+      }
+
+      .profile-media-head{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:10px;
+        margin-bottom:17px;
+      }
+
+      .profile-media-title{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        font-size:17px;
+        font-weight:900;
+      }
+
+      .profile-media-title svg{
+        width:22px;
+        height:22px;
+        fill:none;
+        stroke:#c2a9ff;
+        stroke-width:1.8;
+      }
+
+      .profile-media-count{
+        color:#b7b2ca;
+        font-size:10px;
+      }
+
+      .profile-media-grid{
+        display:grid;
+        grid-template-columns:repeat(3,minmax(0,1fr));
+        gap:9px;
+      }
+
+      .profile-media-card{
+        position:relative;
+        min-width:0;
+        overflow:hidden;
+        aspect-ratio:1/1;
+        border:1px solid rgba(255,255,255,.12);
+        border-radius:14px;
+        background:#111026;
+        cursor:pointer;
+      }
+
+      .profile-media-card img,
+      .profile-media-card video{
+        width:100%;
+        height:100%;
+        display:block;
+        object-fit:cover;
+      }
+
+      .profile-media-card.video-card{
+        aspect-ratio:9/14;
+      }
+
+      .profile-video-mark{
+        position:absolute;
+        left:8px;
+        bottom:8px;
+        width:30px;
+        height:30px;
+        display:grid;
+        place-items:center;
+        border:1px solid #ffffff55;
+        border-radius:50%;
+        background:#080817aa;
+        color:#fff;
+        pointer-events:none;
+      }
+
+      .profile-video-mark svg{
+        width:15px;
+        height:15px;
+        fill:none;
+        stroke:currentColor;
+        stroke-width:2;
+      }
+
+      .profile-media-caption{
+        position:absolute;
+        right:0;
+        left:0;
+        bottom:0;
+        padding:20px 8px 7px;
+        overflow:hidden;
+        color:#fff;
+        font-size:9px;
+        line-height:1.7;
+        background:linear-gradient(transparent,#000b);
+        white-space:nowrap;
+        text-overflow:ellipsis;
+      }
+
+      .profile-media-empty{
+        grid-column:1/-1;
+        padding:28px 12px;
+        border:1px dashed rgba(195,164,255,.25);
+        border-radius:15px;
+        color:#b7b2ca;
+        text-align:center;
+        font-size:11px;
+        line-height:2;
+      }
+
+      .profile-media-link{
+        display:inline-flex;
+        align-items:center;
+        gap:6px;
+        min-height:34px;
+        padding:6px 12px;
+        border:1px solid rgba(165,138,255,.32);
+        border-radius:10px;
+        background:rgba(165,138,255,.10);
+        color:#e1d6ff;
+        font-size:10px;
+        font-weight:900;
+        white-space:nowrap;
+      }
+
+      .profile-media-modal{
+        position:fixed;
+        inset:0;
+        z-index:9999;
+        display:none;
+        align-items:center;
+        justify-content:center;
+        padding:18px;
+        background:rgba(3,3,12,.94);
+        backdrop-filter:blur(15px);
+      }
+
+      .profile-media-modal.open{
+        display:flex;
+      }
+
+      .profile-media-modal-content{
+        position:relative;
+        width:min(100%,650px);
+        max-height:88dvh;
+        display:grid;
+        place-items:center;
+      }
+
+      .profile-media-modal-content img,
+      .profile-media-modal-content video{
+        display:block;
+        max-width:100%;
+        max-height:82dvh;
+        border-radius:15px;
+        object-fit:contain;
+        background:#000;
+      }
+
+      .profile-media-close{
+        position:absolute;
+        top:-43px;
+        left:0;
+        width:36px;
+        height:36px;
+        border:1px solid #ffffff44;
+        border-radius:50%;
+        background:#ffffff15;
+        color:white;
+        font-size:20px;
+      }
+
+      @media(max-width:600px){
+        .profile-media-section{padding:17px 12px}
+        .profile-media-grid{gap:6px}
+        .profile-media-card{border-radius:10px}
+        .profile-media-head{align-items:flex-start}
+        .profile-media-title{font-size:14px}
+      }
+    `;
+
+    document.head.appendChild(style);
+  }
+
+  function createMediaSections() {
+    if ($("profilePostsSection") || !$("profileContent")) return;
+
+    installMediaStyles();
+
+    const anchor = document.querySelector(".profile-actions");
+    if (!anchor) return;
+
+    const wrapper = document.createElement("div");
+    wrapper.id = "profileMediaWrapper";
+
+    wrapper.innerHTML = `
+      <section class="profile-media-section" id="profilePostsSection">
+        <div class="profile-media-head">
+          <div>
+            <div class="profile-media-title">
+              <svg viewBox="0 0 24 24">
+                <path d="M4 4h16v16H4z"/>
+                <path d="M8 8h8M8 12h8M8 16h5"/>
+              </svg>
+              منشوراتي
+            </div>
+            <div class="profile-media-count" id="profilePostsCount">منشورات حسابك</div>
+          </div>
+          <a class="profile-media-link" href="posts.html">كل المنشورات</a>
+        </div>
+        <div class="profile-media-grid" id="profilePostsGrid">
+          <div class="profile-media-empty">جارٍ تحميل منشوراتك...</div>
+        </div>
+      </section>
+
+      <section class="profile-media-section" id="profileVideosSection">
+        <div class="profile-media-head">
+          <div>
+            <div class="profile-media-title">
+              <svg viewBox="0 0 24 24">
+                <rect x="4" y="3" width="16" height="18" rx="3"/>
+                <path d="m10 8 5 4-5 4z"/>
+              </svg>
+              فيديوهاتي
+            </div>
+            <div class="profile-media-count" id="profileVideosCount">فيديوهاتك القصيرة</div>
+          </div>
+          <a class="profile-media-link" href="shorts.html">كل الفيديوهات</a>
+        </div>
+        <div class="profile-media-grid" id="profileVideosGrid">
+          <div class="profile-media-empty">جارٍ تحميل فيديوهاتك...</div>
+        </div>
+      </section>
+    `;
+
+    anchor.insertAdjacentElement("afterend", wrapper);
+
+    const modal = document.createElement("div");
+    modal.className = "profile-media-modal";
+    modal.id = "profileMediaModal";
+    modal.innerHTML = `
+      <div class="profile-media-modal-content">
+        <button class="profile-media-close" type="button" aria-label="إغلاق">×</button>
+        <div id="profileMediaModalBody"></div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    modal.addEventListener("click", event => {
+      if (
+        event.target === modal ||
+        event.target.closest(".profile-media-close")
+      ) {
+        closeMediaModal();
+      }
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") closeMediaModal();
+    });
+  }
+
+  function closeMediaModal() {
+    const modal = $("profileMediaModal");
+    const body = $("profileMediaModalBody");
+
+    if (!modal || !body) return;
+
+    body.querySelectorAll("video").forEach(video => video.pause());
+    body.replaceChildren();
+    modal.classList.remove("open");
+  }
+
+  function openMediaModal(post) {
+    const modal = $("profileMediaModal");
+    const body = $("profileMediaModalBody");
+
+    if (!modal || !body || !post.media_path) return;
+
+    body.replaceChildren();
+
+    const url = getMediaURL(post.media_path);
+    const isVideo = post.media_type === "video";
+
+    const media = document.createElement(isVideo ? "video" : "img");
+    media.src = url;
+    media.alt = post.content || "محتوى من الملف الشخصي";
+
+    if (isVideo) {
+      media.controls = true;
+      media.autoplay = true;
+      media.playsInline = true;
+    }
+
+    body.appendChild(media);
+    modal.classList.add("open");
+  }
+
+  function makeMediaCard(post, isVideo) {
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "profile-media-card" + (isVideo ? " video-card" : "");
+    card.setAttribute(
+      "aria-label",
+      isVideo ? "مشاهدة الفيديو" : "عرض المنشور"
+    );
+
+    if (post.media_path) {
+      const url = getMediaURL(post.media_path);
+
+      if (isVideo) {
+        const video = document.createElement("video");
+        video.src = url;
+        video.muted = true;
+        video.preload = "metadata";
+        video.playsInline = true;
+        card.appendChild(video);
+
+        const mark = document.createElement("span");
+        mark.className = "profile-video-mark";
+        mark.innerHTML = `
+          <svg viewBox="0 0 24 24">
+            <path d="m8 5 12 7-12 7z"/>
+          </svg>
+        `;
+        card.appendChild(mark);
+
+      } else {
+        const image = document.createElement("img");
+        image.src = url;
+        image.alt = post.content || "صورة من منشوراتي";
+        image.loading = "lazy";
+        card.appendChild(image);
+      }
+
+    } else {
+      const placeholder = document.createElement("div");
+      placeholder.style.cssText =
+        "height:100%;display:grid;place-items:center;padding:12px;color:#e1d6ff;font-size:11px;line-height:1.8;text-align:center";
+      placeholder.textContent = post.content || "منشور نصي";
+      card.appendChild(placeholder);
+    }
+
+    if (post.content) {
+      const caption = document.createElement("span");
+      caption.className = "profile-media-caption";
+      caption.textContent = post.content;
+      card.appendChild(caption);
+    }
+
+    card.addEventListener("click", () => {
+      if (post.media_path) {
+        openMediaModal(post);
+      } else {
+        window.location.href = "posts.html";
+      }
+    });
+
+    return card;
+  }
+
+  async function loadProfileMedia() {
+    createMediaSections();
+
+    const postsGrid = $("profilePostsGrid");
+    const videosGrid = $("profileVideosGrid");
+
+    if (!postsGrid || !videosGrid) return;
+
+    postsGrid.innerHTML =
+      '<div class="profile-media-empty">جارٍ تحميل منشوراتك...</div>';
+
+    videosGrid.innerHTML =
+      '<div class="profile-media-empty">جارٍ تحميل فيديوهاتك...</div>';
+
+    const { data, error } = await supabase
+      .from("posts")
+      .select("id,user_id,content,media_path,media_type,created_at")
+      .eq("user_id", currentUser.id)
+      .order("created_at", { ascending: false })
+      .limit(60);
+
+    if (error) throw error;
+
+    const all = data || [];
+
+    const videos = all.filter(post =>
+      post.media_type === "video" && post.media_path
+    );
+
+    const posts = all.filter(post =>
+      post.media_type !== "video"
+    );
+
+    $("profilePostsCount").textContent =
+      `${posts.length} منشور`;
+
+    $("profileVideosCount").textContent =
+      `${videos.length} فيديو`;
+
+    postsGrid.replaceChildren();
+    videosGrid.replaceChildren();
+
+    if (!posts.length) {
+      const empty = document.createElement("div");
+      empty.className = "profile-media-empty";
+      empty.textContent = "لم تنشر أي منشورات بعد.";
+      postsGrid.appendChild(empty);
+    } else {
+      posts.forEach(post => {
+        postsGrid.appendChild(makeMediaCard(post, false));
+      });
+    }
+
+    if (!videos.length) {
+      const empty = document.createElement("div");
+      empty.className = "profile-media-empty";
+      empty.textContent = "لم تنشر أي فيديوهات قصيرة بعد.";
+      videosGrid.appendChild(empty);
+    } else {
+      videos.forEach(post => {
+        videosGrid.appendChild(makeMediaCard(post, true));
+      });
+    }
+  }
+
+  /* =====================================================
+     PROFILE DISPLAY
+  ===================================================== */
+
   function renderProfile(profile) {
     currentProfile = profile;
 
@@ -272,7 +734,6 @@
     $("profileContent").hidden = false;
   }
 
-  /* تحميل بيانات الحساب */
   async function loadProfile() {
     const { data, error } = await supabase
       .from("profiles")
@@ -294,9 +755,13 @@
     }
 
     renderProfile(data);
+    await loadProfileMedia();
   }
 
-  /* تجهيز صورة مربعة بجودة مناسبة */
+  /* =====================================================
+     AVATAR UPLOAD
+  ===================================================== */
+
   async function compressImage(file) {
     if (!file || !file.type.startsWith("image/")) {
       throw new Error("اختر صورة صحيحة.");
@@ -376,7 +841,10 @@
     return path;
   }
 
-  /* حفظ بيانات الملف الشخصي */
+  /* =====================================================
+     SAVE PROFILE
+  ===================================================== */
+
   async function saveProfile(event) {
     event.preventDefault();
 
@@ -473,6 +941,10 @@
     }
   }
 
+  /* =====================================================
+     CLIPBOARD / LOGOUT
+  ===================================================== */
+
   async function copyText(value, successMessage) {
     if (!value) {
       toast("لا توجد بيانات لنسخها.");
@@ -563,6 +1035,18 @@
       };
 
       container.replaceChildren(image);
+    });
+
+    window.addEventListener("hanoon:post-created", () => {
+      loadProfileMedia().catch(error => {
+        console.error("Profile posts refresh:", error);
+      });
+    });
+
+    window.addEventListener("hanoon:short-created", () => {
+      loadProfileMedia().catch(error => {
+        console.error("Profile videos refresh:", error);
+      });
     });
   }
 
