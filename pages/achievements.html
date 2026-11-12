@@ -3,14 +3,12 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#0C1020">
-
-  <title>إنجازاتي | HANOON</title>
+  <title>الإنجازات والتصنيفات | HANOON</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="../css/theme.css">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/components.css">
@@ -18,408 +16,708 @@
 
   <style>
     :root {
-      --gold: #D5B36C;
-      --purple: #8C75F5;
-      --teal: #35BDB0;
-      --bg: #0C1020;
-      --panel: #171D32;
-      --text: #F5EAD1;
-      --muted: #A7ABC0;
+      --gold:#D5B36C;
+      --purple:#8C75F5;
+      --teal:#35BDB0;
+      --bg:#0C1020;
+      --panel:#171D32;
+      --panel2:#202943;
+      --text:#F5EAD1;
+      --muted:#A7ABC0;
+      --line:rgba(255,255,255,.08);
+      --danger:#F07887;
+      --success:#55D6A5;
     }
 
-    * {
-      box-sizing: border-box;
+    * { box-sizing:border-box; }
+
+    html {
+      min-height:100%;
+      background:var(--bg);
+      scroll-behavior:smooth;
     }
 
     body {
-      margin: 0;
-      min-height: 100vh;
+      margin:0;
+      min-height:100vh;
+      color:var(--text);
+      font-family:"Cairo",sans-serif;
       background:
-        radial-gradient(ellipse at 85% 5%, rgba(140,117,245,.15), transparent 38%),
-        radial-gradient(ellipse at 5% 45%, rgba(53,189,176,.08), transparent 35%),
+        radial-gradient(ellipse at 90% 0%,rgba(140,117,245,.16),transparent 34%),
+        radial-gradient(ellipse at 0% 45%,rgba(53,189,176,.08),transparent 32%),
         var(--bg);
-      color: var(--text);
-      font-family: "Cairo", sans-serif;
-      overflow-x: hidden;
+      overflow-x:hidden;
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
+    button,a { font:inherit; }
+    a { color:inherit;text-decoration:none; }
+    button { cursor:pointer; }
 
     .topbar {
-      min-height: 72px;
-      padding: 12px 5%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-      border-bottom: 1px solid rgba(255,255,255,.07);
-      background: rgba(12,16,32,.9);
-      backdrop-filter: blur(15px);
-      position: sticky;
-      top: 0;
-      z-index: 20;
+      min-height:70px;
+      padding:12px 5%;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:15px;
+      position:sticky;
+      top:0;
+      z-index:30;
+      background:rgba(12,16,32,.93);
+      border-bottom:1px solid var(--line);
+      backdrop-filter:blur(18px);
     }
 
     .brand {
-      color: var(--gold);
-      font-size: 25px;
-      font-weight: 900;
-      letter-spacing: 2px;
+      color:var(--gold);
+      font-size:25px;
+      font-weight:900;
+      letter-spacing:2px;
     }
 
-    .back-link {
-      padding: 9px 16px;
-      border: 1px solid rgba(213,179,108,.35);
-      border-radius: 12px;
-      color: var(--gold);
-      font-size: 12px;
+    .top-actions {
+      display:flex;
+      align-items:center;
+      gap:9px;
+    }
+
+    .top-link {
+      padding:9px 15px;
+      border:1px solid rgba(213,179,108,.28);
+      border-radius:12px;
+      color:var(--gold);
+      font-size:12px;
+      font-weight:800;
     }
 
     .page {
-      width: min(1120px, 92%);
-      margin: 35px auto 70px;
+      width:min(1150px,92%);
+      margin:30px auto 65px;
     }
 
     .hero {
-      position: relative;
-      overflow: hidden;
-      padding: 35px;
-      border-radius: 25px;
-      border: 1px solid rgba(213,179,108,.2);
+      position:relative;
+      overflow:hidden;
+      padding:30px;
+      border:1px solid rgba(213,179,108,.22);
+      border-radius:25px;
       background:
-        radial-gradient(circle at 85% 20%, rgba(140,117,245,.2), transparent 35%),
-        linear-gradient(135deg, #202943, #171D32);
+        radial-gradient(circle at 85% 15%,rgba(140,117,245,.22),transparent 34%),
+        radial-gradient(circle at 5% 95%,rgba(53,189,176,.12),transparent 30%),
+        linear-gradient(135deg,#202943,#171D32);
     }
 
     .hero::after {
-      content: "";
-      position: absolute;
-      width: 230px;
-      height: 230px;
-      left: -80px;
-      bottom: -120px;
-      border: 1px solid rgba(213,179,108,.2);
-      border-radius: 50%;
-      box-shadow:
-        0 0 0 25px rgba(213,179,108,.025),
-        0 0 0 50px rgba(213,179,108,.02);
+      content:"";
+      position:absolute;
+      width:250px;
+      height:250px;
+      left:-110px;
+      bottom:-150px;
+      border:1px solid rgba(213,179,108,.22);
+      border-radius:50%;
+      box-shadow:0 0 0 25px rgba(213,179,108,.025),0 0 0 55px rgba(213,179,108,.018);
+      pointer-events:none;
+    }
+
+    .hero-content {
+      position:relative;
+      z-index:1;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:25px;
     }
 
     .eyebrow {
-      color: var(--teal);
-      font-size: 12px;
-      font-weight: 800;
+      color:var(--teal);
+      font-size:12px;
+      font-weight:900;
     }
 
     .hero h1 {
-      margin: 12px 0;
-      font-size: clamp(28px, 5vw, 43px);
-      font-weight: 900;
+      margin:8px 0;
+      font-size:clamp(27px,5vw,42px);
+      font-weight:900;
     }
 
     .hero p {
-      max-width: 600px;
-      color: var(--muted);
-      line-height: 2;
-      font-size: 14px;
-      margin: 0;
+      max-width:620px;
+      margin:0;
+      color:var(--muted);
+      line-height:2;
+      font-size:13px;
     }
 
-    .overall-progress {
-      margin-top: 25px;
-      max-width: 600px;
+    .member-box {
+      min-width:190px;
+      padding:17px;
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:18px;
+      background:rgba(8,12,25,.35);
+      text-align:center;
+    }
+
+    .member-avatar {
+      width:57px;
+      height:57px;
+      margin:0 auto 9px;
+      display:grid;
+      place-items:center;
+      border:2px solid rgba(213,179,108,.55);
+      border-radius:50%;
+      background:linear-gradient(135deg,var(--purple),#35446b);
+      color:white;
+      font-size:22px;
+      font-weight:900;
+      overflow:hidden;
+    }
+
+    .member-avatar img {
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+
+    .member-name {
+      font-size:14px;
+      font-weight:900;
+    }
+
+    .member-code {
+      margin-top:4px;
+      color:var(--gold);
+      font-size:11px;
+      direction:ltr;
+    }
+
+    .progress-area {
+      position:relative;
+      z-index:1;
+      max-width:650px;
+      margin-top:25px;
     }
 
     .progress-heading {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 10px;
-      font-size: 13px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:9px;
+      font-size:12px;
     }
 
     .progress-heading strong {
-      color: var(--gold);
-      font-size: 20px;
+      color:var(--gold);
+      font-size:20px;
     }
 
     .progress-track {
-      height: 13px;
-      border-radius: 30px;
-      overflow: hidden;
-      background: rgba(255,255,255,.08);
+      height:12px;
+      overflow:hidden;
+      border-radius:30px;
+      background:rgba(255,255,255,.09);
     }
 
     .progress-fill {
-      height: 100%;
-      width: 0;
-      border-radius: inherit;
-      background: linear-gradient(90deg, var(--purple), var(--gold), var(--teal));
-      transition: width .5s ease;
+      width:0;
+      height:100%;
+      border-radius:inherit;
+      background:linear-gradient(90deg,var(--purple),var(--gold),var(--teal));
+      transition:width .5s ease;
     }
 
     .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 14px;
-      margin-top: 22px;
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:13px;
+      margin-top:18px;
     }
 
     .stat-card {
-      padding: 21px 15px;
-      border: 1px solid rgba(255,255,255,.07);
-      border-radius: 18px;
-      background: linear-gradient(145deg, #1b2239, #151a2c);
+      min-width:0;
+      padding:19px;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:linear-gradient(145deg,#1b2239,#151a2c);
     }
 
     .stat-icon {
-      width: 40px;
-      height: 40px;
-      display: grid;
-      place-items: center;
-      border-radius: 13px;
-      margin-bottom: 13px;
-      color: var(--gold);
-      background: rgba(213,179,108,.1);
-      font-weight: 900;
+      width:39px;
+      height:39px;
+      display:grid;
+      place-items:center;
+      margin-bottom:12px;
+      border-radius:12px;
+      color:var(--gold);
+      background:rgba(213,179,108,.11);
+      font-size:17px;
+      font-weight:900;
     }
 
     .stat-card:nth-child(2) .stat-icon {
-      color: var(--teal);
-      background: rgba(53,189,176,.1);
+      color:var(--teal);
+      background:rgba(53,189,176,.1);
     }
 
     .stat-card:nth-child(3) .stat-icon {
-      color: var(--purple);
-      background: rgba(140,117,245,.12);
+      color:var(--purple);
+      background:rgba(140,117,245,.12);
     }
 
     .stat-card:nth-child(4) .stat-icon {
-      color: var(--gold);
-      background: rgba(213,179,108,.1);
+      color:var(--success);
+      background:rgba(85,214,165,.1);
     }
 
     .stat-card strong {
-      display: block;
-      font-size: 27px;
-      font-weight: 900;
+      display:block;
+      font-size:27px;
+      font-weight:900;
+      line-height:1.3;
     }
 
     .stat-card span {
-      color: var(--muted);
-      font-size: 11px;
+      color:var(--muted);
+      font-size:11px;
     }
 
     .section {
-      margin-top: 45px;
+      margin-top:35px;
     }
 
     .section-heading {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 20px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:16px;
     }
 
     .section-heading h2 {
-      font-size: 23px;
-      margin: 0;
+      margin:0;
+      font-size:21px;
+      font-weight:900;
     }
 
     .section-heading p {
-      color: var(--muted);
-      font-size: 12px;
-      margin: 5px 0 0;
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:11px;
     }
 
-    .section-heading .count {
-      color: var(--gold);
-      font-size: 12px;
-      white-space: nowrap;
+    .section-count {
+      color:var(--gold);
+      font-size:12px;
+      white-space:nowrap;
     }
+
+    .tabs {
+      display:flex;
+      gap:8px;
+      padding:5px;
+      margin:22px 0;
+      overflow-x:auto;
+      border:1px solid var(--line);
+      border-radius:15px;
+      background:rgba(20,26,45,.8);
+      scrollbar-width:none;
+    }
+
+    .tabs::-webkit-scrollbar { display:none; }
+
+    .tab-button {
+      flex:1 0 auto;
+      min-height:42px;
+      padding:8px 16px;
+      border:0;
+      border-radius:11px;
+      background:transparent;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:800;
+      white-space:nowrap;
+      transition:.2s;
+    }
+
+    .tab-button.active {
+      color:#111522;
+      background:linear-gradient(110deg,var(--gold),#f0d99f);
+    }
+
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
 
     .badges-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 13px;
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:13px;
     }
 
     .badge-card {
-      min-height: 160px;
-      padding: 20px 12px;
-      border: 1px solid rgba(255,255,255,.07);
-      border-radius: 18px;
-      background: linear-gradient(145deg, #1b2239, #151a2c);
-      text-align: center;
-      opacity: .48;
-      filter: grayscale(.7);
-      transition: .25s;
+      min-height:175px;
+      padding:19px 13px;
+      border:1px solid var(--line);
+      border-radius:17px;
+      background:linear-gradient(145deg,#1b2239,#151a2c);
+      text-align:center;
+      transition:.2s;
     }
 
-    .badge-card.unlocked {
-      opacity: 1;
-      filter: none;
-      border-color: rgba(213,179,108,.3);
-      background: linear-gradient(145deg, rgba(213,179,108,.1), #171D32);
+    .badge-card.earned {
+      border-color:rgba(213,179,108,.38);
+      background:linear-gradient(145deg,rgba(213,179,108,.13),#171D32);
     }
 
     .badge-symbol {
-      width: 53px;
-      height: 53px;
-      display: grid;
-      place-items: center;
-      margin: 0 auto 12px;
-      border-radius: 50%;
-      color: var(--gold);
-      border: 1px solid rgba(213,179,108,.3);
-      background: rgba(213,179,108,.1);
-      font-size: 19px;
-      font-weight: 900;
+      width:53px;
+      height:53px;
+      display:grid;
+      place-items:center;
+      margin:0 auto 11px;
+      border:1px solid rgba(213,179,108,.3);
+      border-radius:50%;
+      background:rgba(213,179,108,.1);
+      color:var(--gold);
+      font-size:19px;
+      font-weight:900;
+    }
+
+    .badge-card:not(.earned) .badge-symbol {
+      color:#85899c;
+      border-color:rgba(255,255,255,.1);
+      background:rgba(255,255,255,.035);
     }
 
     .badge-card h3 {
-      font-size: 13px;
-      margin: 0 0 5px;
+      margin:0 0 5px;
+      font-size:13px;
     }
 
     .badge-card p {
-      color: var(--muted);
-      font-size: 10px;
-      line-height: 1.8;
-      margin: 0;
+      min-height:35px;
+      margin:0;
+      color:var(--muted);
+      font-size:10px;
+      line-height:1.8;
+    }
+
+    .badge-status {
+      display:inline-block;
+      margin-top:9px;
+      color:var(--muted);
+      font-size:10px;
+    }
+
+    .badge-card.earned .badge-status { color:var(--success); }
+
+    .list {
+      display:grid;
+      gap:10px;
+    }
+
+    .list-row {
+      display:flex;
+      align-items:center;
+      gap:13px;
+      min-width:0;
+      padding:14px;
+      border:1px solid var(--line);
+      border-radius:15px;
+      background:linear-gradient(135deg,#1b2239,#151a2c);
+    }
+
+    .list-icon {
+      width:42px;
+      height:42px;
+      flex:0 0 42px;
+      display:grid;
+      place-items:center;
+      border-radius:13px;
+      background:rgba(140,117,245,.13);
+      color:#b6a8ff;
+      font-size:17px;
+      font-weight:900;
+    }
+
+    .list-content {
+      flex:1;
+      min-width:0;
+    }
+
+    .list-content strong {
+      display:block;
+      overflow:hidden;
+      font-size:12px;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+
+    .list-content small {
+      display:block;
+      margin-top:4px;
+      color:var(--muted);
+      font-size:10px;
+    }
+
+    .list-value {
+      flex:0 0 auto;
+      color:var(--gold);
+      font-size:13px;
+      font-weight:900;
+      text-align:left;
+    }
+
+    .positive { color:var(--success)!important; }
+    .negative { color:var(--danger)!important; }
+
+    .leaderboard-row {
+      display:grid;
+      grid-template-columns:42px 42px minmax(0,1fr) auto;
+      align-items:center;
+      gap:11px;
+      padding:12px;
+      border:1px solid var(--line);
+      border-radius:15px;
+      background:linear-gradient(135deg,#1b2239,#151a2c);
+    }
+
+    .leaderboard-row.current-member {
+      border-color:rgba(213,179,108,.55);
+      background:linear-gradient(135deg,rgba(213,179,108,.12),#171D32);
+    }
+
+    .rank-number {
+      color:var(--gold);
+      font-size:16px;
+      font-weight:900;
+      text-align:center;
+    }
+
+    .leader-avatar {
+      width:42px;
+      height:42px;
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+      border-radius:50%;
+      background:linear-gradient(135deg,var(--purple),#35446b);
+      color:white;
+      font-weight:900;
+    }
+
+    .leader-avatar img {
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+
+    .leader-name {
+      min-width:0;
+      overflow:hidden;
+      font-size:12px;
+      font-weight:900;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+
+    .leader-name small {
+      display:block;
+      margin-top:3px;
+      color:var(--muted);
+      font-size:10px;
+      font-weight:500;
+    }
+
+    .leader-points {
+      color:var(--gold);
+      font-size:12px;
+      font-weight:900;
+      white-space:nowrap;
+    }
+
+    .result-chip {
+      display:inline-block;
+      padding:4px 9px;
+      border-radius:20px;
+      font-size:10px;
+      font-weight:800;
+    }
+
+    .result-won {
+      color:var(--success);
+      background:rgba(85,214,165,.1);
+    }
+
+    .result-lost {
+      color:var(--danger);
+      background:rgba(240,120,135,.1);
+    }
+
+    .result-other {
+      color:var(--gold);
+      background:rgba(213,179,108,.1);
     }
 
     .books-list {
-      display: grid;
-      gap: 13px;
+      display:grid;
+      gap:12px;
     }
 
     .progress-book {
-      display: grid;
-      grid-template-columns: 72px 1fr auto;
-      align-items: center;
-      gap: 17px;
-      padding: 15px;
-      border: 1px solid rgba(255,255,255,.07);
-      border-radius: 17px;
-      background: linear-gradient(135deg, #1b2239, #151a2c);
+      display:grid;
+      grid-template-columns:62px minmax(0,1fr) auto;
+      align-items:center;
+      gap:13px;
+      padding:13px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:linear-gradient(135deg,#1b2239,#151a2c);
     }
 
     .progress-book img {
-      width: 72px;
-      height: 90px;
-      object-fit: cover;
-      border-radius: 11px;
-      background: var(--panel);
+      width:62px;
+      height:78px;
+      object-fit:cover;
+      border-radius:9px;
+      background:var(--panel);
     }
 
-    .book-details {
-      min-width: 0;
+    .book-details { min-width:0; }
+
+    .book-details strong {
+      display:block;
+      overflow:hidden;
+      font-size:12px;
+      text-overflow:ellipsis;
+      white-space:nowrap;
     }
 
-    .book-details h3 {
-      font-size: 14px;
-      margin: 0 0 5px;
-    }
-
-    .book-details p {
-      color: var(--muted);
-      font-size: 11px;
-      margin: 0 0 12px;
+    .book-details small {
+      display:block;
+      margin:5px 0 9px;
+      color:var(--muted);
+      font-size:10px;
     }
 
     .small-progress {
-      height: 7px;
-      overflow: hidden;
-      border-radius: 20px;
-      background: rgba(255,255,255,.08);
+      height:7px;
+      overflow:hidden;
+      border-radius:20px;
+      background:rgba(255,255,255,.08);
     }
 
     .small-progress div {
-      height: 100%;
-      border-radius: inherit;
-      background: linear-gradient(90deg, var(--purple), var(--teal));
+      height:100%;
+      border-radius:inherit;
+      background:linear-gradient(90deg,var(--purple),var(--teal));
     }
 
     .book-percent {
-      color: var(--gold);
-      font-size: 17px;
-      font-weight: 900;
-      white-space: nowrap;
+      color:var(--gold);
+      font-size:15px;
+      font-weight:900;
     }
 
-    .book-action {
-      display: inline-block;
-      margin-top: 8px;
-      color: var(--teal);
-      font-size: 11px;
-      font-weight: 800;
+    .empty-state,.loading-state,.error-state {
+      padding:30px 18px;
+      border:1px dashed rgba(213,179,108,.25);
+      border-radius:17px;
+      color:var(--muted);
+      text-align:center;
+      font-size:12px;
+      line-height:2;
     }
 
-    .empty-state {
-      display: none;
-      padding: 35px 20px;
-      border: 1px dashed rgba(213,179,108,.25);
-      border-radius: 18px;
-      text-align: center;
-      color: var(--muted);
-      line-height: 2;
+    .empty-state strong,.error-state strong {
+      display:block;
+      margin-bottom:5px;
+      color:var(--gold);
+      font-size:16px;
     }
 
-    .empty-state strong {
-      display: block;
-      color: var(--gold);
-      font-size: 18px;
-      margin-bottom: 8px;
+    .empty-state a {
+      display:inline-block;
+      margin-top:10px;
+      color:var(--teal);
+      font-weight:900;
+    }
+
+    .message-box {
+      display:none;
+      margin:15px 0;
+      padding:12px 15px;
+      border:1px solid rgba(240,120,135,.3);
+      border-radius:12px;
+      background:rgba(240,120,135,.08);
+      color:#ffc2ca;
+      font-size:12px;
+      line-height:1.8;
+    }
+
+    .message-box.show { display:block; }
+
+    .refresh-button {
+      padding:8px 13px;
+      border:1px solid rgba(53,189,176,.3);
+      border-radius:10px;
+      background:rgba(53,189,176,.08);
+      color:var(--teal);
+      font-size:11px;
+      font-weight:800;
     }
 
     .footer {
-      padding: 25px;
-      text-align: center;
-      border-top: 1px solid rgba(255,255,255,.07);
-      color: var(--muted);
-      font-size: 12px;
+      padding:23px;
+      border-top:1px solid var(--line);
+      color:var(--muted);
+      text-align:center;
+      font-size:11px;
     }
 
-    @media (max-width: 750px) {
-      .stats-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .badges-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .hero {
-        padding: 25px 20px;
-      }
+    @media(max-width:850px) {
+      .stats-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .badges-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
     }
 
-    @media (max-width: 420px) {
+    @media(max-width:600px) {
+      .page { width:93%;margin-top:18px; }
+      .topbar { padding:10px 4%; }
+      .brand { font-size:21px; }
+      .top-link { padding:8px 10px;font-size:10px; }
+      .hero { padding:22px 17px; }
+      .hero-content { align-items:flex-start;flex-direction:column; }
+      .member-box {
+        width:100%;
+        display:flex;
+        align-items:center;
+        gap:12px;
+        text-align:right;
+      }
+      .member-avatar { margin:0; }
+      .stats-grid { gap:9px; }
+      .stat-card { padding:14px; }
+      .stat-card strong { font-size:23px; }
+      .badges-grid { grid-template-columns:repeat(2,minmax(0,1fr));gap:9px; }
+      .badge-card { min-height:165px;padding:15px 9px; }
+      .section-heading h2 { font-size:18px; }
+      .leaderboard-row {
+        grid-template-columns:28px 38px minmax(0,1fr) auto;
+        gap:8px;
+        padding:10px;
+      }
+      .leader-avatar { width:38px;height:38px; }
       .progress-book {
-        grid-template-columns: 55px 1fr;
-        gap: 12px;
+        grid-template-columns:52px minmax(0,1fr) auto;
+        gap:9px;
       }
+      .progress-book img { width:52px;height:68px; }
+    }
 
-      .progress-book img {
-        width: 55px;
-        height: 75px;
-      }
-
-      .book-percent {
-        grid-column: 2;
-        justify-self: start;
-        font-size: 13px;
-      }
-
-      .section-heading h2 {
-        font-size: 19px;
-      }
+    @media(max-width:360px) {
+      .stats-grid { grid-template-columns:1fr 1fr; }
+      .stat-card span { font-size:10px; }
+      .leader-points { font-size:10px; }
     }
   </style>
 </head>
@@ -428,97 +726,196 @@
 
 <header class="topbar">
   <a class="brand" href="../index.html">HANOON</a>
-  <a class="back-link" href="library.html">العودة للمكتبة ←</a>
+  <div class="top-actions">
+    <a class="top-link" href="library.html">المكتبة</a>
+    <a class="top-link" href="../index.html">الرئيسية</a>
+  </div>
 </header>
 
 <main class="page">
 
+  <div id="pageMessage" class="message-box" role="alert"></div>
+
   <section class="hero">
-    <span class="eyebrow">رحلتك المعرفية</span>
-
-    <h1>إنجازاتي في هنون</h1>
-
-    <p>
-      كل فصل تنهيه هو خطوة جديدة في رحلتك.
-      تابع تقدمك، واكتشف إنجازاتك، واستمر في بناء معرفتك يومًا بعد يوم.
-    </p>
-
-    <div class="overall-progress">
-      <div class="progress-heading">
-        <span>التقدم الإجمالي في القراءة</span>
-        <strong id="overallPercentage">0%</strong>
+    <div class="hero-content">
+      <div>
+        <span class="eyebrow">رحلتك وإنجازاتك في هنون</span>
+        <h1>لوحة إنجازاتي</h1>
+        <p>
+          تابع نقاطك ومشاركاتك ونتائج مسابقاتك،
+          واكتشف الأوسمة التي حصلت عليها وترتيبك بين أعضاء مجتمع هنون.
+        </p>
       </div>
 
+      <div class="member-box">
+        <div class="member-avatar" id="memberAvatar">هـ</div>
+        <div>
+          <div class="member-name" id="memberName">جارٍ تحميل العضو...</div>
+          <div class="member-code" id="memberCode">HANOON MEMBER</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="progress-area">
+      <div class="progress-heading">
+        <span>تقدم القراءة في مكتبتك</span>
+        <strong id="readingPercentage">0%</strong>
+      </div>
       <div class="progress-track">
-        <div class="progress-fill" id="overallProgressFill"></div>
+        <div class="progress-fill" id="readingProgressFill"></div>
       </div>
     </div>
   </section>
 
   <section class="stats-grid">
-
     <article class="stat-card">
-      <div class="stat-icon">ك</div>
-      <strong id="booksStarted">0</strong>
-      <span>كتب بدأت قراءتها</span>
+      <div class="stat-icon">★</div>
+      <strong id="totalPoints">—</strong>
+      <span>صافي نقاطك</span>
     </article>
 
     <article class="stat-card">
-      <div class="stat-icon">✓</div>
-      <strong id="booksCompleted">0</strong>
-      <span>كتب مكتملة</span>
+      <div class="stat-icon">🏆</div>
+      <strong id="winsCount">—</strong>
+      <span>مرات الفوز</span>
     </article>
 
     <article class="stat-card">
-      <div class="stat-icon">ف</div>
-      <strong id="chaptersCompleted">0</strong>
-      <span>فصول مكتملة</span>
+      <div class="stat-icon">↘</div>
+      <strong id="lossesCount">—</strong>
+      <span>مرات الخسارة</span>
     </article>
 
     <article class="stat-card">
-      <div class="stat-icon">م</div>
-      <strong id="totalChapters">0</strong>
-      <span>إجمالي الفصول</span>
+      <div class="stat-icon">✦</div>
+      <strong id="earnedCount">—</strong>
+      <span>الإنجازات المكتسبة</span>
     </article>
 
+    <article class="stat-card">
+      <div class="stat-icon">◉</div>
+      <strong id="activityCount">—</strong>
+      <span>الأنشطة المسجلة</span>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon">✉</div>
+      <strong id="messagesCount">—</strong>
+      <span>الرسائل المرسلة</span>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon">▤</div>
+      <strong id="commentsCount">—</strong>
+      <span>التعليقات</span>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon">♧</div>
+      <strong id="contestCount">—</strong>
+      <span>المسابقات المشاركة</span>
+    </article>
   </section>
 
-  <section class="section">
+  <nav class="tabs" aria-label="أقسام الإنجازات">
+    <button class="tab-button active" data-tab="achievements">الإنجازات والأوسمة</button>
+    <button class="tab-button" data-tab="leaderboard">المتصدرون</button>
+    <button class="tab-button" data-tab="activity">سجل النشاط</button>
+    <button class="tab-button" data-tab="contests">المسابقات والنتائج</button>
+    <button class="tab-button" data-tab="reading">تقدم القراءة</button>
+  </nav>
 
+  <section class="tab-panel active" id="panel-achievements">
     <div class="section-heading">
       <div>
-        <h2>شارات الإنجاز</h2>
-        <p>تُفتح الشارات تلقائيًا مع تقدمك في القراءة.</p>
+        <h2>أوسمتك وإنجازاتك</h2>
+        <p>الإنجازات المتاحة وما حصلت عليه بالفعل.</p>
       </div>
-
-      <span class="count" id="badgesCount">0 من 6</span>
+      <span class="section-count" id="achievementSummary">جارٍ التحميل...</span>
     </div>
 
-    <div class="badges-grid" id="badgesGrid"></div>
-
+    <div class="badges-grid" id="achievementsGrid">
+      <div class="loading-state">جارٍ تحميل الإنجازات...</div>
+    </div>
   </section>
 
-  <section class="section">
-
+  <section class="tab-panel" id="panel-leaderboard">
     <div class="section-heading">
       <div>
-        <h2>تقدم الكتب</h2>
-        <p>تفاصيل إنجازك في كل كتاب بدأت قراءته.</p>
+        <h2>لوحة المتصدرين</h2>
+        <p>ترتيب الأعضاء حسب مجموع النقاط المسجلة.</p>
       </div>
+      <button class="refresh-button" id="refreshLeaderboard">تحديث</button>
+    </div>
 
-      <span class="count" id="activeBooksCount">0 كتاب</span>
+    <div class="list" id="leaderboardList">
+      <div class="loading-state">جارٍ تحميل التصنيف...</div>
+    </div>
+  </section>
+
+  <section class="tab-panel" id="panel-activity">
+    <div class="section-heading">
+      <div>
+        <h2>سجل نشاطك</h2>
+        <p>آخر الأنشطة التي تم تسجيلها في حسابك.</p>
+      </div>
+      <span class="section-count" id="activitySummary">0 نشاط</span>
+    </div>
+
+    <div class="list" id="activityList">
+      <div class="loading-state">جارٍ تحميل سجل النشاط...</div>
+    </div>
+  </section>
+
+  <section class="tab-panel" id="panel-contests">
+    <div class="section-heading">
+      <div>
+        <h2>المسابقات والنتائج</h2>
+        <p>مشاركاتك ونتائج الفوز والخسارة المسجلة.</p>
+      </div>
+      <span class="section-count" id="contestSummary">0 نتيجة</span>
+    </div>
+
+    <div class="list" id="contestResults">
+      <div class="loading-state">جارٍ تحميل النتائج...</div>
+    </div>
+  </section>
+
+  <section class="tab-panel" id="panel-reading">
+    <div class="section-heading">
+      <div>
+        <h2>تقدم القراءة</h2>
+        <p>ملخص الكتب والفصول التي قرأتها على هذا الجهاز.</p>
+      </div>
+      <span class="section-count" id="booksSummary">0 كتاب</span>
+    </div>
+
+    <div class="stats-grid" style="margin:0 0 16px">
+      <article class="stat-card">
+        <strong id="booksStarted">0</strong>
+        <span>كتب بدأت قراءتها</span>
+      </article>
+      <article class="stat-card">
+        <strong id="booksCompleted">0</strong>
+        <span>كتب مكتملة</span>
+      </article>
+      <article class="stat-card">
+        <strong id="chaptersCompleted">0</strong>
+        <span>فصول مكتملة</span>
+      </article>
+      <article class="stat-card">
+        <strong id="totalChapters">0</strong>
+        <span>إجمالي الفصول</span>
+      </article>
     </div>
 
     <div class="books-list" id="booksList"></div>
-
-    <div class="empty-state" id="emptyState">
+    <div class="empty-state" id="booksEmpty" hidden>
       <strong>رحلتك تبدأ من هنا</strong>
-      لم تبدأ قراءة أي كتاب حتى الآن.
-      اذهب إلى المكتبة واختر أول كتاب لك.
+      لم تبدأ قراءة أي كتاب بعد.
       <br>
-      <a class="book-action" href="library.html">اكتشف المكتبة ←</a>
+      <a href="library.html">اكتشف المكتبة ←</a>
     </div>
-
   </section>
 
 </main>
@@ -530,298 +927,749 @@
 </footer>
 
 <script src="../data/books.js"></script>
+<script type="module" src="../js/supabase-client.js"></script>
 
-<script>
-(function () {
+<script type="module">
+(() => {
   "use strict";
 
-  const READER_PREFIX = "hanoon_reader_";
+  const $ = selector => document.querySelector(selector);
 
-  const booksList = document.getElementById("booksList");
-  const emptyState = document.getElementById("emptyState");
-  const badgesGrid = document.getElementById("badgesGrid");
+  const state = {
+    supabase: null,
+    user: null,
+    profile: null,
+    catalog: [],
+    earned: [],
+    points: [],
+    activities: [],
+    results: [],
+    entries: [],
+    leaderboard: []
+  };
 
-  if (!window.HANOON_BOOKS_API) {
-    booksList.innerHTML = `
-      <div class="empty-state" style="display:block">
-        <strong>تعذر تحميل الكتب</strong>
-        تأكد من وجود ملف data/books.js.
-      </div>
-    `;
-    return;
-  }
+  const activityLabels = {
+    book_completed: "إكمال كتاب",
+    chapter_completed: "إكمال فصل",
+    quiz_answered: "الإجابة عن سؤال",
+    post_created: "إنشاء مشاركة",
+    comment_created: "إضافة تعليق",
+    like_received: "الحصول على إعجاب",
+    share_created: "مشاركة محتوى",
+    message_sent: "إرسال رسالة",
+    group_message_sent: "إرسال رسالة في مجموعة",
+    contest_joined: "الاشتراك في مسابقة",
+    contest_won: "الفوز في مسابقة",
+    contest_lost: "نتيجة مسابقة"
+  };
 
-  const books = window.HANOON_BOOKS_API.getAll();
+  const activityIcons = {
+    book_completed: "▣",
+    chapter_completed: "✓",
+    quiz_answered: "?",
+    post_created: "✎",
+    comment_created: "☷",
+    like_received: "♥",
+    share_created: "↗",
+    message_sent: "✉",
+    group_message_sent: "▤",
+    contest_joined: "♜",
+    contest_won: "🏆",
+    contest_lost: "↘"
+  };
 
   function escapeHTML(value) {
-    return String(value ?? "").replace(/[&<>"']/g, function (char) {
-      return {
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#039;"
-      }[char];
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    })[char]);
+  }
+
+  function number(value) {
+    return new Intl.NumberFormat("ar-EG").format(Number(value || 0));
+  }
+
+  function dateText(value) {
+    if (!value) return "—";
+
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "—";
+
+    return new Intl.DateTimeFormat("ar-EG", {
+      dateStyle: "medium",
+      timeStyle: "short"
+    }).format(date);
+  }
+
+  function showMessage(message) {
+    const box = $("#pageMessage");
+    box.textContent = message;
+    box.classList.add("show");
+  }
+
+  function waitForSupabase() {
+    return new Promise((resolve, reject) => {
+      if (window.HANOON?.supabase) {
+        resolve(window.HANOON.supabase);
+        return;
+      }
+
+      let timer;
+
+      const cleanup = () => {
+        clearTimeout(timer);
+        window.removeEventListener("hanoon:supabase-ready", ready);
+        window.removeEventListener("hanoon:supabase-error", failed);
+      };
+
+      const ready = () => {
+        cleanup();
+
+        if (window.HANOON?.supabase) {
+          resolve(window.HANOON.supabase);
+        } else {
+          reject(new Error("تعذر تشغيل اتصال قاعدة البيانات."));
+        }
+      };
+
+      const failed = event => {
+        cleanup();
+        reject(new Error(
+          event.detail?.message || "تعذر الاتصال بقاعدة البيانات."
+        ));
+      };
+
+      timer = setTimeout(() => {
+        cleanup();
+        reject(new Error("انتهت مهلة الاتصال بقاعدة البيانات."));
+      }, 15000);
+
+      window.addEventListener("hanoon:supabase-ready", ready);
+      window.addEventListener("hanoon:supabase-error", failed);
     });
   }
 
-  function getCompleted(bookId) {
-    try {
-      const value = JSON.parse(
-        localStorage.getItem(
-          READER_PREFIX + "completed_" + bookId
-        ) || "[]"
-      );
+  async function getRows(query, label) {
+    const { data, error } = await query;
 
-      return Array.isArray(value) ? value : [];
-    } catch (error) {
+    if (error) {
+      console.error("HANOON:", label, error);
       return [];
     }
+
+    return data || [];
   }
 
-  function getBookProgress(book) {
-    const completed = getCompleted(book.id);
-    const total = book.chapters.length;
+  function setMember(profile, user) {
+    const name = profile?.full_name ||
+      user.user_metadata?.full_name ||
+      user.user_metadata?.username ||
+      "عضو هنون";
 
-    const completedCount = book.chapters.filter(chapter =>
-      completed.includes(chapter.id)
+    $("#memberName").textContent = name;
+    $("#memberCode").textContent = profile?.member_code || "عضو هنون";
+
+    const avatar = $("#memberAvatar");
+
+    if (profile?.avatar_path && state.supabase) {
+      const { data } = state.supabase.storage
+        .from("avatars")
+        .getPublicUrl(profile.avatar_path);
+
+      if (data?.publicUrl) {
+        avatar.innerHTML = `<img src="${escapeHTML(data.publicUrl)}" alt="الصورة الشخصية">`;
+        return;
+      }
+    }
+
+    avatar.textContent = String(name).trim().charAt(0) || "هـ";
+  }
+
+  async function loadDatabase() {
+    const supabase = state.supabase;
+
+    const { data: sessionData, error: sessionError } =
+      await supabase.auth.getSession();
+
+    if (sessionError) throw sessionError;
+
+    const user = sessionData.session?.user;
+
+    if (!user) {
+      showMessage("سجّل الدخول إلى حسابك لعرض إنجازاتك ونقاطك.");
+      $("#memberName").textContent = "زائر";
+      $("#memberCode").textContent = "يلزم تسجيل الدخول";
+      $("#achievementsGrid").innerHTML = `
+        <div class="empty-state" style="grid-column:1/-1">
+          <strong>سجّل الدخول أولاً</strong>
+          بيانات الإنجازات خاصة بحساب العضو.
+          <br>
+          <a href="auth.html">الانتقال إلى تسجيل الدخول ←</a>
+        </div>
+      `;
+      $("#leaderboardList").innerHTML = `
+        <div class="empty-state">
+          <strong>يلزم تسجيل الدخول</strong>
+          سجّل الدخول لعرض لوحة المتصدرين.
+        </div>
+      `;
+      return;
+    }
+
+    state.user = user;
+
+    const [
+      profile,
+      catalog,
+      earned,
+      points,
+      activities,
+      results,
+      entries,
+      leaderboard
+    ] = await Promise.all([
+      getRows(
+        supabase.from("profiles")
+          .select("id,member_code,full_name,username,avatar_path,profile_completed")
+          .eq("id", user.id)
+          .maybeSingle(),
+        "profile"
+      ).then(rows => Array.isArray(rows) ? rows[0] || null : rows),
+
+      getRows(
+        supabase.from("achievement_catalog")
+          .select("id,code,title,description,category,icon,points_reward,sort_order")
+          .eq("is_active", true)
+          .order("sort_order", { ascending: true }),
+        "achievement catalog"
+      ),
+
+      getRows(
+        supabase.from("user_achievements")
+          .select("earned_at,achievement_id,achievement_catalog(id,code,title,description,category,icon,points_reward)")
+          .eq("user_id", user.id)
+          .order("earned_at", { ascending: false }),
+        "user achievements"
+      ),
+
+      getRows(
+        supabase.from("points_ledger")
+          .select("points_delta,reason,source_type,source_id,created_at")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(500),
+        "points"
+      ),
+
+      getRows(
+        supabase.from("activity_events")
+          .select("id,event_type,reference_type,reference_id,metadata,created_at")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(100),
+        "activity"
+      ),
+
+      getRows(
+        supabase.from("contest_results")
+          .select("result,score,rank,recorded_at,contests(title,contest_type)")
+          .eq("user_id", user.id)
+          .order("recorded_at", { ascending: false })
+          .limit(100),
+        "contest results"
+      ),
+
+      getRows(
+        supabase.from("contest_entries")
+          .select("id,contest_id,joined_at,contests(title,status,starts_at,ends_at)")
+          .eq("user_id", user.id)
+          .order("joined_at", { ascending: false })
+          .limit(100),
+        "contest entries"
+      ),
+
+      getRows(
+        supabase.rpc("get_points_leaderboard", { p_limit: 50 }),
+        "leaderboard"
+      )
+    ]);
+
+    state.profile = profile;
+    state.catalog = catalog;
+    state.earned = earned;
+    state.points = points;
+    state.activities = activities;
+    state.results = results;
+    state.entries = entries;
+    state.leaderboard = leaderboard;
+
+    setMember(profile, user);
+
+    renderStats();
+    renderAchievements();
+    renderLeaderboard();
+    renderActivity();
+    renderContests();
+    renderReading();
+  }
+
+  function renderStats() {
+    const totalPoints = state.points.reduce(
+      (sum, item) => sum + Number(item.points_delta || 0), 0
+    );
+
+    const wins = state.results.filter(item => item.result === "won").length;
+    const losses = state.results.filter(item => item.result === "lost").length;
+
+    const messages = state.activities.filter(item =>
+      ["message_sent", "group_message_sent"].includes(item.event_type)
     ).length;
 
-    return {
-      total,
-      completedCount,
-      percentage: total
-        ? Math.round(completedCount / total * 100)
-        : 0
-    };
+    const comments = state.activities.filter(item =>
+      item.event_type === "comment_created"
+    ).length;
+
+    $("#totalPoints").textContent = number(totalPoints);
+    $("#winsCount").textContent = number(wins);
+    $("#lossesCount").textContent = number(losses);
+    $("#earnedCount").textContent = number(state.earned.length);
+    $("#activityCount").textContent = number(state.activities.length);
+    $("#messagesCount").textContent = number(messages);
+    $("#commentsCount").textContent = number(comments);
+    $("#contestCount").textContent = number(state.entries.length);
   }
 
-  function getAllStats() {
-    let totalChapters = 0;
-    let completedChapters = 0;
-    let booksStarted = 0;
-    let booksCompleted = 0;
+  function renderAchievements() {
+    const grid = $("#achievementsGrid");
+
+    if (!state.catalog.length) {
+      grid.innerHTML = `
+        <div class="empty-state" style="grid-column:1/-1">
+          <strong>لا توجد إنجازات متاحة حاليًا</strong>
+          ستظهر الإنجازات هنا عند إضافتها إلى كتالوج هنون.
+        </div>
+      `;
+      $("#achievementSummary").textContent = "0 إنجاز";
+      return;
+    }
+
+    const earnedIds = new Set(
+      state.earned.map(item => item.achievement_id)
+    );
+
+    const earnedCodes = new Set(
+      state.earned
+        .map(item => item.achievement_catalog?.code)
+        .filter(Boolean)
+    );
+
+    const earnedCount = state.catalog.filter(item =>
+      earnedIds.has(item.id) || earnedCodes.has(item.code)
+    ).length;
+
+    $("#achievementSummary").textContent =
+      `${number(earnedCount)} من ${number(state.catalog.length)} إنجاز`;
+
+    grid.innerHTML = state.catalog.map(item => {
+      const isEarned =
+        earnedIds.has(item.id) || earnedCodes.has(item.code);
+
+      const symbol = item.icon || "✦";
+
+      return `
+        <article class="badge-card ${isEarned ? "earned" : ""}">
+          <div class="badge-symbol">${escapeHTML(symbol)}</div>
+          <h3>${escapeHTML(item.title)}</h3>
+          <p>${escapeHTML(item.description || "إنجاز من إنجازات هنون.")}</p>
+          <span class="badge-status">
+            ${isEarned ? "تم الحصول عليه ✓" : "لم يتم الحصول عليه بعد"}
+          </span>
+          <span class="badge-status" style="display:block">
+            ${number(item.points_reward)} نقطة
+          </span>
+        </article>
+      `;
+    }).join("");
+  }
+
+  function renderLeaderboard() {
+    const list = $("#leaderboardList");
+
+    if (!state.leaderboard.length) {
+      list.innerHTML = `
+        <div class="empty-state">
+          <strong>لوحة المتصدرين لم تبدأ بعد</strong>
+          لا توجد نقاط مسجلة للأعضاء حتى الآن.
+          عندما تبدأ النقاط في التسجيل سيظهر ترتيب الأعضاء هنا.
+        </div>
+      `;
+      return;
+    }
+
+    list.innerHTML = state.leaderboard.map(member => {
+      const isCurrent = member.member_id === state.user?.id;
+      const avatar = member.avatar_path
+        ? state.supabase.storage.from("avatars").getPublicUrl(member.avatar_path).data.publicUrl
+        : "";
+
+      const name = member.full_name || member.username || "عضو هنون";
+
+      return `
+        <article class="leaderboard-row ${isCurrent ? "current-member" : ""}">
+          <div class="rank-number">${number(member.rank_position)}</div>
+          <div class="leader-avatar">
+            ${avatar
+              ? `<img src="${escapeHTML(avatar)}" alt="">`
+              : escapeHTML(String(name).charAt(0))}
+          </div>
+          <div class="leader-name">
+            ${escapeHTML(name)}
+            <small>${isCurrent ? "أنت" : "@" + escapeHTML(member.username || "")}</small>
+          </div>
+          <div class="leader-points">${number(member.total_points)} نقطة</div>
+        </article>
+      `;
+    }).join("");
+  }
+
+  function renderActivity() {
+    const list = $("#activityList");
+
+    $("#activitySummary").textContent =
+      `${number(state.activities.length)} نشاط`;
+
+    if (!state.activities.length) {
+      list.innerHTML = `
+        <div class="empty-state">
+          <strong>لا يوجد نشاط مسجل بعد</strong>
+          سيظهر هنا نشاطك عندما تبدأ وظائف الموقع في تسجيله.
+        </div>
+      `;
+      return;
+    }
+
+    list.innerHTML = state.activities.map(item => {
+      const label = activityLabels[item.event_type] || "نشاط جديد";
+      const icon = activityIcons[item.event_type] || "•";
+      const metadata = item.metadata || {};
+      const details = metadata.title || metadata.description || "";
+
+      return `
+        <article class="list-row">
+          <div class="list-icon">${escapeHTML(icon)}</div>
+          <div class="list-content">
+            <strong>${escapeHTML(label)}</strong>
+            <small>
+              ${escapeHTML(details)}
+              ${details ? " · " : ""}
+              ${escapeHTML(dateText(item.created_at))}
+            </small>
+          </div>
+        </article>
+      `;
+    }).join("");
+  }
+
+  function renderContests() {
+    const list = $("#contestResults");
+
+    $("#contestSummary").textContent =
+      `${number(state.results.length)} نتيجة`;
+
+    if (!state.results.length && !state.entries.length) {
+      list.innerHTML = `
+        <div class="empty-state">
+          <strong>لم تشارك في مسابقات بعد</strong>
+          عندما تشترك في مسابقة وتُسجل نتيجتها ستظهر هنا.
+        </div>
+      `;
+      return;
+    }
+
+    const resultRows = state.results.map(item => {
+      const contestName = item.contests?.title || "مسابقة";
+      const resultLabels = {
+        won: "فائز",
+        lost: "خاسر",
+        participated: "مشارك",
+        disqualified: "مستبعد"
+      };
+
+      const resultClass = item.result === "won"
+        ? "result-won"
+        : item.result === "lost"
+          ? "result-lost"
+          : "result-other";
+
+      return `
+        <article class="list-row">
+          <div class="list-icon">🏆</div>
+          <div class="list-content">
+            <strong>${escapeHTML(contestName)}</strong>
+            <small>
+              ${escapeHTML(dateText(item.recorded_at))}
+              · النتيجة: ${escapeHTML(resultLabels[item.result] || item.result)}
+              · النقاط: ${number(item.score)}
+              ${item.rank ? " · المركز: " + number(item.rank) : ""}
+            </small>
+          </div>
+          <span class="result-chip ${resultClass}">
+            ${escapeHTML(resultLabels[item.result] || "نتيجة")}
+          </span>
+        </article>
+      `;
+    });
+
+    const entryRows = state.entries.map(item => {
+      const contestName = item.contests?.title || "مسابقة";
+      const statusLabels = {
+        draft: "مسودة",
+        published: "منشورة",
+        active: "جارية",
+        finished: "منتهية",
+        cancelled: "ملغاة"
+      };
+
+      return `
+        <article class="list-row">
+          <div class="list-icon">♜</div>
+          <div class="list-content">
+            <strong>${escapeHTML(contestName)}</strong>
+            <small>
+              تاريخ الاشتراك: ${escapeHTML(dateText(item.joined_at))}
+              · ${escapeHTML(statusLabels[item.contests?.status] || "مشترك")}
+            </small>
+          </div>
+        </article>
+      `;
+    });
+
+    list.innerHTML = [...resultRows, ...entryRows].join("");
+  }
+
+  function getLocalBookStats() {
+    const api = window.HANOON_BOOKS_API;
+
+    if (!api || typeof api.getAll !== "function") {
+      return {
+        totalChapters:0,
+        completedChapters:0,
+        booksStarted:0,
+        booksCompleted:0,
+        progressList:[]
+      };
+    }
+
+    let books = [];
+
+    try {
+      books = api.getAll() || [];
+    } catch (error) {
+      console.error("HANOON books:", error);
+    }
 
     const progressList = books.map(book => {
-      const progress = getBookProgress(book);
+      let completed = [];
 
-      totalChapters += progress.total;
-      completedChapters += progress.completedCount;
+      try {
+        const stored = JSON.parse(
+          localStorage.getItem("hanoon_reader_completed_" + book.id) || "[]"
+        );
 
-      if (progress.completedCount > 0) {
-        booksStarted++;
-      }
+        completed = Array.isArray(stored) ? stored : [];
+      } catch (_) {}
 
-      if (
-        progress.total > 0 &&
-        progress.completedCount === progress.total
-      ) {
-        booksCompleted++;
-      }
+      const chapters = Array.isArray(book.chapters) ? book.chapters : [];
+
+      const completedCount = chapters.filter(chapter =>
+        completed.includes(chapter.id)
+      ).length;
 
       return {
         book,
-        ...progress
+        total:chapters.length,
+        completedCount,
+        percentage:chapters.length
+          ? Math.round(completedCount / chapters.length * 100)
+          : 0
       };
     });
+
+    const totalChapters = progressList.reduce(
+      (sum,item) => sum + item.total,0
+    );
+
+    const completedChapters = progressList.reduce(
+      (sum,item) => sum + item.completedCount,0
+    );
 
     return {
       totalChapters,
       completedChapters,
-      booksStarted,
-      booksCompleted,
-      percentage: totalChapters
+      booksStarted:progressList.filter(item => item.completedCount > 0).length,
+      booksCompleted:progressList.filter(item =>
+        item.total > 0 && item.completedCount === item.total
+      ).length,
+      progressList,
+      percentage:totalChapters
         ? Math.round(completedChapters / totalChapters * 100)
-        : 0,
-      progressList
+        : 0
     };
   }
 
-  const badges = [
-    {
-      id: "first-chapter",
-      symbol: "01",
-      title: "البداية الجميلة",
-      description: "أكمل أول فصل في رحلتك.",
-      condition: stats => stats.completedChapters >= 1
-    },
-    {
-      id: "five-chapters",
-      symbol: "05",
-      title: "قارئ نشيط",
-      description: "أكمل خمسة فصول.",
-      condition: stats => stats.completedChapters >= 5
-    },
-    {
-      id: "ten-chapters",
-      symbol: "10",
-      title: "محب المعرفة",
-      description: "أكمل عشرة فصول.",
-      condition: stats => stats.completedChapters >= 10
-    },
-    {
-      id: "twenty-five-chapters",
-      symbol: "25",
-      title: "رحلة مستمرة",
-      description: "أكمل خمسة وعشرين فصلًا.",
-      condition: stats => stats.completedChapters >= 25
-    },
-    {
-      id: "first-book",
-      symbol: "ك",
-      title: "إنجاز كبير",
-      description: "أكمل أول كتاب بالكامل.",
-      condition: stats => stats.booksCompleted >= 1
-    },
-    {
-      id: "three-books",
-      symbol: "3",
-      title: "قارئ متميز",
-      description: "أكمل ثلاثة كتب بالكامل.",
-      condition: stats => stats.booksCompleted >= 3
-    }
-  ];
+  function renderReading() {
+    const stats = getLocalBookStats();
 
-  function renderBadges(stats) {
-    let unlocked = 0;
+    $("#booksStarted").textContent = number(stats.booksStarted);
+    $("#booksCompleted").textContent = number(stats.booksCompleted);
+    $("#chaptersCompleted").textContent = number(stats.completedChapters);
+    $("#totalChapters").textContent = number(stats.totalChapters);
+    $("#booksSummary").textContent = `${number(stats.booksStarted)} كتاب`;
 
-    badgesGrid.innerHTML = badges.map(badge => {
-      const isUnlocked = badge.condition(stats);
+    $("#readingPercentage").textContent = `${stats.percentage || 0}%`;
+    $("#readingProgressFill").style.width = `${stats.percentage || 0}%`;
 
-      if (isUnlocked) unlocked++;
-
-      return `
-        <article class="badge-card ${isUnlocked ? "unlocked" : ""}">
-          <div class="badge-symbol">
-            ${escapeHTML(badge.symbol)}
-          </div>
-
-          <h3>${escapeHTML(badge.title)}</h3>
-
-          <p>
-            ${escapeHTML(badge.description)}
-          </p>
-
-          <p style="margin-top:8px;color:${isUnlocked ? "#35BDB0" : "#A7ABC0"}">
-            ${isUnlocked ? "تم الحصول عليها ✓" : "لم تُفتح بعد"}
-          </p>
-        </article>
-      `;
-    }).join("");
-
-    document.getElementById("badgesCount").textContent =
-      unlocked + " من " + badges.length;
-  }
-
-  function renderBooks(stats) {
     const activeBooks = stats.progressList.filter(item =>
       item.completedCount > 0
     );
 
-    document.getElementById("activeBooksCount").textContent =
-      activeBooks.length + " كتاب";
+    const list = $("#booksList");
+    const empty = $("#booksEmpty");
 
     if (!activeBooks.length) {
-      booksList.style.display = "none";
-      emptyState.style.display = "block";
+      list.innerHTML = "";
+      empty.hidden = false;
       return;
     }
 
-    booksList.style.display = "grid";
-    emptyState.style.display = "none";
+    empty.hidden = true;
 
-    booksList.innerHTML = activeBooks.map(item => {
+    list.innerHTML = activeBooks.map(item => {
       const book = item.book;
+      const cover = book.cover || "";
+      const nextChapter = (book.chapters || []).find(chapter => {
+        try {
+          const completed = JSON.parse(
+            localStorage.getItem("hanoon_reader_completed_" + book.id) || "[]"
+          );
+          return !completed.includes(chapter.id);
+        } catch (_) {
+          return true;
+        }
+      });
 
-      const nextChapter = book.chapters.find(chapter =>
-        !getCompleted(book.id).includes(chapter.id)
-      ) || book.chapters[0];
-
-      const chapterURL = nextChapter
-        ? "chapter.html?book=" +
-          encodeURIComponent(book.id) +
-          "&chapter=" +
-          encodeURIComponent(nextChapter.id)
-        : "book.html?id=" + encodeURIComponent(book.id);
+      const chapterUrl = nextChapter
+        ? `chapter.html?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(nextChapter.id)}`
+        : `book.html?id=${encodeURIComponent(book.id)}`;
 
       return `
         <article class="progress-book">
-
           <img
-            src="${escapeHTML(book.cover)}"
-            alt="${escapeHTML(book.title)}"
+            src="${escapeHTML(cover)}"
+            alt="${escapeHTML(book.title || "كتاب")}"
             loading="lazy"
             onerror="this.style.display='none'"
           >
-
           <div class="book-details">
-
-            <h3>${escapeHTML(book.title)}</h3>
-
-            <p>
-              ${item.completedCount} من ${item.total} فصول مكتملة
-            </p>
-
+            <strong>${escapeHTML(book.title || "كتاب")}</strong>
+            <small>${number(item.completedCount)} من ${number(item.total)} فصول مكتملة</small>
             <div class="small-progress">
               <div style="width:${item.percentage}%"></div>
             </div>
-
-            <a class="book-action" href="${chapterURL}">
-              ${item.percentage === 100
-                ? "مراجعة الكتاب ←"
-                : "متابعة القراءة ←"}
+            <a href="${chapterUrl}" style="display:inline-block;margin-top:8px;color:var(--teal);font-size:10px;font-weight:900">
+              ${item.percentage === 100 ? "مراجعة الكتاب ←" : "متابعة القراءة ←"}
             </a>
-
           </div>
-
-          <div class="book-percent">
-            ${item.percentage}%
-          </div>
-
+          <div class="book-percent">${number(item.percentage)}٪</div>
         </article>
       `;
     }).join("");
   }
 
-  function renderDashboard() {
-    const stats = getAllStats();
+  function bindTabs() {
+    document.querySelectorAll("[data-tab]").forEach(button => {
+      button.addEventListener("click", () => {
+        const target = button.dataset.tab;
 
-    document.getElementById("booksStarted").textContent =
-      stats.booksStarted;
+        document.querySelectorAll(".tab-button").forEach(item => {
+          item.classList.toggle("active", item === button);
+        });
 
-    document.getElementById("booksCompleted").textContent =
-      stats.booksCompleted;
-
-    document.getElementById("chaptersCompleted").textContent =
-      stats.completedChapters;
-
-    document.getElementById("totalChapters").textContent =
-      stats.totalChapters;
-
-    document.getElementById("overallPercentage").textContent =
-      stats.percentage + "%";
-
-    document.getElementById("overallProgressFill").style.width =
-      stats.percentage + "%";
-
-    renderBadges(stats);
-    renderBooks(stats);
+        document.querySelectorAll(".tab-panel").forEach(panel => {
+          panel.classList.toggle("active", panel.id === "panel-" + target);
+        });
+      });
+    });
   }
 
-  document.getElementById("currentYear").textContent =
-    new Date().getFullYear();
+  async function refreshLeaderboard() {
+    if (!state.supabase || !state.user) return;
 
-  renderDashboard();
+    const button = $("#refreshLeaderboard");
+    button.disabled = true;
+    button.textContent = "جارٍ التحديث...";
 
-  // تحديث الصفحة عند العودة إليها من تبويب آخر
-  window.addEventListener("storage", renderDashboard);
+    try {
+      state.leaderboard = await getRows(
+        state.supabase.rpc("get_points_leaderboard", { p_limit:50 }),
+        "leaderboard refresh"
+      );
 
-  // تحديث الصفحة عند الرجوع إليها من صفحة الفصل
-  window.addEventListener("pageshow", renderDashboard);
+      renderLeaderboard();
+    } finally {
+      button.disabled = false;
+      button.textContent = "تحديث";
+    }
+  }
 
+  async function init() {
+    $("#currentYear").textContent = new Date().getFullYear();
+    bindTabs();
+
+    $("#refreshLeaderboard").addEventListener("click", refreshLeaderboard);
+
+    try {
+      state.supabase = await waitForSupabase();
+      await loadDatabase();
+
+    } catch (error) {
+      console.error("HANOON achievements:", error);
+
+      showMessage(
+        error.message || "تعذر تحميل بيانات الإنجازات. حاول تحديث الصفحة."
+      );
+
+      $("#achievementsGrid").innerHTML = `
+        <div class="error-state" style="grid-column:1/-1">
+          <strong>تعذر تحميل البيانات</strong>
+          ${escapeHTML(error.message || "حدث خطأ في الاتصال.")}
+        </div>
+      `;
+
+      $("#leaderboardList").innerHTML = `
+        <div class="error-state">
+          <strong>تعذر تحميل لوحة المتصدرين</strong>
+          تحقق من اتصالك ثم أعد تحميل الصفحة.
+        </div>
+      `;
+    }
+
+    // القراءة الحالية محفوظة محليًا في نظام القارئ.
+    renderReading();
+
+    // تحديث ملخص القراءة عند الرجوع من صفحة فصل.
+    window.addEventListener("pageshow", renderReading);
+    window.addEventListener("storage", renderReading);
+  }
+
+  init();
 })();
-  <script src="../js/global-back.js"></script>
 </script>
+
+<script src="../js/global-back.js"></script>
 
 </body>
 </html>
