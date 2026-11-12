@@ -14,6 +14,52 @@
   let currentProfile = null;
   let busy = false;
 
+  /* انتظار اتصال Supabase دون ترك مستمعات معلّقة */
+  function waitForSupabase() {
+    return new Promise((resolve, reject) => {
+      if (window.HANOON?.supabase) {
+        resolve(window.HANOON.supabase);
+        return;
+      }
+
+      let timer;
+
+      const cleanup = () => {
+        clearTimeout(timer);
+        window.removeEventListener("hanoon:supabase-ready", onReady);
+        window.removeEventListener("hanoon:supabase-error", onError);
+      };
+
+      const onReady = () => {
+        const client = window.HANOON?.supabase;
+        cleanup();
+
+        if (client) resolve(client);
+        else reject(new Error("تعذر تشغيل قاعدة البيانات."));
+      };
+
+      const onError = event => {
+        cleanup();
+        reject(new Error(
+          event.detail?.message || "تعذر الاتصال بقاعدة البيانات."
+        ));
+      };
+
+      window.addEventListener("hanoon:supabase-ready", onReady);
+      window.addEventListener("hanoon:supabase-error", onError);
+
+      timer = setTimeout(() => {
+        cleanup();
+        reject(new Error(
+          "انتهت مهلة الاتصال. حاول تحديث الصفحة."
+        ));
+      }, 15000);
+
+      if (window.HANOON?.supabase) onReady();
+    });
+  }
+
+  /* الرسائل */
   function toast(message) {
     const element = $("toast");
     if (!element) return;
@@ -40,19 +86,27 @@
     element.classList.add("show");
   }
 
-  function escapeText(value) {
-    return String(value ?? "");
-  }
-
   function parseList(value) {
     if (!Array.isArray(value)) return [];
-    return value.filter(item => typeof item === "string" && item.trim());
+
+    return value.filter(
+      item => typeof item === "string" && item.trim()
+    );
+  }
+
+  function splitInput(value) {
+    return value
+      .split(/[،,]/)
+      .map(item => item.trim())
+      .filter(Boolean)
+      .slice(0, 30);
   }
 
   function listToText(value) {
     return parseList(value).join("، ");
   }
 
+  /* عرض القوائم */
   function renderTags(container, items, emptyMessage) {
     container.replaceChildren();
 
@@ -72,6 +126,7 @@
     });
   }
 
+  /* الصورة الشخصية */
   function getAvatarURL(path) {
     if (!path) return "";
 
@@ -88,41 +143,46 @@
 
     const url = getAvatarURL(path);
 
-    if (url) {
-      const image = document.createElement("img");
-      image.src = url;
-      image.alt = "الصورة الشخصية";
-      image.loading = "lazy";
-
-      image.onerror = () => {
-        container.replaceChildren();
-        container.textContent = (name || "H").charAt(0);
-      };
-
-      container.appendChild(image);
-    } else {
+    if (!url) {
       container.textContent = (name || "H").charAt(0);
+      return;
     }
+
+    const image = document.createElement("img");
+    image.src = url;
+    image.alt = "الصورة الشخصية";
+    image.loading = "lazy";
+
+    image.onerror = () => {
+      container.replaceChildren();
+      container.textContent = (name || "H").charAt(0);
+    };
+
+    container.appendChild(image);
   }
 
+  /* رابط الملف العام */
+  function getPublicProfileURL(username) {
+    return new URL(
+      `member.html?user=${encodeURIComponent(username)}`,
+      window.location.href
+    ).href;
+  }
+
+  /* رمز QR */
   function renderQR(username) {
     const container = $("profileQR");
     container.replaceChildren();
 
     if (!window.QRCode) {
-      container.textContent = "تعذر تحميل رمز QR";
+      container.textContent = "تعذر تحميل رمز QR.";
       return;
     }
 
-    const url = new URL(
-      "profile.html",
-      window.location.href
-    );
-
-    url.searchParams.set("user", username);
+    const publicURL = getPublicProfileURL(username);
 
     new QRCode(container, {
-      text: url.href,
+      text: publicURL,
       width: 150,
       height: 150,
       colorDark: "#111827",
@@ -131,15 +191,21 @@
     });
   }
 
+  /* عرض الملف الشخصي */
   function renderProfile(profile) {
     currentProfile = profile;
 
-    $("profileName").textContent = profile.full_name || "عضو هنون";
-    $("profileUsername").textContent = "@" + (profile.username || "");
+    $("profileName").textContent =
+      profile.full_name || "عضو هنون";
+
+    $("profileUsername").textContent =
+      "@" + (profile.username || "");
+
     $("profileBio").textContent =
       profile.bio || "لم يضف العضو نبذة شخصية بعد.";
 
-    $("memberCode").textContent = profile.member_code || "غير متاح";
+    $("memberCode").textContent =
+      profile.member_code || "غير متاح";
 
     renderAvatar(profile.avatar_path, profile.full_name);
 
@@ -167,6 +233,7 @@
     $("profileContent").hidden = false;
   }
 
+  /* تحميل الملف الشخصي */
   async function loadProfile() {
     const { data, error } = await supabase
       .from("profiles")
@@ -178,7 +245,7 @@
 
     if (!data) {
       throw new Error(
-        "لم نعثر على ملفك الشخصي. سجّل الدخول من جديد أو أكمل إنشاء حسابك."
+        "لم نعثر على ملفك الشخصي. سجّل الدخول من جديد."
       );
     }
 
@@ -190,6 +257,7 @@
     renderProfile(data);
   }
 
+  /* ضغط الصورة إلى 512 × 512 */
   async function compressImage(file) {
     if (!file || !file.type.startsWith("image/")) {
       throw new Error("اختر صورة صحيحة.");
@@ -227,6 +295,10 @@
 
       const context = canvas.getContext("2d");
 
+      if (!context) {
+        throw new Error("تعذر تجهيز الصورة.");
+      }
+
       context.drawImage(
         image,
         x, y, cropSize, cropSize,
@@ -248,6 +320,7 @@
     }
   }
 
+  /* رفع الصورة */
   async function uploadAvatar(file) {
     const blob = await compressImage(file);
     const path = `${currentUser.id}/avatar.webp`;
@@ -265,26 +338,21 @@
     return path;
   }
 
-  function splitInput(value) {
-    return value
-      .split(/[،,]/)
-      .map(item => item.trim())
-      .filter(Boolean)
-      .slice(0, 30);
-  }
-
+  /* حفظ التعديلات */
   async function saveProfile(event) {
     event.preventDefault();
 
     if (busy) return;
 
     const button = $("saveProfileButton");
+
     busy = true;
     button.disabled = true;
     button.textContent = "جارٍ الحفظ...";
 
     try {
       const fullName = $("editName").value.trim();
+
       const username = $("editUsername").value
         .trim()
         .replace(/^@/, "")
@@ -293,13 +361,19 @@
       const bio = $("editBio").value.trim();
 
       if (fullName.length < 2 || fullName.length > 80) {
-        throw new Error("الاسم يجب أن يكون بين حرفين و80 حرفًا.");
+        throw new Error(
+          "الاسم يجب أن يكون بين حرفين و80 حرفًا."
+        );
       }
 
       if (!/^[a-z0-9_]{3,24}$/.test(username)) {
         throw new Error(
           "اسم المستخدم يجب أن يكون من 3 إلى 24 حرفًا إنجليزيًا أو رقمًا أو _."
         );
+      }
+
+      if (bio.length > 250) {
+        throw new Error("النبذة يجب ألا تتجاوز 250 حرفًا.");
       }
 
       const file = $("avatarInput").files?.[0];
@@ -310,14 +384,17 @@
         avatarPath = await uploadAvatar(file);
       }
 
+      const hobbies = splitInput($("editHobbies").value);
+      const reading = splitInput($("editReading").value);
+
       const updates = {
         full_name: fullName,
         username,
         bio,
         avatar_path: avatarPath,
-        hobbies: splitInput($("editHobbies").value),
-        reading_interests: splitInput($("editReading").value),
-        interests: splitInput($("editHobbies").value),
+        hobbies,
+        reading_interests: reading,
+        interests: hobbies,
         updated_at: new Date().toISOString()
       };
 
@@ -342,11 +419,13 @@
       $("avatarInput").value = "";
 
       renderProfile(data);
+
       showMessage("تم حفظ بياناتك بنجاح.", "success");
       toast("تم تحديث ملفك الشخصي.");
 
     } catch (error) {
       console.error("Profile save error:", error);
+
       showMessage(
         error.message || "تعذر حفظ التعديلات."
       );
@@ -358,12 +437,15 @@
     }
   }
 
+  /* النسخ */
   async function copyText(value, successMessage) {
     try {
       await navigator.clipboard.writeText(value);
       toast(successMessage);
+
     } catch {
       const input = document.createElement("textarea");
+
       input.value = value;
       input.style.position = "fixed";
       input.style.opacity = "0";
@@ -375,13 +457,19 @@
       input.remove();
 
       toast(
-        copied ? successMessage : "تعذر النسخ من هذا المتصفح."
+        copied
+          ? successMessage
+          : "تعذر النسخ من هذا المتصفح."
       );
     }
   }
 
+  /* تسجيل الخروج */
   async function logout() {
-    const confirmed = confirm("هل تريد تسجيل الخروج من هنون؟");
+    const confirmed = confirm(
+      "هل تريد تسجيل الخروج من هنون؟"
+    );
+
     if (!confirmed) return;
 
     const { error } = await supabase.auth.signOut();
@@ -394,10 +482,17 @@
     window.location.href = "auth.html";
   }
 
+  /* ربط الأحداث */
   function bindEvents() {
-    $("profileForm").addEventListener("submit", saveProfile);
+    $("profileForm").addEventListener(
+      "submit",
+      saveProfile
+    );
 
-    $("logoutButton").addEventListener("click", logout);
+    $("logoutButton").addEventListener(
+      "click",
+      logout
+    );
 
     $("copyMemberCode").addEventListener("click", () => {
       copyText(
@@ -407,45 +502,21 @@
     });
 
     $("copyProfileLink").addEventListener("click", () => {
-      const url = new URL(
-        "profile.html",
-        window.location.href
-      );
-
-      url.searchParams.set(
-        "user",
+      const url = getPublicProfileURL(
         currentProfile.username
       );
 
-      copyText(url.href, "تم نسخ رابط الملف الشخصي.");
+      copyText(url, "تم نسخ رابط الملف الشخصي.");
     });
   }
 
+  /* بدء النظام */
   async function start() {
     try {
-      const deadline = Date.now() + 12000;
+      supabase = await waitForSupabase();
 
-      while (!window.HANOON?.supabase) {
-        if (Date.now() > deadline) {
-          throw new Error(
-            "تعذر الاتصال بقاعدة البيانات. تأكد من وجود ملف supabase-client.js."
-          );
-        }
-
-        await new Promise(resolve => {
-          window.addEventListener(
-            "hanoon:supabase-ready",
-            resolve,
-            { once: true }
-          );
-
-          setTimeout(resolve, 500);
-        });
-      }
-
-      supabase = window.HANOON.supabase;
-
-      const { data, error } = await supabase.auth.getSession();
+      const { data, error } =
+        await supabase.auth.getSession();
 
       if (error) throw error;
 
@@ -457,7 +528,12 @@
       currentUser = data.session.user;
 
       bindEvents();
+
       await loadProfile();
+
+      console.info(
+        "HANOON: Profile system is ready."
+      );
 
     } catch (error) {
       console.error("HANOON profile error:", error);
@@ -465,7 +541,8 @@
       $("profileLoading").hidden = true;
 
       showPageError(
-        error.message || "حدث خطأ أثناء تحميل الملف الشخصي."
+        error.message ||
+        "حدث خطأ أثناء تحميل الملف الشخصي."
       );
     }
   }
