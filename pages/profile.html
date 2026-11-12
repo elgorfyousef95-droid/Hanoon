@@ -12,501 +12,301 @@
 
   <style>
     :root {
-      --bg: #0C1020;
-      --panel: #171D32;
-      --panel2: #202943;
-      --gold: #D5B36C;
-      --purple: #8C75F5;
-      --teal: #35BDB0;
-      --text: #F5EAD1;
-      --muted: #A9AEC1;
-      --border: rgba(213,179,108,.18);
-      --danger: #F07886;
+      --bg:#0C1020;
+      --panel:#171D32;
+      --panel2:#202943;
+      --gold:#D5B36C;
+      --purple:#8C75F5;
+      --teal:#35BDB0;
+      --text:#F5EAD1;
+      --muted:#A9AEC1;
+      --border:rgba(213,179,108,.18);
+      --danger:#F07886;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing:border-box; margin:0; padding:0; }
 
     body {
-      min-height: 100vh;
-      color: var(--text);
+      min-height:100vh;
+      color:var(--text);
       background:
-        radial-gradient(ellipse at 10% 5%, rgba(140,117,245,.12), transparent 35%),
-        radial-gradient(ellipse at 90% 45%, rgba(53,189,176,.07), transparent 30%),
+        radial-gradient(ellipse at 10% 5%,rgba(140,117,245,.13),transparent 35%),
+        radial-gradient(ellipse at 90% 45%,rgba(53,189,176,.07),transparent 30%),
         var(--bg);
-      font-family: "Cairo", sans-serif;
+      font-family:"Cairo",sans-serif;
     }
 
-    button, input, textarea {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
+    button,input,textarea { font:inherit; }
+    button { cursor:pointer; }
+    a { color:inherit; text-decoration:none; }
 
     .topbar {
-      min-height: 75px;
-      padding: 12px 5%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(12,16,32,.88);
-      backdrop-filter: blur(18px);
+      min-height:72px;
+      padding:12px 5%;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:15px;
+      border-bottom:1px solid var(--border);
+      background:rgba(12,16,32,.88);
+      backdrop-filter:blur(18px);
     }
 
     .brand {
-      color: var(--gold);
-      font-family: Georgia, serif;
-      font-size: 25px;
-      font-weight: 900;
-      letter-spacing: 3px;
+      color:var(--gold);
+      font-family:Georgia,serif;
+      font-size:25px;
+      font-weight:900;
+      letter-spacing:3px;
     }
 
-    .back-link {
-      padding: 9px 17px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      color: var(--text);
-      font-size: 13px;
+    .top-actions { display:flex; gap:9px; }
+
+    .top-btn {
+      padding:9px 15px;
+      border:1px solid var(--border);
+      border-radius:11px;
+      background:transparent;
+      color:var(--text);
+      font-size:12px;
     }
 
-    .back-link:hover {
-      border-color: var(--gold);
-      color: var(--gold);
-    }
+    .top-btn:hover { border-color:var(--gold); color:var(--gold); }
 
     .container {
-      width: min(1100px, 92%);
-      margin: 35px auto 70px;
+      width:min(1050px,92%);
+      margin:35px auto 65px;
     }
 
-    .page-heading {
-      margin-bottom: 25px;
-    }
+    .heading { margin-bottom:22px; }
+    .heading small { color:var(--gold); font-weight:800; }
+    .heading h1 { margin-top:5px; font-size:clamp(25px,5vw,36px); }
+    .heading p { margin-top:6px; color:var(--muted); font-size:13px; }
 
-    .page-heading small {
-      color: var(--gold);
-      font-weight: 800;
-    }
-
-    .page-heading h1 {
-      margin-top: 5px;
-      font-size: clamp(25px, 5vw, 38px);
-    }
-
-    .page-heading p {
-      margin-top: 7px;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.9;
-    }
-
-    .profile-hero {
-      position: relative;
-      overflow: hidden;
-      padding: 30px;
-      display: flex;
-      align-items: center;
-      gap: 25px;
+    .hero {
+      position:relative;
+      overflow:hidden;
+      padding:30px;
+      display:flex;
+      align-items:center;
+      gap:25px;
+      border:1px solid var(--border);
+      border-radius:25px;
       background:
-        linear-gradient(120deg, rgba(140,117,245,.16), transparent 55%),
+        linear-gradient(120deg,rgba(140,117,245,.16),transparent 60%),
         var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 25px;
     }
 
-    .profile-hero::after {
-      content: "H";
-      position: absolute;
-      left: 25px;
-      top: -55px;
-      font-family: Georgia, serif;
-      font-size: 210px;
-      color: rgba(213,179,108,.045);
-      pointer-events: none;
+    .hero::after {
+      content:"H";
+      position:absolute;
+      left:25px;
+      top:-75px;
+      color:rgba(213,179,108,.045);
+      font-family:Georgia,serif;
+      font-size:230px;
+      pointer-events:none;
     }
 
-    .avatar-wrap {
-      position: relative;
-      flex-shrink: 0;
-    }
+    .avatar-wrap { position:relative; flex-shrink:0; }
 
     .avatar {
-      width: 112px;
-      height: 112px;
-      display: grid;
-      place-items: center;
-      overflow: hidden;
-      border: 3px solid var(--gold);
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--purple), #3D4775);
-      color: white;
-      font-size: 38px;
-      font-weight: 900;
+      width:118px;
+      height:118px;
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+      border:3px solid var(--gold);
+      border-radius:50%;
+      background:linear-gradient(135deg,var(--purple),#3D4775);
+      color:white;
+      font-size:38px;
+      font-weight:900;
     }
 
-    .avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    .avatar img { width:100%; height:100%; object-fit:cover; }
+
+    .profile-info { min-width:0; flex:1; position:relative; z-index:1; }
+    .profile-info h2 { font-size:26px; overflow-wrap:anywhere; }
+    .username { margin-top:2px; color:var(--gold); font-size:13px; direction:ltr; text-align:right; }
+    .bio { margin-top:12px; color:var(--muted); font-size:13px; line-height:2; }
+
+    .member-code {
+      display:inline-flex;
+      align-items:center;
+      gap:9px;
+      margin-top:13px;
+      padding:7px 12px;
+      border:1px solid var(--border);
+      border-radius:30px;
+      background:rgba(213,179,108,.07);
+      color:var(--gold);
+      font-size:12px;
+      direction:ltr;
     }
 
-    .avatar-edit {
-      position: absolute;
-      bottom: 0;
-      left: -5px;
-      width: 34px;
-      height: 34px;
-      display: grid;
-      place-items: center;
-      border: 2px solid var(--panel);
-      border-radius: 50%;
-      background: var(--gold);
-      color: #151523;
-      font-size: 17px;
-    }
-
-    .profile-info {
-      min-width: 0;
-      flex: 1;
-      position: relative;
-      z-index: 1;
-    }
-
-    .profile-info h2 {
-      font-size: 25px;
-      overflow-wrap: anywhere;
-    }
-
-    .profile-info .username {
-      margin-top: 3px;
-      color: var(--gold);
-      font-size: 13px;
-      direction: ltr;
-      text-align: right;
-    }
-
-    .profile-info .bio {
-      margin-top: 12px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 2;
-    }
-
-    .profile-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      margin-top: 12px;
-      padding: 6px 12px;
-      border: 1px solid var(--border);
-      border-radius: 30px;
-      color: var(--gold);
-      background: rgba(213,179,108,.07);
-      font-size: 11px;
-      font-weight: 800;
+    .copy-code {
+      border:0;
+      background:transparent;
+      color:var(--text);
+      font-size:12px;
     }
 
     .section {
-      margin-top: 25px;
-      padding: 25px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 22px;
+      margin-top:23px;
+      padding:24px;
+      border:1px solid var(--border);
+      border-radius:21px;
+      background:var(--panel);
     }
 
-    .section-title {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 20px;
+    .section-head {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:18px;
     }
 
-    .section-title h3 {
-      font-size: 18px;
+    .section-head h3 { font-size:17px; }
+    .section-head span { color:var(--muted); font-size:11px; }
+
+    .tags { display:flex; flex-wrap:wrap; gap:9px; }
+
+    .tag {
+      padding:7px 13px;
+      border:1px solid rgba(140,117,245,.25);
+      border-radius:25px;
+      background:rgba(140,117,245,.08);
+      color:#C9BFFF;
+      font-size:12px;
     }
 
-    .section-title span {
-      color: var(--muted);
-      font-size: 12px;
+    .empty-text { color:var(--muted); font-size:13px; }
+
+    .qr-layout {
+      display:flex;
+      align-items:center;
+      gap:25px;
+      flex-wrap:wrap;
     }
 
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 13px;
+    .qr-frame {
+      width:175px;
+      min-height:175px;
+      padding:12px;
+      display:grid;
+      place-items:center;
+      border-radius:15px;
+      background:white;
     }
 
-    .stat-card {
-      min-height: 125px;
-      padding: 18px 12px;
-      text-align: center;
-      border: 1px solid var(--border);
-      border-radius: 17px;
-      background: rgba(255,255,255,.025);
-    }
+    #profileQR { width:150px; min-height:150px; }
+    #profileQR img, #profileQR canvas { max-width:100%; height:auto; }
 
-    .stat-icon {
-      font-size: 23px;
-    }
-
-    .stat-number {
-      display: block;
-      margin-top: 7px;
-      color: var(--gold);
-      font-size: 27px;
-      font-weight: 900;
-    }
-
-    .stat-label {
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    .level-card {
-      padding: 22px;
-      border: 1px solid rgba(140,117,245,.25);
-      border-radius: 17px;
-      background: rgba(140,117,245,.07);
-    }
-
-    .level-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .level-name {
-      font-weight: 900;
-      color: #B7A8FF;
-    }
-
-    .points {
-      color: var(--gold);
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .progress-track {
-      height: 9px;
-      margin-top: 17px;
-      overflow: hidden;
-      border-radius: 20px;
-      background: rgba(255,255,255,.09);
-    }
-
-    .progress-fill {
-      width: 0;
-      height: 100%;
-      border-radius: inherit;
-      background: linear-gradient(90deg, var(--purple), var(--gold));
-      transition: width .5s ease;
-    }
-
-    .level-note {
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 11px;
-    }
+    .qr-info { flex:1; min-width:200px; }
+    .qr-info h4 { color:var(--gold); margin-bottom:7px; }
+    .qr-info p { color:var(--muted); font-size:12px; line-height:2; }
 
     .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 17px;
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:16px;
     }
 
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+    .field { display:flex; flex-direction:column; gap:7px; }
+    .field.full { grid-column:1/-1; }
+    .field label { color:var(--muted); font-size:12px; font-weight:700; }
+
+    .field input,.field textarea {
+      width:100%;
+      padding:13px 14px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      outline:none;
+      background:#101629;
+      color:var(--text);
     }
 
-    .field.full {
-      grid-column: 1 / -1;
-    }
+    .field input:focus,.field textarea:focus { border-color:var(--gold); }
+    .field textarea { min-height:95px; resize:vertical; line-height:1.9; }
 
-    .field label {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .field input,
-    .field textarea {
-      width: 100%;
-      padding: 13px 15px;
-      color: var(--text);
-      background: #101629;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      outline: none;
-      transition: border .2s;
-    }
-
-    .field input:focus,
-    .field textarea:focus {
-      border-color: var(--gold);
-    }
-
-    .field textarea {
-      min-height: 105px;
-      resize: vertical;
-      line-height: 1.9;
-    }
-
-    .field input::placeholder,
-    .field textarea::placeholder {
-      color: #737B91;
-    }
-
-    .form-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 20px;
-    }
+    .actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
 
     .btn {
-      min-height: 44px;
-      padding: 10px 20px;
-      border: 0;
-      border-radius: 11px;
-      font-weight: 800;
-      font-size: 13px;
+      min-height:43px;
+      padding:10px 20px;
+      border:0;
+      border-radius:11px;
+      font-weight:800;
+      font-size:12px;
     }
 
-    .btn-gold {
-      color: #151523;
-      background: linear-gradient(135deg, #F1D99C, var(--gold));
+    .btn-gold { background:linear-gradient(135deg,#F1D99C,var(--gold)); color:#151523; }
+    .btn-outline { border:1px solid var(--border); background:transparent; color:var(--text); }
+    .btn-danger { border:1px solid rgba(240,120,134,.25); background:rgba(240,120,134,.08); color:var(--danger); }
+
+    .loading {
+      padding:45px 15px;
+      text-align:center;
+      color:var(--muted);
     }
 
-    .btn-outline {
-      color: var(--text);
-      background: transparent;
-      border: 1px solid var(--border);
+    .message {
+      display:none;
+      margin-top:15px;
+      padding:12px 15px;
+      border-radius:11px;
+      font-size:12px;
+      line-height:1.8;
     }
 
-    .btn-danger {
-      color: var(--danger);
-      background: rgba(240,120,134,.08);
-      border: 1px solid rgba(240,120,134,.25);
-    }
-
-    .achievements-link {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-      padding: 20px;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      background: rgba(213,179,108,.045);
-    }
-
-    .achievements-link strong {
-      display: block;
-      color: var(--gold);
-      margin-bottom: 4px;
-    }
-
-    .achievements-link small {
-      color: var(--muted);
-      line-height: 1.8;
-    }
-
-    .achievements-link .arrow {
-      color: var(--gold);
-      font-size: 25px;
-    }
-
-    .notice {
-      margin-top: 20px;
-      padding: 14px 17px;
-      color: var(--muted);
-      background: rgba(53,189,176,.06);
-      border: 1px solid rgba(53,189,176,.18);
-      border-radius: 13px;
-      font-size: 11px;
-      line-height: 2;
-    }
+    .message.show { display:block; }
+    .message.error { color:#FFB0B8; background:rgba(240,120,134,.09); }
+    .message.success { color:#8BE0C4; background:rgba(53,189,176,.09); }
 
     .toast {
-      position: fixed;
-      bottom: 25px;
-      right: 50%;
-      z-index: 20;
-      transform: translate(50%, 20px);
-      opacity: 0;
-      pointer-events: none;
-      padding: 12px 20px;
-      border-radius: 12px;
-      background: #202943;
-      border: 1px solid var(--gold);
-      color: var(--text);
-      transition: .25s;
-      font-size: 13px;
+      position:fixed;
+      right:50%;
+      bottom:22px;
+      z-index:30;
+      transform:translate(50%,20px);
+      opacity:0;
+      pointer-events:none;
+      padding:12px 19px;
+      border:1px solid var(--gold);
+      border-radius:12px;
+      background:var(--panel2);
+      color:var(--text);
+      transition:.25s;
+      font-size:12px;
     }
 
-    .toast.show {
-      opacity: 1;
-      transform: translate(50%, 0);
-    }
+    .toast.show { opacity:1; transform:translate(50%,0); }
 
     footer {
-      padding: 25px 10px;
-      color: var(--muted);
-      text-align: center;
-      font-size: 11px;
+      padding:25px 10px;
+      color:var(--muted);
+      text-align:center;
+      font-size:11px;
     }
 
-    @media (max-width: 700px) {
-      .container {
-        margin-top: 22px;
-      }
+    [hidden] { display:none !important; }
 
-      .profile-hero {
-        padding: 22px 17px;
-        flex-direction: column;
-        text-align: center;
-      }
-
-      .profile-info .username {
-        text-align: center;
-      }
-
-      .avatar {
-        width: 100px;
-        height: 100px;
-      }
-
-      .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .section {
-        padding: 19px 15px;
-      }
-
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .field.full {
-        grid-column: auto;
-      }
+    @media(max-width:650px) {
+      .container { margin-top:22px; }
+      .hero { padding:22px 16px; flex-direction:column; text-align:center; }
+      .profile-info .username { text-align:center; }
+      .avatar { width:105px; height:105px; }
+      .member-code { justify-content:center; }
+      .section { padding:19px 15px; }
+      .form-grid { grid-template-columns:1fr; }
+      .field.full { grid-column:auto; }
+      .qr-layout { justify-content:center; text-align:center; }
+      .qr-info { min-width:100%; }
+      .topbar { padding:12px 4%; }
+      .top-actions { gap:6px; }
+      .top-btn { padding:8px 10px; font-size:11px; }
     }
   </style>
 </head>
@@ -515,143 +315,137 @@
 
   <header class="topbar">
     <a href="../index.html" class="brand">HANOON</a>
-    <a href="../index.html" class="back-link">← العودة للرئيسية</a>
+    <div class="top-actions">
+      <a href="../index.html" class="top-btn">الرئيسية</a>
+      <button class="top-btn" id="logoutButton" type="button">تسجيل الخروج</button>
+    </div>
   </header>
 
   <main class="container">
 
-    <div class="page-heading">
-      <small>مساحتك الخاصة</small>
-      <h1>ملفي الشخصي</h1>
-      <p>هنا تقدر تتابع رحلتك المعرفية وتدير بيانات ملفك الشخصي.</p>
+    <div class="heading">
+      <small>هويتك داخل مجتمع هنون</small>
+      <h1>الملف الشخصي</h1>
+      <p>بياناتك واهتماماتك ورقم عضويتك الخاص.</p>
     </div>
 
-    <section class="profile-hero">
+    <div class="loading" id="profileLoading">جارٍ تحميل الملف الشخصي...</div>
 
-      <div class="avatar-wrap">
-        <div class="avatar" id="avatar">H</div>
-        <label class="avatar-edit" for="avatarInput" title="تغيير الصورة">✎</label>
-        <input id="avatarInput" type="file" accept="image/*" hidden>
-      </div>
+    <div id="profileContent" hidden>
 
-      <div class="profile-info">
-        <h2 id="displayName">قارئ هنون</h2>
-        <div class="username" id="displayUsername">@hanoon_reader</div>
-        <p class="bio" id="displayBio">رحلتي مع المعرفة تبدأ من هنا.</p>
-        <div class="profile-badge">✦ عضو في مجتمع هنون</div>
-      </div>
-
-    </section>
-
-    <section class="section">
-      <div class="section-title">
-        <h3>إحصائياتي المعرفية</h3>
-        <span>تُحسب من تقدم القراءة المسجل على هذا الجهاز</span>
-      </div>
-
-      <div class="stats-grid">
-
-        <div class="stat-card">
-          <div class="stat-icon">📚</div>
-          <strong class="stat-number" id="booksStarted">0</strong>
-          <span class="stat-label">كتب بدأت قراءتها</span>
+      <section class="hero">
+        <div class="avatar-wrap">
+          <div class="avatar" id="profileAvatar">H</div>
         </div>
 
-        <div class="stat-card">
-          <div class="stat-icon">🏆</div>
-          <strong class="stat-number" id="booksCompleted">0</strong>
-          <span class="stat-label">كتب مكتملة</span>
+        <div class="profile-info">
+          <h2 id="profileName">---</h2>
+          <div class="username" id="profileUsername">@---</div>
+          <p class="bio" id="profileBio">---</p>
+
+          <div class="member-code">
+            <span id="memberCode">HN-----------</span>
+            <button class="copy-code" id="copyMemberCode" type="button" title="نسخ رقم العضوية">نسخ</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h3>هواياتي</h3>
+          <span>اهتماماتك الشخصية</span>
+        </div>
+        <div class="tags" id="hobbiesList">
+          <span class="empty-text">لا توجد هوايات مضافة.</span>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h3>ماذا أحب أن أقرأ؟</h3>
+          <span>اهتماماتك القرائية</span>
+        </div>
+        <div class="tags" id="readingList">
+          <span class="empty-text">لا توجد اهتمامات قرائية مضافة.</span>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h3>بطاقة هويتي ورمز QR</h3>
+          <span>رابط ملفك الشخصي</span>
         </div>
 
-        <div class="stat-card">
-          <div class="stat-icon">📖</div>
-          <strong class="stat-number" id="chaptersCompleted">0</strong>
-          <span class="stat-label">فصول مكتملة</span>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon">⭐</div>
-          <strong class="stat-number" id="totalPoints">0</strong>
-          <span class="stat-label">نقاط القراءة</span>
-        </div>
-
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-title">
-        <h3>مستواك المعرفي</h3>
-        <span>حسب عدد الفصول المكتملة</span>
-      </div>
-
-      <div class="level-card">
-        <div class="level-top">
-          <span class="level-name" id="levelName">قارئ جديد</span>
-          <span class="points" id="levelProgress">0 / 5 فصل</span>
-        </div>
-
-        <div class="progress-track">
-          <div class="progress-fill" id="levelBar"></div>
-        </div>
-
-        <p class="level-note" id="levelNote">أكمل أول 5 فصول للوصول إلى المستوى التالي.</p>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-title">
-        <h3>تعديل بياناتي</h3>
-        <span>بيانات ملفك على هذا الجهاز</span>
-      </div>
-
-      <form id="profileForm">
-
-        <div class="form-grid">
-
-          <div class="field">
-            <label for="nameInput">الاسم الظاهر</label>
-            <input id="nameInput" type="text" maxlength="45"
-              placeholder="اكتب اسمك">
+        <div class="qr-layout">
+          <div class="qr-frame">
+            <div id="profileQR"></div>
           </div>
 
-          <div class="field">
-            <label for="usernameInput">اسم المستخدم</label>
-            <input id="usernameInput" type="text" maxlength="25"
-              placeholder="مثال: hanoon_reader"
-              dir="ltr">
+          <div class="qr-info">
+            <h4>شارك هويتك في هنون</h4>
+            <p>
+              يمكن لأي شخص مسح رمز QR للوصول إلى صفحة ملفك الشخصي.
+              لا يحتوي الرمز على بريدك الإلكتروني أو كلمة مرورك.
+            </p>
+            <div class="actions">
+              <button class="btn btn-outline" id="copyProfileLink" type="button">نسخ رابط الملف</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="editSection">
+        <div class="section-head">
+          <h3>تعديل الملف الشخصي</h3>
+          <span>حدّث بياناتك متى شئت</span>
+        </div>
+
+        <form id="profileForm">
+          <div class="form-grid">
+
+            <div class="field">
+              <label for="editName">الاسم</label>
+              <input id="editName" type="text" maxlength="80" required>
+            </div>
+
+            <div class="field">
+              <label for="editUsername">اسم المستخدم</label>
+              <input id="editUsername" type="text" maxlength="24" minlength="3" dir="ltr" required>
+            </div>
+
+            <div class="field full">
+              <label for="editBio">نبذة عني</label>
+              <textarea id="editBio" maxlength="250"></textarea>
+            </div>
+
+            <div class="field">
+              <label for="editHobbies">الهوايات (افصل بينها بفاصلة)</label>
+              <input id="editHobbies" type="text" placeholder="القراءة، الكتابة، الرسم">
+            </div>
+
+            <div class="field">
+              <label for="editReading">اهتمامات القراءة</label>
+              <input id="editReading" type="text" placeholder="العلوم، التاريخ، الأدب">
+            </div>
+
+            <div class="field full">
+              <label for="avatarInput">تغيير الصورة الشخصية</label>
+              <input id="avatarInput" type="file" accept="image/jpeg,image/png,image/webp">
+            </div>
+
           </div>
 
-          <div class="field full">
-            <label for="bioInput">نبذة عنك</label>
-            <textarea id="bioInput" maxlength="250"
-              placeholder="اكتب نبذة بسيطة عن نفسك واهتماماتك..."></textarea>
+          <div class="message" id="profileMessage" role="status"></div>
+
+          <div class="actions">
+            <button class="btn btn-gold" id="saveProfileButton" type="submit">حفظ التعديلات</button>
           </div>
+        </form>
+      </section>
 
-        </div>
-
-        <div class="form-actions">
-          <button class="btn btn-gold" type="submit">حفظ التعديلات</button>
-          <button class="btn btn-outline" type="button" id="resetButton">استعادة البيانات الافتراضية</button>
-        </div>
-
-      </form>
-    </section>
-
-    <section class="section">
-      <a class="achievements-link" href="achievements.html">
-        <div>
-          <strong>🏅 صفحة إنجازاتي</strong>
-          <small>شاهد الشارات والكتب والفصول التي أكملتها.</small>
-        </div>
-        <span class="arrow">←</span>
-      </a>
-    </section>
-
-    <div class="notice">
-      ملاحظة: بيانات الملف الشخصي في هذه النسخة محفوظة محليًا في المتصفح.
-      لم يتم ربط الحسابات أو الصور أو النقاط بقاعدة بيانات Firebase بعد.
-      سيتم تنفيذ ذلك في مرحلة ربط الحسابات.
     </div>
+
+    <div class="message error" id="pageError" role="alert"></div>
 
   </main>
 
@@ -663,234 +457,9 @@
 
   <div class="toast" id="toast" role="status"></div>
 
-  <script src="../data/books.js"></script>
-
-  <script>
-    (function () {
-      "use strict";
-
-      const PROFILE_KEY = "hanoon_user_profile";
-
-      const defaults = {
-        name: "قارئ هنون",
-        username: "hanoon_reader",
-        bio: "رحلتي مع المعرفة تبدأ من هنا.",
-        avatar: ""
-      };
-
-      const $ = id => document.getElementById(id);
-
-      function getProfile() {
-        try {
-          const saved = JSON.parse(localStorage.getItem(PROFILE_KEY) || "{}");
-          return { ...defaults, ...saved };
-        } catch {
-          return { ...defaults };
-        }
-      }
-
-      let profile = getProfile();
-
-      function showToast(message) {
-        const toast = $("toast");
-        toast.textContent = message;
-        toast.classList.add("show");
-
-        setTimeout(() => {
-          toast.classList.remove("show");
-        }, 2500);
-      }
-
-      function saveProfile() {
-        try {
-          localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
-          return true;
-        } catch (error) {
-          showToast("تعذر الحفظ. قد تكون مساحة التخزين ممتلئة.");
-          return false;
-        }
-      }
-
-      function renderProfile() {
-        $("displayName").textContent = profile.name || defaults.name;
-        $("displayUsername").textContent = "@" + (profile.username || defaults.username);
-        $("displayBio").textContent = profile.bio || defaults.bio;
-
-        $("nameInput").value = profile.name;
-        $("usernameInput").value = profile.username;
-        $("bioInput").value = profile.bio;
-
-        const avatar = $("avatar");
-        avatar.replaceChildren();
-
-        if (profile.avatar) {
-          const image = document.createElement("img");
-          image.src = profile.avatar;
-          image.alt = "الصورة الشخصية";
-          avatar.appendChild(image);
-        } else {
-          avatar.textContent = (profile.name || "H").trim().charAt(0) || "H";
-        }
-      }
-
-      function getReadingStats() {
-        const books = window.HANOON_BOOKS_API?.getAll?.() || [];
-        let started = 0;
-        let completed = 0;
-        let chapters = 0;
-
-        books.forEach(book => {
-          const bookId = book.id;
-          const totalChapters = book.chapters?.length || 0;
-
-          if (!bookId || !totalChapters) return;
-
-          const key = "hanoon_reader_completed_" + bookId;
-
-          let completedIds = [];
-
-          try {
-            completedIds = JSON.parse(localStorage.getItem(key) || "[]");
-          } catch {
-            completedIds = [];
-          }
-
-          if (!Array.isArray(completedIds)) completedIds = [];
-
-          const count = completedIds.length;
-          chapters += count;
-
-          if (count > 0) started++;
-
-          if (count >= totalChapters) completed++;
-        });
-
-        return { started, completed, chapters };
-      }
-
-      function renderStats() {
-        const stats = getReadingStats();
-
-        $("booksStarted").textContent = stats.started;
-        $("booksCompleted").textContent = stats.completed;
-        $("chaptersCompleted").textContent = stats.chapters;
-
-        // النقاط المعروضة تقديرية: نقطة لكل فصل مكتمل.
-        $("totalPoints").textContent = stats.chapters;
-
-        const levels = [
-          { name: "قارئ جديد", min: 0, next: 5 },
-          { name: "قارئ نشيط", min: 5, next: 15 },
-          { name: "قارئ متميز", min: 15, next: 30 },
-          { name: "باحث المعرفة", min: 30, next: 50 },
-          { name: "مبدع هنون", min: 50, next: 100 },
-          { name: "سفير المعرفة", min: 100, next: 100 }
-        ];
-
-        const current = levels.findLast
-          ? [...levels].reverse().find(level => stats.chapters >= level.min)
-          : [...levels].reverse().find(level => stats.chapters >= level.min);
-
-        const level = current || levels[0];
-        const progress = level.next === level.min
-          ? 100
-          : Math.min(100, ((stats.chapters - level.min) / (level.next - level.min)) * 100);
-
-        $("levelName").textContent = level.name;
-
-        if (level.min === 100) {
-          $("levelProgress").textContent = "تم الوصول لأعلى مستوى";
-          $("levelNote").textContent = "أنت وصلت إلى مستوى سفير المعرفة.";
-        } else {
-          $("levelProgress").textContent = stats.chapters + " / " + level.next + " فصل";
-          $("levelNote").textContent =
-            "أكمل " + Math.max(0, level.next - stats.chapters) +
-            " فصول للوصول إلى المستوى التالي.";
-        }
-
-        $("levelBar").style.width = progress + "%";
-      }
-
-      $("profileForm").addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        const name = $("nameInput").value.trim();
-        const username = $("usernameInput").value.trim()
-          .replace(/^@/, "")
-          .replace(/\s+/g, "_");
-        const bio = $("bioInput").value.trim();
-
-        if (!name) {
-          showToast("اكتب اسمك أولًا.");
-          return;
-        }
-
-        if (!/^[a-zA-Z0-9_.-]{3,25}$/.test(username)) {
-          showToast("اسم المستخدم يجب أن يكون 3 أحرف على الأقل، وبالإنجليزية.");
-          return;
-        }
-
-        profile.name = name;
-        profile.username = username;
-        profile.bio = bio || defaults.bio;
-
-        if (saveProfile()) {
-          renderProfile();
-          showToast("تم حفظ بيانات الملف الشخصي.");
-        }
-      });
-
-      $("avatarInput").addEventListener("change", function (event) {
-        const file = event.target.files?.[0];
-
-        if (!file) return;
-
-        if (!file.type.startsWith("image/")) {
-          showToast("اختر ملف صورة صحيحًا.");
-          return;
-        }
-
-        if (file.size > 2 * 1024 * 1024) {
-          showToast("حجم الصورة يجب ألا يتجاوز 2 ميجابايت.");
-          event.target.value = "";
-          return;
-        }
-
-        const reader = new FileReader();
-
-        reader.onload = function () {
-          profile.avatar = reader.result;
-
-          if (saveProfile()) {
-            renderProfile();
-            showToast("تم تحديث الصورة الشخصية.");
-          }
-        };
-
-        reader.onerror = function () {
-          showToast("تعذر قراءة الصورة.");
-        };
-
-        reader.readAsDataURL(file);
-      });
-
-      $("resetButton").addEventListener("click", function () {
-        if (!confirm("هل تريد استعادة بيانات الملف الافتراضية؟")) return;
-
-        profile = { ...defaults };
-
-        if (saveProfile()) {
-          renderProfile();
-          showToast("تمت استعادة البيانات الافتراضية.");
-        }
-      });
-
-      renderProfile();
-      renderStats();
-
-    })();
-    <script src="../js/global-back.js"></script>
-  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script type="module" src="../js/supabase-client.js"></script>
+  <script src="../js/profile.js" defer></script>
 
 </body>
 </html>
