@@ -185,114 +185,22 @@
       white-space: nowrap;
     }
 
-    /* اختصارات الصفحة الرئيسية */
-    .home-shortcuts {
-      position: relative;
-      z-index: 2;
-      width: min(1180px,94%);
-      margin: 26px auto 12px;
-      padding: 22px 18px;
-      border: 1px solid rgba(190,169,255,.18);
-      border-radius: 26px;
-      background:
-        linear-gradient(125deg,rgba(22,19,48,.94),rgba(32,24,61,.88)),
-        url("https://images.unsplash.com/photo-1519682337058-a94d519337bc?auto=format&fit=crop&w=1800&q=85") center/cover;
-      box-shadow: 0 18px 48px rgba(0,0,0,.2);
-      overflow: hidden;
-    }
-    .home-shortcuts::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(115deg,rgba(12,12,29,.86),rgba(30,20,58,.83));
-      pointer-events: none;
-    }
-    .home-shortcuts-inner { position: relative; z-index: 1; }
-    .home-shortcuts-heading {
-      margin: 0 0 17px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-    .home-shortcuts-heading h2 {
-      margin: 0;
-      color: #fff;
-      font-size: 19px;
-      font-weight: 900;
-    }
-    .home-shortcuts-heading p {
-      margin: 4px 0 0;
-      color: #c3b9dd;
-      font-size: 11px;
-    }
-    .home-shortcuts-grid {
-      display: grid;
-      grid-template-columns: repeat(6,minmax(0,1fr));
-      gap: 16px 10px;
-    }
-    .home-shortcut {
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      color: #f8f5ff;
-      text-decoration: none;
-      text-align: center;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .home-shortcut-circle {
-      width: 66px;
-      height: 66px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      color: #e9dcff;
-      background: linear-gradient(145deg,rgba(157,128,255,.28),rgba(65,48,119,.68));
-      border: 1px solid rgba(214,196,255,.36);
-      box-shadow: 0 8px 24px rgba(0,0,0,.25),inset 0 1px rgba(255,255,255,.16);
-      transition: transform .22s ease,box-shadow .22s ease;
-    }
-    .home-shortcut:hover .home-shortcut-circle {
-      transform: translateY(-4px);
-      box-shadow: 0 13px 28px rgba(137,103,255,.25);
-    }
-    .home-shortcut-circle svg {
-      width: 27px;
-      height: 27px;
+    .main-navigation a svg {
+      width: 24px;
+      height: 24px;
       fill: none;
       stroke: currentColor;
       stroke-width: 1.7;
       stroke-linecap: round;
       stroke-linejoin: round;
+      display: block;
+      margin: 0 auto 5px;
     }
-    .home-shortcut-label {
-      font-size: 11px;
-      font-weight: 800;
-      line-height: 1.5;
+    .main-navigation a {
+      text-align: center;
     }
-    .home-shortcut.competition .home-shortcut-circle {
-      width: 76px;
-      height: 76px;
-      color: #ffe8a8;
-      background: linear-gradient(145deg,#b88735,#72501c);
-      border: 2px solid rgba(255,224,155,.8);
-      box-shadow: 0 0 0 5px rgba(221,178,91,.1),0 10px 30px rgba(170,117,33,.25);
-    }
-    .home-shortcut.competition .home-shortcut-label {
-      color: #ffe3a0;
-      font-size: 12px;
-    }
-    .home-shortcut.communication .home-shortcut-circle {
-      color: #a8e8ff;
-      background: linear-gradient(145deg,rgba(47,151,191,.38),rgba(35,66,115,.8));
-      border-color: rgba(132,220,255,.42);
-    }
-    .home-shortcut.group .home-shortcut-circle {
-      color: #b9f4dc;
-      background: linear-gradient(145deg,rgba(44,158,119,.36),rgba(30,89,88,.8));
-      border-color: rgba(123,235,197,.42);
+    .main-navigation a span {
+      display: block;
     }
 
     @media(max-width:760px) {
@@ -301,12 +209,6 @@
       .header-profile-link { max-width: 145px; }
       .header-profile-copy strong { max-width: 82px; }
       .header-profile-copy small { max-width: 100px; }
-      .home-shortcuts { width: calc(100% - 22px); padding: 18px 11px; margin-top: 18px; }
-      .home-shortcuts-grid { grid-template-columns: repeat(4,minmax(0,1fr)); gap: 17px 7px; }
-      .home-shortcut-circle { width: 58px; height: 58px; }
-      .home-shortcut-circle svg { width: 24px; height: 24px; }
-      .home-shortcut.competition .home-shortcut-circle { width: 66px; height: 66px; }
-      .home-shortcut-label { font-size: 10px; }
     }
     @media(max-width:380px) {
       .competition-notice { gap: 10px; padding: 11px 12px; }
@@ -319,7 +221,6 @@
     @media(prefers-reduced-motion:reduce) {
       .competition-notice.is-visible,
       .competition-notice.is-leaving { animation-duration: .01ms; }
-      .home-shortcut-circle { transition: none; }
     }
   </style>
 </head>
@@ -368,16 +269,82 @@
     </button>
 
     <nav class="main-navigation" id="mainNavigation">
-      <a class="active" href="index.html">الرئيسية</a>
-      <a href="pages/library.html">المكتبة</a>
-      <a href="pages/articles.html">المقالات</a>
-      <a href="pages/stories.html">القصص</a>
-      <a href="pages/poetry.html">الشعر والأدب</a>
-      <a href="pages/research.html">الأبحاث</a>
-      <a href="pages/learning.html">التعلم</a>
-      <a href="pages/exams.html">الاختبارات</a>
-      <a href="pages/achievements.html">إنجازاتي</a>
-      <a href="pages/community.html">المجتمع</a>
+
+      <a class="active" href="index.html" aria-label="الرئيسية">
+        <svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-6v-7h-4v7H4a1 1 0 0 1-1-1z"/></svg>
+        <span>الرئيسية</span>
+      </a>
+
+      <a href="pages/library.html">
+        <svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h14v18H6a2 2 0 0 1-2-2z"/><path d="M4 17a2 2 0 0 1 2-2h14M8 7h8M8 11h8"/></svg>
+        <span>المكتبة</span>
+      </a>
+
+      <a href="pages/articles.html">
+        <svg viewBox="0 0 24 24"><path d="M5 4h14v17H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+        <span>المقالات</span>
+      </a>
+
+      <a href="pages/stories.html">
+        <svg viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+        <span>القصص</span>
+      </a>
+
+      <a href="pages/poetry.html">
+        <svg viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14z"/><path d="M8 8c2-2 6-2 8 0M8 12c2-2 6-2 8 0M8 16h8"/></svg>
+        <span>الشعر والأدب</span>
+      </a>
+
+      <a href="pages/research.html">
+        <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5M8 10h5M10.5 8v5"/></svg>
+        <span>الأبحاث</span>
+      </a>
+
+      <a href="pages/learning.html">
+        <svg viewBox="0 0 24 24"><path d="m3 8 9-5 9 5-9 5z"/><path d="M7 11v5c3 3 7 3 10 0v-5M21 8v7"/></svg>
+        <span>التعلم</span>
+      </a>
+
+      <a href="pages/exams.html">
+        <svg viewBox="0 0 24 24"><path d="M8 4h8M9 3h6v3H9zM6 5H4v16h16V5h-2"/><path d="m8 13 2.5 2.5L16 10"/></svg>
+        <span>الاختبارات</span>
+      </a>
+
+      <a href="pages/achievements.html">
+        <svg viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M12 13v5m-4 3h8m-6-3h4"/></svg>
+        <span>إنجازاتي</span>
+      </a>
+
+      <a href="pages/community.html">
+        <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20v-1a6 6 0 0 1 12 0v1zM16 15a5 5 0 0 1 5 5"/></svg>
+        <span>المجتمع</span>
+      </a>
+
+      <a href="#homePosts">
+        <svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+        <span>المنشورات</span>
+      </a>
+
+      <a href="pages/community.html?tab=chats">
+        <svg viewBox="0 0 24 24"><path d="M4 5h16v12H9l-5 4z"/><path d="M8 9h8M8 13h5"/></svg>
+        <span>المراسلة</span>
+      </a>
+
+      <a href="pages/community.html?tab=groups">
+        <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20v-1a6 6 0 0 1 12 0v1zM16 15a5 5 0 0 1 5 5"/></svg>
+        <span>الجروبات</span>
+      </a>
+
+      <a href="pages/community.html?tab=friends">
+        <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M17 8v6m-3-3h6"/></svg>
+        <span>الأصدقاء</span>
+      </a>
+
+      <a href="pages/exams.html?mode=competition">
+        <svg viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M12 13v5m-4 3h8m-6-3h4"/></svg>
+        <span>المسابقة</span>
+      </a>
+
     </nav>
 
     <div class="header-controls">
@@ -442,90 +409,7 @@
       </div>
       <div class="hero-bottom">
         <span>رحلتك نحو معرفة أعمق تبدأ من هنا</span>
-        <a href="#homeShortcuts" aria-label="اكتشف خدمات هنون">اكتشف خدمات هنون ↓</a>
-      </div>
-    </section>
-
-    <section class="home-shortcuts" id="homeShortcuts" aria-label="اختصارات هنون">
-      <div class="home-shortcuts-inner">
-        <div class="home-shortcuts-heading">
-          <div>
-            <h2>عالمك في هنون</h2>
-            <p>كل ما تحتاجه في مكان واحد</p>
-          </div>
-        </div>
-
-        <div class="home-shortcuts-grid">
-          <a class="home-shortcut" href="#homePosts">
-            <span class="home-shortcut-circle">
-              <svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
-            </span>
-            <span class="home-shortcut-label">المنشورات</span>
-          </a>
-
-          <a class="home-shortcut" href="pages/articles.html">
-            <span class="home-shortcut-circle">
-              <svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5z"/><path d="M4 17.5A2.5 2.5 0 0 1 6.5 15H20M8 7h8M8 10h8"/></svg>
-            </span>
-            <span class="home-shortcut-label">المقالات</span>
-          </a>
-
-          <a class="home-shortcut" href="pages/achievements.html">
-            <span class="home-shortcut-circle">
-              <svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>
-            </span>
-            <span class="home-shortcut-label">الإنجازات</span>
-          </a>
-
-          <a class="home-shortcut" href="pages/library.html">
-            <span class="home-shortcut-circle">
-              <svg viewBox="0 0 24 24"><path d="M4 4h5v16H4zM10 4h5v16h-5zM16 4h4v16h-4z"/></svg>
-            </span>
-            <span class="home-shortcut-label">المكتبة</span>
-          </a>
-
-          <a class="home-shortcut" href="pages/stories.html">
-            <span class="home-shortcut-circle">
-              <svg viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
-            </span>
-            <span class="home-shortcut-label">القصص</span>
-          </a>
-
-          <a class="home-shortcut" href="pages/exams.html">
-            <span class="home-shortcut-circle">
-              <svg viewBox="0 0 24 24"><path d="M8 4h8M9 3h6v3H9zM6 5H4v16h16V5h-2"/><path d="m8 13 2.5 2.5L16 10"/></svg>
-            </span>
-            <span class="home-shortcut-label">الاختبارات</span>
-          </a>
-
-          <a class="home-shortcut competition" href="pages/exams.html?mode=competition">
-            <span class="home-shortcut-circle">
-              <svg viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M12 13v5m-4 3h8m-6-3h4"/></svg>
-            </span>
-            <span class="home-shortcut-label">المسابقة</span>
-          </a>
-
-          <a class="home-shortcut group" href="pages/community.html#groups">
-            <span class="home-shortcut-circle">
-              <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20v-1a6 6 0 0 1 12 0v1zM16 15a5 5 0 0 1 5 5"/></svg>
-            </span>
-            <span class="home-shortcut-label">الجروبات</span>
-          </a>
-
-          <a class="home-shortcut communication" href="pages/community.html#messages">
-            <span class="home-shortcut-circle">
-              <svg viewBox="0 0 24 24"><path d="M4 5h16v12H9l-5 4z"/><path d="M8 9h8M8 13h5"/></svg>
-            </span>
-            <span class="home-shortcut-label">المراسلة</span>
-          </a>
-
-          <a class="home-shortcut" href="pages/profile.html">
-            <span class="home-shortcut-circle">
-              <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
-            </span>
-            <span class="home-shortcut-label">الملف الشخصي</span>
-          </a>
-        </div>
+        <a href="#mainNavigation" aria-label="اكتشف خدمات هنون">اكتشف خدمات هنون ↓</a>
       </div>
     </section>
 
