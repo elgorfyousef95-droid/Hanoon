@@ -1,0 +1,284 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0C1020">
+  <title>عضو في هنون | HANOON</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg:#0C1020;
+      --panel:#171D32;
+      --gold:#D5B36C;
+      --purple:#8C75F5;
+      --text:#F5EAD1;
+      --muted:#A9AEC1;
+      --border:rgba(213,179,108,.18);
+    }
+
+    * { box-sizing:border-box; margin:0; padding:0; }
+
+    body {
+      min-height:100vh;
+      color:var(--text);
+      background:
+        radial-gradient(ellipse at 10% 5%,rgba(140,117,245,.14),transparent 35%),
+        radial-gradient(ellipse at 90% 80%,rgba(53,189,176,.07),transparent 35%),
+        var(--bg);
+      font-family:"Cairo",sans-serif;
+    }
+
+    a { color:inherit; text-decoration:none; }
+
+    .topbar {
+      min-height:72px;
+      padding:12px 5%;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      border-bottom:1px solid var(--border);
+      background:rgba(12,16,32,.85);
+      backdrop-filter:blur(16px);
+    }
+
+    .brand {
+      color:var(--gold);
+      font-family:Georgia,serif;
+      font-size:25px;
+      font-weight:900;
+      letter-spacing:3px;
+    }
+
+    .home-link {
+      padding:9px 15px;
+      border:1px solid var(--border);
+      border-radius:11px;
+      font-size:12px;
+    }
+
+    .container {
+      width:min(720px,92%);
+      margin:45px auto 65px;
+    }
+
+    .intro { text-align:center; margin-bottom:25px; }
+    .intro small { color:var(--gold); font-weight:800; }
+    .intro h1 { margin-top:7px; font-size:30px; }
+    .intro p { margin-top:7px; color:var(--muted); font-size:13px; }
+
+    .card {
+      position:relative;
+      overflow:hidden;
+      padding:35px 25px;
+      border:1px solid var(--border);
+      border-radius:26px;
+      background:
+        linear-gradient(145deg,rgba(140,117,245,.12),transparent 48%),
+        var(--panel);
+      text-align:center;
+    }
+
+    .card::before {
+      content:"H";
+      position:absolute;
+      left:15px;
+      top:-80px;
+      color:rgba(213,179,108,.045);
+      font-family:Georgia,serif;
+      font-size:250px;
+      pointer-events:none;
+    }
+
+    .avatar {
+      position:relative;
+      width:135px;
+      height:135px;
+      margin:0 auto 18px;
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+      border:3px solid var(--gold);
+      border-radius:50%;
+      background:linear-gradient(135deg,var(--purple),#39466E);
+      color:white;
+      font-size:45px;
+      font-weight:900;
+    }
+
+    .avatar img {
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+
+    .name {
+      position:relative;
+      font-size:27px;
+      overflow-wrap:anywhere;
+    }
+
+    .username {
+      position:relative;
+      margin-top:3px;
+      color:var(--gold);
+      font-size:13px;
+      direction:ltr;
+    }
+
+    .bio {
+      position:relative;
+      max-width:520px;
+      margin:17px auto;
+      color:var(--muted);
+      font-size:13px;
+      line-height:2.1;
+    }
+
+    .code {
+      position:relative;
+      display:inline-block;
+      margin-top:5px;
+      padding:8px 16px;
+      border:1px solid var(--border);
+      border-radius:25px;
+      background:rgba(213,179,108,.06);
+      color:var(--gold);
+      font-size:12px;
+      direction:ltr;
+    }
+
+    .section {
+      position:relative;
+      margin-top:23px;
+      padding:22px;
+      border:1px solid var(--border);
+      border-radius:20px;
+      background:var(--panel);
+      text-align:right;
+    }
+
+    .section h3 {
+      margin-bottom:15px;
+      font-size:16px;
+    }
+
+    .tags {
+      display:flex;
+      flex-wrap:wrap;
+      gap:9px;
+    }
+
+    .tag {
+      padding:7px 13px;
+      border:1px solid rgba(140,117,245,.25);
+      border-radius:25px;
+      background:rgba(140,117,245,.08);
+      color:#C9BFFF;
+      font-size:12px;
+    }
+
+    .empty {
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .loading {
+      padding:45px 15px;
+      color:var(--muted);
+      text-align:center;
+    }
+
+    .error {
+      display:none;
+      padding:22px;
+      border:1px solid rgba(240,120,134,.25);
+      border-radius:16px;
+      background:rgba(240,120,134,.07);
+      color:#FFB0B8;
+      text-align:center;
+      font-size:13px;
+      line-height:2;
+    }
+
+    .error.show { display:block; }
+
+    footer {
+      padding:25px 10px;
+      color:var(--muted);
+      text-align:center;
+      font-size:11px;
+    }
+
+    [hidden] { display:none !important; }
+
+    @media(max-width:550px) {
+      .container { margin-top:25px; }
+      .card { padding:28px 17px; }
+      .name { font-size:23px; }
+      .section { padding:18px 15px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="topbar">
+    <a href="../index.html" class="brand">HANOON</a>
+    <a href="../index.html" class="home-link">الرئيسية</a>
+  </header>
+
+  <main class="container">
+
+    <div class="intro">
+      <small>مجتمع المعرفة</small>
+      <h1>هوية عضو هنون</h1>
+      <p>تعرّف على أحد أعضاء مجتمع هنون.</p>
+    </div>
+
+    <div class="loading" id="loading">جارٍ البحث عن العضو...</div>
+
+    <div class="error" id="error" role="alert"></div>
+
+    <div id="memberContent" hidden>
+
+      <section class="card">
+        <div class="avatar" id="avatar">H</div>
+
+        <h2 class="name" id="name"></h2>
+        <div class="username" id="username"></div>
+
+        <p class="bio" id="bio"></p>
+
+        <div class="code" id="memberCode"></div>
+      </section>
+
+      <section class="section">
+        <h3>الهوايات</h3>
+        <div class="tags" id="hobbies"></div>
+      </section>
+
+      <section class="section">
+        <h3>الاهتمامات القرائية</h3>
+        <div class="tags" id="reading"></div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <footer>
+    HANOON — المعرفة تصنع الفرق
+    <br>
+    جميع الحقوق محفوظة © HANOON
+  </footer>
+
+  <script type="module" src="../js/supabase-client.js"></script>
+  <script src="../js/member.js" defer></script>
+
+</body>
+</html>
