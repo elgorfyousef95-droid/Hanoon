@@ -3,10 +3,9 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-
-  <meta name="theme-color" content="#100d20">
-  <title>مجتمع هنون</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#080f20">
+  <title>المجموعات | هنون</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,16 +13,24 @@
 
   <style>
     :root {
-      --purple: #a18aff;
-      --lavender: #d0c2ff;
-      --gold: #e6c77d;
-      --muted: #aaa3bf;
-      --white: #f8f5ff;
-      --line: rgba(222,207,255,.14);
-      --panel: rgba(26,21,48,.72);
+      --purple: #a78bfa;
+      --cyan: #66d9e8;
+      --gold: #e8d09a;
+      --white: #f5f5ff;
+      --muted: #aab6ca;
+      --line: rgba(174,205,255,.16);
+      --panel: rgba(9,19,39,.76);
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      min-height: 100%;
+      background: #080f20;
+    }
 
     body {
       margin: 0;
@@ -31,433 +38,656 @@
       color: var(--white);
       font-family: Cairo, sans-serif;
       background:
-        linear-gradient(130deg,rgba(10,8,25,.87),rgba(21,12,42,.72)),
-        url("https://images.unsplash.com/photo-1754851539824-5a87c5c7cb86?auto=format&fit=crop&fm=jpg&ixid=NHwxMjA3fDA%3D&ixlib=rb-4.1.0&q=85&w=2400")
+        linear-gradient(145deg,rgba(5,12,28,.86),rgba(8,20,43,.72)),
+        url("https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=2000&q=85")
         center/cover fixed no-repeat;
     }
 
-    button, input { font: inherit; }
-    button { cursor: pointer; }
+    button, input, textarea {
+      font: inherit;
+    }
 
-    .top {
-      height: 72px;
-      padding: 0 5%;
+    button {
+      cursor: pointer;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .topbar {
+      min-height: 55px;
+      padding: 8px 15px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 12px;
+      background: rgba(5,12,28,.76);
       border-bottom: 1px solid var(--line);
-      background: rgba(12,9,27,.68);
-      backdrop-filter: blur(20px);
+      backdrop-filter: blur(18px);
+      position: sticky;
+      top: 0;
+      z-index: 20;
     }
 
     .brand {
-      color: var(--gold);
-      text-decoration: none;
-      font: 900 25px Georgia,serif;
-      letter-spacing: 3px;
-    }
-
-    .top-link {
-      color: var(--lavender);
-      text-decoration: none;
-      font-size: 13px;
-    }
-
-    .wrap {
-      width: min(1200px,94%);
-      margin: 30px auto 50px;
-    }
-
-    .heading {
       display: flex;
-      justify-content: space-between;
-      align-items: end;
-      gap: 15px;
-      margin-bottom: 20px;
+      align-items: center;
+      gap: 9px;
+      font-size: 17px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      color: #dceeff;
     }
 
-    .heading h1 {
-      margin: 0;
-      font-size: clamp(25px,4vw,34px);
+    .brand-mark {
+      width: 29px;
+      height: 29px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: linear-gradient(135deg,#56c8df,#7563d9);
+      box-shadow: 0 0 18px #5ebcdb55;
+    }
+
+    .brand-mark svg {
+      width: 18px;
+      height: 18px;
+      stroke: white;
+      fill: none;
+      stroke-width: 1.8;
+    }
+
+    .back-link {
+      border: 1px solid var(--line);
+      background: #ffffff0b;
+      color: #d8e8ff;
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .page {
+      width: min(1050px,94%);
+      margin: 22px auto 45px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 23px;
+      border: 1px solid rgba(112,199,229,.23);
+      border-radius: 23px;
+      background:
+        linear-gradient(110deg,rgba(5,16,35,.94),rgba(17,39,69,.68)),
+        url("https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?auto=format&fit=crop&w=1400&q=85")
+        center/cover;
+      box-shadow: 0 18px 50px #0005;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 170px;
+      height: 170px;
+      left: -65px;
+      top: -85px;
+      border: 1px solid #8eddf033;
+      border-radius: 50%;
+      box-shadow: 0 0 0 22px #8eddf00a,0 0 0 45px #8eddf008;
+      pointer-events: none;
+    }
+
+    .hero-label {
+      color: var(--cyan);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+
+    .hero h1 {
+      margin: 7px 0 4px;
+      font-size: clamp(23px,5vw,32px);
       font-weight: 900;
     }
 
-    .heading p {
-      margin: 5px 0 0;
+    .hero p {
+      margin: 0;
+      color: #c1cde0;
+      font-size: 12px;
+      line-height: 2;
+      max-width: 570px;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      flex-wrap: wrap;
+      margin-top: 17px;
+    }
+
+    .btn {
+      min-height: 38px;
+      padding: 8px 15px;
+      border: 1px solid #9cddf055;
+      border-radius: 12px;
+      background: linear-gradient(135deg,#428fae,#6656b9);
+      color: white;
+      font-size: 11px;
+      font-weight: 900;
+      box-shadow: 0 6px 18px #0003;
+    }
+
+    .btn.secondary {
+      background: #ffffff0c;
+      border-color: var(--line);
+      color: #d7e9ff;
+      box-shadow: none;
+    }
+
+    .btn.danger {
+      background: #ff71851a;
+      border-color: #ff718555;
+      color: #ffc1cc;
+      box-shadow: none;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 18px 0 13px;
+    }
+
+    .toolbar h2 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .toolbar small {
       color: var(--muted);
-      font-size: 13px;
+      font-size: 10px;
+    }
+
+    .search {
+      width: min(290px,55%);
+      min-height: 39px;
+      padding: 8px 13px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      outline: none;
+      color: white;
+      background: rgba(5,13,30,.78);
+      font-size: 11px;
+    }
+
+    .search:focus,
+    .field:focus {
+      border-color: #78cce5;
+      box-shadow: 0 0 0 3px #78cce51b;
+    }
+
+    .groups-layout {
+      display: grid;
+      grid-template-columns: minmax(0,1fr) 310px;
+      gap: 15px;
+      align-items: start;
     }
 
     .glass {
       background: var(--panel);
       border: 1px solid var(--line);
-      border-radius: 22px;
-      backdrop-filter: blur(22px);
-      box-shadow: 0 18px 55px #0004;
+      border-radius: 19px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 14px 40px #0004;
     }
 
-    .layout {
+    .groups-box {
+      min-height: 330px;
+      padding: 15px;
+    }
+
+    .group-list {
       display: grid;
-      grid-template-columns: 330px minmax(0,1fr);
-      gap: 18px;
-      min-height: 660px;
-    }
-
-    .side {
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-      min-height: 660px;
-    }
-
-    .tabs {
-      display: grid;
-      grid-template-columns: repeat(2,1fr);
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-
-    .tab {
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 10px 6px;
-      background: #ffffff09;
-      color: #d9d2eb;
-      font-size: 12px;
-      font-weight: 800;
-    }
-
-    .tab.active {
-      background: linear-gradient(135deg,#8e73e9,#6045b4);
-      color: white;
-      border-color: #c2b2ff66;
-    }
-
-    .search, .field {
-      width: 100%;
-      padding: 12px 14px;
-      border: 1px solid var(--line);
-      border-radius: 13px;
-      background: #09071888;
-      color: white;
-      outline: none;
-      font-size: 13px;
-    }
-
-    .search:focus, .field:focus {
-      border-color: #a18aff99;
-      box-shadow: 0 0 0 3px #a18aff20;
-    }
-
-    .list {
-      overflow: auto;
-      max-height: 520px;
-      margin-top: 12px;
-    }
-
-    .item {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      text-align: right;
-      padding: 12px 9px;
-      border: 0;
-      border-bottom: 1px solid #ffffff0c;
-      background: transparent;
-      color: var(--white);
-    }
-
-    .item:hover, .item.selected {
-      background: #a18aff18;
-      border-radius: 13px;
-    }
-
-    .avatar {
-      width: 43px;
-      height: 43px;
-      flex: 0 0 43px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      background: linear-gradient(135deg,#9c83fa,#4a367e);
-      border: 1px solid #ffffff30;
-      overflow: hidden;
-      font-weight: 900;
-    }
-
-    .avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .item-main { min-width: 0; flex: 1; }
-
-    .item-name {
-      font-size: 13px;
-      font-weight: 800;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .item-sub {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 3px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .badge {
-      font-size: 10px;
-      color: var(--gold);
-      border: 1px solid #e6c77d44;
-      border-radius: 20px;
-      padding: 3px 7px;
-    }
-
-    .chat {
-      display: flex;
-      flex-direction: column;
-      min-height: 660px;
-      overflow: hidden;
-    }
-
-    .chat-head {
-      padding: 17px 20px;
-      border-bottom: 1px solid var(--line);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .chat-title { font-weight: 900; }
-
-    .chat-sub {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 3px;
-    }
-
-    .messages {
-      flex: 1;
-      min-height: 380px;
-      max-height: 520px;
-      overflow: auto;
-      padding: 22px;
-      display: flex;
-      flex-direction: column;
+      grid-template-columns: repeat(2,minmax(0,1fr));
       gap: 12px;
     }
 
-    .empty-state {
-      margin: auto;
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 2.2;
-      padding: 25px;
+    .group-card {
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid #9bc9ed20;
+      border-radius: 16px;
+      background: linear-gradient(145deg,#152c49cc,#10172dcc);
+      transition: .2s ease;
     }
 
-    .bubble {
-      max-width: min(78%,520px);
-      padding: 10px 14px;
-      border: 1px solid #ffffff15;
-      border-radius: 17px 17px 5px 17px;
-      background: #ffffff10;
-      align-self: flex-start;
-      overflow-wrap: anywhere;
+    .group-card:hover {
+      transform: translateY(-2px);
+      border-color: #80cce866;
+    }
+
+    .group-cover {
+      height: 88px;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 25% 20%,#7dd9eb77,transparent 32%),
+        radial-gradient(circle at 80% 90%,#9478e877,transparent 38%),
+        linear-gradient(125deg,#173d58,#30285c);
+    }
+
+    .group-cover::before,
+    .group-cover::after {
+      content: "";
+      position: absolute;
+      border: 1px solid #ffffff20;
+      border-radius: 50%;
+      width: 100px;
+      height: 100px;
+      top: -52px;
+      right: 25%;
+    }
+
+    .group-cover::after {
+      width: 145px;
+      height: 145px;
+      top: -77px;
+      right: 19%;
+    }
+
+    .group-icon {
+      position: absolute;
+      right: 14px;
+      bottom: -20px;
+      width: 49px;
+      height: 49px;
+      display: grid;
+      place-items: center;
+      border-radius: 15px;
+      border: 2px solid #182c49;
+      background: linear-gradient(145deg,#69c7d9,#7861c9);
+      box-shadow: 0 5px 17px #0005;
+    }
+
+    .group-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke: white;
+      fill: none;
+      stroke-width: 1.7;
+    }
+
+    .group-info {
+      padding: 27px 13px 13px;
+    }
+
+    .group-name {
       font-size: 13px;
+      font-weight: 900;
+      overflow-wrap: anywhere;
+    }
+
+    .group-description {
+      min-height: 37px;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.8;
+      overflow-wrap: anywhere;
+    }
+
+    .group-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 10px;
+      color: #a9dbe7;
+      font-size: 9px;
+    }
+
+    .group-actions {
+      display: flex;
+      gap: 7px;
+      margin-top: 11px;
+    }
+
+    .group-actions .btn {
+      flex: 1;
+      min-height: 33px;
+      padding: 5px 8px;
+      font-size: 10px;
+    }
+
+    .side-panel {
+      padding: 16px;
+    }
+
+    .side-panel h3 {
+      margin: 0 0 7px;
+      font-size: 14px;
+    }
+
+    .side-panel p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 2;
+    }
+
+    .side-decoration {
+      margin-top: 15px;
+      padding: 13px;
+      border: 1px solid #76c9df25;
+      border-radius: 13px;
+      background: linear-gradient(135deg,#5abbd51a,#9275e51a);
+    }
+
+    .side-decoration strong {
+      display: block;
+      color: #b9eaf3;
+      font-size: 11px;
+      margin-bottom: 5px;
+    }
+
+    .side-decoration span {
+      color: #b4bfd2;
+      font-size: 10px;
       line-height: 1.9;
     }
 
-    .bubble.mine {
-      align-self: flex-end;
-      border-radius: 17px 17px 17px 5px;
-      background: linear-gradient(135deg,#765dc7aa,#5944a099);
-      border-color: #c4b4ff33;
+    .group-panel {
+      margin-top: 15px;
+      padding: 18px;
     }
 
-    .time {
+    .group-panel h2 {
+      margin: 0 0 5px;
+      font-size: 17px;
+    }
+
+    .group-panel > p {
+      margin: 0 0 15px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .field {
       display: block;
-      color: #c7bfdc99;
-      font-size: 9px;
-      margin-top: 4px;
+      width: 100%;
+      min-height: 42px;
+      margin-top: 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      outline: none;
+      color: white;
+      background: #050d1dcc;
+      font-size: 11px;
     }
 
-    .composer {
+    textarea.field {
+      min-height: 85px;
+      resize: vertical;
+    }
+
+    .form-actions {
       display: flex;
       gap: 9px;
-      padding: 15px;
-      border-top: 1px solid var(--line);
-    }
-
-    .field { min-width: 0; flex: 1; }
-
-    .btn {
-      border: 1px solid #bbaaff55;
-      border-radius: 13px;
-      padding: 10px 16px;
-      background: linear-gradient(135deg,#9278e8,#654ebc);
-      color: white;
-      font-size: 12px;
-      font-weight: 800;
-    }
-
-    .btn.secondary {
-      background: #ffffff0b;
-      border-color: var(--line);
-      color: var(--lavender);
-    }
-
-    .btn.danger {
-      background: #ff80981a;
-      border-color: #ff809844;
-      color: #ffc1ce;
-    }
-
-    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
-
-    .panel { padding: 22px; }
-    .panel h2 { font-size: 19px; margin: 0 0 7px; }
-
-    .panel p {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 2;
-      margin: 0 0 18px;
+      margin-top: 13px;
     }
 
     .notice {
-      padding: 12px 14px;
+      margin-top: 13px;
+      padding: 11px 13px;
+      border: 1px solid var(--line);
       border-radius: 12px;
-      background: #ffffff0c;
-      color: var(--muted);
-      font-size: 12px;
+      background: #07152bdb;
+      color: #c6d6ec;
+      font-size: 11px;
       line-height: 1.9;
     }
 
-    .notice.error { color: #ffc1ce; background: #ff809814; }
-    .notice.success { color: #9ce8d5; background: #58d9cf14; }
+    .notice.error {
+      color: #ffc1cc;
+      border-color: #ff718544;
+    }
 
-    .hidden { display: none !important; }
+    .notice.success {
+      color: #a5f0d2;
+      border-color: #58d9ad44;
+    }
+
+    .empty-state {
+      grid-column: 1/-1;
+      min-height: 210px;
+      display: grid;
+      place-items: center;
+      padding: 25px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 11px;
+      line-height: 2;
+    }
+
+    .hidden {
+      display: none !important;
+    }
 
     .footer {
+      padding: 22px 10px;
+      color: #9eacc1;
       text-align: center;
-      color: #c9c0dc99;
-      font-size: 11px;
-      padding: 22px;
+      font-size: 10px;
     }
 
     @media(max-width:760px) {
-      .top { height: 62px; }
-      .wrap { margin: 20px auto; }
-      .layout { grid-template-columns: 1fr; min-height: 0; }
-      .side { min-height: 0; padding: 13px; }
-      .list { max-height: 260px; }
-      .chat { min-height: 570px; }
-      .messages { min-height: 340px; max-height: 55vh; }
-      .heading { align-items: start; flex-direction: column; }
-      .bubble { max-width: 88%; }
-      .panel { padding: 18px; }
+      .page {
+        width: 94%;
+        margin-top: 14px;
+      }
+
+      .hero {
+        padding: 18px;
+        border-radius: 19px;
+      }
+
+      .groups-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .side-panel {
+        order: 2;
+      }
+
+      .groups-box {
+        padding: 11px;
+      }
+
+      .group-list {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+        gap: 9px;
+      }
+
+      .group-cover {
+        height: 72px;
+      }
+
+      .group-info {
+        padding: 25px 10px 10px;
+      }
+
+      .group-name {
+        font-size: 11px;
+      }
+
+      .group-description {
+        font-size: 9px;
+      }
+
+      .group-actions {
+        flex-direction: column;
+      }
+
+      .group-actions .btn {
+        width: 100%;
+      }
+
+      .toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .search {
+        width: 100%;
+      }
+    }
+
+    @media(max-width:360px) {
+      .group-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+      * {
+        transition: none !important;
+      }
     }
   </style>
 </head>
 
 <body>
 
-<header class="top">
-  <a class="brand" href="../index.html">HANOON</a>
-  <a class="top-link" href="../index.html">العودة للرئيسية</a>
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand-mark">
+      <svg viewBox="0 0 24 24">
+        <path d="M4 18 12 4l8 14M7 13h10M9 18h6"/>
+      </svg>
+    </span>
+    HANOON
+  </a>
+  <a class="back-link" href="../index.html">العودة للرئيسية</a>
 </header>
 
-<main class="wrap">
+<main class="page">
 
-  <div class="heading">
-    <div>
-      <h1>مجتمع هنون</h1>
-      <p>تواصل مع القرّاء، كوّن صداقات، وابدأ محادثاتك.</p>
+  <section class="hero">
+    <div class="hero-label">HANOON GROUPS</div>
+    <h1>مجتمع يجمعنا</h1>
+    <p>
+      مساحات خاصة تجمع الأعضاء حول اهتماماتهم.
+      أنشئ مجموعتك وادعُ أصدقاءك وابدأ النقاش.
+    </p>
+
+    <div class="hero-actions">
+      <button class="btn" id="newGroupBtn" type="button">
+        إنشاء مجموعة جديدة
+      </button>
+      <button class="btn secondary" id="refreshGroupsBtn" type="button">
+        تحديث المجموعات
+      </button>
     </div>
-
-    <button class="btn secondary" id="newGroupBtn">إنشاء مجموعة</button>
-  </div>
-
-  <div id="authNotice" class="notice hidden">
-    سجّل الدخول أولاً لاستخدام مجتمع هنون.
-  </div>
-
-  <div class="layout" id="communityApp">
-
-    <aside class="side glass">
-
-      <div class="tabs">
-        <button class="tab active" data-tab="chats">المحادثات</button>
-        <button class="tab" data-tab="friends">الأصدقاء</button>
-        <button class="tab" data-tab="requests">الطلبات</button>
-        <button class="tab" data-tab="discover">اكتشف الأعضاء</button>
-      </div>
-
-      <input class="search" id="sideSearch" placeholder="ابحث في القائمة...">
-
-      <div class="list" id="sideList">
-        <div class="empty-state">جارٍ تحميل المجتمع...</div>
-      </div>
-
-    </aside>
-
-    <section class="chat glass" id="chatPanel">
-
-      <div class="chat-head">
-        <div>
-          <div class="chat-title" id="chatTitle">أهلاً بك في مجتمع هنون</div>
-          <div class="chat-sub" id="chatSubtitle">اختر محادثة أو ابحث عن عضو لتبدأ</div>
-        </div>
-
-        <button class="btn secondary hidden" id="viewMemberBtn">
-          الملف الشخصي
-        </button>
-      </div>
-
-      <div class="messages" id="messages">
-        <div class="empty-state">
-          مساحتك للتواصل وتبادل المعرفة.
-          <br>
-          ابدأ محادثة مع أحد أصدقائك.
-        </div>
-      </div>
-
-      <form class="composer hidden" id="messageForm">
-        <input class="field" id="messageInput" maxlength="10000" autocomplete="off" placeholder="اكتب رسالتك هنا...">
-        <button class="btn" type="submit">إرسال</button>
-      </form>
-
-    </section>
-
-  </div>
-
-  <section class="glass panel hidden" id="groupPanel">
-    <h2>إنشاء مجموعة جديدة</h2>
-    <p>أنشئ مساحة تجمعك بأصدقائك في هنون.</p>
-
-    <form id="groupForm">
-      <input class="field" id="groupName" maxlength="70" required placeholder="اسم المجموعة">
-
-      <input class="field" id="groupDescription" maxlength="240" placeholder="وصف المجموعة (اختياري)" style="margin-top:10px">
-
-      <input class="field" id="groupMembers" placeholder="أسماء المستخدمين أو أكوادهم، افصل بينها بفواصل" style="margin-top:10px">
-
-      <div class="actions" style="margin-top:14px">
-        <button class="btn" type="submit">إنشاء المجموعة</button>
-        <button class="btn secondary" type="button" id="cancelGroupBtn">إلغاء</button>
-      </div>
-    </form>
   </section>
 
-  <div id="globalNotice" class="notice hidden" style="margin-top:14px"></div>
+  <div id="authNotice" class="notice hidden">
+    سجّل الدخول أولاً لاستخدام مجموعات هنون.
+    <a href="auth.html" style="color:#9ddff0;font-weight:900">تسجيل الدخول</a>
+  </div>
+
+  <section id="communityApp" class="hidden">
+
+    <div class="toolbar">
+      <div>
+        <h2>اكتشف المجموعات</h2>
+        <small>المجموعات التي أنشأها أعضاء هنون</small>
+      </div>
+      <input
+        class="search"
+        id="groupSearch"
+        type="search"
+        placeholder="ابحث عن مجموعة..."
+        autocomplete="off"
+      >
+    </div>
+
+    <div class="groups-layout">
+
+      <section class="groups-box glass">
+        <div class="group-list" id="groupList">
+          <div class="empty-state">جارٍ تحميل المجموعات...</div>
+        </div>
+      </section>
+
+      <aside class="side-panel glass">
+        <h3>مساحتك بين الأصدقاء</h3>
+        <p>
+          أنشئ مجموعة لهواية أو مجال معرفي أو نقاش مشترك.
+          يمكنك دعوة الأعضاء وإدارة مجموعتك من مكان واحد.
+        </p>
+
+        <div class="side-decoration">
+          <strong>مجموعات هنون</strong>
+          <span>
+            كل مجموعة لها أعضاؤها ومساحتها الخاصة للنقاش وتبادل الأفكار.
+          </span>
+        </div>
+
+        <div class="side-decoration">
+          <strong>تنظيم أفضل</strong>
+          <span>
+            الأصدقاء والمراسلات الخاصة وطلبات الصداقة لها صفحات مستقلة.
+          </span>
+        </div>
+      </aside>
+
+    </div>
+
+    <section class="group-panel glass hidden" id="groupPanel">
+      <h2>إنشاء مجموعة جديدة</h2>
+      <p>اكتب بيانات مجموعتك، ويمكنك إضافة أعضاء إليها.</p>
+
+      <form id="groupForm">
+        <input
+          class="field"
+          id="groupName"
+          maxlength="70"
+          required
+          placeholder="اسم المجموعة"
+        >
+
+        <textarea
+          class="field"
+          id="groupDescription"
+          maxlength="240"
+          placeholder="وصف المجموعة"
+        ></textarea>
+
+        <input
+          class="field"
+          id="groupMembers"
+          placeholder="أسماء المستخدمين أو أكوادهم، افصل بينها بفواصل"
+        >
+
+        <div class="form-actions">
+          <button class="btn" type="submit">إنشاء المجموعة</button>
+          <button class="btn secondary" type="button" id="cancelGroupBtn">
+            إلغاء
+          </button>
+        </div>
+      </form>
+    </section>
+
+  </section>
+
+  <div id="globalNotice" class="notice hidden" role="status"></div>
 
 </main>
 
