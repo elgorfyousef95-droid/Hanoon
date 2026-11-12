@@ -2,681 +2,586 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#090D1B">
-  <title>الإنجازات والتصنيفات | HANOON</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/theme.css">
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/components.css">
-  <link rel="stylesheet" href="../css/fixed-viewport.css">
-
-  <style>
-    :root {
-      --gold:#D9B978;
-      --purple:#947DFB;
-      --teal:#43D1C1;
-      --bg:#090D1B;
-      --panel:rgba(24,31,54,.76);
-      --panel2:rgba(32,41,68,.82);
-      --text:#F8F4EA;
-      --muted:#AEB4C9;
-      --line:rgba(255,255,255,.10);
-      --danger:#F07886;
-      --success:#55D6A5;
-    }
-
-    * { box-sizing:border-box; }
-
-    html {
-      min-height:100%;
-      background:var(--bg);
-      scroll-behavior:smooth;
-    }
-
-    body {
-      margin:0;
-      min-height:100vh;
-      color:var(--text);
-      font-family:"Cairo",sans-serif;
-      background:
-        radial-gradient(ellipse at 88% 4%,rgba(148,125,251,.24),transparent 34%),
-        radial-gradient(ellipse at 4% 38%,rgba(67,209,193,.13),transparent 32%),
-        radial-gradient(ellipse at 70% 100%,rgba(217,185,120,.10),transparent 38%),
-        linear-gradient(145deg,#090D1B,#11182B 55%,#090D1B);
-      background-attachment:fixed;
-      overflow-x:hidden;
-    }
-
-    body::before {
-      content:"";
-      position:fixed;
-      inset:0;
-      z-index:-1;
-      pointer-events:none;
-      opacity:.25;
-      background-image:
-        radial-gradient(1px 1px at 12% 18%,#fff 50%,transparent 100%),
-        radial-gradient(2px 2px at 80% 22%,#D9B978 50%,transparent 100%),
-        radial-gradient(1px 1px at 62% 70%,#fff 50%,transparent 100%),
-        radial-gradient(2px 2px at 25% 82%,#947DFB 50%,transparent 100%);
-      background-size:330px 330px;
-    }
-
-    button,a { font:inherit; }
-    a { color:inherit;text-decoration:none; }
-    button { cursor:pointer; }
-
-    .topbar {
-      min-height:72px;
-      padding:12px 5%;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:15px;
-      position:sticky;
-      top:0;
-      z-index:30;
-      background:rgba(9,13,27,.82);
-      border-bottom:1px solid rgba(217,185,120,.16);
-      backdrop-filter:blur(22px);
-      -webkit-backdrop-filter:blur(22px);
-    }
-
-    .brand {
-      color:var(--gold);
-      font-size:26px;
-      font-weight:900;
-      letter-spacing:3px;
-      text-shadow:0 0 25px rgba(217,185,120,.2);
-    }
-
-    .top-actions {
-      display:flex;
-      align-items:center;
-      gap:9px;
-    }
-
-    .top-link {
-      padding:9px 15px;
-      border:1px solid rgba(217,185,120,.28);
-      border-radius:12px;
-      background:rgba(255,255,255,.035);
-      color:var(--gold);
-      font-size:12px;
-      font-weight:800;
-      transition:.2s;
-    }
-
-    .top-link:hover {
-      background:rgba(217,185,120,.10);
-      border-color:var(--gold);
-    }
-
-    .page {
-      position:relative;
-      width:min(1150px,92%);
-      margin:30px auto 65px;
-    }
-
-    .hero {
-      position:relative;
-      overflow:hidden;
-      padding:32px;
-      border:1px solid rgba(217,185,120,.28);
-      border-radius:27px;
-      background:
-        radial-gradient(circle at 85% 15%,rgba(148,125,251,.25),transparent 35%),
-        radial-gradient(circle at 5% 95%,rgba(67,209,193,.15),transparent 32%),
-        linear-gradient(135deg,rgba(36,45,75,.94),rgba(17,24,43,.94));
-      box-shadow:0 22px 65px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.07);
-      backdrop-filter:blur(18px);
-    }
-
-    .hero::after {
-      content:"";
-      position:absolute;
-      width:280px;
-      height:280px;
-      left:-115px;
-      bottom:-165px;
-      border:1px solid rgba(217,185,120,.25);
-      border-radius:50%;
-      box-shadow:
-        0 0 0 25px rgba(217,185,120,.025),
-        0 0 0 55px rgba(217,185,120,.018),
-        0 0 0 90px rgba(217,185,120,.012);
-      pointer-events:none;
-    }
-
-    .hero-content {
-      position:relative;
-      z-index:1;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:25px;
-    }
-
-    .eyebrow {
-      color:var(--teal);
-      font-size:12px;
-      font-weight:900;
-    }
-
-    .hero h1 {
-      margin:8px 0;
-      font-size:clamp(27px,5vw,42px);
-      font-weight:900;
-      background:linear-gradient(90deg,#fff,var(--gold),#C7B8FF);
-      -webkit-background-clip:text;
-      background-clip:text;
-      color:transparent;
-    }
-
-    .hero p {
-      max-width:620px;
-      margin:0;
-      color:var(--muted);
-      line-height:2;
-      font-size:13px;
-    }
-
-    .member-box {
-      min-width:190px;
-      padding:19px;
-      border:1px solid rgba(217,185,120,.24);
-      border-radius:20px;
-      background:rgba(8,12,25,.40);
-      text-align:center;
-      backdrop-filter:blur(14px);
-    }
-
-    .member-avatar {
-      width:61px;
-      height:61px;
-      margin:0 auto 9px;
-      display:grid;
-      place-items:center;
-      border:2px solid rgba(217,185,120,.65);
-      border-radius:50%;
-      background:linear-gradient(135deg,var(--purple),#35466f);
-      color:white;
-      font-size:22px;
-      font-weight:900;
-      overflow:hidden;
-      box-shadow:0 0 25px rgba(217,185,120,.14);
-    }
-
-    .member-avatar img {
-      width:100%;
-      height:100%;
-      object-fit:cover;
-    }
-
-    .member-name { font-size:14px;font-weight:900; }
-    .member-code { margin-top:4px;color:var(--gold);font-size:11px;direction:ltr; }
-
-    .progress-area {
-      position:relative;
-      z-index:1;
-      max-width:650px;
-      margin-top:25px;
-    }
-
-    .progress-heading {
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:9px;
-      font-size:12px;
-    }
-
-    .progress-heading strong { color:var(--gold);font-size:20px; }
-
-    .progress-track {
-      height:12px;
-      overflow:hidden;
-      border-radius:30px;
-      background:rgba(255,255,255,.09);
-    }
-
-    .progress-fill {
-      width:0;
-      height:100%;
-      border-radius:inherit;
-      background:linear-gradient(90deg,var(--purple),var(--gold),var(--teal));
-      transition:width .5s ease;
-    }
-
-    .stats-grid {
-      display:grid;
-      grid-template-columns:repeat(4,minmax(0,1fr));
-      gap:13px;
-      margin-top:18px;
-    }
-
-    .stat-card {
-      min-width:0;
-      padding:20px;
-      border:1px solid var(--line);
-      border-radius:19px;
-      background:linear-gradient(145deg,rgba(34,43,70,.82),rgba(18,25,45,.82));
-      box-shadow:0 12px 32px rgba(0,0,0,.13),inset 0 1px 0 rgba(255,255,255,.045);
-      backdrop-filter:blur(16px);
-      transition:transform .22s,border-color .22s;
-    }
-
-    .stat-card:hover {
-      transform:translateY(-4px);
-      border-color:rgba(217,185,120,.35);
-    }
-
-    .stat-icon {
-      width:41px;
-      height:41px;
-      display:grid;
-      place-items:center;
-      margin-bottom:12px;
-      border-radius:13px;
-      color:var(--gold);
-      background:rgba(217,185,120,.12);
-      font-size:17px;
-      font-weight:900;
-    }
-
-    .stat-card:nth-child(2) .stat-icon {
-      color:var(--teal);
-      background:rgba(67,209,193,.11);
-    }
-
-    .stat-card:nth-child(3) .stat-icon {
-      color:var(--purple);
-      background:rgba(148,125,251,.13);
-    }
-
-    .stat-card:nth-child(4) .stat-icon {
-      color:var(--success);
-      background:rgba(85,214,165,.11);
-    }
-
-    .stat-card strong {
-      display:block;
-      font-size:27px;
-      font-weight:900;
-      line-height:1.3;
-    }
-
-    .stat-card span { color:var(--muted);font-size:11px; }
-
-    .section { margin-top:35px; }
-
-    .section-heading {
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:16px;
-    }
-
-    .section-heading h2 { margin:0;font-size:21px;font-weight:900; }
-    .section-heading p { margin:4px 0 0;color:var(--muted);font-size:11px; }
-    .section-count { color:var(--gold);font-size:12px;white-space:nowrap; }
-
-    .tabs {
-      display:flex;
-      gap:8px;
-      padding:6px;
-      margin:22px 0;
-      overflow-x:auto;
-      border:1px solid var(--line);
-      border-radius:16px;
-      background:rgba(20,26,45,.76);
-      backdrop-filter:blur(16px);
-      scrollbar-width:none;
-    }
-
-    .tabs::-webkit-scrollbar { display:none; }
-
-    .tab-button {
-      flex:1 0 auto;
-      min-height:43px;
-      padding:8px 16px;
-      border:0;
-      border-radius:12px;
-      background:transparent;
-      color:var(--muted);
-      font-size:12px;
-      font-weight:800;
-      white-space:nowrap;
-      transition:.2s;
-    }
-
-    .tab-button.active {
-      color:#111522;
-      background:linear-gradient(110deg,#F0D99F,var(--gold));
-      box-shadow:0 5px 18px rgba(217,185,120,.15);
-    }
-
-    .tab-panel { display:none; }
-    .tab-panel.active { display:block; }
-
-    .badges-grid {
-      display:grid;
-      grid-template-columns:repeat(4,minmax(0,1fr));
-      gap:13px;
-    }
-
-    .badge-card {
-      min-height:175px;
-      padding:20px 13px;
-      border:1px solid var(--line);
-      border-radius:19px;
-      background:linear-gradient(145deg,rgba(34,43,70,.82),rgba(18,25,45,.82));
-      text-align:center;
-      backdrop-filter:blur(14px);
-      transition:.22s;
-    }
-
-    .badge-card:hover {
-      transform:translateY(-4px);
-      border-color:rgba(217,185,120,.28);
-    }
-
-    .badge-card.earned {
-      border-color:rgba(217,185,120,.48);
-      background:
-        radial-gradient(circle at 50% 0%,rgba(217,185,120,.14),transparent 65%),
-        linear-gradient(145deg,rgba(45,49,70,.9),rgba(20,27,46,.9));
-      box-shadow:0 10px 30px rgba(217,185,120,.07);
-    }
-
-    .badge-symbol {
-      width:55px;
-      height:55px;
-      display:grid;
-      place-items:center;
-      margin:0 auto 11px;
-      border:1px solid rgba(217,185,120,.35);
-      border-radius:50%;
-      background:rgba(217,185,120,.11);
-      color:var(--gold);
-      font-size:19px;
-      font-weight:900;
-    }
-
-    .badge-card:not(.earned) .badge-symbol {
-      color:#85899c;
-      border-color:rgba(255,255,255,.1);
-      background:rgba(255,255,255,.035);
-    }
-
-    .badge-card h3 { margin:0 0 5px;font-size:13px; }
-    .badge-card p { min-height:35px;margin:0;color:var(--muted);font-size:10px;line-height:1.8; }
-    .badge-status { display:inline-block;margin-top:9px;color:var(--muted);font-size:10px; }
-    .badge-card.earned .badge-status { color:var(--success); }
-
-    .list { display:grid;gap:10px; }
-
-    .list-row {
-      display:flex;
-      align-items:center;
-      gap:13px;
-      min-width:0;
-      padding:14px;
-      border:1px solid var(--line);
-      border-radius:16px;
-      background:linear-gradient(135deg,rgba(34,43,70,.82),rgba(18,25,45,.82));
-      backdrop-filter:blur(14px);
-      transition:border-color .2s,transform .2s;
-    }
-
-    .list-row:hover {
-      border-color:rgba(217,185,120,.28);
-      transform:translateY(-2px);
-    }
-
-    .list-icon {
-      width:42px;
-      height:42px;
-      flex:0 0 42px;
-      display:grid;
-      place-items:center;
-      border-radius:13px;
-      background:rgba(148,125,251,.13);
-      color:#b6a8ff;
-      font-size:17px;
-      font-weight:900;
-    }
-
-    .list-content { flex:1;min-width:0; }
-
-    .list-content strong {
-      display:block;
-      overflow:hidden;
-      font-size:12px;
-      text-overflow:ellipsis;
-      white-space:nowrap;
-    }
-
-    .list-content small { display:block;margin-top:4px;color:var(--muted);font-size:10px; }
-
-    .list-value {
-      flex:0 0 auto;
-      color:var(--gold);
-      font-size:13px;
-      font-weight:900;
-      text-align:left;
-    }
-
-    .positive { color:var(--success)!important; }
-    .negative { color:var(--danger)!important; }
-
-    .leaderboard-row {
-      display:grid;
-      grid-template-columns:42px 42px minmax(0,1fr) auto;
-      align-items:center;
-      gap:11px;
-      padding:12px;
-      border:1px solid var(--line);
-      border-radius:16px;
-      background:linear-gradient(135deg,rgba(34,43,70,.82),rgba(18,25,45,.82));
-      backdrop-filter:blur(14px);
-    }
-
-    .leaderboard-row.current-member {
-      border-color:rgba(217,185,120,.55);
-      background:linear-gradient(135deg,rgba(217,185,120,.13),rgba(23,29,50,.9));
-    }
-
-    .rank-number { color:var(--gold);font-size:16px;font-weight:900;text-align:center; }
-
-    .leader-avatar {
-      width:42px;
-      height:42px;
-      display:grid;
-      place-items:center;
-      overflow:hidden;
-      border-radius:50%;
-      background:linear-gradient(135deg,var(--purple),#35466f);
-      color:white;
-      font-weight:900;
-    }
-
-    .leader-avatar img { width:100%;height:100%;object-fit:cover; }
-    .leader-name { min-width:0;overflow:hidden;font-size:12px;font-weight:900;text-overflow:ellipsis;white-space:nowrap; }
-    .leader-name small { display:block;margin-top:3px;color:var(--muted);font-size:10px;font-weight:500; }
-    .leader-points { color:var(--gold);font-size:12px;font-weight:900;white-space:nowrap; }
-
-    .result-chip {
-      display:inline-block;
-      padding:4px 9px;
-      border-radius:20px;
-      font-size:10px;
-      font-weight:800;
-    }
-
-    .result-won { color:var(--success);background:rgba(85,214,165,.1); }
-    .result-lost { color:var(--danger);background:rgba(240,120,135,.1); }
-    .result-other { color:var(--gold);background:rgba(217,185,120,.1); }
-
-    .books-list { display:grid;gap:12px; }
-
-    .progress-book {
-      display:grid;
-      grid-template-columns:62px minmax(0,1fr) auto;
-      align-items:center;
-      gap:13px;
-      padding:13px;
-      border:1px solid var(--line);
-      border-radius:17px;
-      background:linear-gradient(135deg,rgba(34,43,70,.82),rgba(18,25,45,.82));
-      backdrop-filter:blur(14px);
-    }
-
-    .progress-book img {
-      width:62px;
-      height:78px;
-      object-fit:cover;
-      border-radius:9px;
-      background:var(--panel);
-    }
-
-    .book-details { min-width:0; }
-
-    .book-details strong {
-      display:block;
-      overflow:hidden;
-      font-size:12px;
-      text-overflow:ellipsis;
-      white-space:nowrap;
-    }
-
-    .book-details small { display:block;margin:5px 0 9px;color:var(--muted);font-size:10px; }
-
-    .small-progress {
-      height:7px;
-      overflow:hidden;
-      border-radius:20px;
-      background:rgba(255,255,255,.08);
-    }
-
-    .small-progress div {
-      height:100%;
-      border-radius:inherit;
-      background:linear-gradient(90deg,var(--purple),var(--teal));
-    }
-
-    .book-percent { color:var(--gold);font-size:15px;font-weight:900; }
-
-    .empty-state,.loading-state,.error-state {
-      padding:30px 18px;
-      border:1px dashed rgba(217,185,120,.25);
-      border-radius:18px;
-      background:rgba(255,255,255,.025);
-      color:var(--muted);
-      text-align:center;
-      font-size:12px;
-      line-height:2;
-      backdrop-filter:blur(12px);
-    }
-
-    .empty-state strong,.error-state strong {
-      display:block;
-      margin-bottom:5px;
-      color:var(--gold);
-      font-size:16px;
-    }
-
-    .empty-state a { display:inline-block;margin-top:10px;color:var(--teal);font-weight:900; }
-
-    .message-box {
-      display:none;
-      margin:15px 0;
-      padding:12px 15px;
-      border:1px solid rgba(240,120,135,.3);
-      border-radius:12px;
-      background:rgba(240,120,135,.08);
-      color:#ffc2ca;
-      font-size:12px;
-      line-height:1.8;
-    }
-
-    .message-box.show { display:block; }
-
-    .refresh-button {
-      padding:8px 13px;
-      border:1px solid rgba(67,209,193,.3);
-      border-radius:10px;
-      background:rgba(67,209,193,.08);
-      color:var(--teal);
-      font-size:11px;
-      font-weight:800;
-    }
-
-    .footer {
-      padding:23px;
-      border-top:1px solid var(--line);
-      color:var(--muted);
-      text-align:center;
-      font-size:11px;
-    }
-
-    @media(max-width:850px) {
-      .stats-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
-      .badges-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
-    }
-
-    @media(max-width:600px) {
-      .page { width:93%;margin-top:18px; }
-      .topbar { padding:10px 4%; }
-      .brand { font-size:21px; }
-      .top-link { padding:8px 10px;font-size:10px; }
-      .hero { padding:22px 17px; }
-      .hero-content { align-items:flex-start;flex-direction:column; }
-      .member-box {
-        width:100%;
-        display:flex;
-        align-items:center;
-        gap:12px;
-        text-align:right;
-      }
-      .member-avatar { margin:0; }
-      .stats-grid { gap:9px; }
-      .stat-card { padding:14px; }
-      .stat-card strong { font-size:23px; }
-      .badges-grid { grid-template-columns:repeat(2,minmax(0,1fr));gap:9px; }
-      .badge-card { min-height:165px;padding:15px 9px; }
-      .section-heading h2 { font-size:18px; }
-      .leaderboard-row {
-        grid-template-columns:28px 38px minmax(0,1fr) auto;
-        gap:8px;
-        padding:10px;
-      }
-      .leader-avatar { width:38px;height:38px; }
-      .progress-book {
-        grid-template-columns:52px minmax(0,1fr) auto;
-        gap:9px;
-      }
-      .progress-book img { width:52px;height:68px; }
-    }
-
-    @media(max-width:360px) {
-      .stats-grid { grid-template-columns:1fr 1fr; }
-      .stat-card span { font-size:10px; }
-      .leader-points { font-size:10px; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#080B18">
+<title>إنجازاتي | HANOON</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/fixed-viewport.css">
+
+<style>
+:root{
+  --bg:#080B18;
+  --bg2:#11172B;
+  --gold:#E4C47E;
+  --gold2:#B88B42;
+  --purple:#9B83FF;
+  --teal:#50D7C5;
+  --white:#F8F5EF;
+  --muted:#A5ACC3;
+  --line:rgba(255,255,255,.10);
+  --glass:rgba(20,27,49,.82);
+  --green:#59D9A5;
+  --red:#F0788C;
+}
+*{box-sizing:border-box}
+html{min-height:100%;background:var(--bg);scroll-behavior:smooth}
+body{
+  margin:0;
+  min-height:100vh;
+  overflow-x:hidden;
+  color:var(--white);
+  font-family:"Cairo",sans-serif;
+  background:
+    radial-gradient(ellipse at 50% -15%,rgba(157,127,255,.24),transparent 45%),
+    radial-gradient(ellipse at 100% 42%,rgba(65,204,190,.10),transparent 35%),
+    radial-gradient(ellipse at 0% 80%,rgba(203,163,87,.12),transparent 36%),
+    linear-gradient(145deg,#080B18,#11182C 55%,#080B18);
+  background-attachment:fixed;
+}
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  opacity:.22;
+  background-image:
+    linear-gradient(30deg,transparent 48%,rgba(228,196,126,.13) 49%,transparent 50%),
+    linear-gradient(150deg,transparent 48%,rgba(155,131,255,.10) 49%,transparent 50%);
+  background-size:75px 130px;
+}
+body:after{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 12% 22%,rgba(228,196,126,.13) 1px,transparent 2px),
+    radial-gradient(circle at 83% 66%,rgba(155,131,255,.15) 1px,transparent 2px);
+  background-size:95px 95px,130px 130px;
+  opacity:.45;
+}
+button,a{font:inherit}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer}
+svg{display:block}
+.topbar{
+  height:72px;
+  padding:0 5%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:sticky;
+  top:0;
+  z-index:30;
+  border-bottom:1px solid rgba(228,196,126,.17);
+  background:rgba(8,11,24,.86);
+  backdrop-filter:blur(22px);
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  color:var(--gold);
+  font-size:23px;
+  font-weight:900;
+  letter-spacing:3px;
+}
+.brand-mark{
+  width:35px;height:35px;
+  display:grid;place-items:center;
+  border:1px solid rgba(228,196,126,.5);
+  border-radius:11px;
+  background:linear-gradient(145deg,rgba(228,196,126,.22),rgba(155,131,255,.16));
+}
+.brand-mark svg{width:20px;height:20px}
+.top-actions{display:flex;gap:9px}
+.top-link{
+  padding:9px 15px;
+  border:1px solid rgba(228,196,126,.23);
+  border-radius:11px;
+  color:var(--gold);
+  background:rgba(255,255,255,.035);
+  font-size:12px;
+  font-weight:800;
+  transition:.2s;
+}
+.top-link:hover{background:rgba(228,196,126,.12);transform:translateY(-2px)}
+.page{width:min(1160px,92%);margin:30px auto 70px}
+.ornament{
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+}
+.ornament:before,.ornament:after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  border:1px solid rgba(228,196,126,.15);
+  border-radius:50%;
+  pointer-events:none;
+}
+.ornament:before{
+  width:360px;height:360px;
+  left:-170px;top:-220px;
+  box-shadow:0 0 0 22px rgba(228,196,126,.025),0 0 0 48px rgba(155,131,255,.025);
+}
+.ornament:after{
+  width:220px;height:220px;
+  right:-125px;bottom:-150px;
+  box-shadow:0 0 0 20px rgba(80,215,197,.025),0 0 0 43px rgba(228,196,126,.025);
+}
+.hero{
+  padding:32px;
+  border:1px solid rgba(228,196,126,.34);
+  border-radius:28px;
+  background:
+    radial-gradient(ellipse at 15% 5%,rgba(155,131,255,.23),transparent 42%),
+    radial-gradient(ellipse at 90% 90%,rgba(80,215,197,.13),transparent 38%),
+    linear-gradient(135deg,rgba(31,40,69,.96),rgba(12,18,35,.96));
+  box-shadow:0 25px 80px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.08);
+}
+.hero-main{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:25px;
+}
+.hero-label{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  color:var(--gold);
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:1px;
+}
+.hero-label:before{
+  content:"";
+  width:25px;height:1px;background:var(--gold);
+}
+.hero h1{
+  margin:9px 0 5px;
+  font-size:clamp(29px,5vw,45px);
+  font-weight:900;
+  line-height:1.4;
+  background:linear-gradient(90deg,#fff5d9,var(--gold),#bdaaff);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.hero p{max-width:590px;margin:0;color:#B8BED0;font-size:13px;line-height:2.1}
+.member-card{
+  min-width:205px;
+  padding:17px;
+  text-align:center;
+  border:1px solid rgba(228,196,126,.28);
+  border-radius:21px;
+  background:rgba(5,9,22,.43);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+}
+.member-ring{
+  width:76px;height:76px;
+  margin:0 auto 10px;
+  padding:4px;
+  border-radius:50%;
+  background:conic-gradient(var(--gold),var(--purple),var(--teal),var(--gold));
+  box-shadow:0 0 30px rgba(228,196,126,.2);
+}
+.member-avatar{
+  width:100%;height:100%;
+  display:grid;place-items:center;
+  overflow:hidden;
+  border:3px solid #171d33;
+  border-radius:50%;
+  background:linear-gradient(145deg,#7259bb,#283f63);
+  color:white;font-size:25px;font-weight:900;
+}
+.member-avatar img{width:100%;height:100%;object-fit:cover}
+.member-name{font-size:14px;font-weight:900}
+.member-code{margin-top:3px;color:var(--gold);font-size:10px;direction:ltr}
+.level-area{margin-top:25px;max-width:680px}
+.level-head{display:flex;justify-content:space-between;gap:12px;margin-bottom:9px;font-size:11px}
+.level-head strong{color:var(--gold);font-size:17px}
+.level-track{
+  height:13px;padding:2px;
+  overflow:hidden;border-radius:30px;
+  border:1px solid rgba(228,196,126,.2);
+  background:rgba(0,0,0,.25);
+}
+.level-fill{
+  width:0;height:100%;border-radius:30px;
+  background:linear-gradient(90deg,#735de0,var(--gold),var(--teal));
+  box-shadow:0 0 14px rgba(228,196,126,.35);
+  transition:width .6s ease;
+}
+.level-caption{margin-top:7px;color:var(--muted);font-size:10px}
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:13px;margin-top:18px;
+}
+.stat-card{
+  position:relative;overflow:hidden;
+  min-height:130px;padding:17px;
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:19px;
+  background:linear-gradient(145deg,rgba(32,42,71,.91),rgba(15,22,41,.91));
+  box-shadow:0 12px 35px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.055);
+  transition:.22s;
+}
+.stat-card:after{
+  content:"";position:absolute;
+  width:95px;height:95px;left:-38px;bottom:-52px;
+  border:1px solid rgba(228,196,126,.16);border-radius:50%;
+  box-shadow:0 0 0 13px rgba(228,196,126,.025);
+}
+.stat-card:hover{transform:translateY(-4px);border-color:rgba(228,196,126,.35)}
+.stat-top{display:flex;justify-content:space-between;align-items:center}
+.stat-icon{
+  width:39px;height:39px;display:grid;place-items:center;
+  border:1px solid rgba(228,196,126,.24);
+  border-radius:13px;
+  color:var(--gold);
+  background:rgba(228,196,126,.10);
+}
+.stat-icon svg{width:20px;height:20px}
+.stat-card:nth-child(2) .stat-icon{color:var(--green);border-color:rgba(89,217,165,.24);background:rgba(89,217,165,.08)}
+.stat-card:nth-child(3) .stat-icon{color:var(--red);border-color:rgba(240,120,140,.24);background:rgba(240,120,140,.08)}
+.stat-card:nth-child(4) .stat-icon{color:var(--purple);border-color:rgba(155,131,255,.24);background:rgba(155,131,255,.08)}
+.stat-card strong{display:block;margin-top:9px;font-size:27px;font-weight:900;line-height:1.2}
+.stat-card span{display:block;margin-top:4px;color:var(--muted);font-size:10px}
+.section{margin-top:36px}
+.section-head{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;margin-bottom:16px;
+}
+.section-title{display:flex;align-items:center;gap:11px}
+.section-emblem{
+  width:42px;height:42px;display:grid;place-items:center;
+  border:1px solid rgba(228,196,126,.28);
+  border-radius:14px;
+  color:var(--gold);background:rgba(228,196,126,.08);
+}
+.section-emblem svg{width:21px;height:21px}
+.section-head h2{margin:0;font-size:20px;font-weight:900}
+.section-head p{margin:3px 0 0;color:var(--muted);font-size:10px}
+.section-count{color:var(--gold);font-size:11px;white-space:nowrap}
+.tabs{
+  display:flex;gap:7px;padding:6px;margin:25px 0 20px;
+  overflow-x:auto;scrollbar-width:none;
+  border:1px solid rgba(228,196,126,.15);
+  border-radius:16px;background:rgba(15,21,39,.88);
+}
+.tabs::-webkit-scrollbar{display:none}
+.tab-button{
+  flex:1 0 auto;min-height:44px;padding:8px 17px;
+  border:1px solid transparent;border-radius:11px;
+  color:var(--muted);background:transparent;
+  font-size:11px;font-weight:800;white-space:nowrap;transition:.2s;
+}
+.tab-button.active{
+  color:#171524;
+  border-color:#e8d19a;
+  background:linear-gradient(120deg,#f0dca8,#c49a52);
+  box-shadow:0 5px 20px rgba(228,196,126,.18);
+}
+.tab-panel{display:none}
+.tab-panel.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.panel-shell{
+  position:relative;padding:22px;
+  border:1px solid rgba(228,196,126,.18);
+  border-radius:23px;
+  background:linear-gradient(145deg,rgba(23,31,54,.91),rgba(12,18,34,.94));
+  box-shadow:0 18px 50px rgba(0,0,0,.17);
+}
+.badges-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}
+.badge-card{
+  position:relative;min-height:230px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  overflow:hidden;padding:17px 12px;
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:19px;
+  text-align:center;
+  background:linear-gradient(155deg,rgba(38,47,76,.84),rgba(15,22,40,.96));
+  transition:.25s;
+}
+.badge-card:hover{transform:translateY(-5px);border-color:rgba(228,196,126,.4)}
+.badge-card.earned{
+  border-color:rgba(228,196,126,.48);
+  background:
+    radial-gradient(circle at 50% 23%,rgba(228,196,126,.18),transparent 53%),
+    linear-gradient(155deg,rgba(49,49,69,.96),rgba(18,25,43,.96));
+  box-shadow:inset 0 0 30px rgba(228,196,126,.045),0 12px 35px rgba(0,0,0,.18);
+}
+.ribbon{
+  position:absolute;top:13px;right:-27px;
+  width:100px;padding:4px 0;
+  transform:rotate(35deg);
+  color:#211a12;background:linear-gradient(90deg,#e9d39d,#b68a43);
+  font-size:8px;font-weight:900;
+}
+.medal{
+  position:relative;width:91px;height:103px;
+  display:flex;align-items:center;justify-content:center;
+  margin:4px auto 13px;
+}
+.medal:before,.medal:after{
+  content:"";position:absolute;top:0;width:25px;height:48px;
+  background:linear-gradient(180deg,#8065db,#473c8d);
+  clip-path:polygon(0 0,100% 0,82% 100%,50% 78%,18% 100%);
+}
+.medal:before{right:19px;transform:rotate(9deg)}
+.medal:after{left:19px;transform:rotate(-9deg);background:linear-gradient(180deg,#d8b86f,#906b34)}
+.medal-core{
+  position:relative;z-index:2;
+  width:67px;height:67px;display:grid;place-items:center;
+  margin-top:18px;
+  border:4px double #f0d79e;border-radius:50%;
+  color:#3b2b17;
+  background:radial-gradient(circle at 35% 25%,#fff2c9,#d7ad5f 60%,#936b31);
+  box-shadow:0 0 0 5px rgba(228,196,126,.11),0 8px 22px rgba(0,0,0,.35);
+}
+.medal-core svg{width:29px;height:29px}
+.badge-card:not(.earned) .medal{filter:grayscale(1);opacity:.48}
+.badge-card:not(.earned) .medal-core{background:linear-gradient(145deg,#8a8e9e,#464b5d);border-color:#aeb2c1;color:#252a38}
+.badge-card h3{margin:0 0 5px;font-size:13px}
+.badge-card p{min-height:35px;margin:0;color:var(--muted);font-size:10px;line-height:1.8}
+.badge-points{margin-top:9px;color:var(--gold);font-size:10px;font-weight:900}
+.badge-state{margin-top:5px;color:var(--muted);font-size:9px}
+.badge-card.earned .badge-state{color:var(--green)}
+.table-wrap{overflow-x:auto;border:1px solid rgba(228,196,126,.15);border-radius:17px}
+.points-table{width:100%;min-width:550px;border-collapse:collapse;text-align:right}
+.points-table th{
+  padding:14px 16px;
+  color:var(--gold);
+  background:rgba(228,196,126,.08);
+  font-size:10px;font-weight:900;white-space:nowrap;
+}
+.points-table td{
+  padding:13px 16px;border-top:1px solid rgba(255,255,255,.065);
+  color:#E5E7F0;font-size:11px;
+}
+.points-table tbody tr{transition:.2s}
+.points-table tbody tr:hover{background:rgba(255,255,255,.035)}
+.points-reason{font-weight:800}
+.points-date{color:var(--muted)!important;font-size:10px!important}
+.points-value{font-weight:900;direction:ltr;text-align:right}
+.points-value.plus{color:var(--green)}
+.points-value.minus{color:var(--red)}
+.balance-pill{
+  display:inline-block;padding:5px 10px;
+  border:1px solid rgba(228,196,126,.23);
+  border-radius:30px;color:var(--gold);
+  background:rgba(228,196,126,.07);
+  font-size:10px;font-weight:900;
+}
+.table-footer{
+  display:flex;justify-content:space-between;gap:12px;
+  padding:14px 16px;color:var(--muted);font-size:10px;
+}
+.refresh-button{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 13px;border:1px solid rgba(80,215,197,.3);
+  border-radius:11px;color:var(--teal);
+  background:rgba(80,215,197,.07);font-size:10px;font-weight:900;
+  transition:.2s;
+}
+.refresh-button:hover{background:rgba(80,215,197,.15)}
+.refresh-button:disabled{opacity:.5;cursor:wait}
+.refresh-button svg{width:15px;height:15px}
+.podium{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  align-items:end;gap:13px;margin:10px 0 25px;
+  padding:23px 14px 0;
+  border:1px solid rgba(228,196,126,.16);
+  border-radius:21px;
+  background:
+    radial-gradient(ellipse at 50% 0%,rgba(228,196,126,.13),transparent 65%),
+    rgba(8,13,27,.45);
+}
+.podium-place{
+  display:flex;flex-direction:column;align-items:center;
+  min-width:0;text-align:center;
+}
+.podium-place.first{order:2}
+.podium-place.second{order:1}
+.podium-place.third{order:3}
+.podium-avatar{
+  width:65px;height:65px;padding:3px;
+  border-radius:50%;border:2px solid var(--gold);
+  background:linear-gradient(145deg,#f2dba5,#98703b);
+  box-shadow:0 0 25px rgba(228,196,126,.2);
+}
+.podium-place.second .podium-avatar{border-color:#bfc8d7;background:linear-gradient(145deg,#e3e7ed,#66758c)}
+.podium-place.third .podium-avatar{border-color:#ca946b;background:linear-gradient(145deg,#e5b28c,#865338)}
+.podium-avatar-inner{
+  width:100%;height:100%;display:grid;place-items:center;
+  overflow:hidden;border-radius:50%;background:#26314e;
+  color:white;font-size:20px;font-weight:900;
+}
+.podium-avatar img{width:100%;height:100%;object-fit:cover}
+.crown{height:28px;color:var(--gold);font-size:20px}
+.podium-name{
+  width:100%;overflow:hidden;margin-top:7px;
+  font-size:11px;font-weight:900;text-overflow:ellipsis;white-space:nowrap;
+}
+.podium-points{margin:4px 0 10px;color:var(--gold);font-size:10px;font-weight:900}
+.podium-block{
+  width:100%;min-height:76px;
+  display:flex;align-items:flex-start;justify-content:center;
+  padding-top:12px;
+  border:1px solid rgba(228,196,126,.24);
+  border-bottom:0;border-radius:12px 12px 0 0;
+  color:#171522;font-size:22px;font-weight:900;
+  background:linear-gradient(180deg,#e8d19a,#9b753d);
+}
+.second .podium-block{min-height:58px;background:linear-gradient(180deg,#dce2eb,#77859c);border-color:#9ba9bf}
+.third .podium-block{min-height:45px;background:linear-gradient(180deg,#d9a982,#8d5c3d);border-color:#bd8b68}
+.leader-list{display:grid;gap:9px}
+.leader-row{
+  display:grid;grid-template-columns:35px 43px minmax(0,1fr) auto;
+  align-items:center;gap:11px;padding:12px;
+  border:1px solid rgba(255,255,255,.08);border-radius:15px;
+  background:linear-gradient(120deg,rgba(34,43,70,.82),rgba(14,21,39,.9));
+}
+.leader-row.current{border-color:rgba(228,196,126,.5);background:rgba(228,196,126,.08)}
+.rank{color:var(--gold);font-size:14px;font-weight:900;text-align:center}
+.leader-avatar{
+  width:42px;height:42px;display:grid;place-items:center;
+  overflow:hidden;border-radius:50%;background:linear-gradient(135deg,#8d73ef,#304b70);
+  color:white;font-weight:900;
+}
+.leader-avatar img{width:100%;height:100%;object-fit:cover}
+.leader-name{min-width:0;overflow:hidden;font-size:11px;font-weight:900;text-overflow:ellipsis;white-space:nowrap}
+.leader-name small{display:block;margin-top:3px;color:var(--muted);font-size:9px;font-weight:500}
+.leader-score{color:var(--gold);font-size:11px;font-weight:900;white-space:nowrap}
+.activity-list{display:grid;gap:9px}
+.activity-row{
+  display:flex;align-items:center;gap:12px;padding:13px;
+  border:1px solid rgba(255,255,255,.08);border-radius:15px;
+  background:linear-gradient(120deg,rgba(34,43,70,.82),rgba(14,21,39,.9));
+}
+.activity-symbol{
+  width:40px;height:40px;flex:0 0 40px;
+  display:grid;place-items:center;border-radius:13px;
+  color:var(--purple);background:rgba(155,131,255,.12);
+  border:1px solid rgba(155,131,255,.18);
+}
+.activity-symbol svg{width:19px;height:19px}
+.activity-info{flex:1;min-width:0}
+.activity-info strong{display:block;font-size:11px}
+.activity-info small{display:block;margin-top:4px;color:var(--muted);font-size:9px}
+.contest-chip{
+  padding:5px 9px;border-radius:20px;font-size:9px;font-weight:900;white-space:nowrap;
+}
+.won{color:var(--green);background:rgba(89,217,165,.1)}
+.lost{color:var(--red);background:rgba(240,120,140,.1)}
+.other{color:var(--gold);background:rgba(228,196,126,.1)}
+.books-list{display:grid;gap:11px}
+.book-row{
+  display:grid;grid-template-columns:59px minmax(0,1fr) auto;
+  align-items:center;gap:13px;padding:13px;
+  border:1px solid rgba(255,255,255,.09);border-radius:16px;
+  background:linear-gradient(120deg,rgba(34,43,70,.82),rgba(14,21,39,.9));
+}
+.book-row img{width:59px;height:75px;object-fit:cover;border-radius:8px;background:#222a42}
+.book-info{min-width:0}
+.book-info strong{display:block;overflow:hidden;font-size:11px;text-overflow:ellipsis;white-space:nowrap}
+.book-info small{display:block;margin:6px 0;color:var(--muted);font-size:9px}
+.book-track{height:7px;overflow:hidden;border-radius:20px;background:rgba(255,255,255,.09)}
+.book-track span{display:block;height:100%;border-radius:20px;background:linear-gradient(90deg,var(--purple),var(--teal))}
+.book-percent{color:var(--gold);font-size:13px;font-weight:900}
+.empty,.loading,.error{
+  padding:28px 18px;border:1px dashed rgba(228,196,126,.22);
+  border-radius:17px;background:rgba(255,255,255,.025);
+  color:var(--muted);text-align:center;font-size:11px;line-height:2;
+}
+.empty strong,.error strong{display:block;color:var(--gold);font-size:15px}
+.empty a{display:inline-block;margin-top:8px;color:var(--teal);font-weight:900}
+.alert{
+  display:none;margin:14px 0;padding:12px 15px;
+  border:1px solid rgba(240,120,140,.3);border-radius:12px;
+  color:#ffc1cb;background:rgba(240,120,140,.08);
+  font-size:11px;line-height:1.9;
+}
+.alert.show{display:block}
+.footer{
+  margin-top:55px;padding:22px;
+  border-top:1px solid rgba(228,196,126,.13);
+  color:var(--muted);text-align:center;font-size:10px;
+}
+@media(max-width:850px){
+  .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .badges-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:600px){
+  .topbar{height:62px;padding:0 4%}
+  .brand{font-size:19px}
+  .top-link{padding:8px 10px;font-size:10px}
+  .page{width:93%;margin-top:17px}
+  .hero{padding:21px 17px;border-radius:22px}
+  .hero-main{align-items:flex-start;flex-direction:column}
+  .member-card{width:100%;display:flex;align-items:center;gap:13px;text-align:right}
+  .member-ring{width:57px;height:57px;flex:0 0 57px;margin:0}
+  .member-name{font-size:12px}
+  .level-area{margin-top:20px}
+  .stats-grid{gap:9px}
+  .stat-card{min-height:115px;padding:13px}
+  .stat-card strong{font-size:23px}
+  .stat-card span{font-size:9px}
+  .stat-icon{width:34px;height:34px}
+  .section{margin-top:27px}
+  .section-head h2{font-size:17px}
+  .panel-shell{padding:12px;border-radius:18px}
+  .badges-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .badge-card{min-height:205px;padding:13px 8px}
+  .medal{transform:scale(.88);margin:0 auto 6px}
+  .podium{gap:7px;padding:17px 7px 0}
+  .podium-avatar{width:53px;height:53px}
+  .podium-name{font-size:9px}
+  .podium-points{font-size:9px}
+  .podium-block{min-height:63px;font-size:18px}
+  .second .podium-block{min-height:48px}
+  .third .podium-block{min-height:38px}
+  .leader-row{grid-template-columns:26px 37px minmax(0,1fr) auto;gap:8px;padding:10px}
+  .leader-avatar{width:37px;height:37px}
+  .leader-name{font-size:10px}
+  .leader-score{font-size:9px}
+  .activity-row{padding:10px;gap:9px}
+  .activity-symbol{width:35px;height:35px;flex-basis:35px}
+  .book-row{grid-template-columns:48px minmax(0,1fr) auto;gap:9px;padding:10px}
+  .book-row img{width:48px;height:65px}
+  .book-percent{font-size:11px}
+}
+@media(max-width:360px){
+  .stats-grid{gap:7px}
+  .stat-card{padding:10px}
+  .stat-card strong{font-size:21px}
+  .tab-button{padding:8px 12px}
+}
+</style>
 </head>
 
 <body>
-
 <header class="topbar">
-  <a class="brand" href="../index.html">HANOON</a>
+  <a class="brand" href="../index.html">
+    <span class="brand-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+        <path d="M4 5.5 12 2l8 3.5v13L12 22l-8-3.5z"/>
+        <path d="M4 5.5 12 9l8-3.5M12 9v13"/>
+        <path d="m8 7.2 8 3.5"/>
+      </svg>
+    </span>
+    HANOON
+  </a>
   <div class="top-actions">
     <a class="top-link" href="library.html">المكتبة</a>
     <a class="top-link" href="../index.html">الرئيسية</a>
@@ -684,899 +589,506 @@
 </header>
 
 <main class="page">
+  <div id="pageAlert" class="alert" role="alert"></div>
 
-  <div id="pageMessage" class="message-box" role="alert"></div>
-
-  <section class="hero">
-    <div class="hero-content">
+  <section class="hero ornament">
+    <div class="hero-main">
       <div>
-        <span class="eyebrow">رحلتك وإنجازاتك في هنون</span>
-        <h1>لوحة إنجازاتي</h1>
-        <p>
-          تابع نقاطك ومشاركاتك ونتائج مسابقاتك،
-          واكتشف الأوسمة التي حصلت عليها وترتيبك بين أعضاء مجتمع هنون.
-        </p>
+        <span class="hero-label">HANOON HONORS CLUB</span>
+        <h1>رحلة التميّز والإنجاز</h1>
+        <p>كل خطوة تقرّبك من القمة. تابع رصيدك، اجمع الأوسمة، ونافس أعضاء هنون على صدارة المعرفة والإبداع.</p>
       </div>
-
-      <div class="member-box">
-        <div class="member-avatar" id="memberAvatar">هـ</div>
+      <div class="member-card">
+        <div class="member-ring">
+          <div class="member-avatar" id="memberAvatar">هـ</div>
+        </div>
         <div>
           <div class="member-name" id="memberName">جارٍ تحميل العضو...</div>
           <div class="member-code" id="memberCode">HANOON MEMBER</div>
         </div>
       </div>
     </div>
-
-    <div class="progress-area">
-      <div class="progress-heading">
+    <div class="level-area">
+      <div class="level-head">
         <span>تقدم القراءة في مكتبتك</span>
         <strong id="readingPercentage">0%</strong>
       </div>
-      <div class="progress-track">
-        <div class="progress-fill" id="readingProgressFill"></div>
-      </div>
+      <div class="level-track"><div class="level-fill" id="readingProgressFill"></div></div>
+      <div class="level-caption">كل فصل تنهيه يضيف خطوة جديدة إلى رحلتك.</div>
     </div>
   </section>
 
   <section class="stats-grid">
     <article class="stat-card">
-      <div class="stat-icon">★</div>
-      <strong id="totalPoints">—</strong>
-      <span>صافي نقاطك</span>
+      <div class="stat-top">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m12 2 2.8 6 6.5.8-4.8 4.5 1.2 6.5-5.7-3.2-5.7 3.2 1.2-6.5L2.7 8.8 9.2 8z"/></svg>
+        </div>
+      </div>
+      <strong id="totalPoints">—</strong><span>صافي رصيد النقاط</span>
     </article>
     <article class="stat-card">
-      <div class="stat-icon">🏆</div>
-      <strong id="winsCount">—</strong>
-      <span>مرات الفوز</span>
+      <div class="stat-top">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 21h8m-4-4v4M5 4h14v5a7 7 0 0 1-14 0z"/><path d="M5 6H2v2a4 4 0 0 0 4 4m13-6h3v2a4 4 0 0 1-4 4"/></svg>
+        </div>
+      </div>
+      <strong id="winsCount">—</strong><span>مرات الفوز</span>
     </article>
     <article class="stat-card">
-      <div class="stat-icon">↘</div>
-      <strong id="lossesCount">—</strong>
-      <span>مرات الخسارة</span>
+      <div class="stat-top">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16M4 12h16M4 19h16"/><path d="m8 9-4 3 4 3"/></svg>
+        </div>
+      </div>
+      <strong id="lossesCount">—</strong><span>مرات الخسارة</span>
     </article>
     <article class="stat-card">
-      <div class="stat-icon">✦</div>
-      <strong id="earnedCount">—</strong>
-      <span>الإنجازات المكتسبة</span>
+      <div class="stat-top">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m12 2 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+        </div>
+      </div>
+      <strong id="earnedCount">—</strong><span>الأوسمة المكتسبة</span>
     </article>
-    <article class="stat-card">
-      <div class="stat-icon">◉</div>
-      <strong id="activityCount">—</strong>
-      <span>الأنشطة المسجلة</span>
-    </article>
-    <article class="stat-card">
-      <div class="stat-icon">✉</div>
-      <strong id="messagesCount">—</strong>
-      <span>الرسائل المرسلة</span>
-    </article>
-    <article class="stat-card">
-      <div class="stat-icon">▤</div>
-      <strong id="commentsCount">—</strong>
-      <span>التعليقات</span>
-    </article>
-    <article class="stat-card">
-      <div class="stat-icon">♧</div>
-      <strong id="contestCount">—</strong>
-      <span>المسابقات المشاركة</span>
-    </article>
+    <article class="stat-card"><div class="stat-top"><div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div></div><strong id="activityCount">—</strong><span>الأنشطة المسجلة</span></article>
+    <article class="stat-card"><div class="stat-top"><div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v14H4z"/><path d="m4 7 8 6 8-6"/></svg></div></div><strong id="messagesCount">—</strong><span>الرسائل المسجلة</span></article>
+    <article class="stat-card"><div class="stat-top"><div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v13H8l-4 4z"/><path d="M8 9h8M8 13h5"/></svg></div></div><strong id="commentsCount">—</strong><span>التعليقات المسجلة</span></article>
+    <article class="stat-card"><div class="stat-top"><div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 3 8l9 5 9-5z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/></svg></div></div><strong id="contestCount">—</strong><span>المسابقات المشاركة</span></article>
   </section>
 
   <nav class="tabs" aria-label="أقسام الإنجازات">
-    <button class="tab-button active" data-tab="achievements">الإنجازات والأوسمة</button>
-    <button class="tab-button" data-tab="leaderboard">المتصدرون</button>
-    <button class="tab-button" data-tab="activity">سجل النشاط</button>
-    <button class="tab-button" data-tab="contests">المسابقات والنتائج</button>
-    <button class="tab-button" data-tab="reading">تقدم القراءة</button>
+    <button class="tab-button active" data-tab="achievements">الأوسمة والإنجازات</button>
+    <button class="tab-button" data-tab="points">سجل النقاط</button>
+    <button class="tab-button" data-tab="leaderboard">لوحة المتصدرين</button>
+    <button class="tab-button" data-tab="activity">النشاط</button>
+    <button class="tab-button" data-tab="contests">المسابقات</button>
+    <button class="tab-button" data-tab="reading">القراءة</button>
   </nav>
 
   <section class="tab-panel active" id="panel-achievements">
-    <div class="section-heading">
-      <div>
-        <h2>أوسمتك وإنجازاتك</h2>
-        <p>الإنجازات المتاحة وما حصلت عليه بالفعل.</p>
+    <div class="section-head">
+      <div class="section-title">
+        <span class="section-emblem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2 15 8l7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg></span>
+        <div><h2>قاعة الأوسمة</h2><p>ميدالياتك وما ينتظرك من إنجازات</p></div>
       </div>
-      <span class="section-count" id="achievementSummary">جارٍ التحميل...</span>
+      <span class="section-count" id="achievementSummary">جارٍ التحميل</span>
     </div>
-    <div class="badges-grid" id="achievementsGrid">
-      <div class="loading-state">جارٍ تحميل الإنجازات...</div>
+    <div class="panel-shell ornament">
+      <div class="badges-grid" id="achievementsGrid"><div class="loading">جارٍ تجهيز قاعة الأوسمة...</div></div>
+    </div>
+  </section>
+
+  <section class="tab-panel" id="panel-points">
+    <div class="section-head">
+      <div class="section-title">
+        <span class="section-emblem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M15 8.5c-.6-.7-1.5-1-3-1-1.7 0-3 .8-3 2s1.2 2 3 2 3 .8 3 2-1.3 2-3 2c-1.4 0-2.4-.4-3-1.2M12 5.5v13"/></svg></span>
+        <div><h2>دفتر النقاط</h2><p>كل إضافة وخصم مسجل في حسابك</p></div>
+      </div>
+      <button class="refresh-button" id="refreshPoints">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.5 9a7 7 0 0 1 12-2L20 12M4 12l2.5 5a7 7 0 0 0 12-2"/></svg>
+        تحديث السجل
+      </button>
+    </div>
+    <div class="panel-shell">
+      <div class="table-wrap">
+        <table class="points-table">
+          <thead><tr><th>السبب</th><th>التاريخ</th><th>الحركة</th><th>الرصيد بعد الحركة</th></tr></thead>
+          <tbody id="pointsTableBody"><tr><td colspan="4">جارٍ تحميل سجل النقاط...</td></tr></tbody>
+        </table>
+      </div>
+      <div class="table-footer">
+        <span id="pointsSummary">0 حركة</span>
+        <span>الإجمالي: <b id="pointsTotalFooter" style="color:var(--gold)">—</b></span>
+      </div>
     </div>
   </section>
 
   <section class="tab-panel" id="panel-leaderboard">
-    <div class="section-heading">
-      <div>
-        <h2>لوحة المتصدرين</h2>
-        <p>ترتيب الأعضاء حسب مجموع النقاط المسجلة.</p>
+    <div class="section-head">
+      <div class="section-title">
+        <span class="section-emblem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 20h18M5 20V9h4v11M10 20V4h4v16M15 20v-8h4v8"/></svg></span>
+        <div><h2>منصة الصدارة</h2><p>أفضل أعضاء هنون حسب مجموع النقاط</p></div>
       </div>
       <button class="refresh-button" id="refreshLeaderboard">تحديث</button>
     </div>
-    <div class="list" id="leaderboardList">
-      <div class="loading-state">جارٍ تحميل التصنيف...</div>
+    <div class="panel-shell">
+      <div id="podium" class="podium" hidden></div>
+      <div class="leader-list" id="leaderboardList"><div class="loading">جارٍ تحميل التصنيف...</div></div>
     </div>
   </section>
 
   <section class="tab-panel" id="panel-activity">
-    <div class="section-heading">
-      <div>
-        <h2>سجل نشاطك</h2>
-        <p>آخر الأنشطة التي تم تسجيلها في حسابك.</p>
+    <div class="section-head">
+      <div class="section-title">
+        <span class="section-emblem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 18V6m0 12h16M8 15V9m4 6V4m4 11v-4m4 4V7"/></svg></span>
+        <div><h2>سجل النشاط</h2><p>آخر ما تم تسجيله من أنشطة حسابك</p></div>
       </div>
       <span class="section-count" id="activitySummary">0 نشاط</span>
     </div>
-    <div class="list" id="activityList">
-      <div class="loading-state">جارٍ تحميل سجل النشاط...</div>
-    </div>
+    <div class="panel-shell"><div class="activity-list" id="activityList"><div class="loading">جارٍ تحميل النشاط...</div></div></div>
   </section>
 
   <section class="tab-panel" id="panel-contests">
-    <div class="section-heading">
-      <div>
-        <h2>المسابقات والنتائج</h2>
-        <p>مشاركاتك ونتائج الفوز والخسارة المسجلة.</p>
+    <div class="section-head">
+      <div class="section-title">
+        <span class="section-emblem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 21h8m-4-4v4M5 4h14v5a7 7 0 0 1-14 0zM5 6H2v2a4 4 0 0 0 4 4m13-6h3v2a4 4 0 0 1-4 4"/></svg></span>
+        <div><h2>سجل المسابقات</h2><p>مشاركاتك والنتائج التي تم تسجيلها</p></div>
       </div>
       <span class="section-count" id="contestSummary">0 نتيجة</span>
     </div>
-    <div class="list" id="contestResults">
-      <div class="loading-state">جارٍ تحميل النتائج...</div>
-    </div>
+    <div class="panel-shell"><div class="activity-list" id="contestResults"><div class="loading">جارٍ تحميل المسابقات...</div></div></div>
   </section>
 
   <section class="tab-panel" id="panel-reading">
-    <div class="section-heading">
-      <div>
-        <h2>تقدم القراءة</h2>
-        <p>ملخص الكتب والفصول التي قرأتها على هذا الجهاز.</p>
+    <div class="section-head">
+      <div class="section-title">
+        <span class="section-emblem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5A2.5 2.5 0 0 1 4 17.5z"/><path d="M4 17.5A2.5 2.5 0 0 1 6.5 15H20M8 6h8M8 10h8"/></svg></span>
+        <div><h2>رحلة القراءة</h2><p>الكتب والفصول التي بدأت بها</p></div>
       </div>
       <span class="section-count" id="booksSummary">0 كتاب</span>
     </div>
-
-    <div class="stats-grid" style="margin:0 0 16px">
-      <article class="stat-card">
-        <strong id="booksStarted">0</strong>
-        <span>كتب بدأت قراءتها</span>
-      </article>
-      <article class="stat-card">
-        <strong id="booksCompleted">0</strong>
-        <span>كتب مكتملة</span>
-      </article>
-      <article class="stat-card">
-        <strong id="chaptersCompleted">0</strong>
-        <span>فصول مكتملة</span>
-      </article>
-      <article class="stat-card">
-        <strong id="totalChapters">0</strong>
-        <span>إجمالي الفصول</span>
-      </article>
+    <div class="stats-grid" style="margin:0 0 15px">
+      <article class="stat-card"><strong id="booksStarted">0</strong><span>كتب بدأت قراءتها</span></article>
+      <article class="stat-card"><strong id="booksCompleted">0</strong><span>كتب مكتملة</span></article>
+      <article class="stat-card"><strong id="chaptersCompleted">0</strong><span>فصول مكتملة</span></article>
+      <article class="stat-card"><strong id="totalChapters">0</strong><span>إجمالي الفصول</span></article>
     </div>
-
-    <div class="books-list" id="booksList"></div>
-    <div class="empty-state" id="booksEmpty" hidden>
-      <strong>رحلتك تبدأ من هنا</strong>
-      لم تبدأ قراءة أي كتاب بعد.
-      <br>
-      <a href="library.html">اكتشف المكتبة ←</a>
+    <div class="panel-shell">
+      <div class="books-list" id="booksList"></div>
+      <div class="empty" id="booksEmpty" hidden><strong>رحلة القراءة تبدأ الآن</strong>لم تبدأ قراءة أي كتاب بعد.<br><a href="library.html">اكتشف المكتبة ←</a></div>
     </div>
   </section>
-
 </main>
 
-<footer class="footer">
-  HANOON — المعرفة تصنع الفرق
-  <br>
-  جميع الحقوق محفوظة © <span id="currentYear"></span>
-</footer>
+<footer class="footer">HANOON · المعرفة تصنع الفرق<br>© <span id="currentYear"></span></footer>
 
 <script src="../data/books.js"></script>
 <script type="module" src="../js/supabase-client.js"></script>
-
 <script type="module">
 (() => {
-  "use strict";
-
-  const $ = selector => document.querySelector(selector);
-
-  const state = {
-    supabase:null,
-    user:null,
-    profile:null,
-    catalog:[],
-    earned:[],
-    points:[],
-    activities:[],
-    results:[],
-    entries:[],
-    leaderboard:[]
-  };
-
-  const activityLabels = {
-    book_completed:"إكمال كتاب",
-    chapter_completed:"إكمال فصل",
-    quiz_answered:"الإجابة عن سؤال",
-    post_created:"إنشاء مشاركة",
-    comment_created:"إضافة تعليق",
-    like_received:"الحصول على إعجاب",
-    share_created:"مشاركة محتوى",
-    message_sent:"إرسال رسالة",
-    group_message_sent:"إرسال رسالة في مجموعة",
-    contest_joined:"الاشتراك في مسابقة",
-    contest_won:"الفوز في مسابقة",
-    contest_lost:"نتيجة مسابقة"
-  };
-
-  const activityIcons = {
-    book_completed:"▣",
-    chapter_completed:"✓",
-    quiz_answered:"?",
-    post_created:"✎",
-    comment_created:"☷",
-    like_received:"♥",
-    share_created:"↗",
-    message_sent:"✉",
-    group_message_sent:"▤",
-    contest_joined:"♜",
-    contest_won:"🏆",
-    contest_lost:"↘"
-  };
-
-  function escapeHTML(value) {
-    return String(value ?? "").replace(/[&<>"']/g,char => ({
-      "&":"&amp;",
-      "<":"&lt;",
-      ">":"&gt;",
-      '"':"&quot;",
-      "'":"&#039;"
-    })[char]);
-  }
-
-  function number(value) {
-    return new Intl.NumberFormat("ar-EG").format(Number(value || 0));
-  }
-
-  function dateText(value) {
-    if (!value) return "—";
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return "—";
-    return new Intl.DateTimeFormat("ar-EG",{
-      dateStyle:"medium",
-      timeStyle:"short"
-    }).format(date);
-  }
-
-  function showMessage(message) {
-    const box = $("#pageMessage");
-    box.textContent = message;
-    box.classList.add("show");
-  }
-
-  function waitForSupabase() {
-    return new Promise((resolve,reject) => {
-      if (window.HANOON?.supabase) {
-        resolve(window.HANOON.supabase);
-        return;
-      }
-
-      let timer;
-
-      const cleanup = () => {
-        clearTimeout(timer);
-        window.removeEventListener("hanoon:supabase-ready",ready);
-        window.removeEventListener("hanoon:supabase-error",failed);
-      };
-
-      const ready = () => {
-        cleanup();
-        if (window.HANOON?.supabase) {
-          resolve(window.HANOON.supabase);
-        } else {
-          reject(new Error("تعذر تشغيل اتصال قاعدة البيانات."));
-        }
-      };
-
-      const failed = event => {
-        cleanup();
-        reject(new Error(
-          event.detail?.message || "تعذر الاتصال بقاعدة البيانات."
-        ));
-      };
-
-      timer = setTimeout(() => {
-        cleanup();
-        reject(new Error("انتهت مهلة الاتصال بقاعدة البيانات."));
-      },15000);
-
-      window.addEventListener("hanoon:supabase-ready",ready);
-      window.addEventListener("hanoon:supabase-error",failed);
-    });
-  }
-
-  async function getRows(query,label) {
-    const {data,error} = await query;
-    if (error) {
-      console.error("HANOON:",label,error);
-      return [];
-    }
-    return data || [];
-  }
-
-  function setMember(profile,user) {
-    const name = profile?.full_name ||
-      user.user_metadata?.full_name ||
-      user.user_metadata?.username ||
-      "عضو هنون";
-
-    $("#memberName").textContent = name;
-    $("#memberCode").textContent = profile?.member_code || "عضو هنون";
-
-    const avatar = $("#memberAvatar");
-
-    if (profile?.avatar_path && state.supabase) {
-      const {data} = state.supabase.storage
-        .from("avatars")
-        .getPublicUrl(profile.avatar_path);
-
-      if (data?.publicUrl) {
-        avatar.innerHTML = `<img src="${escapeHTML(data.publicUrl)}" alt="الصورة الشخصية">`;
-        return;
-      }
-    }
-
-    avatar.textContent = String(name).trim().charAt(0) || "هـ";
-  }
-
-  async function loadDatabase() {
-    const supabase = state.supabase;
-
-    const {data:sessionData,error:sessionError} =
-      await supabase.auth.getSession();
-
-    if (sessionError) throw sessionError;
-
-    const user = sessionData.session?.user;
-
-    if (!user) {
-      showMessage("سجّل الدخول إلى حسابك لعرض إنجازاتك ونقاطك.");
-      $("#memberName").textContent = "زائر";
-      $("#memberCode").textContent = "يلزم تسجيل الدخول";
-
-      $("#achievementsGrid").innerHTML = `
-        <div class="empty-state" style="grid-column:1/-1">
-          <strong>سجّل الدخول أولاً</strong>
-          بيانات الإنجازات خاصة بحساب العضو.
-          <br>
-          <a href="auth.html">الانتقال إلى تسجيل الدخول ←</a>
-        </div>
-      `;
-
-      $("#leaderboardList").innerHTML = `
-        <div class="empty-state">
-          <strong>يلزم تسجيل الدخول</strong>
-          سجّل الدخول لعرض لوحة المتصدرين.
-        </div>
-      `;
-      return;
-    }
-
-    state.user = user;
-
-    const [
-      profile,catalog,earned,points,activities,
-      results,entries,leaderboard
-    ] = await Promise.all([
-      getRows(
-        supabase.from("profiles")
-          .select("id,member_code,full_name,username,avatar_path,profile_completed")
-          .eq("id",user.id)
-          .maybeSingle(),
-        "profile"
-      ).then(rows => Array.isArray(rows) ? rows[0] || null : rows),
-
-      getRows(
-        supabase.from("achievement_catalog")
-          .select("id,code,title,description,category,icon,points_reward,sort_order")
-          .eq("is_active",true)
-          .order("sort_order",{ascending:true}),
-        "achievement catalog"
-      ),
-
-      getRows(
-        supabase.from("user_achievements")
-          .select("earned_at,achievement_id,achievement_catalog(id,code,title,description,category,icon,points_reward)")
-          .eq("user_id",user.id)
-          .order("earned_at",{ascending:false}),
-        "user achievements"
-      ),
-
-      getRows(
-        supabase.from("points_ledger")
-          .select("points_delta,reason,source_type,source_id,created_at")
-          .eq("user_id",user.id)
-          .order("created_at",{ascending:false})
-          .limit(500),
-        "points"
-      ),
-
-      getRows(
-        supabase.from("activity_events")
-          .select("id,event_type,reference_type,reference_id,metadata,created_at")
-          .eq("user_id",user.id)
-          .order("created_at",{ascending:false})
-          .limit(100),
-        "activity"
-      ),
-
-      getRows(
-        supabase.from("contest_results")
-          .select("result,score,rank,recorded_at,contests(title,contest_type)")
-          .eq("user_id",user.id)
-          .order("recorded_at",{ascending:false})
-          .limit(100),
-        "contest results"
-      ),
-
-      getRows(
-        supabase.from("contest_entries")
-          .select("id,contest_id,joined_at,contests(title,status,starts_at,ends_at)")
-          .eq("user_id",user.id)
-          .order("joined_at",{ascending:false})
-          .limit(100),
-        "contest entries"
-      ),
-
-      getRows(
-        supabase.rpc("get_points_leaderboard",{p_limit:50}),
-        "leaderboard"
-      )
-    ]);
-
-    state.profile = profile;
-    state.catalog = catalog;
-    state.earned = earned;
-    state.points = points;
-    state.activities = activities;
-    state.results = results;
-    state.entries = entries;
-    state.leaderboard = leaderboard;
-
-    setMember(profile,user);
-    renderStats();
-    renderAchievements();
-    renderLeaderboard();
-    renderActivity();
-    renderContests();
-    renderReading();
-  }
-
-  function renderStats() {
-    const totalPoints = state.points.reduce(
-      (sum,item) => sum + Number(item.points_delta || 0),0
-    );
-
-    const wins = state.results.filter(item => item.result === "won").length;
-    const losses = state.results.filter(item => item.result === "lost").length;
-
-    const messages = state.activities.filter(item =>
-      ["message_sent","group_message_sent"].includes(item.event_type)
-    ).length;
-
-    const comments = state.activities.filter(item =>
-      item.event_type === "comment_created"
-    ).length;
-
-    $("#totalPoints").textContent = number(totalPoints);
-    $("#winsCount").textContent = number(wins);
-    $("#lossesCount").textContent = number(losses);
-    $("#earnedCount").textContent = number(state.earned.length);
-    $("#activityCount").textContent = number(state.activities.length);
-    $("#messagesCount").textContent = number(messages);
-    $("#commentsCount").textContent = number(comments);
-    $("#contestCount").textContent = number(state.entries.length);
-  }
-
-  function renderAchievements() {
-    const grid = $("#achievementsGrid");
-
-    if (!state.catalog.length) {
-      grid.innerHTML = `
-        <div class="empty-state" style="grid-column:1/-1">
-          <strong>لا توجد إنجازات متاحة حاليًا</strong>
-          لا توجد إنجازات مضافة إلى كتالوج هنون حتى الآن.
-        </div>
-      `;
-      $("#achievementSummary").textContent = "0 إنجاز";
-      return;
-    }
-
-    const earnedIds = new Set(state.earned.map(item => item.achievement_id));
-    const earnedCodes = new Set(
-      state.earned.map(item => item.achievement_catalog?.code).filter(Boolean)
-    );
-
-    const earnedCount = state.catalog.filter(item =>
-      earnedIds.has(item.id) || earnedCodes.has(item.code)
-    ).length;
-
-    $("#achievementSummary").textContent =
-      `${number(earnedCount)} من ${number(state.catalog.length)} إنجاز`;
-
-    grid.innerHTML = state.catalog.map(item => {
-      const isEarned = earnedIds.has(item.id) || earnedCodes.has(item.code);
-
-      return `
-        <article class="badge-card ${isEarned ? "earned" : ""}">
-          <div class="badge-symbol">${escapeHTML(item.icon || "✦")}</div>
-          <h3>${escapeHTML(item.title)}</h3>
-          <p>${escapeHTML(item.description || "إنجاز من إنجازات هنون.")}</p>
-          <span class="badge-status">
-            ${isEarned ? "تم الحصول عليه ✓" : "لم يتم الحصول عليه بعد"}
-          </span>
-          <span class="badge-status" style="display:block">
-            ${number(item.points_reward)} نقطة
-          </span>
-        </article>
-      `;
-    }).join("");
-  }
-
-  function renderLeaderboard() {
-    const list = $("#leaderboardList");
-
-    if (!state.leaderboard.length) {
-      list.innerHTML = `
-        <div class="empty-state">
-          <strong>لوحة المتصدرين لم تبدأ بعد</strong>
-          لا توجد نقاط مسجلة للأعضاء حتى الآن.
-          عندما تبدأ النقاط في التسجيل سيظهر ترتيب الأعضاء هنا.
-        </div>
-      `;
-      return;
-    }
-
-    list.innerHTML = state.leaderboard.map(member => {
-      const isCurrent = member.member_id === state.user?.id;
-      const avatar = member.avatar_path
-        ? state.supabase.storage.from("avatars").getPublicUrl(member.avatar_path).data.publicUrl
-        : "";
-
-      const name = member.full_name || member.username || "عضو هنون";
-
-      return `
-        <article class="leaderboard-row ${isCurrent ? "current-member" : ""}">
-          <div class="rank-number">${number(member.rank_position)}</div>
-          <div class="leader-avatar">
-            ${avatar ? `<img src="${escapeHTML(avatar)}" alt="">` : escapeHTML(String(name).charAt(0))}
-          </div>
-          <div class="leader-name">
-            ${escapeHTML(name)}
-            <small>${isCurrent ? "أنت" : "@" + escapeHTML(member.username || "")}</small>
-          </div>
-          <div class="leader-points">${number(member.total_points)} نقطة</div>
-        </article>
-      `;
-    }).join("");
-  }
-
-  function renderActivity() {
-    const list = $("#activityList");
-
-    $("#activitySummary").textContent =
-      `${number(state.activities.length)} نشاط`;
-
-    if (!state.activities.length) {
-      list.innerHTML = `
-        <div class="empty-state">
-          <strong>لا يوجد نشاط مسجل بعد</strong>
-          سيظهر هنا نشاطك عندما تبدأ وظائف الموقع في تسجيله.
-        </div>
-      `;
-      return;
-    }
-
-    list.innerHTML = state.activities.map(item => {
-      const label = activityLabels[item.event_type] || "نشاط جديد";
-      const icon = activityIcons[item.event_type] || "•";
-      const metadata = item.metadata || {};
-      const details = metadata.title || metadata.description || "";
-
-      return `
-        <article class="list-row">
-          <div class="list-icon">${escapeHTML(icon)}</div>
-          <div class="list-content">
-            <strong>${escapeHTML(label)}</strong>
-            <small>
-              ${escapeHTML(details)}
-              ${details ? " · " : ""}
-              ${escapeHTML(dateText(item.created_at))}
-            </small>
-          </div>
-        </article>
-      `;
-    }).join("");
-  }
-
-  function renderContests() {
-    const list = $("#contestResults");
-
-    $("#contestSummary").textContent =
-      `${number(state.results.length)} نتيجة`;
-
-    if (!state.results.length && !state.entries.length) {
-      list.innerHTML = `
-        <div class="empty-state">
-          <strong>لم تشارك في مسابقات بعد</strong>
-          عندما تشترك في مسابقة وتُسجل نتيجتها ستظهر هنا.
-        </div>
-      `;
-      return;
-    }
-
-    const resultRows = state.results.map(item => {
-      const contestName = item.contests?.title || "مسابقة";
-      const resultLabels = {
-        won:"فائز",
-        lost:"خاسر",
-        participated:"مشارك",
-        disqualified:"مستبعد"
-      };
-
-      const resultClass = item.result === "won"
-        ? "result-won"
-        : item.result === "lost"
-          ? "result-lost"
-          : "result-other";
-
-      return `
-        <article class="list-row">
-          <div class="list-icon">🏆</div>
-          <div class="list-content">
-            <strong>${escapeHTML(contestName)}</strong>
-            <small>
-              ${escapeHTML(dateText(item.recorded_at))}
-              · النتيجة: ${escapeHTML(resultLabels[item.result] || item.result)}
-              · النقاط: ${number(item.score)}
-              ${item.rank ? " · المركز: " + number(item.rank) : ""}
-            </small>
-          </div>
-          <span class="result-chip ${resultClass}">
-            ${escapeHTML(resultLabels[item.result] || "نتيجة")}
-          </span>
-        </article>
-      `;
-    });
-
-    const entryRows = state.entries.map(item => {
-      const contestName = item.contests?.title || "مسابقة";
-      const statusLabels = {
-        draft:"مسودة",
-        published:"منشورة",
-        active:"جارية",
-        finished:"منتهية",
-        cancelled:"ملغاة"
-      };
-
-      return `
-        <article class="list-row">
-          <div class="list-icon">♜</div>
-          <div class="list-content">
-            <strong>${escapeHTML(contestName)}</strong>
-            <small>
-              تاريخ الاشتراك: ${escapeHTML(dateText(item.joined_at))}
-              · ${escapeHTML(statusLabels[item.contests?.status] || "مشترك")}
-            </small>
-          </div>
-        </article>
-      `;
-    });
-
-    list.innerHTML = [...resultRows,...entryRows].join("");
-  }
-
-  function getLocalBookStats() {
-    const api = window.HANOON_BOOKS_API;
-
-    if (!api || typeof api.getAll !== "function") {
-      return {
-        totalChapters:0,
-        completedChapters:0,
-        booksStarted:0,
-        booksCompleted:0,
-        progressList:[],
-        percentage:0
-      };
-    }
-
-    let books = [];
-
-    try {
-      books = api.getAll() || [];
-    } catch (error) {
-      console.error("HANOON books:",error);
-    }
-
-    const progressList = books.map(book => {
-      let completed = [];
-
-      try {
-        const stored = JSON.parse(
-          localStorage.getItem("hanoon_reader_completed_" + book.id) || "[]"
-        );
-        completed = Array.isArray(stored) ? stored : [];
-      } catch (_) {}
-
-      const chapters = Array.isArray(book.chapters) ? book.chapters : [];
-      const completedCount = chapters.filter(chapter =>
-        completed.includes(chapter.id)
-      ).length;
-
-      return {
-        book,
-        total:chapters.length,
-        completedCount,
-        percentage:chapters.length
-          ? Math.round(completedCount / chapters.length * 100)
-          : 0
-      };
-    });
-
-    const totalChapters = progressList.reduce((sum,item) => sum + item.total,0);
-    const completedChapters = progressList.reduce((sum,item) => sum + item.completedCount,0);
-
-    return {
-      totalChapters,
-      completedChapters,
-      booksStarted:progressList.filter(item => item.completedCount > 0).length,
-      booksCompleted:progressList.filter(item =>
-        item.total > 0 && item.completedCount === item.total
-      ).length,
-      progressList,
-      percentage:totalChapters
-        ? Math.round(completedChapters / totalChapters * 100)
-        : 0
+"use strict";
+const $=s=>document.querySelector(s);
+const state={supabase:null,user:null,profile:null,catalog:[],earned:[],points:[],activities:[],results:[],entries:[],leaderboard:[]};
+
+const activityLabels={
+  book_completed:"إكمال كتاب",chapter_completed:"إكمال فصل",
+  quiz_answered:"الإجابة عن سؤال",post_created:"إنشاء مشاركة",
+  comment_created:"إضافة تعليق",like_received:"الحصول على إعجاب",
+  share_created:"مشاركة محتوى",message_sent:"إرسال رسالة",
+  group_message_sent:"إرسال رسالة في مجموعة",contest_joined:"الاشتراك في مسابقة",
+  contest_won:"الفوز في مسابقة",contest_lost:"نتيجة مسابقة"
+};
+const icons={
+  book_completed:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>',
+  chapter_completed:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m5 12 4 4L19 6"/></svg>',
+  quiz_answered:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4.2 1.8c-1.1.9-1.7 1.3-1.7 2.7M12 17h.01"/></svg>',
+  post_created:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4"/></svg>',
+  comment_created:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v13H8l-4 4z"/></svg>',
+  message_sent:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 5h18v14H3zM3 6l9 7 9-7"/></svg>',
+  group_message_sent:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M16 15a4 4 0 0 1 5 4"/></svg>',
+  contest_won:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 21h8m-4-4v4M5 4h14v5a7 7 0 0 1-14 0z"/></svg>',
+  contest_joined:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M3 12h18"/></svg>'
+};
+const medalIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m12 2 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>';
+
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}
+function fmt(v){return new Intl.NumberFormat("ar-EG").format(Number(v||0));}
+function date(v){
+  if(!v)return "—";
+  const d=new Date(v);if(Number.isNaN(d.getTime()))return "—";
+  return new Intl.DateTimeFormat("ar-EG",{dateStyle:"medium",timeStyle:"short"}).format(d);
+}
+function alertMsg(message){$("#pageAlert").textContent=message;$("#pageAlert").classList.add("show");}
+function waitForSupabase(){
+  return new Promise((resolve,reject)=>{
+    if(window.HANOON?.supabase){resolve(window.HANOON.supabase);return;}
+    let timer;
+    const clean=()=>{
+      clearTimeout(timer);
+      window.removeEventListener("hanoon:supabase-ready",ready);
+      window.removeEventListener("hanoon:supabase-error",failed);
     };
+    const ready=()=>{clean();window.HANOON?.supabase?resolve(window.HANOON.supabase):reject(new Error("تعذر تشغيل اتصال قاعدة البيانات."));};
+    const failed=e=>{clean();reject(new Error(e.detail?.message||"تعذر الاتصال بقاعدة البيانات."));};
+    timer=setTimeout(()=>{clean();reject(new Error("انتهت مهلة الاتصال بقاعدة البيانات."));},15000);
+    window.addEventListener("hanoon:supabase-ready",ready);
+    window.addEventListener("hanoon:supabase-error",failed);
+  });
+}
+async function rows(query,label){
+  const {data,error}=await query;
+  if(error){console.error("HANOON "+label,error);return [];}
+  return data||[];
+}
+function setMember(profile,user){
+  const name=profile?.full_name||user.user_metadata?.full_name||user.user_metadata?.username||"عضو هنون";
+  $("#memberName").textContent=name;
+  $("#memberCode").textContent=profile?.member_code||"HANOON MEMBER";
+  const avatar=$("#memberAvatar");
+  if(profile?.avatar_path){
+    const url=state.supabase.storage.from("avatars").getPublicUrl(profile.avatar_path).data?.publicUrl;
+    if(url){avatar.innerHTML=`<img src="${esc(url)}" alt="الصورة الشخصية">`;return;}
   }
-
-  function renderReading() {
-    const stats = getLocalBookStats();
-
-    $("#booksStarted").textContent = number(stats.booksStarted);
-    $("#booksCompleted").textContent = number(stats.booksCompleted);
-    $("#chaptersCompleted").textContent = number(stats.completedChapters);
-    $("#totalChapters").textContent = number(stats.totalChapters);
-    $("#booksSummary").textContent = `${number(stats.booksStarted)} كتاب`;
-
-    $("#readingPercentage").textContent = `${stats.percentage || 0}%`;
-    $("#readingProgressFill").style.width = `${stats.percentage || 0}%`;
-
-    const activeBooks = stats.progressList.filter(item => item.completedCount > 0);
-    const list = $("#booksList");
-    const empty = $("#booksEmpty");
-
-    if (!activeBooks.length) {
-      list.innerHTML = "";
-      empty.hidden = false;
-      return;
-    }
-
-    empty.hidden = true;
-
-    list.innerHTML = activeBooks.map(item => {
-      const book = item.book;
-      const cover = book.cover || "";
-
-      const nextChapter = (book.chapters || []).find(chapter => {
-        try {
-          const completed = JSON.parse(
-            localStorage.getItem("hanoon_reader_completed_" + book.id) || "[]"
-          );
-          return !completed.includes(chapter.id);
-        } catch (_) {
-          return true;
-        }
-      });
-
-      const chapterUrl = nextChapter
-        ? `chapter.html?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(nextChapter.id)}`
-        : `book.html?id=${encodeURIComponent(book.id)}`;
-
-      return `
-        <article class="progress-book">
-          <img
-            src="${escapeHTML(cover)}"
-            alt="${escapeHTML(book.title || "كتاب")}"
-            loading="lazy"
-            onerror="this.style.display='none'"
-          >
-          <div class="book-details">
-            <strong>${escapeHTML(book.title || "كتاب")}</strong>
-            <small>${number(item.completedCount)} من ${number(item.total)} فصول مكتملة</small>
-            <div class="small-progress">
-              <div style="width:${item.percentage}%"></div>
-            </div>
-            <a href="${chapterUrl}" style="display:inline-block;margin-top:8px;color:var(--teal);font-size:10px;font-weight:900">
-              ${item.percentage === 100 ? "مراجعة الكتاب ←" : "متابعة القراءة ←"}
-            </a>
-          </div>
-          <div class="book-percent">${number(item.percentage)}٪</div>
-        </article>
-      `;
-    }).join("");
+  avatar.textContent=String(name).trim().charAt(0)||"هـ";
+}
+async function loadDatabase(){
+  const {data:sessionData,error:sessionError}=await state.supabase.auth.getSession();
+  if(sessionError)throw sessionError;
+  const user=sessionData.session?.user;
+  if(!user){
+    $("#memberName").textContent="زائر";
+    $("#memberCode").textContent="يلزم تسجيل الدخول";
+    $("#achievementsGrid").innerHTML='<div class="empty" style="grid-column:1/-1"><strong>أهلاً بك في هنون</strong>سجّل الدخول لعرض إنجازاتك ونقاطك.<br><a href="auth.html">تسجيل الدخول ←</a></div>';
+    $("#pointsTableBody").innerHTML='<tr><td colspan="4">سجّل الدخول لعرض سجل النقاط.</td></tr>';
+    $("#leaderboardList").innerHTML='<div class="empty"><strong>يلزم تسجيل الدخول</strong>سجّل الدخول لعرض لوحة المتصدرين.</div>';
+    $("#activityList").innerHTML='<div class="empty">سجّل الدخول لعرض نشاطك.</div>';
+    $("#contestResults").innerHTML='<div class="empty">سجّل الدخول لعرض المسابقات.</div>';
+    return;
   }
-
-  function bindTabs() {
-    document.querySelectorAll("[data-tab]").forEach(button => {
-      button.addEventListener("click",() => {
-        const target = button.dataset.tab;
-
-        document.querySelectorAll(".tab-button").forEach(item => {
-          item.classList.toggle("active",item === button);
-        });
-
-        document.querySelectorAll(".tab-panel").forEach(panel => {
-          panel.classList.toggle("active",panel.id === "panel-" + target);
-        });
-      });
+  state.user=user;
+  const [
+    profile,catalog,earned,points,activities,results,entries,leaderboard
+  ]=await Promise.all([
+    state.supabase.from("profiles").select("id,member_code,full_name,username,avatar_path,profile_completed").eq("id",user.id).maybeSingle(),
+    rows(state.supabase.from("achievement_catalog").select("id,code,title,description,category,icon,points_reward,sort_order").eq("is_active",true).order("sort_order",{ascending:true}),"catalog"),
+    rows(state.supabase.from("user_achievements").select("earned_at,achievement_id,achievement_catalog(id,code,title,description,category,icon,points_reward)").eq("user_id",user.id).order("earned_at",{ascending:false}),"achievements"),
+    rows(state.supabase.from("points_ledger").select("points_delta,reason,source_type,source_id,created_at").eq("user_id",user.id).order("created_at",{ascending:false}).limit(500),"points"),
+    rows(state.supabase.from("activity_events").select("id,event_type,reference_type,reference_id,metadata,created_at").eq("user_id",user.id).order("created_at",{ascending:false}).limit(100),"activity"),
+    rows(state.supabase.from("contest_results").select("result,score,rank,recorded_at,contests(title,contest_type)").eq("user_id",user.id).order("recorded_at",{ascending:false}).limit(100),"results"),
+    rows(state.supabase.from("contest_entries").select("id,contest_id,joined_at,contests(title,status,starts_at,ends_at)").eq("user_id",user.id).order("joined_at",{ascending:false}).limit(100),"entries"),
+    rows(state.supabase.rpc("get_points_leaderboard",{p_limit:50}),"leaderboard")
+  ]);
+  if(profile.error)console.error("HANOON profile",profile.error);
+  state.profile=profile.data||null;
+  state.catalog=catalog;state.earned=earned;state.points=points;
+  state.activities=activities;state.results=results;state.entries=entries;state.leaderboard=leaderboard;
+  setMember(state.profile,user);
+  renderStats();renderAchievements();renderPoints();renderLeaderboard();renderActivity();renderContests();
+}
+function renderStats(){
+  const total=state.points.reduce((s,x)=>s+Number(x.points_delta||0),0);
+  $("#totalPoints").textContent=fmt(total);
+  $("#winsCount").textContent=fmt(state.results.filter(x=>x.result==="won").length);
+  $("#lossesCount").textContent=fmt(state.results.filter(x=>x.result==="lost").length);
+  $("#earnedCount").textContent=fmt(state.earned.length);
+  $("#activityCount").textContent=fmt(state.activities.length);
+  $("#messagesCount").textContent=fmt(state.activities.filter(x=>["message_sent","group_message_sent"].includes(x.event_type)).length);
+  $("#commentsCount").textContent=fmt(state.activities.filter(x=>x.event_type==="comment_created").length);
+  $("#contestCount").textContent=fmt(state.entries.length);
+  $("#pointsTotalFooter").textContent=fmt(total);
+}
+function renderAchievements(){
+  const grid=$("#achievementsGrid");
+  if(!state.catalog.length){
+    grid.innerHTML='<div class="empty" style="grid-column:1/-1"><strong>قاعة الأوسمة تنتظرك</strong>لا توجد إنجازات نشطة في الكتالوج حاليًا.</div>';
+    $("#achievementSummary").textContent="0 إنجاز";return;
+  }
+  const ids=new Set(state.earned.map(x=>x.achievement_id));
+  const codes=new Set(state.earned.map(x=>x.achievement_catalog?.code).filter(Boolean));
+  const count=state.catalog.filter(x=>ids.has(x.id)||codes.has(x.code)).length;
+  $("#achievementSummary").textContent=`${fmt(count)} من ${fmt(state.catalog.length)} إنجاز`;
+  grid.innerHTML=state.catalog.map(item=>{
+    const earned=ids.has(item.id)||codes.has(item.code);
+    return `<article class="badge-card ${earned?"earned":""}">
+      ${earned?'<span class="ribbon">مكتسب</span>':""}
+      <div class="medal"><div class="medal-core">${medalIcon}</div></div>
+      <h3>${esc(item.title)}</h3>
+      <p>${esc(item.description||"إنجاز من إنجازات هنون")}</p>
+      <div class="badge-points">${fmt(item.points_reward)} نقطة</div>
+      <div class="badge-state">${earned?"تم الحصول عليه":"لم يتم الحصول عليه بعد"}</div>
+    </article>`;
+  }).join("");
+}
+function renderPoints(){
+  const body=$("#pointsTableBody");
+  const sorted=[...state.points].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  $("#pointsSummary").textContent=`${fmt(sorted.length)} حركة مسجلة`;
+  if(!sorted.length){
+    body.innerHTML='<tr><td colspan="4">لا توجد حركات نقاط مسجلة حتى الآن.</td></tr>';return;
+  }
+  const balances=new Array(sorted.length);
+  let running=0;
+  for(let i=sorted.length-1;i>=0;i--){
+    running+=Number(sorted[i].points_delta||0);
+    balances[i]=running;
+  }
+  body.innerHTML=sorted.map((item,i)=>{
+    const delta=Number(item.points_delta||0);
+    const reason=item.reason||item.source_type||"حركة نقاط";
+    return `<tr>
+      <td><span class="points-reason">${esc(reason)}</span></td>
+      <td class="points-date">${esc(date(item.created_at))}</td>
+      <td class="points-value ${delta>=0?"plus":"minus"}">${delta>0?"+":""}${fmt(delta)}</td>
+      <td><span class="balance-pill">${fmt(balances[i])}</span></td>
+    </tr>`;
+  }).join("");
+}
+function avatarUrl(path){
+  if(!path)return "";
+  return state.supabase.storage.from("avatars").getPublicUrl(path).data?.publicUrl||"";
+}
+function renderLeaderboard(){
+  const list=$("#leaderboardList"),podium=$("#podium");
+  const data=state.leaderboard||[];
+  if(!data.length){
+    podium.hidden=true;
+    list.innerHTML='<div class="empty"><strong>المنافسة تبدأ مع أول نقطة</strong>لا توجد نقاط مسجلة في لوحة المتصدرين حتى الآن.</div>';return;
+  }
+  const top=data.slice(0,3);
+  const order=[top[1],top[0],top[2]];
+  const classes=["second","first","third"];
+  podium.innerHTML=order.map((m,i)=>{
+    if(!m)return '<div></div>';
+    const name=m.full_name||m.username||"عضو هنون";
+    const url=avatarUrl(m.avatar_path);
+    const crown=i===1?'<div class="crown">♛</div>':'<div class="crown"></div>';
+    return `<div class="podium-place ${classes[i]}">
+      ${crown}
+      <div class="podium-avatar"><div class="podium-avatar-inner">${url?`<img src="${esc(url)}" alt="">`:esc(name.charAt(0))}</div></div>
+      <div class="podium-name">${esc(name)}</div>
+      <div class="podium-points">${fmt(m.total_points)} نقطة</div>
+      <div class="podium-block">${fmt(m.rank_position)}</div>
+    </div>`;
+  }).join("");
+  podium.hidden=false;
+  list.innerHTML=data.slice(3).map(m=>{
+    const name=m.full_name||m.username||"عضو هنون";
+    const url=avatarUrl(m.avatar_path);
+    const current=m.member_id===state.user?.id;
+    return `<article class="leader-row ${current?"current":""}">
+      <div class="rank">${fmt(m.rank_position)}</div>
+      <div class="leader-avatar">${url?`<img src="${esc(url)}" alt="">`:esc(name.charAt(0))}</div>
+      <div class="leader-name">${esc(name)}<small>${current?"أنت":"@"+esc(m.username||"")}</small></div>
+      <div class="leader-score">${fmt(m.total_points)} نقطة</div>
+    </article>`;
+  }).join("");
+  if(data.length<=3)list.innerHTML='<div class="empty">أنت تشاهد المراكز الأولى في لوحة الصدارة.</div>';
+}
+function renderActivity(){
+  const list=$("#activityList");
+  $("#activitySummary").textContent=`${fmt(state.activities.length)} نشاط`;
+  if(!state.activities.length){
+    list.innerHTML='<div class="empty"><strong>سجل نشاطك سيظهر هنا</strong>لا توجد أنشطة مسجلة في حسابك حتى الآن.</div>';return;
+  }
+  list.innerHTML=state.activities.map(item=>{
+    const label=activityLabels[item.event_type]||"نشاط جديد";
+    const meta=item.metadata||{};
+    const detail=meta.title||meta.description||"";
+    return `<article class="activity-row">
+      <div class="activity-symbol">${icons[item.event_type]||medalIcon}</div>
+      <div class="activity-info"><strong>${esc(label)}</strong><small>${esc(detail)}${detail?" · ":""}${esc(date(item.created_at))}</small></div>
+    </article>`;
+  }).join("");
+}
+function renderContests(){
+  const list=$("#contestResults");
+  $("#contestSummary").textContent=`${fmt(state.results.length)} نتيجة · ${fmt(state.entries.length)} مشاركة`;
+  if(!state.results.length&&!state.entries.length){
+    list.innerHTML='<div class="empty"><strong>بانتظار أول مشاركة</strong>ستظهر مسابقاتك ونتائجك هنا بعد تسجيلها.</div>';return;
+  }
+  const resultRows=state.results.map(item=>{
+    const labels={won:"فائز",lost:"خاسر",participated:"مشارك",disqualified:"مستبعد"};
+    const cls=item.result==="won"?"won":item.result==="lost"?"lost":"other";
+    return `<article class="activity-row">
+      <div class="activity-symbol">${icons.contest_won}</div>
+      <div class="activity-info"><strong>${esc(item.contests?.title||"مسابقة")}</strong><small>${esc(date(item.recorded_at))} · النقاط: ${fmt(item.score)}${item.rank?" · المركز: "+fmt(item.rank):""}</small></div>
+      <span class="contest-chip ${cls}">${esc(labels[item.result]||item.result||"نتيجة")}</span>
+    </article>`;
+  });
+  const entries=state.entries.map(item=>{
+    const status={draft:"مسودة",published:"منشورة",active:"جارية",finished:"منتهية",cancelled:"ملغاة"};
+    return `<article class="activity-row">
+      <div class="activity-symbol">${icons.contest_joined}</div>
+      <div class="activity-info"><strong>${esc(item.contests?.title||"مسابقة")}</strong><small>تاريخ الاشتراك: ${esc(date(item.joined_at))} · ${esc(status[item.contests?.status]||"مشترك")}</small></div>
+      <span class="contest-chip other">اشتراك</span>
+    </article>`;
+  });
+  list.innerHTML=[...resultRows,...entries].join("");
+}
+function localReading(){
+  const api=window.HANOON_BOOKS_API;
+  if(!api||typeof api.getAll!=="function")return {total:0,done:0,started:0,finished:0,books:[],percent:0};
+  let books=[];try{books=api.getAll()||[]}catch(e){console.error(e)}
+  const list=books.map(book=>{
+    let completed=[];
+    try{const v=JSON.parse(localStorage.getItem("hanoon_reader_completed_"+book.id)||"[]");completed=Array.isArray(v)?v:[]}catch(_){}
+    const chapters=Array.isArray(book.chapters)?book.chapters:[];
+    const count=chapters.filter(ch=>completed.includes(ch.id)).length;
+    return {book,total:chapters.length,done:count,percent:chapters.length?Math.round(count/chapters.length*100):0,completed};
+  });
+  const total=list.reduce((s,x)=>s+x.total,0),done=list.reduce((s,x)=>s+x.done,0);
+  return {total,done,started:list.filter(x=>x.done>0).length,finished:list.filter(x=>x.total>0&&x.done===x.total).length,books:list,percent:total?Math.round(done/total*100):0};
+}
+function renderReading(){
+  const s=localReading();
+  $("#booksStarted").textContent=fmt(s.started);
+  $("#booksCompleted").textContent=fmt(s.finished);
+  $("#chaptersCompleted").textContent=fmt(s.done);
+  $("#totalChapters").textContent=fmt(s.total);
+  $("#booksSummary").textContent=`${fmt(s.started)} كتاب`;
+  $("#readingPercentage").textContent=s.percent+"%";
+  $("#readingProgressFill").style.width=s.percent+"%";
+  const active=s.books.filter(x=>x.done>0);
+  $("#booksEmpty").hidden=active.length>0;
+  if(!active.length){$("#booksList").innerHTML="";return;}
+  $("#booksList").innerHTML=active.map(x=>{
+    const b=x.book;
+    const next=(b.chapters||[]).find(c=>!x.completed.includes(c.id));
+    const url=next?`chapter.html?book=${encodeURIComponent(b.id)}&chapter=${encodeURIComponent(next.id)}`:`book.html?id=${encodeURIComponent(b.id)}`;
+    return `<article class="book-row">
+      <img src="${esc(b.cover||"")}" alt="${esc(b.title||"كتاب")}" loading="lazy" onerror="this.style.visibility='hidden'">
+      <div class="book-info"><strong>${esc(b.title||"كتاب")}</strong><small>${fmt(x.done)} من ${fmt(x.total)} فصول مكتملة</small><div class="book-track"><span style="width:${x.percent}%"></span></div><a href="${url}" style="display:inline-block;margin-top:8px;color:var(--teal);font-size:10px;font-weight:900">${x.percent===100?"مراجعة الكتاب ←":"متابعة القراءة ←"}</a></div>
+      <div class="book-percent">${fmt(x.percent)}٪</div>
+    </article>`;
+  }).join("");
+}
+function bindTabs(){
+  document.querySelectorAll("[data-tab]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      document.querySelectorAll(".tab-button").forEach(x=>x.classList.toggle("active",x===btn));
+      document.querySelectorAll(".tab-panel").forEach(x=>x.classList.toggle("active",x.id==="panel-"+btn.dataset.tab));
     });
+  });
+}
+async function refreshPoints(){
+  if(!state.user)return;
+  const b=$("#refreshPoints");b.disabled=true;b.textContent="جارٍ التحديث...";
+  try{
+    state.points=await rows(state.supabase.from("points_ledger").select("points_delta,reason,source_type,source_id,created_at").eq("user_id",state.user.id).order("created_at",{ascending:false}).limit(500),"points refresh");
+    renderPoints();renderStats();
+  }finally{b.disabled=false;b.textContent="تحديث السجل";}
+}
+async function refreshLeaderboard(){
+  if(!state.user)return;
+  const b=$("#refreshLeaderboard");b.disabled=true;b.textContent="جارٍ التحديث...";
+  try{
+    state.leaderboard=await rows(state.supabase.rpc("get_points_leaderboard",{p_limit:50}),"leaderboard refresh");
+    renderLeaderboard();
+  }finally{b.disabled=false;b.textContent="تحديث";}
+}
+async function init(){
+  $("#currentYear").textContent=new Date().getFullYear();
+  bindTabs();
+  $("#refreshPoints").addEventListener("click",refreshPoints);
+  $("#refreshLeaderboard").addEventListener("click",refreshLeaderboard);
+  renderReading();
+  window.addEventListener("pageshow",renderReading);
+  window.addEventListener("storage",renderReading);
+  try{
+    state.supabase=await waitForSupabase();
+    await loadDatabase();
+  }catch(error){
+    console.error("HANOON achievements:",error);
+    alertMsg(error.message||"تعذر تحميل بيانات الإنجازات.");
+    $("#achievementsGrid").innerHTML=`<div class="error" style="grid-column:1/-1"><strong>تعذر تحميل البيانات</strong>${esc(error.message||"حدث خطأ في الاتصال.")}</div>`;
+    $("#pointsTableBody").innerHTML='<tr><td colspan="4">تعذر تحميل سجل النقاط.</td></tr>';
+    $("#leaderboardList").innerHTML='<div class="error"><strong>تعذر تحميل التصنيف</strong>تحقق من الاتصال ثم أعد المحاولة.</div>';
   }
-
-  async function refreshLeaderboard() {
-    if (!state.supabase || !state.user) return;
-
-    const button = $("#refreshLeaderboard");
-    button.disabled = true;
-    button.textContent = "جارٍ التحديث...";
-
-    try {
-      state.leaderboard = await getRows(
-        state.supabase.rpc("get_points_leaderboard",{p_limit:50}),
-        "leaderboard refresh"
-      );
-      renderLeaderboard();
-    } finally {
-      button.disabled = false;
-      button.textContent = "تحديث";
-    }
-  }
-
-  async function init() {
-    $("#currentYear").textContent = new Date().getFullYear();
-    bindTabs();
-
-    $("#refreshLeaderboard").addEventListener("click",refreshLeaderboard);
-
-    try {
-      state.supabase = await waitForSupabase();
-      await loadDatabase();
-    } catch (error) {
-      console.error("HANOON achievements:",error);
-
-      showMessage(
-        error.message || "تعذر تحميل بيانات الإنجازات. حاول تحديث الصفحة."
-      );
-
-      $("#achievementsGrid").innerHTML = `
-        <div class="error-state" style="grid-column:1/-1">
-          <strong>تعذر تحميل البيانات</strong>
-          ${escapeHTML(error.message || "حدث خطأ في الاتصال.")}
-        </div>
-      `;
-
-      $("#leaderboardList").innerHTML = `
-        <div class="error-state">
-          <strong>تعذر تحميل لوحة المتصدرين</strong>
-          تحقق من اتصالك ثم أعد تحميل الصفحة.
-        </div>
-      `;
-    }
-
-    renderReading();
-    window.addEventListener("pageshow",renderReading);
-    window.addEventListener("storage",renderReading);
-  }
-
-  init();
+}
+init();
 })();
 </script>
-
 <script src="../js/global-back.js"></script>
-
 </body>
 </html>
