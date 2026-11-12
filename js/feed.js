@@ -1,9 +1,8 @@
 
-/* =====================================================
-   HANOON — SOCIAL FEED
-   Posts / Images / Videos / Likes / Comments
-   Supabase integration
-===================================================== */
+/* ==================================================
+   HANOON — FEED SYSTEM
+   Supabase: Posts / Likes / Comments / Media
+================================================== */
 
 (() => {
   "use strict";
@@ -12,12 +11,12 @@
     root.querySelector(selector);
 
   const state = {
-    supabase: null,
+    db: null,
     user: null,
     profile: null,
     posts: [],
-    loading: false,
-    channel: null
+    busy: false,
+    realtime: null
   };
 
   const escapeHTML = value =>
@@ -29,66 +28,54 @@
       "'": "&#039;"
     })[char]);
 
-  function notify(message, type = "info") {
-    let toast = $("#feedToast");
+  const publicURL = (bucket, path) => {
+    if (!path) return "";
+
+    return state.db.storage
+      .from(bucket)
+      .getPublicUrl(path).data.publicUrl;
+  };
+
+  function notify(message, error = false) {
+    let toast = $("#hanoonFeedToast");
 
     if (!toast) {
       toast = document.createElement("div");
-      toast.id = "feedToast";
+      toast.id = "hanoonFeedToast";
 
-      toast.style.cssText = `
-        position:fixed;
-        bottom:90px;
-        left:50%;
-        transform:translateX(-50%);
-        z-index:100000;
-        max-width:90%;
-        padding:13px 20px;
-        border-radius:14px;
-        background:#202943;
-        color:#fff;
-        border:1px solid rgba(255,255,255,.15);
-        box-shadow:0 10px 35px #0007;
-        font-family:Cairo,sans-serif;
-        font-size:13px;
-        text-align:center;
-      `;
+      Object.assign(toast.style, {
+        position: "fixed",
+        bottom: "85px",
+        left: "50%",
+        transform: "translateX(-50%)",
+        zIndex: "999999",
+        padding: "12px 19px",
+        borderRadius: "14px",
+        background: "#202943",
+        color: "#fff",
+        border: "1px solid rgba(255,255,255,.15)",
+        boxShadow: "0 10px 35px #0008",
+        fontFamily: "Cairo,sans-serif",
+        fontSize: "12px",
+        maxWidth: "90%",
+        textAlign: "center"
+      });
 
       document.body.appendChild(toast);
     }
 
     toast.textContent = message;
-    toast.style.borderColor =
-      type === "error" ? "#ff667d" : "#8b72f8";
+    toast.style.borderColor = error ? "#ff7189" : "#9b82ff";
 
     clearTimeout(notify.timer);
-
-    notify.timer = setTimeout(() => {
-      toast.remove();
-    }, 3200);
-  }
-
-  function avatarURL(path) {
-    if (!path || !state.supabase) {
-      return "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&q=80";
-    }
-
-    return state.supabase.storage
-      .from("avatars")
-      .getPublicUrl(path).data.publicUrl;
-  }
-
-  function mediaURL(path) {
-    if (!path) return "";
-
-    return state.supabase.storage
-      .from("post-media")
-      .getPublicUrl(path).data.publicUrl;
+    notify.timer = setTimeout(() => toast.remove(), 3200);
   }
 
   function timeAgo(value) {
-    const date = new Date(value);
-    const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+    const seconds = Math.max(
+      0,
+      Math.floor((Date.now() - new Date(value).getTime()) / 1000)
+    );
 
     if (!Number.isFinite(seconds)) return "";
 
@@ -96,310 +83,295 @@
     if (seconds < 3600) return `منذ ${Math.floor(seconds / 60)} دقيقة`;
     if (seconds < 86400) return `منذ ${Math.floor(seconds / 3600)} ساعة`;
 
-    return date.toLocaleDateString("ar-EG", {
+    return new Date(value).toLocaleDateString("ar-EG", {
       day: "numeric",
       month: "short",
       year: "numeric"
     });
   }
 
-  function getPostsContainer() {
-    let container = $(".posts");
-
-    if (!container) {
-      const center = $(".center") || $("main") || document.body;
-
-      container = document.createElement("section");
-      container.className = "posts";
-      container.id = "feedPosts";
-
-      center.appendChild(container);
-    }
-
-    return container;
+  function avatarURL(path) {
+    return path
+      ? publicURL("avatars", path)
+      : "";
   }
 
-  function addFeedStyles() {
-    if ($("#feedRuntimeStyles")) return;
+  function getPostsContainer() {
+    return $("#postsList") || $(".posts") || $(".center-column");
+  }
+
+  function addStyles() {
+    if ($("#hanoonFeedStyles")) return;
 
     const style = document.createElement("style");
-    style.id = "feedRuntimeStyles";
+    style.id = "hanoonFeedStyles";
 
     style.textContent = `
-      .feed-post-card {
-        padding:18px;
+      .feed-runtime-post {
+        padding:17px;
         margin-bottom:16px;
         overflow:hidden;
       }
 
-      .feed-post-header {
+      .feed-runtime-head {
         display:flex;
         align-items:center;
         gap:11px;
-        margin-bottom:15px;
+        margin-bottom:14px;
       }
 
-      .feed-post-avatar {
-        width:46px;
-        height:46px;
+      .feed-runtime-avatar {
+        width:45px;
+        height:45px;
         border-radius:50%;
         object-fit:cover;
-        border:2px solid #9b82ff;
+        border:2px solid #a58bff;
+        background:#29264b;
       }
 
-      .feed-post-author {
+      .feed-runtime-author {
         flex:1;
         min-width:0;
       }
 
-      .feed-post-author strong {
+      .feed-runtime-author strong {
         display:block;
         font-size:13px;
       }
 
-      .feed-post-author small {
+      .feed-runtime-author small {
         display:block;
-        color:#a5acc4;
+        color:#a7adc2;
         font-size:10px;
       }
 
-      .feed-post-content {
-        color:#f2f1fa;
-        font-size:14px;
+      .feed-runtime-text {
+        margin:12px 0;
+        color:#e4e5ef;
+        font-size:13px;
         line-height:2;
         white-space:pre-wrap;
         overflow-wrap:anywhere;
-        margin-bottom:12px;
       }
 
-      .feed-post-media {
+      .feed-runtime-media {
+        display:block;
         width:100%;
-        max-height:520px;
+        max-height:510px;
         object-fit:contain;
-        background:#090d19;
+        background:#080b18;
         border-radius:15px;
-        margin:5px 0 12px;
+        margin:10px 0;
       }
 
-      .feed-post-stats {
+      .feed-runtime-stats {
         display:flex;
         justify-content:space-between;
-        color:#a5acc4;
+        gap:10px;
+        padding:12px 2px;
+        color:#a7adc2;
         font-size:11px;
-        padding:10px 2px;
-        border-bottom:1px solid rgba(255,255,255,.08);
       }
 
-      .feed-post-actions {
-        display:flex;
-        gap:8px;
-        padding-top:12px;
+      .feed-runtime-actions {
+        display:grid;
+        grid-template-columns:repeat(3,1fr);
+        border-top:1px solid rgba(255,255,255,.09);
+        border-bottom:1px solid rgba(255,255,255,.09);
       }
 
-      .feed-post-actions button {
-        flex:1;
+      .feed-runtime-actions button {
+        min-height:43px;
+        color:#d7d9e8;
+        background:transparent;
         border:0;
-        border-radius:11px;
-        padding:10px 4px;
-        color:#d9d9e9;
-        background:rgba(255,255,255,.055);
         font-family:inherit;
-        font-size:12px;
+        font-size:11px;
+        font-weight:800;
       }
 
-      .feed-post-actions button:hover {
-        background:rgba(155,130,255,.18);
+      .feed-runtime-actions button:hover {
+        background:rgba(255,255,255,.05);
       }
 
-      .feed-post-actions button.liked {
-        color:#b49cff;
-        background:rgba(155,130,255,.15);
+      .feed-runtime-actions button.liked {
+        color:#ff7189;
       }
 
-      .feed-comments {
+      .feed-runtime-comments {
         display:none;
-        margin-top:13px;
         padding-top:12px;
-        border-top:1px solid rgba(255,255,255,.08);
       }
 
-      .feed-comments.open {
+      .feed-runtime-comments.open {
         display:block;
       }
 
-      .feed-comment {
+      .feed-runtime-comment {
         display:flex;
-        gap:9px;
-        margin:12px 0;
         align-items:flex-start;
+        gap:9px;
+        margin:10px 0;
       }
 
-      .feed-comment img {
+      .feed-runtime-comment img {
         width:32px;
         height:32px;
         border-radius:50%;
         object-fit:cover;
       }
 
-      .feed-comment-body {
+      .feed-runtime-comment-body {
         flex:1;
-        min-width:0;
-        background:rgba(255,255,255,.06);
         padding:9px 12px;
         border-radius:12px;
-        font-size:12px;
-        line-height:1.8;
+        background:rgba(255,255,255,.06);
+        color:#e5e5f0;
+        font-size:11px;
+        line-height:1.9;
+        overflow-wrap:anywhere;
       }
 
-      .feed-comment-body strong {
+      .feed-runtime-comment-body strong {
         display:block;
-        color:#e7bd75;
-        margin-bottom:3px;
+        color:#e5c27d;
       }
 
-      .feed-comment-form {
+      .feed-runtime-comment-form {
         display:flex;
         gap:8px;
         margin-top:12px;
       }
 
-      .feed-comment-form input {
+      .feed-runtime-comment-form input {
         flex:1;
         min-width:0;
-        border:1px solid rgba(255,255,255,.12);
-        border-radius:20px;
         padding:10px 13px;
         color:white;
         background:rgba(255,255,255,.06);
+        border:1px solid rgba(255,255,255,.12);
+        border-radius:20px;
         font-family:inherit;
         outline:none;
       }
 
-      .feed-comment-form button {
-        border:0;
-        border-radius:20px;
-        padding:8px 15px;
+      .feed-runtime-comment-form button {
+        padding:8px 14px;
         color:white;
         background:#7258d5;
+        border:0;
+        border-radius:20px;
         font-family:inherit;
       }
 
-      .feed-empty {
-        padding:35px 15px;
+      .feed-runtime-empty {
+        padding:30px 15px;
+        color:#a7adc2;
         text-align:center;
-        color:#a5acc4;
         line-height:2;
       }
 
-      .feed-modal {
+      .feed-runtime-modal {
         position:fixed;
         inset:0;
         z-index:99990;
         display:none;
         align-items:center;
         justify-content:center;
-        padding:15px;
-        background:rgba(4,7,18,.86);
+        padding:14px;
+        background:rgba(4,7,18,.88);
         backdrop-filter:blur(12px);
       }
 
-      .feed-modal.open {
+      .feed-runtime-modal.open {
         display:flex;
       }
 
-      .feed-modal-card {
+      .feed-runtime-modal-card {
         width:100%;
         max-width:520px;
         max-height:90vh;
-        overflow-y:auto;
-        padding:22px;
-        border-radius:22px;
+        overflow:auto;
+        padding:20px;
+        border-radius:21px;
         background:#171e34;
         border:1px solid rgba(255,255,255,.12);
-        box-shadow:0 20px 70px #0008;
       }
 
-      .feed-modal-card h3 {
-        margin-bottom:15px;
-        color:#e7bd75;
+      .feed-runtime-modal-card h3 {
+        margin:0 0 14px;
+        color:#e5c27d;
       }
 
-      .feed-modal-card textarea {
+      .feed-runtime-modal-card textarea {
         width:100%;
-        min-height:140px;
-        resize:vertical;
-        padding:14px;
+        min-height:135px;
+        padding:13px;
         color:white;
         background:#0d1428;
         border:1px solid rgba(255,255,255,.12);
         border-radius:13px;
-        font:inherit;
+        font-family:inherit;
+        resize:vertical;
         outline:none;
       }
 
-      .feed-file-label {
+      .feed-runtime-file {
         display:block;
         margin:12px 0;
         padding:12px;
         text-align:center;
-        border:1px dashed #8b72f8;
-        border-radius:12px;
         color:#c7baff;
+        border:1px dashed #8b72ff;
+        border-radius:12px;
         cursor:pointer;
       }
 
-      .feed-modal-buttons {
+      .feed-runtime-modal-buttons {
         display:flex;
         gap:10px;
-        margin-top:15px;
+        margin-top:14px;
       }
 
-      .feed-modal-buttons button {
+      .feed-runtime-modal-buttons button {
         flex:1;
-        padding:12px;
+        padding:11px;
         border:0;
         border-radius:12px;
         color:white;
         font-family:inherit;
       }
 
-      .feed-publish {
+      .feed-runtime-publish {
         background:linear-gradient(135deg,#8065ed,#5542b0);
       }
 
-      .feed-cancel {
+      .feed-runtime-cancel {
         background:#303951;
-      }
-
-      .feed-loading {
-        text-align:center;
-        padding:25px;
-        color:#a5acc4;
       }
     `;
 
     document.head.appendChild(style);
   }
 
-  function createComposerModal() {
+  function createModal() {
     if ($("#feedCreateModal")) return;
 
     const modal = document.createElement("div");
-
-    modal.className = "feed-modal";
     modal.id = "feedCreateModal";
+    modal.className = "feed-runtime-modal";
 
     modal.innerHTML = `
-      <div class="feed-modal-card">
+      <div class="feed-runtime-modal-card">
         <h3>إنشاء منشور جديد</h3>
 
         <textarea
           id="feedNewPostText"
           maxlength="10000"
-          placeholder="ماذا تريد أن تشارك مع مجتمع هنون؟"
+          placeholder="بماذا تفكر اليوم؟ شارك مجتمع هنون..."
         ></textarea>
 
-        <label class="feed-file-label" for="feedNewPostFile">
+        <label class="feed-runtime-file" for="feedNewPostFile">
           إضافة صورة أو فيديو
         </label>
 
@@ -412,12 +384,12 @@
 
         <div id="feedFilePreview"></div>
 
-        <div class="feed-modal-buttons">
-          <button class="feed-publish" id="feedPublishButton">
+        <div class="feed-runtime-modal-buttons">
+          <button class="feed-runtime-publish" id="feedPublishButton">
             نشر المنشور
           </button>
 
-          <button class="feed-cancel" id="feedCancelButton">
+          <button class="feed-runtime-cancel" id="feedCancelButton">
             إلغاء
           </button>
         </div>
@@ -426,32 +398,50 @@
 
     document.body.appendChild(modal);
 
-    $("#feedCancelButton").addEventListener("click", closeComposer);
+    $("#feedCancelButton").addEventListener("click", closeModal);
 
     modal.addEventListener("click", event => {
-      if (event.target === modal) closeComposer();
+      if (event.target === modal) closeModal();
     });
 
-    $("#feedNewPostFile").addEventListener("change", previewPostFile);
-
+    $("#feedNewPostFile").addEventListener("change", previewFile);
     $("#feedPublishButton").addEventListener("click", publishPost);
   }
 
-  function openComposer() {
+  function openModal(mode = "text") {
     if (!state.user) {
-      notify("سجّل الدخول أولًا لإنشاء منشور.", "error");
+      notify("سجّل الدخول أولًا لإنشاء منشور.", true);
       return;
     }
 
-    createComposerModal();
+    createModal();
 
-    $("#feedCreateModal").classList.add("open");
-    $("#feedNewPostText").focus();
+    const modal = $("#feedCreateModal");
+    modal.classList.add("open");
+
+    if (mode === "image") {
+      $("#feedNewPostFile").setAttribute(
+        "accept",
+        "image/jpeg,image/png,image/webp,image/gif"
+      );
+      $("#feedNewPostFile").click();
+    } else if (mode === "video") {
+      $("#feedNewPostFile").setAttribute(
+        "accept",
+        "video/mp4,video/webm,video/quicktime"
+      );
+      $("#feedNewPostFile").click();
+    } else {
+      $("#feedNewPostFile").setAttribute(
+        "accept",
+        "image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime"
+      );
+      $("#feedNewPostText").focus();
+    }
   }
 
-  function closeComposer() {
+  function closeModal() {
     const modal = $("#feedCreateModal");
-
     if (!modal) return;
 
     modal.classList.remove("open");
@@ -460,31 +450,21 @@
     $("#feedFilePreview").innerHTML = "";
   }
 
-  function previewPostFile(event) {
+  function previewFile(event) {
     const file = event.target.files?.[0];
     const preview = $("#feedFilePreview");
 
     preview.innerHTML = "";
-
     if (!file) return;
 
-    const allowed = [
-      "image/jpeg",
-      "image/png",
-      "image/webp",
-      "image/gif",
-      "video/mp4",
-      "video/webm",
-      "video/quicktime"
-    ];
+    const isImage = file.type.startsWith("image/");
+    const isVideo = file.type.startsWith("video/");
 
-    if (!allowed.includes(file.type)) {
-      notify("نوع الملف غير مدعوم.", "error");
+    if (!isImage && !isVideo) {
+      notify("نوع الملف غير مدعوم.", true);
       event.target.value = "";
       return;
     }
-
-    const isVideo = file.type.startsWith("video/");
 
     const maxSize = isVideo
       ? 50 * 1024 * 1024
@@ -493,47 +473,41 @@
     if (file.size > maxSize) {
       notify(
         isVideo
-          ? "حجم الفيديو يجب ألا يتجاوز 50 ميجابايت."
-          : "حجم الصورة يجب ألا يتجاوز 10 ميجابايت.",
-        "error"
+          ? "حجم الفيديو أكبر من الحد المسموح."
+          : "حجم الصورة أكبر من الحد المسموح.",
+        true
       );
-
       event.target.value = "";
       return;
     }
 
     const url = URL.createObjectURL(file);
+    const element = document.createElement(isVideo ? "video" : "img");
 
-    const media = document.createElement(isVideo ? "video" : "img");
+    element.src = url;
+    element.className = "feed-runtime-media";
 
-    media.src = url;
-    media.className = "feed-post-media";
+    if (isVideo) element.controls = true;
 
-    if (isVideo) media.controls = true;
-
-    preview.appendChild(media);
+    preview.appendChild(element);
   }
 
   async function publishPost() {
-    if (!state.user) {
-      notify("يجب تسجيل الدخول أولًا.", "error");
-      return;
-    }
-
     const button = $("#feedPublishButton");
     const content = $("#feedNewPostText").value.trim();
     const file = $("#feedNewPostFile").files?.[0];
 
     if (!content && !file) {
-      notify("اكتب شيئًا أو أضف صورة أو فيديو.", "error");
+      notify("اكتب منشورًا أو أضف صورة أو فيديو.", true);
       return;
     }
 
     button.disabled = true;
     button.textContent = "جارٍ النشر...";
 
+    let uploadedPath = null;
+
     try {
-      let mediaPath = null;
       let mediaType = null;
 
       if (file) {
@@ -542,15 +516,21 @@
           : "image";
 
         const extension =
-          file.name.split(".").pop().toLowerCase().replace(/[^a-z0-9]/g, "") ||
+          file.name.split(".").pop().toLowerCase()
+            .replace(/[^a-z0-9]/g, "") ||
           (mediaType === "video" ? "mp4" : "jpg");
 
-        const fileName =
-          `${state.user.id}/${crypto.randomUUID()}.${extension}`;
+        const uniqueName =
+          typeof crypto.randomUUID === "function"
+            ? crypto.randomUUID()
+            : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
-        const { data, error } = await state.supabase.storage
+        const filePath =
+          `${state.user.id}/${uniqueName}.${extension}`;
+
+        const { data, error } = await state.db.storage
           .from("post-media")
-          .upload(fileName, file, {
+          .upload(filePath, file, {
             contentType: file.type,
             upsert: false,
             cacheControl: "3600"
@@ -558,35 +538,34 @@
 
         if (error) throw error;
 
-        mediaPath = data.path;
+        uploadedPath = data.path;
       }
 
-      const { error } = await state.supabase
+      const { error } = await state.db
         .from("posts")
         .insert({
           user_id: state.user.id,
-          content,
-          media_path: mediaPath,
+          content: content || "",
+          media_path: uploadedPath,
           media_type: mediaType
         });
 
-      if (error) {
-        if (mediaPath) {
-          await state.supabase.storage
-            .from("post-media")
-            .remove([mediaPath]);
-        }
+      if (error) throw error;
 
-        throw error;
-      }
-
-      closeComposer();
+      closeModal();
       notify("تم نشر منشورك بنجاح.");
       await loadPosts();
 
     } catch (error) {
-      console.error("HANOON publish error:", error);
-      notify(error.message || "تعذر نشر المنشور.", "error");
+      console.error("HANOON publish:", error);
+
+      if (uploadedPath) {
+        await state.db.storage
+          .from("post-media")
+          .remove([uploadedPath]);
+      }
+
+      notify(error.message || "تعذر نشر المنشور.", true);
 
     } finally {
       button.disabled = false;
@@ -595,43 +574,37 @@
   }
 
   async function loadPosts() {
-    if (state.loading) return;
+    if (state.busy) return;
 
-    state.loading = true;
+    state.busy = true;
 
     const container = getPostsContainer();
 
-    if (!state.posts.length) {
-      container.innerHTML =
-        '<div class="feed-loading">جارٍ تحميل المنشورات...</div>';
-    }
-
     try {
-      const { data: posts, error } = await state.supabase
+      const { data, error } = await state.db
         .from("posts")
-        .select("*")
+        .select("id,user_id,content,media_path,media_type,created_at")
         .order("created_at", { ascending: false })
         .limit(40);
 
       if (error) throw error;
 
-      state.posts = posts || [];
-
+      state.posts = data || [];
       await renderPosts();
 
     } catch (error) {
-      console.error("HANOON load posts error:", error);
+      console.error("HANOON load posts:", error);
 
       container.innerHTML = `
-        <div class="feed-empty">
-          تعذر تحميل المنشورات الآن.
+        <div class="glass feed-runtime-empty">
+          تعذر تحميل المنشورات.
           <br>
           ${escapeHTML(error.message)}
         </div>
       `;
 
     } finally {
-      state.loading = false;
+      state.busy = false;
     }
   }
 
@@ -640,145 +613,135 @@
 
     if (!state.posts.length) {
       container.innerHTML = `
-        <div class="panel feed-empty">
+        <div class="glass feed-runtime-empty">
           <h3>أهلًا بك في مجتمع هنون</h3>
-          <p>لا توجد منشورات حتى الآن. كن أول من يشارك شيئًا جميلًا.</p>
+          <p>لا توجد منشورات حتى الآن. كن أول من يشارك.</p>
         </div>
       `;
-
       return;
     }
 
     const postIds = state.posts.map(post => post.id);
     const userIds = [...new Set(state.posts.map(post => post.user_id))];
 
-    const [
-      { data: members, error: membersError },
-      { data: likes, error: likesError },
-      { data: comments, error: commentsError },
-      { data: myLikes, error: myLikesError }
-    ] = await Promise.all([
-      state.supabase
-        .from("member_directory")
+    const results = await Promise.all([
+      state.db.from("member_directory")
         .select("id,username,full_name,avatar_path")
         .in("id", userIds),
 
-      state.supabase
-        .from("post_likes")
+      state.db.from("post_likes")
         .select("post_id,user_id")
         .in("post_id", postIds),
 
-      state.supabase
-        .from("post_comments")
+      state.db.from("post_comments")
         .select("post_id")
         .in("post_id", postIds),
 
-      state.supabase
-        .from("post_likes")
+      state.db.from("post_likes")
         .select("post_id")
         .eq("user_id", state.user.id)
         .in("post_id", postIds)
     ]);
 
-    if (membersError) throw membersError;
-    if (likesError) throw likesError;
-    if (commentsError) throw commentsError;
-    if (myLikesError) throw myLikesError;
+    for (const result of results) {
+      if (result.error) throw result.error;
+    }
 
-    const memberMap = new Map(
-      (members || []).map(member => [member.id, member])
+    const [membersResult, likesResult, commentsResult, myLikesResult] = results;
+
+    const members = new Map(
+      (membersResult.data || []).map(member => [member.id, member])
     );
 
     const likeCounts = {};
     const commentCounts = {};
-    const likedSet = new Set(
-      (myLikes || []).map(item => item.post_id)
-    );
 
-    (likes || []).forEach(item => {
+    (likesResult.data || []).forEach(item => {
       likeCounts[item.post_id] = (likeCounts[item.post_id] || 0) + 1;
     });
 
-    (comments || []).forEach(item => {
+    (commentsResult.data || []).forEach(item => {
       commentCounts[item.post_id] =
         (commentCounts[item.post_id] || 0) + 1;
     });
 
+    const myLikes = new Set(
+      (myLikesResult.data || []).map(item => item.post_id)
+    );
+
     container.innerHTML = state.posts.map(post => {
-      const member = memberMap.get(post.user_id) || {};
+      const member = members.get(post.user_id) || {};
       const name = member.full_name || member.username || "عضو هنون";
       const avatar = avatarURL(member.avatar_path);
-      const liked = likedSet.has(post.id);
+      const liked = myLikes.has(post.id);
 
       let mediaHTML = "";
 
       if (post.media_path) {
-        const url = mediaURL(post.media_path);
+        const url = publicURL("post-media", post.media_path);
 
         mediaHTML = post.media_type === "video"
-          ? `<video class="feed-post-media" src="${escapeHTML(url)}" controls playsinline preload="metadata"></video>`
-          : `<img class="feed-post-media" src="${escapeHTML(url)}" alt="صورة المنشور" loading="lazy">`;
+          ? `<video class="post-media feed-runtime-media" src="${escapeHTML(url)}" controls playsinline preload="metadata"></video>`
+          : `<img class="post-media feed-runtime-media" src="${escapeHTML(url)}" alt="صورة المنشور" loading="lazy">`;
       }
 
       return `
-        <article class="panel feed-post-card" data-post-id="${escapeHTML(post.id)}">
+        <article class="glass post-card feed-runtime-post"
+          data-post-id="${escapeHTML(post.id)}">
 
-          <div class="feed-post-header">
-            <img
-              class="feed-post-avatar"
-              src="${escapeHTML(avatar)}"
-              alt=""
-              loading="lazy"
-            >
+          <div class="post-author feed-runtime-head">
+            <img class="avatar feed-runtime-avatar"
+              src="${escapeHTML(avatar || "https://placehold.co/90x90/242b45/ffffff?text=H")}"
+              alt="">
 
-            <div class="feed-post-author">
+            <div class="post-author-info feed-runtime-author">
               <strong>${escapeHTML(name)}</strong>
               <small>${escapeHTML(timeAgo(post.created_at))}</small>
             </div>
           </div>
 
           ${post.content
-            ? `<div class="feed-post-content">${escapeHTML(post.content)}</div>`
+            ? `<div class="post-text feed-runtime-text">${escapeHTML(post.content)}</div>`
             : ""
           }
 
           ${mediaHTML}
 
-          <div class="feed-post-stats">
-            <span>إعجاب ${likeCounts[post.id] || 0}</span>
+          <div class="post-stats feed-runtime-stats">
+            <span>${likeCounts[post.id] || 0} إعجاب</span>
             <span>${commentCounts[post.id] || 0} تعليق</span>
           </div>
 
-          <div class="feed-post-actions">
-            <button
-              type="button"
-              class="${liked ? "liked" : ""}"
+          <div class="post-actions feed-runtime-actions">
+            <button type="button"
               data-action="like"
-            >
+              class="post-action ${liked ? "liked" : ""}">
               ${liked ? "أعجبك" : "إعجاب"}
             </button>
 
-            <button type="button" data-action="comments">
-              التعليقات
+            <button type="button"
+              data-action="comments"
+              class="post-action">
+              تعليق
             </button>
 
-            <button type="button" data-action="share">
+            <button type="button"
+              data-action="share"
+              class="post-action">
               مشاركة
             </button>
           </div>
 
-          <div class="feed-comments" id="comments-${escapeHTML(post.id)}">
-            <div class="feed-comments-list">
+          <div class="feed-runtime-comments"
+            id="comments-${escapeHTML(post.id)}">
+
+            <div class="feed-runtime-comments-list">
               جارٍ تحميل التعليقات...
             </div>
 
-            <form class="feed-comment-form">
-              <input
-                type="text"
-                maxlength="3000"
-                placeholder="اكتب تعليقك..."
-                required
-              >
+            <form class="feed-runtime-comment-form">
+              <input type="text" maxlength="3000"
+                placeholder="اكتب تعليقك..." required>
               <button type="submit">إرسال</button>
             </form>
           </div>
@@ -788,26 +751,20 @@
   }
 
   async function toggleLike(postId, button) {
-    if (!state.user) {
-      notify("سجّل الدخول أولًا.", "error");
-      return;
-    }
-
     button.disabled = true;
 
     try {
-      const { data: existing, error: findError } =
-        await state.supabase
-          .from("post_likes")
-          .select("post_id")
-          .eq("post_id", postId)
-          .eq("user_id", state.user.id)
-          .maybeSingle();
+      const { data: existing, error: findError } = await state.db
+        .from("post_likes")
+        .select("post_id")
+        .eq("post_id", postId)
+        .eq("user_id", state.user.id)
+        .maybeSingle();
 
       if (findError) throw findError;
 
       if (existing) {
-        const { error } = await state.supabase
+        const { error } = await state.db
           .from("post_likes")
           .delete()
           .eq("post_id", postId)
@@ -816,7 +773,7 @@
         if (error) throw error;
 
       } else {
-        const { error } = await state.supabase
+        const { error } = await state.db
           .from("post_likes")
           .insert({
             post_id: postId,
@@ -829,8 +786,8 @@
       await loadPosts();
 
     } catch (error) {
-      console.error("HANOON like error:", error);
-      notify("تعذر تحديث الإعجاب.", "error");
+      console.error("HANOON like:", error);
+      notify("تعذر تحديث الإعجاب.", true);
 
     } finally {
       button.disabled = false;
@@ -841,12 +798,11 @@
     const box = $(`#comments-${postId}`);
     if (!box) return;
 
-    const list = $(".feed-comments-list", box);
-
+    const list = $(".feed-runtime-comments-list", box);
     list.textContent = "جارٍ تحميل التعليقات...";
 
     try {
-      const { data: comments, error } = await state.supabase
+      const { data: comments, error } = await state.db
         .from("post_comments")
         .select("id,user_id,body,created_at")
         .eq("post_id", postId)
@@ -862,7 +818,7 @@
       let members = [];
 
       if (userIds.length) {
-        const result = await state.supabase
+        const result = await state.db
           .from("member_directory")
           .select("id,username,full_name,avatar_path")
           .in("id", userIds);
@@ -878,7 +834,7 @@
 
       if (!comments?.length) {
         list.innerHTML =
-          '<div class="feed-empty">لا توجد تعليقات بعد.</div>';
+          '<div class="feed-runtime-empty">لا توجد تعليقات بعد.</div>';
         return;
       }
 
@@ -886,9 +842,13 @@
         const member = memberMap.get(comment.user_id) || {};
 
         return `
-          <div class="feed-comment">
-            <img src="${escapeHTML(avatarURL(member.avatar_path))}" alt="">
-            <div class="feed-comment-body">
+          <div class="feed-runtime-comment">
+            <img src="${escapeHTML(
+              avatarURL(member.avatar_path) ||
+              "https://placehold.co/70x70/242b45/ffffff?text=H"
+            )}" alt="">
+
+            <div class="feed-runtime-comment-body">
               <strong>${escapeHTML(member.full_name || member.username || "عضو هنون")}</strong>
               ${escapeHTML(comment.body)}
             </div>
@@ -897,27 +857,22 @@
       }).join("");
 
     } catch (error) {
-      console.error("HANOON comments error:", error);
+      console.error("HANOON comments:", error);
       list.textContent = "تعذر تحميل التعليقات.";
     }
   }
 
   async function addComment(postId, form) {
     const input = $("input", form);
+    const button = $("button", form);
     const body = input.value.trim();
 
     if (!body) return;
 
-    if (!state.user) {
-      notify("سجّل الدخول أولًا.", "error");
-      return;
-    }
-
-    const button = $("button", form);
     button.disabled = true;
 
     try {
-      const { error } = await state.supabase
+      const { error } = await state.db
         .from("post_comments")
         .insert({
           post_id: postId,
@@ -932,12 +887,11 @@
       await loadComments(postId);
       await loadPosts();
 
-      const box = $(`#comments-${postId}`);
-      box?.classList.add("open");
+      $(`#comments-${postId}`)?.classList.add("open");
 
     } catch (error) {
-      console.error("HANOON add comment error:", error);
-      notify("تعذر إرسال التعليق.", "error");
+      console.error("HANOON add comment:", error);
+      notify("تعذر إرسال التعليق.", true);
 
     } finally {
       button.disabled = false;
@@ -955,21 +909,18 @@
           text: "شاهد هذا المنشور على هنون",
           url: url.href
         });
-      } else if (navigator.clipboard?.writeText) {
+      } else {
         await navigator.clipboard.writeText(url.href);
         notify("تم نسخ رابط المنشور.");
-      } else {
-        notify("المشاركة غير مدعومة على هذا المتصفح.", "error");
       }
-
     } catch (error) {
       if (error.name !== "AbortError") {
-        notify("تعذرت مشاركة المنشور.", "error");
+        notify("تعذرت المشاركة.", true);
       }
     }
   }
 
-  function bindPostActions() {
+  function bindPosts() {
     const container = getPostsContainer();
 
     container.addEventListener("click", async event => {
@@ -980,13 +931,12 @@
       if (!card) return;
 
       const postId = card.dataset.postId;
-      const action = button.dataset.action;
 
-      if (action === "like") {
+      if (button.dataset.action === "like") {
         await toggleLike(postId, button);
       }
 
-      if (action === "comments") {
+      if (button.dataset.action === "comments") {
         const box = $(`#comments-${postId}`);
 
         box.classList.toggle("open");
@@ -996,13 +946,13 @@
         }
       }
 
-      if (action === "share") {
+      if (button.dataset.action === "share") {
         await sharePost(postId);
       }
     });
 
     container.addEventListener("submit", async event => {
-      const form = event.target.closest(".feed-comment-form");
+      const form = event.target.closest(".feed-runtime-comment-form");
       if (!form) return;
 
       event.preventDefault();
@@ -1014,35 +964,62 @@
     });
   }
 
-  function bindComposerButtons() {
-    document.addEventListener("click", event => {
-      const button = event.target.closest(
-        ".composer-input, .composer-actions button, [data-feed-create]"
-      );
+  function bindComposer() {
+    $("#openComposer")?.addEventListener("click", () => openModal("text"));
+    $("#writePostButton")?.addEventListener("click", () => openModal("text"));
+    $("#addPhotoButton")?.addEventListener("click", () => openModal("image"));
+    $("#addVideoButton")?.addEventListener("click", () => openModal("video"));
+  }
 
-      if (!button) return;
+  function updateProfileUI() {
+    const profile = state.profile || {};
+    const name = profile.full_name || profile.username || "عضو هنون";
+    const avatar = avatarURL(profile.avatar_path);
 
-      if (
-        button.matches(".composer-input") ||
-        button.hasAttribute("data-feed-create") ||
-        button.textContent.includes("كتابة") ||
-        button.textContent.includes("صورة") ||
-        button.textContent.includes("فيديو") ||
-        button.textContent.includes("منشور")
-      ) {
-        event.preventDefault();
-        openComposer();
-      }
-    });
+    $("#sideProfileName") && (
+      $("#sideProfileName").textContent = name
+    );
+
+    $("#sideProfileUsername") && (
+      $("#sideProfileUsername").textContent =
+        profile.username ? `@${profile.username}` : "@hanoon_member"
+    );
+
+    const initial = name.trim().charAt(0) || "هـ";
+
+    const composerAvatar = $("#composerAvatar");
+    const sideAvatar = $("#sideProfileAvatar");
+    const topInitial = $("#topProfileInitial");
+    const topImage = $("#topProfileImage");
+
+    if (composerAvatar) {
+      composerAvatar.innerHTML = avatar
+        ? `<img src="${escapeHTML(avatar)}" alt="">`
+        : escapeHTML(initial);
+    }
+
+    if (sideAvatar) {
+      sideAvatar.innerHTML = avatar
+        ? `<img src="${escapeHTML(avatar)}" alt="">`
+        : escapeHTML(initial);
+    }
+
+    if (topInitial) topInitial.textContent = initial;
+
+    if (topImage && avatar) {
+      topImage.src = avatar;
+      topImage.hidden = false;
+      if (topInitial) topInitial.hidden = true;
+    }
   }
 
   function subscribeToPosts() {
-    if (state.channel) {
-      state.supabase.removeChannel(state.channel);
+    if (state.realtime) {
+      state.db.removeChannel(state.realtime);
     }
 
-    state.channel = state.supabase
-      .channel("hanoon-feed-posts")
+    state.realtime = state.db
+      .channel("hanoon-feed-live")
       .on(
         "postgres_changes",
         {
@@ -1056,36 +1033,35 @@
   }
 
   async function init() {
-    addFeedStyles();
+    addStyles();
 
     const container = getPostsContainer();
 
     container.innerHTML =
-      '<div class="feed-loading">جارٍ الاتصال بحسابك...</div>';
+      '<div class="glass loading-state">جارٍ الاتصال بحسابك...</div>';
 
     const client = window.HANOON?.supabase;
 
     if (!client) {
       container.innerHTML = `
-        <div class="panel feed-empty">
-          تعذر تشغيل الاتصال بقاعدة البيانات.
+        <div class="glass feed-runtime-empty">
+          تعذر الاتصال بقاعدة البيانات.
           <br>
-          تأكد من تحميل ملف supabase-client.js قبل feed.js.
+          تأكد من تحميل supabase-client.js.
         </div>
       `;
       return;
     }
 
-    state.supabase = client;
+    state.db = client;
 
     const { data, error } = await client.auth.getSession();
-
     if (error) throw error;
 
     if (!data.session) {
       container.innerHTML = `
-        <div class="panel feed-empty">
-          سجّل الدخول إلى هنون حتى تتمكن من مشاهدة المنشورات والتفاعل معها.
+        <div class="glass feed-runtime-empty">
+          سجّل الدخول إلى هنون لمشاهدة المنشورات والتفاعل معها.
         </div>
       `;
       return;
@@ -1095,7 +1071,7 @@
 
     const { data: profile, error: profileError } = await client
       .from("profiles")
-      .select("id,full_name,username,avatar_path,member_code")
+      .select("id,member_code,full_name,username,avatar_path")
       .eq("id", state.user.id)
       .maybeSingle();
 
@@ -1103,11 +1079,11 @@
 
     state.profile = profile;
 
-    bindPostActions();
-    bindComposerButtons();
+    updateProfileUI();
+    bindPosts();
+    bindComposer();
 
     await loadPosts();
-
     subscribeToPosts();
 
     console.info("HANOON feed is ready.");
@@ -1115,8 +1091,8 @@
 
   function start() {
     init().catch(error => {
-      console.error("HANOON feed initialization error:", error);
-      notify(error.message || "تعذر تشغيل الصفحة.", "error");
+      console.error("HANOON feed startup:", error);
+      notify(error.message || "تعذر تشغيل صفحة المنشورات.", true);
     });
   }
 
