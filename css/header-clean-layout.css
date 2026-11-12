@@ -1,0 +1,213 @@
+
+/* HANOON — Clean Space Navigation */
+
+.site-header {
+  display: grid !important;
+  grid-template-columns: 1fr auto !important;
+  grid-template-areas:
+    "brand controls"
+    "navigation navigation" !important;
+  align-items: center !important;
+  gap: 18px !important;
+  padding: 16px clamp(12px, 3vw, 32px) !important;
+  background:
+    linear-gradient(120deg, rgba(10,14,35,.97), rgba(22,18,48,.96)),
+    url("https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1800&q=85")
+    center/cover !important;
+  border-bottom: 1px solid rgba(175,145,255,.35);
+  box-shadow: 0 12px 40px rgba(0,0,0,.4);
+}
+
+.site-header > .brand {
+  grid-area: brand !important;
+}
+
+.site-header > .header-controls {
+  grid-area: controls !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  flex-wrap: nowrap !important;
+  gap: 9px !important;
+  min-width: 0 !important;
+}
+
+.site-header > .main-navigation {
+  grid-area: navigation !important;
+  position: relative !important;
+  inset: auto !important;
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 13px !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 8px 0 0 !important;
+  padding: 22px !important;
+  overflow: visible !important;
+  border: 1px solid rgba(185,160,255,.35) !important;
+  border-radius: 25px !important;
+  background:
+    linear-gradient(135deg,rgba(12,17,40,.86),rgba(24,22,53,.83)),
+    url("https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1600&q=80")
+    center/cover !important;
+  box-shadow:
+    0 15px 45px rgba(0,0,0,.4),
+    inset 0 0 35px rgba(142,110,255,.13) !important;
+}
+
+.site-header > .main-navigation::before,
+.site-header > .main-navigation::after {
+  display: none !important;
+}
+
+.site-header > .main-navigation a {
+  position: relative !important;
+  inset: auto !important;
+  transform: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+  height: 91px !important;
+  min-height: 91px !important;
+  padding: 10px 5px !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(255,255,255,.22) !important;
+  border-radius: 17px !important;
+  color: #fff !important;
+  background: linear-gradient(145deg,rgba(102,76,175,.88),rgba(30,38,78,.94)) !important;
+  box-shadow:
+    0 7px 18px rgba(0,0,0,.3),
+    inset 0 1px 0 rgba(255,255,255,.17) !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  line-height: 1.4 !important;
+  text-align: center !important;
+  text-decoration: none !important;
+  white-space: normal !important;
+  transition: transform .22s ease, filter .22s ease, box-shadow .22s ease !important;
+}
+
+.site-header > .main-navigation a:nth-child(3n+1) {
+  background: linear-gradient(145deg,#6549b6,#292e69) !important;
+}
+
+.site-header > .main-navigation a:nth-child(3n+2) {
+  background: linear-gradient(145deg,#167f9c,#183e69) !important;
+}
+
+.site-header > .main-navigation a:nth-child(3n) {
+  background: linear-gradient(145deg,#9a5b9e,#49366f) !important;
+}
+
+.site-header > .main-navigation a:nth-child(11),
+.site-header > .main-navigation a:nth-child(15) {
+  border: 2px solid rgba(255,219,139,.85) !important;
+  background: linear-gradient(145deg,#c08a35,#70451c) !important;
+  box-shadow: 0 0 22px rgba(230,175,75,.24) !important;
+}
+
+.site-header > .main-navigation a svg {
+  width: 25px !important;
+  height: 25px !important;
+  margin: 0 !important;
+  stroke: #fff !important;
+  stroke-width: 1.8 !important;
+}
+
+.site-header > .main-navigation a:hover {
+  transform: translateY(-4px) !important;
+  filter: brightness(1.2) !important;
+  box-shadow: 0 12px 25px rgba(0,0,0,.42) !important;
+}
+
+.site-header > .main-navigation a.active {
+  outline: 2px solid rgba(255,255,255,.8);
+  outline-offset: 2px;
+}
+
+.site-header .account-button {
+  min-width: 112px !important;
+  min-height: 43px !important;
+  padding: 0 15px !important;
+  border-radius: 14px !important;
+  background: linear-gradient(135deg,#398ff0,#245bc1) !important;
+  box-shadow: 0 5px 18px rgba(45,112,220,.3) !important;
+}
+
+.site-header .header-profile-link {
+  max-width: 190px !important;
+  min-height: 48px !important;
+  background: linear-gradient(135deg,rgba(111,78,190,.35),rgba(30,42,75,.95)) !important;
+  border: 1px solid rgba(213,195,255,.55) !important;
+  box-shadow: 0 5px 18px rgba(0,0,0,.3) !important;
+}
+
+.site-header .account-button[hidden],
+.site-header .header-profile-link[hidden] {
+  display: none !important;
+}
+
+@media(max-width:760px) {
+  .site-header {
+    gap: 12px !important;
+    padding: 12px !important;
+  }
+
+  .site-header > .main-navigation {
+    grid-template-columns: repeat(4, minmax(0,1fr)) !important;
+    gap: 9px !important;
+    padding: 13px !important;
+  }
+
+  .site-header > .main-navigation a {
+    height: 79px !important;
+    min-height: 79px !important;
+    border-radius: 14px !important;
+    font-size: 10px !important;
+  }
+
+  .site-header > .main-navigation a svg {
+    width: 22px !important;
+    height: 22px !important;
+  }
+}
+
+@media(max-width:430px) {
+  .site-header > .main-navigation {
+    grid-template-columns: repeat(3, minmax(0,1fr)) !important;
+    gap: 9px !important;
+    padding: 11px !important;
+  }
+
+  .site-header > .main-navigation a {
+    height: 76px !important;
+    min-height: 76px !important;
+    font-size: 10px !important;
+  }
+
+  .site-header > .header-controls {
+    gap: 5px !important;
+  }
+
+  .site-header .icon-button {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+  }
+
+  .site-header .account-button {
+    min-width: 88px !important;
+    padding: 0 9px !important;
+    font-size: 10px !important;
+  }
+
+  .site-header .header-profile-link {
+    max-width: 125px !important;
+  }
+}
