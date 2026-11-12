@@ -1,0 +1,804 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b1020">
+  <title>لوحة الإدارة | HANOON</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg:#0b1020;
+      --panel:#111a30;
+      --panel2:#17223b;
+      --gold:#d7b875;
+      --gold2:#f0d69b;
+      --text:#f5f2e9;
+      --muted:#929db5;
+      --line:rgba(215,184,117,.15);
+      --green:#3cc9a5;
+      --blue:#65a8ff;
+      --red:#f07886;
+      --purple:#a58aff;
+    }
+
+    * { box-sizing:border-box; }
+
+    body {
+      margin:0;
+      min-height:100vh;
+      color:var(--text);
+      background:
+        radial-gradient(ellipse at 85% 0%,rgba(115,91,190,.13),transparent 35%),
+        var(--bg);
+      font-family:"Cairo",sans-serif;
+    }
+
+    button,a { font:inherit; }
+    button { cursor:pointer; }
+    a { color:inherit; text-decoration:none; }
+
+    .admin-layout {
+      min-height:100vh;
+      display:grid;
+      grid-template-columns:265px minmax(0,1fr);
+    }
+
+    .sidebar {
+      position:sticky;
+      top:0;
+      height:100vh;
+      overflow-y:auto;
+      padding:25px 17px;
+      background:rgba(13,20,38,.96);
+      border-left:1px solid var(--line);
+    }
+
+    .brand {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:5px 8px 25px;
+      border-bottom:1px solid var(--line);
+    }
+
+    .brand-logo {
+      width:48px;
+      height:48px;
+      display:grid;
+      place-items:center;
+      border-radius:15px;
+      color:#151521;
+      background:linear-gradient(145deg,var(--gold2),#9e793c);
+      font-size:25px;
+      font-weight:900;
+      box-shadow:0 8px 25px rgba(215,184,117,.16);
+    }
+
+    .brand-name {
+      font-family:Georgia,serif;
+      font-size:24px;
+      letter-spacing:2px;
+      color:var(--gold2);
+      font-weight:900;
+    }
+
+    .brand-sub {
+      display:block;
+      color:var(--muted);
+      font-size:10px;
+      letter-spacing:1px;
+    }
+
+    .admin-label {
+      margin:25px 10px 12px;
+      color:#77849f;
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:1px;
+    }
+
+    .nav-list {
+      display:grid;
+      gap:7px;
+    }
+
+    .nav-item {
+      width:100%;
+      min-height:47px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:10px 13px;
+      border:1px solid transparent;
+      border-radius:12px;
+      color:#b6bfd2;
+      background:transparent;
+      text-align:right;
+      transition:.2s;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      color:var(--gold2);
+      background:rgba(215,184,117,.09);
+      border-color:var(--line);
+    }
+
+    .nav-icon {
+      width:25px;
+      text-align:center;
+      font-size:17px;
+    }
+
+    .nav-item small {
+      margin-right:auto;
+      color:#75819b;
+      font-size:10px;
+    }
+
+    .sidebar-bottom {
+      margin-top:30px;
+      padding-top:18px;
+      border-top:1px solid var(--line);
+    }
+
+    .back-home {
+      display:block;
+      padding:12px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      color:var(--gold2);
+      text-align:center;
+      font-size:12px;
+    }
+
+    .main {
+      min-width:0;
+      padding:27px clamp(15px,3vw,38px) 45px;
+    }
+
+    .topbar {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      gap:15px;
+      margin-bottom:28px;
+    }
+
+    .page-heading h1 {
+      margin:0;
+      font-size:clamp(23px,3vw,32px);
+      font-weight:900;
+    }
+
+    .page-heading p {
+      margin:5px 0 0;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .top-actions {
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .status {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:9px 13px;
+      border:1px solid rgba(60,201,165,.2);
+      border-radius:30px;
+      color:var(--green);
+      background:rgba(60,201,165,.06);
+      font-size:11px;
+    }
+
+    .status-dot {
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:var(--green);
+      box-shadow:0 0 10px var(--green);
+    }
+
+    .refresh-btn {
+      width:42px;
+      height:42px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      color:var(--gold2);
+      background:var(--panel);
+      font-size:19px;
+    }
+
+    .welcome {
+      position:relative;
+      overflow:hidden;
+      padding:clamp(22px,4vw,35px);
+      border:1px solid rgba(215,184,117,.23);
+      border-radius:22px;
+      background:
+        radial-gradient(circle at 10% 20%,rgba(165,138,255,.16),transparent 32%),
+        linear-gradient(120deg,#192641,#172039 65%,#29233a);
+    }
+
+    .welcome::after {
+      content:"H";
+      position:absolute;
+      left:30px;
+      top:-55px;
+      color:rgba(215,184,117,.06);
+      font-family:Georgia,serif;
+      font-size:220px;
+      font-weight:900;
+      pointer-events:none;
+    }
+
+    .welcome-content {
+      position:relative;
+      z-index:1;
+    }
+
+    .welcome-tag {
+      color:var(--gold2);
+      font-size:11px;
+      font-weight:800;
+    }
+
+    .welcome h2 {
+      margin:8px 0;
+      font-size:clamp(22px,3vw,30px);
+    }
+
+    .welcome p {
+      max-width:650px;
+      margin:0;
+      color:#b8c1d3;
+      font-size:13px;
+      line-height:2;
+    }
+
+    .section-title {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin:30px 0 15px;
+    }
+
+    .section-title h2 {
+      margin:0;
+      font-size:18px;
+    }
+
+    .section-title span {
+      color:var(--muted);
+      font-size:11px;
+    }
+
+    .stats-grid {
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:14px;
+    }
+
+    .stat-card {
+      min-width:0;
+      padding:19px;
+      border:1px solid var(--line);
+      border-radius:17px;
+      background:linear-gradient(145deg,var(--panel2),var(--panel));
+    }
+
+    .stat-top {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+    }
+
+    .stat-icon {
+      width:38px;
+      height:38px;
+      display:grid;
+      place-items:center;
+      border-radius:12px;
+      background:rgba(215,184,117,.1);
+      color:var(--gold2);
+      font-size:18px;
+    }
+
+    .stat-name {
+      color:var(--muted);
+      font-size:11px;
+    }
+
+    .stat-value {
+      display:block;
+      margin-top:13px;
+      color:var(--text);
+      font-size:27px;
+      font-weight:900;
+    }
+
+    .stat-note {
+      display:block;
+      margin-top:2px;
+      color:#7e8ba5;
+      font-size:10px;
+    }
+
+    .management-grid {
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:14px;
+    }
+
+    .management-card {
+      min-width:0;
+      padding:19px;
+      border:1px solid var(--line);
+      border-radius:17px;
+      background:var(--panel);
+      transition:.2s;
+    }
+
+    .management-card:hover {
+      transform:translateY(-3px);
+      border-color:rgba(215,184,117,.4);
+    }
+
+    .management-card .card-icon {
+      width:45px;
+      height:45px;
+      display:grid;
+      place-items:center;
+      border-radius:13px;
+      color:var(--gold2);
+      background:rgba(215,184,117,.1);
+      font-size:21px;
+    }
+
+    .management-card h3 {
+      margin:13px 0 5px;
+      font-size:15px;
+    }
+
+    .management-card p {
+      min-height:42px;
+      margin:0;
+      color:var(--muted);
+      font-size:11px;
+      line-height:1.9;
+    }
+
+    .card-link {
+      display:inline-block;
+      margin-top:13px;
+      color:var(--gold2);
+      font-size:11px;
+      font-weight:800;
+    }
+
+    .future-card {
+      opacity:.65;
+      border-style:dashed;
+    }
+
+    .future-label {
+      display:inline-block;
+      margin-top:10px;
+      padding:4px 9px;
+      border-radius:20px;
+      color:#bba9ed;
+      background:rgba(165,138,255,.1);
+      font-size:10px;
+    }
+
+    .admin-notice {
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+      margin-top:25px;
+      padding:17px;
+      border:1px solid rgba(101,168,255,.2);
+      border-radius:15px;
+      color:#b9d6ff;
+      background:rgba(101,168,255,.06);
+      font-size:12px;
+      line-height:2;
+    }
+
+    .admin-notice strong { color:#d5e5ff; }
+
+    .admin-view { display:none; }
+    .admin-view.active { display:block; }
+
+    .loading-screen,
+    .denied-screen {
+      max-width:560px;
+      margin:12vh auto;
+      padding:35px 25px;
+      border:1px solid var(--line);
+      border-radius:22px;
+      background:var(--panel);
+      text-align:center;
+    }
+
+    .loading-screen h2,
+    .denied-screen h2 { margin:10px 0; }
+
+    .loading-screen p,
+    .denied-screen p {
+      color:var(--muted);
+      font-size:13px;
+      line-height:2;
+    }
+
+    .loading-mark {
+      width:52px;
+      height:52px;
+      display:grid;
+      place-items:center;
+      margin:auto;
+      border:1px solid var(--line);
+      border-radius:16px;
+      color:var(--gold2);
+      font-size:25px;
+    }
+
+    @media(max-width:1100px) {
+      .stats-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .management-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .admin-layout { grid-template-columns:225px minmax(0,1fr); }
+    }
+
+    @media(max-width:720px) {
+      .admin-layout { display:block; }
+      .sidebar {
+        position:relative;
+        width:100%;
+        height:auto;
+        padding:13px;
+        border-left:0;
+        border-bottom:1px solid var(--line);
+      }
+      .brand { padding:3px 5px 12px; }
+      .brand-logo { width:40px;height:40px; }
+      .brand-name { font-size:21px; }
+      .admin-label { margin:13px 7px 8px; }
+      .nav-list {
+        display:flex;
+        overflow-x:auto;
+        padding-bottom:5px;
+      }
+      .nav-item {
+        flex:0 0 auto;
+        width:auto;
+        min-height:42px;
+        white-space:nowrap;
+      }
+      .nav-item small { display:none; }
+      .sidebar-bottom { display:none; }
+      .main { padding:20px 13px 35px; }
+      .management-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    }
+
+    @media(max-width:420px) {
+      .stats-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; }
+      .stat-card { padding:13px; }
+      .stat-value { font-size:22px; }
+      .management-grid { grid-template-columns:1fr; }
+      .topbar { align-items:flex-start; }
+      .status { font-size:10px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="adminLoading" class="loading-screen">
+    <div class="loading-mark">H</div>
+    <h2>جاري فتح مركز إدارة هنون</h2>
+    <p>يتم التحقق من حسابك وصلاحيات الإدارة...</p>
+  </div>
+
+  <div id="adminDenied" class="denied-screen" hidden>
+    <div class="loading-mark">!</div>
+    <h2>الوصول غير مسموح</h2>
+    <p id="adminDeniedMessage">
+      هذه الصفحة مخصصة لمسؤولي هنون فقط.
+    </p>
+    <a class="back-home" href="../index.html">العودة إلى هنون</a>
+  </div>
+
+  <div class="admin-layout" id="adminApp" hidden>
+
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-logo">H</div>
+        <div>
+          <div class="brand-name">HANOON</div>
+          <span class="brand-sub">ADMIN CONTROL CENTER</span>
+        </div>
+      </div>
+
+      <div class="admin-label">مركز الإدارة</div>
+
+      <nav class="nav-list">
+        <button class="nav-item active" data-admin-view="overview">
+          <span class="nav-icon">⌂</span> الرئيسية
+        </button>
+        <button class="nav-item" data-admin-view="members">
+          <span class="nav-icon">♙</span> الأعضاء
+        </button>
+        <button class="nav-item" data-admin-view="content">
+          <span class="nav-icon">▤</span> المحتوى
+        </button>
+        <button class="nav-item" data-admin-view="reports">
+          <span class="nav-icon">⚑</span> البلاغات
+        </button>
+        <button class="nav-item" data-admin-view="announcements">
+          <span class="nav-icon">◉</span> الإعلانات
+        </button>
+        <button class="nav-item" data-admin-view="site">
+          <span class="nav-icon">⚙</span> إعدادات الموقع
+        </button>
+      </nav>
+
+      <div class="admin-label">مراحل قادمة</div>
+
+      <nav class="nav-list">
+        <button class="nav-item" data-admin-view="groups">
+          <span class="nav-icon">♧</span> الجروبات
+          <small>قريبًا</small>
+        </button>
+        <button class="nav-item" data-admin-view="games">
+          <span class="nav-icon">◇</span> الألعاب
+          <small>قريبًا</small>
+        </button>
+        <button class="nav-item" data-admin-view="competitions">
+          <span class="nav-icon">♜</span> المسابقات
+          <small>قريبًا</small>
+        </button>
+        <button class="nav-item" data-admin-view="analytics">
+          <span class="nav-icon">▥</span> التحليلات
+          <small>قريبًا</small>
+        </button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <a class="back-home" href="../index.html">← العودة إلى الموقع</a>
+      </div>
+    </aside>
+
+    <main class="main">
+
+      <header class="topbar">
+        <div class="page-heading">
+          <h1 id="adminPageTitle">لوحة التحكم</h1>
+          <p>إدارة ومتابعة منصة هنون من مكان واحد</p>
+        </div>
+
+        <div class="top-actions">
+          <div class="status">
+            <span class="status-dot"></span>
+            مركز الإدارة
+          </div>
+          <button class="refresh-btn" id="adminRefresh" title="تحديث البيانات">↻</button>
+        </div>
+      </header>
+
+      <section class="admin-view active" data-view="overview">
+
+        <div class="welcome">
+          <div class="welcome-content">
+            <span class="welcome-tag">HANOON ADMINISTRATION</span>
+            <h2>مرحبًا بك في مركز إدارة هنون</h2>
+            <p>
+              من هنا ستتمكن من متابعة الأعضاء والمحتوى والبلاغات
+              وإدارة الخدمات المختلفة، مع إضافة أدوات جديدة كلما
+              تطورت المنصة.
+            </p>
+          </div>
+        </div>
+
+        <div class="section-title">
+          <h2>نظرة عامة على المنصة</h2>
+          <span>إحصائيات قاعدة البيانات</span>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-top">
+              <span class="stat-name">إجمالي الأعضاء</span>
+              <span class="stat-icon">♙</span>
+            </div>
+            <strong class="stat-value" data-admin-stat="members">—</strong>
+            <span class="stat-note">حسابات الأعضاء</span>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-top">
+              <span class="stat-name">الكتب</span>
+              <span class="stat-icon">▤</span>
+            </div>
+            <strong class="stat-value" data-admin-stat="books">—</strong>
+            <span class="stat-note">محتوى المكتبة</span>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-top">
+              <span class="stat-name">المقالات</span>
+              <span class="stat-icon">✎</span>
+            </div>
+            <strong class="stat-value" data-admin-stat="articles">—</strong>
+            <span class="stat-note">المقالات المنشورة</span>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-top">
+              <span class="stat-name">البلاغات المعلقة</span>
+              <span class="stat-icon">⚑</span>
+            </div>
+            <strong class="stat-value" data-admin-stat="reports">—</strong>
+            <span class="stat-note">تحتاج إلى المراجعة</span>
+          </article>
+        </div>
+
+        <div class="section-title">
+          <h2>أقسام الإدارة</h2>
+          <span>الوصول السريع</span>
+        </div>
+
+        <div class="management-grid">
+
+          <article class="management-card">
+            <div class="card-icon">♙</div>
+            <h3>إدارة الأعضاء</h3>
+            <p>متابعة الحسابات والملفات الشخصية وصلاحيات الأعضاء.</p>
+            <a class="card-link" href="#" data-open-view="members">فتح القسم ←</a>
+          </article>
+
+          <article class="management-card">
+            <div class="card-icon">▤</div>
+            <h3>إدارة المحتوى</h3>
+            <p>متابعة الكتب والمقالات والقصص والشعر والأبحاث.</p>
+            <a class="card-link" href="#" data-open-view="content">فتح القسم ←</a>
+          </article>
+
+          <article class="management-card">
+            <div class="card-icon">⚑</div>
+            <h3>مراجعة البلاغات</h3>
+            <p>متابعة البلاغات المقدمة ومراجعتها واتخاذ الإجراءات.</p>
+            <a class="card-link" href="#" data-open-view="reports">فتح القسم ←</a>
+          </article>
+
+          <article class="management-card">
+            <div class="card-icon">◉</div>
+            <h3>الإعلانات والإشعارات</h3>
+            <p>إدارة التنبيهات والإعلانات العامة الموجهة للأعضاء.</p>
+            <a class="card-link" href="#" data-open-view="announcements">فتح القسم ←</a>
+          </article>
+
+          <article class="management-card">
+            <div class="card-icon">⚙</div>
+            <h3>إعدادات الموقع</h3>
+            <p>التحكم في الهوية العامة والإعدادات الرئيسية للمنصة.</p>
+            <a class="card-link" href="#" data-open-view="site">فتح القسم ←</a>
+          </article>
+
+          <article class="management-card future-card">
+            <div class="card-icon">♧</div>
+            <h3>إدارة الجروبات</h3>
+            <p>إنشاء الجروبات وإدارتها ومتابعة الأعضاء والمشرفين.</p>
+            <span class="future-label">مرحلة مستقبلية</span>
+          </article>
+
+          <article class="management-card future-card">
+            <div class="card-icon">◇</div>
+            <h3>الألعاب والتحديات</h3>
+            <p>إدارة الألعاب والتحديات ونظام النقاط والمكافآت.</p>
+            <span class="future-label">مرحلة مستقبلية</span>
+          </article>
+
+          <article class="management-card future-card">
+            <div class="card-icon">♜</div>
+            <h3>المسابقات</h3>
+            <p>إنشاء المسابقات ومتابعة المشاركات والنتائج.</p>
+            <span class="future-label">مرحلة مستقبلية</span>
+          </article>
+
+          <article class="management-card future-card">
+            <div class="card-icon">▥</div>
+            <h3>تحليلات المنصة</h3>
+            <p>إحصائيات الاستخدام والنشاط والتفاعل داخل هنون.</p>
+            <span class="future-label">مرحلة مستقبلية</span>
+          </article>
+
+        </div>
+
+        <div class="admin-notice">
+          <span>ⓘ</span>
+          <div>
+            <strong>ملاحظة إدارية:</strong>
+            الأقسام المستقبلية ظاهرة في الخطة فقط، ولن تعمل كوظائف
+            فعلية إلا بعد بناء خدماتها وربطها بقاعدة البيانات.
+          </div>
+        </div>
+      </section>
+
+      <section class="admin-view" data-view="members">
+        <div class="section-title">
+          <h2>إدارة الأعضاء</h2>
+          <span>الحسابات والصلاحيات</span>
+        </div>
+        <div id="adminMembersContent"></div>
+      </section>
+
+      <section class="admin-view" data-view="content">
+        <div class="section-title">
+          <h2>إدارة المحتوى</h2>
+          <span>مكتبة هنون ومحتوياته</span>
+        </div>
+        <div id="adminContentArea"></div>
+      </section>
+
+      <section class="admin-view" data-view="reports">
+        <div class="section-title">
+          <h2>البلاغات</h2>
+          <span>مراجعة البلاغات</span>
+        </div>
+        <div id="adminReportsContent"></div>
+      </section>
+
+      <section class="admin-view" data-view="announcements">
+        <div class="section-title">
+          <h2>الإعلانات والإشعارات</h2>
+          <span>التواصل مع أعضاء هنون</span>
+        </div>
+        <div id="adminAnnouncementsContent"></div>
+      </section>
+
+      <section class="admin-view" data-view="site">
+        <div class="section-title">
+          <h2>إعدادات الموقع</h2>
+          <span>التحكم العام</span>
+        </div>
+        <div id="adminSiteSettingsContent"></div>
+      </section>
+
+      <section class="admin-view" data-view="groups">
+        <h2>إدارة الجروبات</h2>
+        <p>سيتم بناء هذا القسم عند تنفيذ نظام الجروبات.</p>
+      </section>
+
+      <section class="admin-view" data-view="games">
+        <h2>الألعاب والتحديات</h2>
+        <p>سيتم بناء هذا القسم عند تنفيذ نظام الألعاب.</p>
+      </section>
+
+      <section class="admin-view" data-view="competitions">
+        <h2>المسابقات</h2>
+        <p>سيتم بناء هذا القسم عند تنفيذ نظام المسابقات.</p>
+      </section>
+
+      <section class="admin-view" data-view="analytics">
+        <h2>تحليلات المنصة</h2>
+        <p>سيتم بناء هذا القسم بعد تجهيز بيانات النشاط والإحصائيات.</p>
+      </section>
+
+    </main>
+  </div>
+
+  <script type="module" src="../js/supabase-client.js"></script>
+  <script src="../js/admin-panel.js" defer></script>
+</body>
+</html>
