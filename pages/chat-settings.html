@@ -1,0 +1,396 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101b25">
+<title>إعدادات الشات | هنون</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --accent:#25b9a8;
+  --bg:#0c151e;
+  --panel:#14232e;
+  --panel2:#1b2c38;
+  --text:#f2f8fa;
+  --muted:#9db2bc;
+  --line:#ffffff18;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--text);
+  font-family:Cairo,sans-serif;
+  background:
+    radial-gradient(ellipse at 10% 5%,#145b6040,transparent 40%),
+    radial-gradient(ellipse at 90% 90%,#234c6940,transparent 40%),
+    linear-gradient(145deg,#08121b,#10232d);
+}
+button,a{font:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+.topbar{
+  position:sticky;top:0;z-index:5;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;
+  background:#091720eF;
+  border-bottom:1px solid var(--line);
+  backdrop-filter:blur(18px);
+}
+.topbar strong{font-size:14px;font-weight:900}
+.back{
+  padding:7px 13px;border:1px solid var(--line);
+  border-radius:12px;background:#ffffff0b;color:#c8f8f0;
+  font-size:11px;font-weight:800;
+}
+.container{width:min(850px,94%);margin:20px auto 45px}
+.intro{margin-bottom:18px}
+.intro h1{margin:0;font-size:23px;font-weight:900}
+.intro p{margin:5px 0;color:var(--muted);font-size:11px}
+.section{
+  margin-bottom:15px;padding:15px;
+  border:1px solid var(--line);border-radius:18px;
+  background:linear-gradient(145deg,#172a35eF,#10212cE8);
+  box-shadow:0 12px 35px #0002;
+}
+.section-head{display:flex;align-items:center;gap:9px;margin-bottom:13px}
+.section-icon{
+  width:35px;height:35px;display:grid;place-items:center;
+  border-radius:12px;background:#25b9a81b;color:#6ce5d5;
+}
+.section-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.section-head h2{margin:0;font-size:13px;font-weight:900}
+.section-head p{margin:2px 0 0;color:var(--muted);font-size:9px}
+.wallpaper-grid{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;
+}
+.wallpaper{
+  position:relative;overflow:hidden;min-width:0;
+  height:105px;border:2px solid transparent;border-radius:13px;
+  padding:0;background:#24333e;color:white;
+}
+.wallpaper.selected{border-color:#52e1d0;box-shadow:0 0 0 2px #52e1d033}
+.wallpaper span{
+  position:absolute;bottom:0;right:0;left:0;
+  padding:5px 3px;background:#07121bcc;
+  font-size:9px;font-weight:800;
+}
+.wallpaper:after{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 25% 30%,#ffffff22,transparent 40%);
+  pointer-events:none;
+}
+.wallpaper.selected:before{
+  content:"✓";position:absolute;z-index:2;top:7px;left:7px;
+  width:21px;height:21px;display:grid;place-items:center;
+  border-radius:50%;background:#28bba9;color:#06221f;font-weight:900;
+}
+.wallpaper[data-wall="dark"]{background:linear-gradient(145deg,#101820,#263943)}
+.wallpaper[data-wall="teal"]{background:linear-gradient(145deg,#075e59,#123d56)}
+.wallpaper[data-wall="purple"]{background:linear-gradient(145deg,#38245e,#171f45)}
+.wallpaper[data-wall="blue"]{background:linear-gradient(145deg,#123c68,#17283e)}
+.wallpaper[data-wall="rose"]{background:linear-gradient(145deg,#713d57,#38283e)}
+.wallpaper[data-wall="sand"]{background:linear-gradient(145deg,#8a7050,#403b35)}
+.wallpaper[data-wall="green"]{background:linear-gradient(145deg,#234d39,#102b2a)}
+.wallpaper[data-wall="night"]{
+  background-color:#101b2b;
+  background-image:radial-gradient(#ffffff32 1px,transparent 1px);
+  background-size:13px 13px;
+}
+.wallpaper[data-wall="waves"]{
+  background-color:#123a48;
+  background-image:repeating-radial-gradient(ellipse at 20% 20%,transparent 0 9px,#ffffff19 10px 11px,transparent 12px 22px);
+}
+.preview{
+  padding:13px;border:1px solid var(--line);
+  border-radius:15px;min-height:190px;
+  display:flex;flex-direction:column;gap:10px;
+  background:linear-gradient(145deg,#101820,#263943);
+  transition:background .2s;
+}
+.preview-label{font-size:9px;color:#b6cbd0;text-align:center}
+.bubble{
+  max-width:82%;padding:9px 12px;border-radius:15px;
+  font-size:11px;line-height:1.8;box-shadow:0 3px 10px #0002;
+}
+.bubble.mine{align-self:flex-start;background:#126d61;border-radius:15px 15px 15px 4px}
+.bubble.theirs{align-self:flex-end;background:#263d49;border-radius:15px 15px 4px 15px}
+.bubble small{display:block;text-align:left;color:#c3dfd9;font-size:8px;margin-top:3px}
+.options{display:grid;gap:9px}
+.option{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:10px 11px;border:1px solid var(--line);
+  border-radius:12px;background:#ffffff06;
+}
+.option-copy{min-width:0}
+.option-copy strong{display:block;font-size:11px}
+.option-copy small{display:block;color:var(--muted);font-size:9px;margin-top:2px}
+select{
+  max-width:48%;padding:7px 9px;
+  border:1px solid #ffffff25;border-radius:10px;
+  outline:none;background:#0c1c26;color:white;font-size:10px;
+}
+.switch{
+  width:43px;height:24px;flex:0 0 43px;
+  position:relative;border:0;border-radius:20px;
+  background:#52616b;padding:3px;transition:.2s;
+}
+.switch:after{
+  content:"";display:block;width:18px;height:18px;
+  border-radius:50%;background:white;transition:.2s;
+}
+.switch.on{background:#21ad9d}
+.switch.on:after{transform:translateX(-19px)}
+.actions{display:flex;gap:9px;margin-top:17px}
+.action{
+  flex:1;min-height:43px;border:0;border-radius:12px;
+  background:linear-gradient(135deg,#1db9a7,#197d91);
+  color:white;font-size:11px;font-weight:900;
+}
+.action.secondary{background:#ffffff0c;border:1px solid var(--line)}
+.status{text-align:center;color:#8cebdc;font-size:10px;min-height:20px;margin-top:10px}
+@media(max-width:480px){
+  .container{width:94%;margin-top:15px}
+  .section{padding:12px}
+  .wallpaper-grid{gap:7px}
+  .wallpaper{height:88px}
+  .intro h1{font-size:20px}
+  .actions{flex-direction:column}
+}
+</style>
+</head>
+
+<body>
+<header class="topbar">
+  <strong>إعدادات المحادثات</strong>
+  <a class="back" href="messages.html">العودة للشات</a>
+</header>
+
+<main class="container">
+  <div class="intro">
+    <h1>تخصيص الشات</h1>
+    <p>اختار شكل محادثاتك وخلي تجربة هنون على ذوقك.</p>
+  </div>
+
+  <section class="section">
+    <div class="section-head">
+      <span class="section-icon">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8" cy="8" r="1"/><path d="m21 15-5-5L5 21"/></svg>
+      </span>
+      <div><h2>خلفية المحادثة</h2><p>اختار خلفية تظهر خلف الرسائل</p></div>
+    </div>
+
+    <div class="wallpaper-grid" id="wallpaperGrid">
+      <button class="wallpaper" data-wall="dark"><span>داكن</span></button>
+      <button class="wallpaper" data-wall="teal"><span>تركواز</span></button>
+      <button class="wallpaper" data-wall="purple"><span>بنفسجي</span></button>
+      <button class="wallpaper" data-wall="blue"><span>أزرق</span></button>
+      <button class="wallpaper" data-wall="rose"><span>وردي داكن</span></button>
+      <button class="wallpaper" data-wall="sand"><span>رملي</span></button>
+      <button class="wallpaper" data-wall="green"><span>أخضر</span></button>
+      <button class="wallpaper" data-wall="night"><span>نجوم</span></button>
+      <button class="wallpaper" data-wall="waves"><span>موجات</span></button>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <span class="section-icon">
+        <svg viewBox="0 0 24 24"><path d="M4 5h16v12H9l-5 4z"/><path d="M8 9h8M8 13h5"/></svg>
+      </span>
+      <div><h2>معاينة شكل الرسائل</h2><p>شوف شكل الفقاعات قبل الحفظ</p></div>
+    </div>
+    <div class="preview" id="chatPreview">
+      <div class="preview-label">معاينة المحادثة</div>
+      <div class="bubble mine">أهلاً بيك في هنون 👋<small>10:30 ص</small></div>
+      <div class="bubble theirs">أهلاً! عامل إيه؟<small>10:31 ص</small></div>
+      <div class="bubble mine">تمام، خلينا نبدأ كلامنا.</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <span class="section-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2"/></svg>
+      </span>
+      <div><h2>شكل المحادثة</h2><p>تحكم في المظهر وحجم النص</p></div>
+    </div>
+    <div class="options">
+      <div class="option">
+        <div class="option-copy"><strong>مظهر الشات</strong><small>اختار المظهر المناسب</small></div>
+        <select id="chatTheme">
+          <option value="dark">داكن</option>
+          <option value="light">فاتح</option>
+          <option value="system">حسب الجهاز</option>
+        </select>
+      </div>
+      <div class="option">
+        <div class="option-copy"><strong>حجم الخط</strong><small>حجم الكتابة داخل الرسائل</small></div>
+        <select id="fontSize">
+          <option value="small">صغير</option>
+          <option value="medium">متوسط</option>
+          <option value="large">كبير</option>
+        </select>
+      </div>
+      <div class="option">
+        <div class="option-copy"><strong>شكل الفقاعات</strong><small>اختار درجة استدارة الرسائل</small></div>
+        <select id="bubbleStyle">
+          <option value="rounded">دائرية ناعمة</option>
+          <option value="soft">ناعمة</option>
+          <option value="square">مربعة بسيطة</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <span class="section-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 3v18M5 8h14M5 16h14"/></svg>
+      </span>
+      <div><h2>خيارات إضافية</h2><p>تحكم في تفاصيل تجربة المراسلة</p></div>
+    </div>
+    <div class="options">
+      <div class="option">
+        <div class="option-copy"><strong>معاينة الرسائل</strong><small>إظهار نص الرسالة في قائمة المحادثات</small></div>
+        <button class="switch on" id="messagePreview" type="button" aria-label="معاينة الرسائل"></button>
+      </div>
+      <div class="option">
+        <div class="option-copy"><strong>تقليل الحركة</strong><small>تقليل التأثيرات والانتقالات</small></div>
+        <button class="switch" id="reduceMotion" type="button" aria-label="تقليل الحركة"></button>
+      </div>
+    </div>
+  </section>
+
+  <div class="actions">
+    <button class="action" id="saveSettings" type="button">حفظ الإعدادات</button>
+    <button class="action secondary" id="resetSettings" type="button">استعادة الافتراضي</button>
+  </div>
+  <div class="status" id="saveStatus" role="status"></div>
+</main>
+
+<script>
+(() => {
+  "use strict";
+
+  const KEY = "hanoon_chat_preferences_v1";
+  const defaults = {
+    wallpaper:"dark",
+    theme:"dark",
+    fontSize:"medium",
+    bubbleStyle:"rounded",
+    messagePreview:true,
+    reduceMotion:false
+  };
+
+  const $ = id => document.getElementById(id);
+  let settings = {...defaults};
+
+  try {
+    const saved = JSON.parse(localStorage.getItem(KEY) || "{}");
+    settings = {...defaults,...saved};
+  } catch(e) {
+    settings = {...defaults};
+  }
+
+  const wallpaperBackgrounds = {
+    dark:"linear-gradient(145deg,#101820,#263943)",
+    teal:"linear-gradient(145deg,#075e59,#123d56)",
+    purple:"linear-gradient(145deg,#38245e,#171f45)",
+    blue:"linear-gradient(145deg,#123c68,#17283e)",
+    rose:"linear-gradient(145deg,#713d57,#38283e)",
+    sand:"linear-gradient(145deg,#8a7050,#403b35)",
+    green:"linear-gradient(145deg,#234d39,#102b2a)",
+    night:"radial-gradient(#ffffff32 1px,transparent 1px),#101b2b",
+    waves:"repeating-radial-gradient(ellipse at 20% 20%,transparent 0 9px,#ffffff19 10px 11px,transparent 12px 22px),#123a48"
+  };
+
+  function renderWallpaper(){
+    document.querySelectorAll(".wallpaper").forEach(button => {
+      const selected = button.dataset.wall === settings.wallpaper;
+      button.classList.toggle("selected",selected);
+      button.setAttribute("aria-pressed",String(selected));
+    });
+    $("chatPreview").style.background = wallpaperBackgrounds[settings.wallpaper] || wallpaperBackgrounds.dark;
+  }
+
+  function renderOptions(){
+    $("chatTheme").value = settings.theme;
+    $("fontSize").value = settings.fontSize;
+    $("bubbleStyle").value = settings.bubbleStyle;
+    setSwitch("messagePreview",settings.messagePreview);
+    setSwitch("reduceMotion",settings.reduceMotion);
+    renderWallpaper();
+    renderPreview();
+  }
+
+  function setSwitch(id,value){
+    const button = $(id);
+    button.classList.toggle("on",!!value);
+    button.setAttribute("aria-pressed",String(!!value));
+  }
+
+  function renderPreview(){
+    const preview = $("chatPreview");
+    const size = {small:"10px",medium:"11px",large:"14px"}[settings.fontSize];
+    const radius = {
+      rounded:"16px",
+      soft:"10px",
+      square:"5px"
+    }[settings.bubbleStyle];
+    preview.querySelectorAll(".bubble").forEach(bubble => {
+      bubble.style.fontSize = size;
+      bubble.style.borderRadius = radius;
+    });
+  }
+
+  document.querySelectorAll(".wallpaper").forEach(button => {
+    button.addEventListener("click",() => {
+      settings.wallpaper = button.dataset.wall;
+      renderWallpaper();
+    });
+  });
+
+  $("chatTheme").addEventListener("change",e => {
+    settings.theme = e.target.value;
+  });
+  $("fontSize").addEventListener("change",e => {
+    settings.fontSize = e.target.value;
+    renderPreview();
+  });
+  $("bubbleStyle").addEventListener("change",e => {
+    settings.bubbleStyle = e.target.value;
+    renderPreview();
+  });
+
+  ["messagePreview","reduceMotion"].forEach(id => {
+    $(id).addEventListener("click",() => {
+      settings[id] = !settings[id];
+      setSwitch(id,settings[id]);
+    });
+  });
+
+  $("saveSettings").addEventListener("click",() => {
+    try {
+      localStorage.setItem(KEY,JSON.stringify(settings));
+      $("saveStatus").textContent = "تم حفظ اختياراتك على هذا الجهاز.";
+    } catch(error) {
+      $("saveStatus").textContent = "تعذر الحفظ على هذا الجهاز.";
+    }
+  });
+
+  $("resetSettings").addEventListener("click",() => {
+    settings = {...defaults};
+    renderOptions();
+    localStorage.removeItem(KEY);
+    $("saveStatus").textContent = "تمت استعادة الإعدادات الافتراضية.";
+  });
+
+  renderOptions();
+})();
+</script>
+</body>
+</html>
