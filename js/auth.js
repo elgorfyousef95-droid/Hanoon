@@ -4,15 +4,88 @@
    Supabase Login / Registration / Profile
 ===================================================== */
 
-(() => {
+(async () => {
   "use strict";
 
-  const $ = (selector) => document.querySelector(selector);
+  const $ = selector => document.querySelector(selector);
 
-  const supabase = window.HANOON?.supabase;
+  /* انتظار اتصال Supabase */
+  function waitForSupabase() {
+    return new Promise((resolve, reject) => {
+      if (window.HANOON?.supabase) {
+        resolve(window.HANOON.supabase);
+        return;
+      }
 
-  if (!supabase) {
-    console.error("HANOON: Supabase client is not ready.");
+      let timer;
+
+      const cleanup = () => {
+        clearTimeout(timer);
+        window.removeEventListener(
+          "hanoon:supabase-ready",
+          onReady
+        );
+        window.removeEventListener(
+          "hanoon:supabase-error",
+          onError
+        );
+      };
+
+      const onReady = () => {
+        cleanup();
+
+        const client = window.HANOON?.supabase;
+
+        if (client) resolve(client);
+        else reject(new Error("تعذر تشغيل اتصال قاعدة البيانات."));
+      };
+
+      const onError = event => {
+        cleanup();
+        reject(
+          new Error(
+            event.detail?.message ||
+            "تعذر الاتصال بقاعدة البيانات."
+          )
+        );
+      };
+
+      timer = setTimeout(() => {
+        cleanup();
+        reject(
+          new Error("انتهت مهلة الاتصال. حدّث الصفحة وحاول مرة أخرى.")
+        );
+      }, 15000);
+
+      window.addEventListener(
+        "hanoon:supabase-ready",
+        onReady
+      );
+
+      window.addEventListener(
+        "hanoon:supabase-error",
+        onError
+      );
+
+      // فحص إضافي تحسبًا لوصول الاتصال أثناء تسجيل المستمع
+      if (window.HANOON?.supabase) onReady();
+    });
+  }
+
+  let supabase;
+
+  try {
+    supabase = await waitForSupabase();
+  } catch (error) {
+    console.error("HANOON Supabase:", error);
+
+    const message = $("#authMessage");
+
+    if (message) {
+      message.textContent = error.message;
+      message.className = "message show error";
+    }
+
     return;
   }
 
@@ -35,9 +108,13 @@
     steps: [...document.querySelectorAll(".step")]
   };
 
+  /* الرسائل */
   function notify(message, type = "error") {
+    if (!elements.message) return;
+
     elements.message.textContent = message;
     elements.message.className = `message show ${type}`;
+
     elements.message.scrollIntoView({
       behavior: "smooth",
       block: "nearest"
@@ -45,6 +122,8 @@
   }
 
   function clearMessage() {
+    if (!elements.message) return;
+
     elements.message.textContent = "";
     elements.message.className = "message";
   }
@@ -55,41 +134,57 @@
     button.disabled = busy;
 
     if (busy) {
-      button.dataset.originalText = button.textContent;
+      if (!button.dataset.originalText) {
+        button.dataset.originalText = button.textContent;
+      }
+
       button.textContent = text || "جارٍ التنفيذ...";
     } else {
       button.textContent =
         button.dataset.originalText || button.textContent;
+
+      delete button.dataset.originalText;
     }
   }
 
   function errorMessage(error) {
-    const messages = {
-      "Invalid login credentials":
-        "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
-
-      "User already registered":
-        "هذا البريد الإلكتروني مسجل بالفعل.",
-
-      "Email not confirmed":
-        "يجب تأكيد بريدك الإلكتروني أولاً.",
-
-      "Password should be at least 6 characters":
-        "كلمة المرور قصيرة جدًا.",
-
-      "duplicate key value violates unique constraint":
-        "اسم المستخدم مستخدم بالفعل."
-    };
-
     const message = error?.message || "";
 
-    for (const [key, value] of Object.entries(messages)) {
+    const messages = [
+      [
+        "Invalid login credentials",
+        "البريد الإلكتروني أو كلمة المرور غير صحيحة."
+      ],
+      [
+        "User already registered",
+        "هذا البريد الإلكتروني مسجل بالفعل."
+      ],
+      [
+        "Email not confirmed",
+        "يجب تأكيد بريدك الإلكتروني أولاً."
+      ],
+      [
+        "Password should be at least 6 characters",
+        "كلمة المرور قصيرة جدًا."
+      ],
+      [
+        "duplicate key value violates unique constraint",
+        "اسم المستخدم مستخدم بالفعل."
+      ],
+      [
+        "duplicate key",
+        "اسم المستخدم مستخدم بالفعل."
+      ]
+    ];
+
+    for (const [key, value] of messages) {
       if (message.includes(key)) return value;
     }
 
     return message || "حدث خطأ غير متوقع. حاول مرة أخرى.";
   }
 
+  /* التنقل بين تسجيل الدخول وإنشاء الحساب */
   function showLogin() {
     clearMessage();
 
@@ -124,16 +219,23 @@
     state.step = number;
 
     elements.steps.forEach((step, index) => {
-      step.classList.toggle("active", index + 1 === number);
+      step.classList.toggle(
+        "active",
+        index + 1 === number
+      );
     });
 
     elements.dots.forEach((dot, index) => {
-      dot.classList.toggle("active", index < number);
+      dot.classList.toggle(
+        "active",
+        index < number
+      );
     });
 
     clearMessage();
   }
 
+  /* التحقق من البيانات */
   function validateEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
@@ -185,6 +287,7 @@
     return true;
   }
 
+  /* ضغط الصورة وقصها */
   async function compressImage(file) {
     if (!file || !file.type.startsWith("image/")) {
       throw new Error("الملف المختار ليس صورة.");
@@ -203,6 +306,7 @@
         image.onerror = () => reject(
           new Error("تعذر قراءة الصورة.")
         );
+
         image.src = url;
       });
 
@@ -214,6 +318,10 @@
 
       const ctx = canvas.getContext("2d");
 
+      if (!ctx) {
+        throw new Error("تعذر تجهيز الصورة.");
+      }
+
       const cropSize = Math.min(
         image.naturalWidth,
         image.naturalHeight
@@ -224,8 +332,14 @@
 
       ctx.drawImage(
         image,
-        sx, sy, cropSize, cropSize,
-        0, 0, size, size
+        sx,
+        sy,
+        cropSize,
+        cropSize,
+        0,
+        0,
+        size,
+        size
       );
 
       const blob = await new Promise(resolve => {
@@ -243,11 +357,13 @@
     }
   }
 
+  /* حفظ الصورة مؤقتًا عند طلب تأكيد البريد */
   function readAsDataURL(blob) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
 
       reader.onload = () => resolve(reader.result);
+
       reader.onerror = () => reject(
         new Error("تعذر حفظ الصورة مؤقتًا.")
       );
@@ -257,16 +373,18 @@
   }
 
   async function saveTemporaryPhoto(blob) {
-    try {
-      const data = await readAsDataURL(blob);
-      sessionStorage.setItem("hanoon_pending_avatar", data);
-    } catch (error) {
-      console.warn("Temporary photo could not be saved.", error);
-    }
+    const data = await readAsDataURL(blob);
+
+    sessionStorage.setItem(
+      "hanoon_pending_avatar",
+      data
+    );
   }
 
   async function getPendingPhoto() {
-    const data = sessionStorage.getItem("hanoon_pending_avatar");
+    const data = sessionStorage.getItem(
+      "hanoon_pending_avatar"
+    );
 
     if (!data) return null;
 
@@ -274,6 +392,7 @@
     return await response.blob();
   }
 
+  /* رفع الصورة إلى Storage */
   async function uploadAvatar(userId, blob) {
     if (!blob) {
       throw new Error("الصورة الشخصية مطلوبة.");
@@ -281,7 +400,7 @@
 
     const path = `${userId}/avatar.webp`;
 
-    const { error: uploadError } = await supabase.storage
+    const { error } = await supabase.storage
       .from("avatars")
       .upload(path, blob, {
         contentType: "image/webp",
@@ -289,23 +408,23 @@
         cacheControl: "3600"
       });
 
-    if (uploadError) throw uploadError;
+    if (error) throw error;
 
     return path;
   }
 
+  /* إنشاء ملف العضو */
   async function createProfile(user, photoBlob) {
     const metadata = user.user_metadata || {};
 
     const name = String(metadata.full_name || "").trim();
+
     const username = String(metadata.username || "")
       .trim()
       .toLowerCase();
 
     if (!name || !username) {
-      throw new Error(
-        "بيانات الملف الشخصي غير مكتملة."
-      );
+      throw new Error("بيانات الملف الشخصي غير مكتملة.");
     }
 
     const avatarPath = await uploadAvatar(
@@ -339,6 +458,7 @@
     return data;
   }
 
+  /* جلب الملف أو إكمال إنشائه */
   async function getOrCreateProfile(user) {
     const { data: existing, error } = await supabase
       .from("profiles")
@@ -351,6 +471,7 @@
     if (existing) return existing;
 
     const metadata = user.user_metadata || {};
+
     let photoBlob = state.compressedPhoto;
 
     if (!photoBlob) {
@@ -359,16 +480,27 @@
 
     if (!photoBlob) {
       throw new Error(
-        "حسابك موجود، لكن إكمال الملف الشخصي يحتاج صورة. أعد اختيار الصورة بعد تسجيل الدخول."
+        "حسابك موجود، لكن ملفك الشخصي يحتاج صورة. اختر الصورة ثم أكمل إعداد حسابك."
       );
     }
 
     return await createProfile(user, photoBlob);
   }
 
+  /* حماية النصوص قبل عرضها */
+  function escapeHTML(value) {
+    return String(value || "").replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    })[char]);
+  }
+
+  /* عرض بطاقة الهوية ورمز QR */
   function showIdentity(profile) {
-    const old = $("#hanoonIdentity");
-    old?.remove();
+    $("#hanoonIdentity")?.remove();
 
     const overlay = document.createElement("div");
 
@@ -384,7 +516,14 @@
       background:rgba(5,8,18,.94);
       backdrop-filter:blur(12px);
       font-family:Cairo,sans-serif;
+      overflow-y:auto;
     `;
+
+    const avatarURL = profile.avatar_path
+      ? supabase.storage
+          .from("avatars")
+          .getPublicUrl(profile.avatar_path).data.publicUrl
+      : "";
 
     overlay.innerHTML = `
       <div style="
@@ -405,17 +544,17 @@
 
         <div style="
           margin:18px auto;
-          width:90px;height:90px;
+          width:90px;
+          height:90px;
           border-radius:50%;
           overflow:hidden;
           border:2px solid #D5B36C;
         ">
-          <img src="${
-            profile.avatar_path
-              ? supabase.storage.from("avatars")
-                  .getPublicUrl(profile.avatar_path).data.publicUrl
-              : ""
-          }" style="width:100%;height:100%;object-fit:cover">
+          <img
+            src="${escapeHTML(avatarURL)}"
+            alt="الصورة الشخصية"
+            style="width:100%;height:100%;object-fit:cover"
+          >
         </div>
 
         <h3>${escapeHTML(profile.full_name)}</h3>
@@ -466,45 +605,47 @@
     document.body.appendChild(overlay);
 
     const profileURL = new URL(
-      `profile.html?user=${encodeURIComponent(profile.username)}`,
+      `member.html?user=${encodeURIComponent(profile.username)}`,
       window.location.href
     ).href;
 
-    const qr = document.createElement("script");
+    function createQR() {
+      if (!window.QRCode) return;
 
-    qr.src =
-      "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";
+      new QRCode($("#hanoonQR"), {
+        text: profileURL,
+        width: 150,
+        height: 150,
+        colorDark: "#111827",
+        colorLight: "#FFFFFF",
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    }
 
-    qr.onload = () => {
-      if (window.QRCode) {
-        new QRCode($("#hanoonQR"), {
-          text: profileURL,
-          width: 150,
-          height: 150,
-          colorDark: "#111827",
-          colorLight: "#FFFFFF",
-          correctLevel: QRCode.CorrectLevel.M
-        });
-      }
-    };
+    if (window.QRCode) {
+      createQR();
+    } else {
+      const qr = document.createElement("script");
 
-    document.head.appendChild(qr);
+      qr.src =
+        "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";
+
+      qr.onload = createQR;
+
+      qr.onerror = () => {
+        $("#hanoonQR").textContent =
+          "تعذر تحميل رمز QR حاليًا.";
+      };
+
+      document.head.appendChild(qr);
+    }
 
     $("#hanoonContinue").addEventListener("click", () => {
       window.location.href = "profile.html";
     });
   }
 
-  function escapeHTML(value) {
-    return String(value || "").replace(/[&<>"']/g, char => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#039;"
-    })[char]);
-  }
-
+  /* إنشاء الحساب */
   async function register(event) {
     event.preventDefault();
 
@@ -513,18 +654,29 @@
     const button = $("#createAccountButton");
 
     state.busy = true;
-    setBusy(button, true, "جارٍ إنشاء الحساب...");
+
+    setBusy(
+      button,
+      true,
+      "جارٍ إنشاء الحساب..."
+    );
 
     try {
+      if (!validateStepOne() || !validateStepTwo()) {
+        return;
+      }
+
       const email = $("#registerEmail").value
-        .trim().toLowerCase();
+        .trim()
+        .toLowerCase();
 
       const password = $("#registerPassword").value;
 
       const name = $("#displayName").value.trim();
 
       const username = $("#username").value
-        .trim().toLowerCase();
+        .trim()
+        .toLowerCase();
 
       const hobbies = $("#hobbies").value
         .split(/[،,]/)
@@ -538,11 +690,10 @@
 
       const bio = $("#bio").value.trim();
 
-      if (!validateStepOne() || !validateStepTwo()) {
-        return;
-      }
+      state.compressedPhoto = await compressImage(
+        state.photo
+      );
 
-      state.compressedPhoto = await compressImage(state.photo);
       await saveTemporaryPhoto(state.compressedPhoto);
 
       const { data, error } = await supabase.auth.signUp({
@@ -556,7 +707,8 @@
             reading_interests: readingInterests,
             bio
           },
-          emailRedirectTo: window.location.origin +
+          emailRedirectTo:
+            window.location.origin +
             window.location.pathname
         }
       });
@@ -568,12 +720,13 @@
       }
 
       if (!data.session) {
+        showLogin();
+
         notify(
-          "تم إنشاء الحساب. افتح رسالة التأكيد التي وصلتك إلى بريدك الإلكتروني، ثم ارجع إلى هنا وسجّل الدخول لإكمال ملفك الشخصي.",
+          "تم إنشاء الحساب بنجاح. افتح رسالة التأكيد التي وصلتك إلى بريدك الإلكتروني، ثم ارجع وسجّل الدخول لإكمال ملفك الشخصي.",
           "success"
         );
 
-        showLogin();
         return;
       }
 
@@ -582,7 +735,9 @@
         state.compressedPhoto
       );
 
-      sessionStorage.removeItem("hanoon_pending_avatar");
+      sessionStorage.removeItem(
+        "hanoon_pending_avatar"
+      );
 
       showIdentity(profile);
 
@@ -596,6 +751,7 @@
     }
   }
 
+  /* تسجيل الدخول */
   async function login(event) {
     event.preventDefault();
 
@@ -604,11 +760,17 @@
     const button = $("#loginButton");
 
     state.busy = true;
-    setBusy(button, true, "جارٍ تسجيل الدخول...");
+
+    setBusy(
+      button,
+      true,
+      "جارٍ تسجيل الدخول..."
+    );
 
     try {
       const email = $("#loginEmail").value
-        .trim().toLowerCase();
+        .trim()
+        .toLowerCase();
 
       const password = $("#loginPassword").value;
 
@@ -634,7 +796,9 @@
         );
       }
 
-      sessionStorage.removeItem("hanoon_pending_avatar");
+      sessionStorage.removeItem(
+        "hanoon_pending_avatar"
+      );
 
       window.location.href = "profile.html";
 
@@ -648,9 +812,11 @@
     }
   }
 
+  /* استعادة كلمة المرور */
   async function resetPassword() {
     const email = $("#loginEmail").value
-      .trim().toLowerCase();
+      .trim()
+      .toLowerCase();
 
     if (!validateEmail(email)) {
       notify("اكتب بريدك الإلكتروني أولاً.");
@@ -660,7 +826,8 @@
     try {
       const { error } = await supabase.auth
         .resetPasswordForEmail(email, {
-          redirectTo: window.location.origin +
+          redirectTo:
+            window.location.origin +
             window.location.pathname
         });
 
@@ -676,9 +843,17 @@
     }
   }
 
+  /* ربط الأزرار والحقول */
   function bindEvents() {
-    elements.loginTab.addEventListener("click", showLogin);
-    elements.registerTab.addEventListener("click", showRegister);
+    elements.loginTab.addEventListener(
+      "click",
+      showLogin
+    );
+
+    elements.registerTab.addEventListener(
+      "click",
+      showRegister
+    );
 
     $("#nextStep1").addEventListener("click", () => {
       if (validateStepOne()) goToStep(2);
@@ -688,58 +863,93 @@
       if (validateStepTwo()) goToStep(3);
     });
 
-    $("#backStep2").addEventListener("click", () => goToStep(1));
-    $("#backStep3").addEventListener("click", () => goToStep(2));
+    $("#backStep2").addEventListener(
+      "click",
+      () => goToStep(1)
+    );
 
-    $("#profilePhoto").addEventListener("change", event => {
-      const file = event.target.files?.[0];
+    $("#backStep3").addEventListener(
+      "click",
+      () => goToStep(2)
+    );
 
-      if (!file) return;
+    $("#profilePhoto").addEventListener(
+      "change",
+      event => {
+        const file = event.target.files?.[0];
 
-      if (file.size > 5 * 1024 * 1024) {
-        notify("حجم الصورة يجب ألا يتجاوز 5 ميجابايت.");
-        event.target.value = "";
-        return;
+        if (!file) return;
+
+        if (!file.type.startsWith("image/")) {
+          notify("اختَر ملف صورة صالحًا.");
+          event.target.value = "";
+          return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+          notify("حجم الصورة يجب ألا يتجاوز 5 ميجابايت.");
+          event.target.value = "";
+          return;
+        }
+
+        state.photo = file;
+
+        const preview = $("#photoPreview");
+        const url = URL.createObjectURL(file);
+
+        preview.innerHTML = "";
+
+        const image = document.createElement("img");
+
+        image.src = url;
+        image.alt = "معاينة الصورة الشخصية";
+
+        image.onload = () => URL.revokeObjectURL(url);
+
+        preview.appendChild(image);
+
+        clearMessage();
       }
+    );
 
-      state.photo = file;
+    elements.loginForm.addEventListener(
+      "submit",
+      login
+    );
 
-      const preview = $("#photoPreview");
-      const url = URL.createObjectURL(file);
+    elements.registerForm.addEventListener(
+      "submit",
+      register
+    );
 
-      preview.innerHTML = "";
-
-      const image = document.createElement("img");
-      image.src = url;
-
-      image.onload = () => URL.revokeObjectURL(url);
-
-      preview.appendChild(image);
-      clearMessage();
-    });
-
-    elements.loginForm.addEventListener("submit", login);
-    elements.registerForm.addEventListener("submit", register);
-
-    $("#forgotPassword").addEventListener("click", event => {
-      event.preventDefault();
-      resetPassword();
-    });
+    $("#forgotPassword").addEventListener(
+      "click",
+      event => {
+        event.preventDefault();
+        resetPassword();
+      }
+    );
   }
 
+  /* تشغيل الصفحة */
   async function init() {
     bindEvents();
 
-    const { data } = await supabase.auth.getSession();
+    const { data, error } = await supabase.auth.getSession();
+
+    if (error) throw error;
 
     if (data.session) {
       const user = data.session.user;
 
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("id,profile_completed")
-        .eq("id", user.id)
-        .maybeSingle();
+      const { data: profile, error: profileError } =
+        await supabase
+          .from("profiles")
+          .select("id,profile_completed")
+          .eq("id", user.id)
+          .maybeSingle();
+
+      if (profileError) throw profileError;
 
       if (profile?.profile_completed) {
         window.location.href = "profile.html";
@@ -747,6 +957,12 @@
     }
   }
 
-  init();
+  try {
+    await init();
+    console.info("HANOON: Authentication is ready.");
+  } catch (error) {
+    console.error("HANOON initialization error:", error);
+    notify(errorMessage(error));
+  }
 
 })();
