@@ -20,9 +20,7 @@
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{
-  margin:0;
-  min-height:100vh;
-  color:var(--text);
+  margin:0;min-height:100vh;color:var(--text);
   font-family:Cairo,sans-serif;
   background:
     radial-gradient(ellipse at 10% 5%,#145b6040,transparent 40%),
@@ -35,8 +33,7 @@ a{color:inherit;text-decoration:none}
 .topbar{
   position:sticky;top:0;z-index:5;
   display:flex;align-items:center;justify-content:space-between;
-  padding:12px 16px;
-  background:#091720eF;
+  padding:12px 16px;background:#091720ef;
   border-bottom:1px solid var(--line);
   backdrop-filter:blur(18px);
 }
@@ -53,7 +50,7 @@ a{color:inherit;text-decoration:none}
 .section{
   margin-bottom:15px;padding:15px;
   border:1px solid var(--line);border-radius:18px;
-  background:linear-gradient(145deg,#172a35eF,#10212cE8);
+  background:linear-gradient(145deg,#172a35ef,#10212ce8);
   box-shadow:0 12px 35px #0002;
 }
 .section-head{display:flex;align-items:center;gap:9px;margin-bottom:13px}
@@ -61,9 +58,12 @@ a{color:inherit;text-decoration:none}
   width:35px;height:35px;display:grid;place-items:center;
   border-radius:12px;background:#25b9a81b;color:#6ce5d5;
 }
-.section-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.section-icon svg{
+  width:19px;height:19px;fill:none;stroke:currentColor;
+  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round
+}
 .section-head h2{margin:0;font-size:13px;font-weight:900}
-.section-head p{margin:2px 0 0;color:var(--muted);font-size:9px}
+.section-head p{margin:2px 0;color:var(--muted);font-size:9px}
 .wallpaper-grid{
   display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;
 }
@@ -76,17 +76,17 @@ a{color:inherit;text-decoration:none}
 .wallpaper span{
   position:absolute;bottom:0;right:0;left:0;
   padding:5px 3px;background:#07121bcc;
-  font-size:9px;font-weight:800;
+  font-size:9px;font-weight:800
 }
 .wallpaper:after{
   content:"";position:absolute;inset:0;
   background:radial-gradient(circle at 25% 30%,#ffffff22,transparent 40%);
-  pointer-events:none;
+  pointer-events:none
 }
 .wallpaper.selected:before{
   content:"✓";position:absolute;z-index:2;top:7px;left:7px;
   width:21px;height:21px;display:grid;place-items:center;
-  border-radius:50%;background:#28bba9;color:#06221f;font-weight:900;
+  border-radius:50%;background:#28bba9;color:#06221f;font-weight:900
 }
 .wallpaper[data-wall="dark"]{background:linear-gradient(145deg,#101820,#263943)}
 .wallpaper[data-wall="teal"]{background:linear-gradient(145deg,#075e59,#123d56)}
@@ -98,23 +98,22 @@ a{color:inherit;text-decoration:none}
 .wallpaper[data-wall="night"]{
   background-color:#101b2b;
   background-image:radial-gradient(#ffffff32 1px,transparent 1px);
-  background-size:13px 13px;
+  background-size:13px 13px
 }
 .wallpaper[data-wall="waves"]{
   background-color:#123a48;
-  background-image:repeating-radial-gradient(ellipse at 20% 20%,transparent 0 9px,#ffffff19 10px 11px,transparent 12px 22px);
+  background-image:repeating-radial-gradient(ellipse at 20% 20%,transparent 0 9px,#ffffff19 10px 11px,transparent 12px 22px)
 }
 .preview{
-  padding:13px;border:1px solid var(--line);
-  border-radius:15px;min-height:190px;
-  display:flex;flex-direction:column;gap:10px;
+  padding:13px;border:1px solid var(--line);border-radius:15px;
+  min-height:190px;display:flex;flex-direction:column;gap:10px;
   background:linear-gradient(145deg,#101820,#263943);
-  transition:background .2s;
+  transition:background .2s
 }
 .preview-label{font-size:9px;color:#b6cbd0;text-align:center}
 .bubble{
   max-width:82%;padding:9px 12px;border-radius:15px;
-  font-size:11px;line-height:1.8;box-shadow:0 3px 10px #0002;
+  font-size:11px;line-height:1.8;box-shadow:0 3px 10px #0002
 }
 .bubble.mine{align-self:flex-start;background:#126d61;border-radius:15px 15px 15px 4px}
 .bubble.theirs{align-self:flex-end;background:#263d49;border-radius:15px 15px 4px 15px}
@@ -123,24 +122,24 @@ a{color:inherit;text-decoration:none}
 .option{
   display:flex;align-items:center;justify-content:space-between;gap:12px;
   padding:10px 11px;border:1px solid var(--line);
-  border-radius:12px;background:#ffffff06;
+  border-radius:12px;background:#ffffff06
 }
 .option-copy{min-width:0}
 .option-copy strong{display:block;font-size:11px}
 .option-copy small{display:block;color:var(--muted);font-size:9px;margin-top:2px}
 select{
-  max-width:48%;padding:7px 9px;
-  border:1px solid #ffffff25;border-radius:10px;
-  outline:none;background:#0c1c26;color:white;font-size:10px;
+  max-width:48%;padding:7px 9px;border:1px solid #ffffff25;
+  border-radius:10px;outline:none;background:#0c1c26;
+  color:white;font-size:10px
 }
 .switch{
-  width:43px;height:24px;flex:0 0 43px;
-  position:relative;border:0;border-radius:20px;
-  background:#52616b;padding:3px;transition:.2s;
+  width:43px;height:24px;flex:0 0 43px;position:relative;
+  border:0;border-radius:20px;background:#52616b;padding:3px;
+  transition:.2s
 }
 .switch:after{
   content:"";display:block;width:18px;height:18px;
-  border-radius:50%;background:white;transition:.2s;
+  border-radius:50%;background:white;transition:.2s
 }
 .switch.on{background:#21ad9d}
 .switch.on:after{transform:translateX(-19px)}
@@ -148,10 +147,14 @@ select{
 .action{
   flex:1;min-height:43px;border:0;border-radius:12px;
   background:linear-gradient(135deg,#1db9a7,#197d91);
-  color:white;font-size:11px;font-weight:900;
+  color:white;font-size:11px;font-weight:900
 }
 .action.secondary{background:#ffffff0c;border:1px solid var(--line)}
 .status{text-align:center;color:#8cebdc;font-size:10px;min-height:20px;margin-top:10px}
+.info{
+  color:#b9d3d9;background:#ffffff08;border:1px solid var(--line);
+  padding:10px;border-radius:12px;font-size:10px;line-height:1.9;margin-top:10px
+}
 @media(max-width:480px){
   .container{width:94%;margin-top:15px}
   .section{padding:12px}
@@ -172,7 +175,7 @@ select{
 <main class="container">
   <div class="intro">
     <h1>تخصيص الشات</h1>
-    <p>اختار شكل محادثاتك وخلي تجربة هنون على ذوقك.</p>
+    <p>تحكم في شكل المحادثات وخصوصيتك داخل هنون.</p>
   </div>
 
   <section class="section">
@@ -182,7 +185,6 @@ select{
       </span>
       <div><h2>خلفية المحادثة</h2><p>اختار خلفية تظهر خلف الرسائل</p></div>
     </div>
-
     <div class="wallpaper-grid" id="wallpaperGrid">
       <button class="wallpaper" data-wall="dark"><span>داكن</span></button>
       <button class="wallpaper" data-wall="teal"><span>تركواز</span></button>
@@ -205,7 +207,7 @@ select{
     </div>
     <div class="preview" id="chatPreview">
       <div class="preview-label">معاينة المحادثة</div>
-      <div class="bubble mine">أهلاً بيك في هنون 👋<small>10:30 ص</small></div>
+      <div class="bubble mine">أهلاً بيك في هنون<small>10:30 ص</small></div>
       <div class="bubble theirs">أهلاً! عامل إيه؟<small>10:31 ص</small></div>
       <div class="bubble mine">تمام، خلينا نبدأ كلامنا.</div>
     </div>
@@ -236,7 +238,7 @@ select{
         </select>
       </div>
       <div class="option">
-        <div class="option-copy"><strong>شكل الفقاعات</strong><small>اختار درجة استدارة الرسائل</small></div>
+        <div class="option-copy"><strong>شكل الفقاعات</strong><small>درجة استدارة الرسائل</small></div>
         <select id="bubbleStyle">
           <option value="rounded">دائرية ناعمة</option>
           <option value="soft">ناعمة</option>
@@ -251,7 +253,52 @@ select{
       <span class="section-icon">
         <svg viewBox="0 0 24 24"><path d="M12 3v18M5 8h14M5 16h14"/></svg>
       </span>
-      <div><h2>خيارات إضافية</h2><p>تحكم في تفاصيل تجربة المراسلة</p></div>
+      <div><h2>الخصوصية والظهور</h2><p>تحكم في المعلومات التي يراها أصدقاؤك</p></div>
+    </div>
+
+    <div class="options">
+      <div class="option">
+        <div class="option-copy">
+          <strong>من يمكنه رؤية حالة اتصالك؟</strong>
+          <small>إظهار أنك متصل الآن</small>
+        </div>
+        <select id="onlineVisibility">
+          <option value="contacts">الأصدقاء</option>
+          <option value="nobody">لا أحد</option>
+        </select>
+      </div>
+
+      <div class="option">
+        <div class="option-copy">
+          <strong>من يمكنه رؤية آخر ظهور؟</strong>
+          <small>وقت آخر نشاط لك</small>
+        </div>
+        <select id="lastSeenVisibility">
+          <option value="contacts">الأصدقاء</option>
+          <option value="nobody">لا أحد</option>
+        </select>
+      </div>
+
+      <div class="option">
+        <div class="option-copy">
+          <strong>مؤشرات قراءة الرسائل</strong>
+          <small>السماح بإظهار أنك قرأت الرسالة</small>
+        </div>
+        <button class="switch on" id="readReceipts" type="button" aria-label="مؤشرات القراءة"></button>
+      </div>
+    </div>
+
+    <div class="info">
+      عند إيقاف مؤشرات القراءة لن يتم تحديث وقت قراءة رسائل الآخرين من هذه الصفحة. وقد يؤثر ذلك على ظهور علامة القراءة في المحادثات.
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <span class="section-icon">
+        <svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="m8 9 2 2 5-5"/></svg>
+      </span>
+      <div><h2>خيارات إضافية</h2><p>تفاصيل تجربة المراسلة</p></div>
     </div>
     <div class="options">
       <div class="option">
@@ -272,6 +319,7 @@ select{
   <div class="status" id="saveStatus" role="status"></div>
 </main>
 
+<script type="module" src="../js/supabase-client.js"></script>
 <script>
 (() => {
   "use strict";
@@ -288,15 +336,24 @@ select{
 
   const $ = id => document.getElementById(id);
   let settings = {...defaults};
+  let db = null;
+  let user = null;
+  let presence = {
+    online_visibility:"contacts",
+    last_seen_visibility:"contacts",
+    read_receipts:true
+  };
 
   try {
-    const saved = JSON.parse(localStorage.getItem(KEY) || "{}");
-    settings = {...defaults,...saved};
-  } catch(e) {
+    settings = {
+      ...defaults,
+      ...JSON.parse(localStorage.getItem(KEY) || "{}")
+    };
+  } catch {
     settings = {...defaults};
   }
 
-  const wallpaperBackgrounds = {
+  const backgrounds = {
     dark:"linear-gradient(145deg,#101820,#263943)",
     teal:"linear-gradient(145deg,#075e59,#123d56)",
     purple:"linear-gradient(145deg,#38245e,#171f45)",
@@ -308,61 +365,121 @@ select{
     waves:"repeating-radial-gradient(ellipse at 20% 20%,transparent 0 9px,#ffffff19 10px 11px,transparent 12px 22px),#123a48"
   };
 
-  function renderWallpaper(){
-    document.querySelectorAll(".wallpaper").forEach(button => {
-      const selected = button.dataset.wall === settings.wallpaper;
-      button.classList.toggle("selected",selected);
-      button.setAttribute("aria-pressed",String(selected));
-    });
-    $("chatPreview").style.background = wallpaperBackgrounds[settings.wallpaper] || wallpaperBackgrounds.dark;
-  }
-
-  function renderOptions(){
-    $("chatTheme").value = settings.theme;
-    $("fontSize").value = settings.fontSize;
-    $("bubbleStyle").value = settings.bubbleStyle;
-    setSwitch("messagePreview",settings.messagePreview);
-    setSwitch("reduceMotion",settings.reduceMotion);
-    renderWallpaper();
-    renderPreview();
-  }
-
-  function setSwitch(id,value){
+  function setSwitch(id,value) {
     const button = $(id);
     button.classList.toggle("on",!!value);
     button.setAttribute("aria-pressed",String(!!value));
   }
 
-  function renderPreview(){
+  function renderPreview() {
     const preview = $("chatPreview");
+    preview.style.background = backgrounds[settings.wallpaper] || backgrounds.dark;
+
     const size = {small:"10px",medium:"11px",large:"14px"}[settings.fontSize];
-    const radius = {
-      rounded:"16px",
-      soft:"10px",
-      square:"5px"
-    }[settings.bubbleStyle];
+    const radius = {rounded:"16px",soft:"10px",square:"5px"}[settings.bubbleStyle];
+
     preview.querySelectorAll(".bubble").forEach(bubble => {
       bubble.style.fontSize = size;
       bubble.style.borderRadius = radius;
     });
   }
 
+  function render() {
+    document.querySelectorAll(".wallpaper").forEach(button => {
+      const selected = button.dataset.wall === settings.wallpaper;
+      button.classList.toggle("selected",selected);
+      button.setAttribute("aria-pressed",String(selected));
+    });
+
+    $("chatTheme").value = settings.theme;
+    $("fontSize").value = settings.fontSize;
+    $("bubbleStyle").value = settings.bubbleStyle;
+
+    setSwitch("messagePreview",settings.messagePreview);
+    setSwitch("reduceMotion",settings.reduceMotion);
+    setSwitch("readReceipts",presence.read_receipts);
+
+    $("onlineVisibility").value = presence.online_visibility;
+    $("lastSeenVisibility").value = presence.last_seen_visibility;
+
+    renderPreview();
+  }
+
+  function status(message,error=false) {
+    $("saveStatus").textContent = message;
+    $("saveStatus").style.color = error ? "#ff9aaa" : "#8cebdc";
+  }
+
+  async function loadPresence() {
+    if (!db || !user) return;
+
+    const {data,error} = await db
+      .from("chat_presence")
+      .select("online_visibility,last_seen_visibility,read_receipts")
+      .eq("user_id",user.id)
+      .maybeSingle();
+
+    if (error) {
+      console.warn("Load privacy settings:",error);
+      status("تعذر تحميل إعدادات الخصوصية من قاعدة البيانات.",true);
+      return;
+    }
+
+    if (data) {
+      presence = {
+        online_visibility:data.online_visibility || "contacts",
+        last_seen_visibility:data.last_seen_visibility || "contacts",
+        read_receipts:data.read_receipts !== false
+      };
+    }
+
+    render();
+  }
+
+  async function savePresence() {
+    if (!db || !user) {
+      status("سجل الدخول أولاً لحفظ إعدادات الخصوصية.",true);
+      return false;
+    }
+
+    const {error} = await db
+      .from("chat_presence")
+      .upsert({
+        user_id:user.id,
+        is_online:true,
+        online_visibility:presence.online_visibility,
+        last_seen_visibility:presence.last_seen_visibility,
+        read_receipts:presence.read_receipts,
+        updated_at:new Date().toISOString()
+      },{onConflict:"user_id"});
+
+    if (error) {
+      console.error(error);
+      status("تعذر حفظ إعدادات الخصوصية. حاول مرة أخرى.",true);
+      return false;
+    }
+
+    return true;
+  }
+
   document.querySelectorAll(".wallpaper").forEach(button => {
     button.addEventListener("click",() => {
       settings.wallpaper = button.dataset.wall;
-      renderWallpaper();
+      render();
     });
   });
 
-  $("chatTheme").addEventListener("change",e => {
-    settings.theme = e.target.value;
+  $("chatTheme").addEventListener("change",event => {
+    settings.theme = event.target.value;
   });
-  $("fontSize").addEventListener("change",e => {
-    settings.fontSize = e.target.value;
+
+  $("fontSize").addEventListener("change",event => {
+    settings.fontSize = event.target.value;
     renderPreview();
   });
-  $("bubbleStyle").addEventListener("change",e => {
-    settings.bubbleStyle = e.target.value;
+
+  $("bubbleStyle").addEventListener("change",event => {
+    settings.bubbleStyle = event.target.value;
     renderPreview();
   });
 
@@ -373,23 +490,78 @@ select{
     });
   });
 
-  $("saveSettings").addEventListener("click",() => {
+  $("onlineVisibility").addEventListener("change",event => {
+    presence.online_visibility = event.target.value;
+  });
+
+  $("lastSeenVisibility").addEventListener("change",event => {
+    presence.last_seen_visibility = event.target.value;
+  });
+
+  $("readReceipts").addEventListener("click",() => {
+    presence.read_receipts = !presence.read_receipts;
+    setSwitch("readReceipts",presence.read_receipts);
+  });
+
+  $("saveSettings").addEventListener("click",async () => {
     try {
       localStorage.setItem(KEY,JSON.stringify(settings));
-      $("saveStatus").textContent = "تم حفظ اختياراتك على هذا الجهاز.";
-    } catch(error) {
-      $("saveStatus").textContent = "تعذر الحفظ على هذا الجهاز.";
+    } catch {
+      status("تعذر حفظ إعدادات الشكل على الجهاز.",true);
+      return;
+    }
+
+    const saved = await savePresence();
+
+    if (saved) {
+      status("تم حفظ إعدادات الشكل والخصوصية.");
     }
   });
 
-  $("resetSettings").addEventListener("click",() => {
+  $("resetSettings").addEventListener("click",async () => {
     settings = {...defaults};
-    renderOptions();
+    presence = {
+      online_visibility:"contacts",
+      last_seen_visibility:"contacts",
+      read_receipts:true
+    };
+
     localStorage.removeItem(KEY);
-    $("saveStatus").textContent = "تمت استعادة الإعدادات الافتراضية.";
+    render();
+
+    const saved = await savePresence();
+    status(saved ? "تمت استعادة الإعدادات الافتراضية." : "تمت استعادة شكل الشات. تعذر حفظ الخصوصية.",!saved);
   });
 
-  renderOptions();
+  async function initialize() {
+    db = window.HANOON?.supabase;
+
+    if (!db) {
+      status("تعذر الاتصال بقاعدة البيانات.",true);
+      return;
+    }
+
+    const {data,error} = await db.auth.getUser();
+
+    if (error || !data.user) {
+      status("سجل الدخول لحفظ إعدادات الخصوصية.",true);
+      return;
+    }
+
+    user = data.user;
+    await loadPresence();
+  }
+
+  render();
+
+  if (window.HANOON?.supabase) {
+    initialize();
+  } else {
+    window.addEventListener("hanoon:supabase-ready",initialize,{once:true});
+    window.addEventListener("hanoon:supabase-error",() => {
+      status("تعذر الاتصال بقاعدة البيانات.",true);
+    },{once:true});
+  }
 })();
 </script>
 </body>
