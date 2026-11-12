@@ -3,7 +3,6 @@
   "use strict";
 
   const STORAGE_KEY = "hanoon_chat_preferences_v1";
-
   const defaults = {
     wallpaper: "dark",
     theme: "dark",
@@ -25,82 +24,118 @@
     waves: "repeating-radial-gradient(ellipse at 20% 20%,transparent 0 9px,#ffffff19 10px 11px,transparent 12px 22px),#123a48"
   };
 
+  const fontSizes = {
+    small: "10px",
+    medium: "11px",
+    large: "14px"
+  };
+
+  const bubbleRadii = {
+    rounded: "16px",
+    soft: "10px",
+    square: "5px"
+  };
+
+  let observer = null;
+  let currentArea = null;
+  let applying = false;
+
   function getSettings() {
     try {
-      return {
-        ...defaults,
-        ...JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}")
-      };
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      return { ...defaults, ...saved };
     } catch {
-      return {...defaults};
+      return { ...defaults };
     }
   }
 
-  function applySettings() {
-    const settings = getSettings();
+  function getConversationId() {
+    return new URLSearchParams(location.search).get("id");
+  }
 
-    const messageArea = document.getElementById("messageList");
-    if (!messageArea) return;
+  function getConversationWallpaper() {
+    const id = getConversationId();
+    if (!id) return null;
 
-    messageArea.style.background =
-      wallpapers[settings.wallpaper] || wallpapers.dark;
+    try {
+      return localStorage.getItem(`hanoon_wallpaper_${id}`);
+    } catch {
+      return null;
+    }
+  }
 
-    messageArea.style.fontSize = {
-      small: "10px",
-      medium: "11px",
-      large: "14px"
-    }[settings.fontSize] || "11px";
+  function isLightTheme(theme) {
+    if (theme === "light") return true;
 
-    const bubbleRadius = {
-      rounded: "16px",
-      soft: "10px",
-      square: "5px"
-    }[settings.bubbleStyle] || "16px";
+    return theme === "system" &&
+      window.matchMedia?.("(prefers-color-scheme: light)").matches;
+  }
 
-    const isLight = settings.theme === "light" ||
-      (settings.theme === "system" &&
-       window.matchMedia &&
-       window.matchMedia("(prefers-color-scheme: light)").matches);
+  function applyMessageStyles(area, settings) {
+    const light = isLightTheme(settings.theme);
+    const fontSize = fontSizes[settings.fontSize] || fontSizes.medium;
+    const radius = bubbleRadii[settings.bubbleStyle] || bubbleRadii.rounded;
 
-    messageArea.style.color = isLight ? "#17252d" : "#f2f8fa";
+    const privateWallpaper = getConversationWallpaper();
 
-    document.querySelectorAll("#messageList .message").forEach(message => {
-      message.style.borderRadius = bubbleRadius;
+    if (privateWallpaper) {
+      area.style.backgroundImage = "none";
+      area.style.backgroundColor = privateWallpaper;
+    } else {
+      area.style.background = wallpapers[settings.wallpaper] || wallpapers.dark;
+      area.style.backgroundSize = "cover";
+      area.style.backgroundPosition = "center";
+    }
 
-      if (isLight) {
-        message.style.color = "#17252d";
-        message.style.background = message.classList.contains("mine")
+    area.style.color = light ? "#17252d" : "#f2f8fa";
+    area.style.fontSize = fontSize;
+    area.style.transition = settings.reduceMotion ? "none" : "background .25s ease";
+
+    area.querySelectorAll(".message").forEach(message => {
+      const mine = message.classList.contains("mine");
+
+      message.style.borderRadius = radius;
+      message.style.color = light ? "#17252d" : "#effbfc";
+      message.style.background = light
+        ? mine
           ? "linear-gradient(135deg,#b7eee5,#8bd9ce)"
-          : "linear-gradient(135deg,#ffffff,#e8f0f2)";
-        message.style.borderColor = "#173b3b22";
-      } else {
-        message.style.color = "#effbfc";
-        message.style.background = message.classList.contains("mine")
+          : "linear-gradient(135deg,#ffffff,#e8f0f2)"
+        : mine
           ? "linear-gradient(135deg,#146e68,#18596b)"
           : "linear-gradient(135deg,#103d42,#12404a)";
-        message.style.borderColor = "#76dcd52b";
-      }
+
+      message.style.border = light
+        ? "1px solid #173b3b22"
+        : "1px solid #76dcd52b";
 
       const body = message.querySelector(".message-body");
-      if (body) body.style.fontSize = {
-        small: "10px",
-        medium: "11px",
-        large: "14px"
-      }[settings.fontSize] || "11px";
+      if (body) {
+        body.style.fontSize = fontSize;
+        body.style.color = "inherit";
+      }
 
       const time = message.querySelector(".message-time");
       if (time) {
-        time.style.color = isLight ? "#526a70" : "#a5cfca";
+        time.style.color = light ? "#526a70" : "#a5cfca";
+      }
+
+      const status = message.querySelector(".message-status");
+      if (status) {
+        status.style.color = light ? "#147e9a" : "#70d9ed";
       }
     });
 
-    const empty = messageArea.querySelector(".chat-empty");
-    if (empty) {
-      empty.style.color = isLight ? "#526a70" : "#9eb9c0";
-    }
+    document.documentElement.dataset.chatTheme = settings.theme;
+    document.documentElement.dataset.chatMotion = settings.reduceMotion
+      ? "reduced"
+      : "normal";
 
-    document.documentElement.dataset.chatTheme =
-      settings.theme;
+    if (settings.reduceMotion) {
+      area.querySelectorAll("*").forEach(element => {
+        element.style.animationDuration = "0.01ms";
+        element.style.transitionDuration = "0.01ms";
+      });
+    }
   }
 
   function addSettingsButton() {
@@ -112,6 +147,7 @@
     link.href = "chat-settings.html";
     link.title = "إعدادات الشات";
     link.setAttribute("aria-label", "إعدادات الشات");
+
     link.innerHTML = `
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <circle cx="12" cy="12" r="3"></circle>
@@ -120,8 +156,11 @@
     `;
 
     link.style.cssText = `
-      width:36px;height:36px;flex:0 0 36px;
-      display:grid;place-items:center;
+      width:36px;
+      height:36px;
+      flex:0 0 36px;
+      display:grid;
+      place-items:center;
       border:1px solid #76dcd533;
       border-radius:11px;
       background:#ffffff09;
@@ -129,33 +168,79 @@
     `;
 
     link.querySelector("svg").style.cssText = `
-      width:19px;height:19px;fill:none;
-      stroke:currentColor;stroke-width:1.7;
-      stroke-linecap:round;stroke-linejoin:round;
+      width:19px;
+      height:19px;
+      fill:none;
+      stroke:currentColor;
+      stroke-width:1.7;
+      stroke-linecap:round;
+      stroke-linejoin:round;
     `;
 
     header.appendChild(link);
   }
 
+  function applySettings() {
+    if (applying) return;
+
+    const area = document.getElementById("messageList");
+    if (!area) return;
+
+    applying = true;
+
+    try {
+      applyMessageStyles(area, getSettings());
+    } finally {
+      applying = false;
+    }
+  }
+
+  function observeMessages() {
+    const area = document.getElementById("messageList");
+    if (!area || area === currentArea) return;
+
+    observer?.disconnect();
+    currentArea = area;
+
+    observer = new MutationObserver(records => {
+      if (records.some(record =>
+        record.type === "childList" &&
+        (record.addedNodes.length || record.removedNodes.length)
+      )) {
+        applySettings();
+      }
+    });
+
+    observer.observe(area, {
+      childList: true,
+      subtree: true
+    });
+
+    applySettings();
+  }
+
   function start() {
     addSettingsButton();
+    observeMessages();
     applySettings();
 
-    const messageArea = document.getElementById("messageList");
+    const pageObserver = new MutationObserver(() => {
+      addSettingsButton();
+      observeMessages();
+    });
 
-    if (messageArea) {
-      const observer = new MutationObserver(() => {
-        applySettings();
-      });
-
-      observer.observe(messageArea, {
-        childList: true,
-        subtree: true
-      });
-    }
+    pageObserver.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
 
     window.addEventListener("storage", event => {
-      if (event.key === STORAGE_KEY) applySettings();
+      if (
+        event.key === STORAGE_KEY ||
+        event.key?.startsWith("hanoon_wallpaper_")
+      ) {
+        applySettings();
+      }
     });
 
     window.addEventListener("pageshow", applySettings);
@@ -164,10 +249,12 @@
       .addEventListener?.("change", () => {
         if (getSettings().theme === "system") applySettings();
       });
+
+    window.addEventListener("hanoon:chat-preferences-changed", applySettings);
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start, {once:true});
+    document.addEventListener("DOMContentLoaded", start, { once: true });
   } else {
     start();
   }
