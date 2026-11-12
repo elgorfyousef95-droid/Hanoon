@@ -7,12 +7,10 @@
   const state = {
     db: null,
     user: null,
-    conversations: [],
-    activeConversation: null,
-    activeFriend: null,
-    channel: null,
-    loading: false,
-    sending: false
+    rows: [],
+    filter: "all",
+    busy: false,
+    channel: null
   };
 
   const ui = {
@@ -22,15 +20,9 @@
     list: $("conversationList"),
     search: $("conversationSearch"),
     count: $("chatCount"),
-    avatar: $("chatAvatar"),
-    name: $("chatName"),
-    status: $("chatStatus"),
-    messages: $("messageList"),
-    form: $("messageForm"),
-    input: $("messageInput"),
-    send: $("sendMessageBtn"),
     refresh: $("refreshChatsBtn"),
-    back: $("mobileBackBtn")
+    unread: $("unreadFilterBtn"),
+    status: $("listStatus")
   };
 
   function notify(message, type = "") {
@@ -41,22 +33,25 @@
     clearTimeout(notify.timer);
     notify.timer = setTimeout(() => {
       ui.notice.classList.add("hidden");
-    }, 5000);
+    }, 4000);
   }
 
-  function showEmpty(container, message) {
-    const element = document.createElement("div");
-    element.className = "chat-empty";
-    element.textContent = message;
-    container.replaceChildren(element);
+  function empty(message) {
+    const box = document.createElement("div");
+    box.className = "chat-empty";
+    box.textContent = message;
+    ui.list.replaceChildren(box);
   }
 
-  function displayName(member) {
-    return member?.full_name || member?.username || "عضو هنون";
+  function nameOf(member) {
+    return member?.full_name ||
+      member?.username ||
+      "عضو هنون";
   }
 
   function avatarURL(path) {
     if (!path) return "";
+
     if (/^https?:\/\//i.test(path)) return path;
 
     return state.db.storage
@@ -64,27 +59,42 @@
       .getPublicUrl(path).data?.publicUrl || "";
   }
 
-  function setAvatar(container, member) {
-    container.replaceChildren();
+  function makeAvatar(member) {
+    const avatar = document.createElement("div");
+    avatar.className = "avatar";
 
     const url = avatarURL(member?.avatar_path);
 
     if (url) {
       const image = document.createElement("img");
       image.src = url;
-      image.alt = displayName(member);
+      image.alt = nameOf(member);
       image.loading = "lazy";
 
       image.onerror = () => {
-        container.replaceChildren();
-        container.textContent = displayName(member).charAt(0) || "هـ";
+        avatar.replaceChildren();
+        avatar.textContent = nameOf(member).charAt(0);
       };
 
-      container.appendChild(image);
+      avatar.appendChild(image);
     } else {
-      container.textContent = displayName(member).charAt(0) || "هـ";
+      avatar.textContent = nameOf(member).charAt(0) || "هـ";
     }
+
+    return avatar;
   }
+
+  function icon(path) {
+    return `<svg viewBox="0 0 24 24" aria-hidden="true">${path}</svg>`;
+  }
+
+  const icons = {
+    pin: '<path d="m16 3 5 5-4 1-4 4-1 5-3-3-5 5-1-1 5-5-3-3 5-1 4-4z"/>',
+    archive: '<path d="M3 4h18v4H3zM5 8v12h14V8M9 12h6"/>',
+    mute: '<path d="M11 5 6 9H3v6h3l5 4zM16 9l5 6m0-6-5 6"/>',
+    read: '<path d="m3 12 5 5L21 4M12 17l2 2 7-7"/>',
+    open: '<path d="M4 12h15m-6-6 6 6-6 6"/>'
+  };
 
   function formatTime(value) {
     if (!value) return "";
@@ -92,15 +102,20 @@
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return "";
 
-    return date.toLocaleTimeString("ar-EG", {
-      hour: "2-digit",
-      minute: "2-digit"
-    });
-  }
+    const now = new Date();
+    const sameDay = date.toDateString() === now.toDateString();
 
-  function setComposerEnabled(enabled) {
-    ui.input.disabled = !enabled;
-    ui.send.disabled = !enabled;
+    if (sameDay) {
+      return date.toLocaleTimeString("ar-EG", {
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    return date.toLocaleDateString("ar-EG", {
+      day: "numeric",
+      month: "short"
+    });
   }
 
   function getOtherUserId(conversation) {
@@ -108,7 +123,7 @@
     return ids.find(id => id && id !== state.user.id) || null;
   }
 
-  async function loadAcceptedFriends() {
+  async function loadFriends() {
     const { data, error } = await state.db
       .from("friend_requests")
       .select("sender_id,receiver_id")
@@ -128,52 +143,63 @@
     )];
   }
 
-  async function loadConversations() {
-    showEmpty(ui.list, "جارٍ تحميل المحادثات...");
+  async function loadRows() {
+    ui.status.textContent = "جارٍ التحديث...";
 
     const { data: memberships, error: membershipError } =
       await state.db
         .from("conversation_members")
-        .select("conversation_id")
+        .select("conversation_id,last_read_at,archived_at,pinned_at,muted_until")
         .eq("user_id", state.user.id);
 
     if (membershipError) throw membershipError;
 
-    const ids = [...new Set(
-      (memberships || []).map(item => item.conversation_id)
-    )];
-
-    if (!ids.length) {
-      state.conversations = [];
-      renderConversations();
+    if (!memberships?.length) {
+      state.rows = [];
+      render();
+      ui.status.textContent = "محدّثة";
       return;
     }
+
+    const membershipMap = new Map(
+      memberships.map(item => [item.conversation_id, item])
+    );
+
+    const ids = memberships.map(item => item.conversation_id);
 
     const { data: conversations, error: conversationError } =
       await state.db
         .from("conversations")
         .select("id,title,conversation_type,direct_key,created_by,updated_at")
         .in("id", ids)
-        .eq("conversation_type", "direct")
-        .order("updated_at", { ascending: false });
+        .eq("conversation_type", "direct");
 
     if (conversationError) throw conversationError;
 
-    const acceptedIds = new Set(await loadAcceptedFriends());
+    const acceptedIds = new Set(await loadFriends());
 
-    const otherIds = [...new Set(
-      (conversations || [])
-        .map(getOtherUserId)
-        .filter(id => id && acceptedIds.has(id))
-    )];
+    const valid = (conversations || [])
+      .map(conversation => {
+        const friendId = getOtherUserId(conversation);
+        if (!friendId || !acceptedIds.has(friendId)) return null;
+
+        return {
+          conversation,
+          friendId,
+          membership: membershipMap.get(conversation.id)
+        };
+      })
+      .filter(Boolean);
+
+    const friendIds = [...new Set(valid.map(item => item.friendId))];
 
     let profiles = [];
 
-    if (otherIds.length) {
+    if (friendIds.length) {
       const { data, error } = await state.db
         .from("member_directory")
-        .select("id,username,member_code,full_name,avatar_path,bio")
-        .in("id", otherIds);
+        .select("id,username,full_name,member_code,avatar_path")
+        .in("id", friendIds);
 
       if (error) throw error;
       profiles = data || [];
@@ -183,555 +209,398 @@
       profiles.map(profile => [profile.id, profile])
     );
 
-    state.conversations = (conversations || [])
-      .map(conversation => {
-        const friendId = getOtherUserId(conversation);
-        if (!friendId || !acceptedIds.has(friendId)) return null;
+    const conversationIds = valid.map(
+      item => item.conversation.id
+    );
 
-        const friend = profileMap.get(friendId);
+    let messages = [];
+
+    if (conversationIds.length) {
+      const { data, error } = await state.db
+        .from("messages")
+        .select("id,conversation_id,sender_id,body,message_type,created_at,deleted_at")
+        .in("conversation_id", conversationIds)
+        .is("deleted_at", null)
+        .order("created_at", { ascending: false })
+        .limit(1000);
+
+      if (error) throw error;
+      messages = data || [];
+    }
+
+    const latestMap = new Map();
+    const unreadMap = new Map();
+
+    messages.forEach(message => {
+      if (!latestMap.has(message.conversation_id)) {
+        latestMap.set(message.conversation_id, message);
+      }
+    });
+
+    valid.forEach(item => {
+      const conversationId = item.conversation.id;
+      const lastRead = item.membership.last_read_at
+        ? new Date(item.membership.last_read_at).getTime()
+        : 0;
+
+      const unread = messages.filter(message =>
+        message.conversation_id === conversationId &&
+        message.sender_id !== state.user.id &&
+        new Date(message.created_at).getTime() > lastRead
+      ).length;
+
+      unreadMap.set(conversationId, unread);
+    });
+
+    state.rows = valid
+      .map(item => {
+        const friend = profileMap.get(item.friendId);
         if (!friend) return null;
 
-        return { ...conversation, friend };
+        const conversation = item.conversation;
+        const membership = item.membership;
+
+        return {
+          id: conversation.id,
+          friend,
+          membership,
+          lastMessage: latestMap.get(conversation.id) || null,
+          unread: unreadMap.get(conversation.id) || 0,
+          pinned: Boolean(membership.pinned_at),
+          archived: Boolean(membership.archived_at),
+          muted: membership.muted_until &&
+            new Date(membership.muted_until).getTime() > Date.now()
+        };
       })
       .filter(Boolean);
 
-    renderConversations();
+    state.rows.sort((a, b) => {
+      if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+
+      const aTime = new Date(
+        a.lastMessage?.created_at || 0
+      ).getTime();
+
+      const bTime = new Date(
+        b.lastMessage?.created_at || 0
+      ).getTime();
+
+      return bTime - aTime;
+    });
+
+    render();
+    ui.status.textContent = "محدّثة";
   }
 
-  function filteredConversations() {
+  function messagePreview(row) {
+    const message = row.lastMessage;
+
+    if (!message) return "ابدأ المحادثة بإرسال أول رسالة";
+
+    if (message.deleted_at) return "تم حذف الرسالة";
+
+    if (message.message_type === "image") return "صورة";
+    if (message.message_type === "video") return "فيديو";
+    if (message.message_type === "audio") return "رسالة صوتية";
+    if (message.message_type === "file") return "ملف مرفق";
+
+    const text = String(message.body || "").trim();
+
+    if (message.sender_id === state.user.id) {
+      return `أنت: ${text || "رسالة"}`;
+    }
+
+    return text || "رسالة جديدة";
+  }
+
+  function visibleRows() {
     const query = ui.search.value.trim().toLowerCase();
-    if (!query) return state.conversations;
 
-    return state.conversations.filter(conversation => {
-      const friend = conversation.friend;
+    return state.rows.filter(row => {
+      if (row.archived) return false;
 
-      return [
-        friend.full_name,
-        friend.username,
-        friend.member_code
-      ].some(value =>
-        String(value || "").toLowerCase().includes(query)
-      );
+      if (state.filter === "unread" && row.unread < 1) return false;
+      if (state.filter === "pinned" && !row.pinned) return false;
+
+      if (!query) return true;
+
+      const searchable = [
+        nameOf(row.friend),
+        row.friend.username,
+        row.friend.member_code,
+        row.lastMessage?.body
+      ].join(" ").toLowerCase();
+
+      return searchable.includes(query);
     });
   }
 
-  function renderConversations() {
-    ui.list.replaceChildren();
-    ui.count.textContent = String(state.conversations.length);
+  function makeAction(label, svg, action, active = false) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `row-action${active ? " active" : ""}`;
+    button.title = label;
+    button.setAttribute("aria-label", label);
+    button.innerHTML = icon(svg);
 
-    const conversations = filteredConversations();
-
-    if (!conversations.length) {
-      showEmpty(
-        ui.list,
-        state.conversations.length
-          ? "لا توجد محادثات تطابق البحث."
-          : "لا توجد محادثات بعد. افتح قائمة أصدقائك وابدأ مراسلة أحدهم."
-      );
-      return;
-    }
-
-    conversations.forEach(conversation => {
-      const card = document.createElement("article");
-      card.className = "conversation";
-
-      if (state.activeConversation?.id === conversation.id) {
-        card.classList.add("active");
-      }
-
-      const avatar = document.createElement("div");
-      avatar.className = "avatar";
-      setAvatar(avatar, conversation.friend);
-
-      const info = document.createElement("div");
-      info.className = "conversation-info";
-
-      const name = document.createElement("div");
-      name.className = "conversation-name";
-      name.textContent = displayName(conversation.friend);
-
-      const last = document.createElement("div");
-      last.className = "conversation-last";
-      last.textContent = "اضغط لفتح المحادثة";
-
-      info.append(name, last);
-
-      const time = document.createElement("div");
-      time.className = "conversation-time";
-      time.textContent = formatTime(conversation.updated_at);
-
-      card.append(avatar, info, time);
-
-      card.addEventListener("click", () => {
-        openConversation(conversation);
-      });
-
-      ui.list.appendChild(card);
+    button.addEventListener("click", event => {
+      event.stopPropagation();
+      action();
     });
+
+    return button;
   }
 
-  // يتأكد من تسجيل عضوية المستخدم الحالي أولاً.
-  // لا يحاول إضافة عضوية الصديق إلا إذا كان المستخدم هو منشئ المحادثة.
-  async function ensureOwnMembership(conversation, friend) {
-    const { data: existingMembership, error: checkError } =
-      await state.db
-        .from("conversation_members")
-        .select("conversation_id")
-        .eq("conversation_id", conversation.id)
-        .eq("user_id", state.user.id)
-        .maybeSingle();
+  function makeCard(row) {
+    const card = document.createElement("article");
+    card.className = "conversation";
+    card.dataset.id = row.id;
 
-    if (checkError) throw checkError;
+    const avatar = makeAvatar(row.friend);
 
-    if (!existingMembership) {
-      const { error: insertOwnError } = await state.db
-        .from("conversation_members")
-        .insert({
-          conversation_id: conversation.id,
-          user_id: state.user.id,
-          member_role: "member"
-        });
+    const info = document.createElement("div");
+    info.className = "conversation-info";
 
-      if (insertOwnError && insertOwnError.code !== "23505") {
-        throw insertOwnError;
-      }
+    const top = document.createElement("div");
+    top.className = "conversation-top";
+
+    const name = document.createElement("div");
+    name.className = "conversation-name";
+    name.textContent = nameOf(row.friend);
+
+    top.appendChild(name);
+
+    if (row.pinned) {
+      const pin = document.createElement("span");
+      pin.className = "pin-mark";
+      pin.innerHTML = icon(icons.pin);
+      top.appendChild(pin);
     }
 
-    // إذا كان المستخدم هو المنشئ، يتأكد من إضافة الطرف الآخر.
-    // خطأ التكرار هنا طبيعي إذا كانت عضويته موجودة بالفعل.
-    if (conversation.created_by === state.user.id && friend?.id) {
-      const { error: insertFriendError } = await state.db
-        .from("conversation_members")
-        .insert({
-          conversation_id: conversation.id,
-          user_id: friend.id,
-          member_role: "member"
-        });
+    const last = document.createElement("div");
+    last.className = "conversation-last";
+    last.textContent = messagePreview(row);
 
-      if (
-        insertFriendError &&
-        insertFriendError.code !== "23505"
-      ) {
-        throw insertFriendError;
-      }
-    }
+    info.append(top, last);
 
-    // تحقق نهائي: لا نفتح المحادثة قبل التأكد من عضويتنا.
-    const { data: verifiedMembership, error: verifyError } =
-      await state.db
-        .from("conversation_members")
-        .select("conversation_id")
-        .eq("conversation_id", conversation.id)
-        .eq("user_id", state.user.id)
-        .maybeSingle();
-
-    if (verifyError) throw verifyError;
-
-    if (!verifiedMembership) {
-      throw new Error(
-        "لم تكتمل عضويتك في المحادثة. تأكد من قبول الصداقة ثم حاول مرة أخرى."
-      );
-    }
-
-    return true;
-  }
-
-  async function getOrCreateConversation(friend) {
-    const ids = [state.user.id, friend.id].sort();
-    const directKey = ids.join(":");
-
-    const { data: existing, error: findError } = await state.db
-      .from("conversations")
-      .select("id,title,conversation_type,direct_key,created_by,updated_at")
-      .eq("conversation_type", "direct")
-      .eq("direct_key", directKey)
-      .maybeSingle();
-
-    if (findError) throw findError;
-
-    if (existing) {
-      await ensureOwnMembership(existing, friend);
-
-      return {
-        ...existing,
-        friend
-      };
-    }
-
-    const { error: createError } = await state.db
-      .from("conversations")
-      .insert({
-        conversation_type: "direct",
-        direct_key: directKey,
-        created_by: state.user.id
-      });
-
-    if (createError && createError.code !== "23505") {
-      throw createError;
-    }
-
-    // نبحث عن المحادثة بعد الإنشاء، مع مراعاة احتمال إنشائها بالتزامن.
-    let created = null;
-
-    for (let attempt = 0; attempt < 8; attempt++) {
-      const { data, error } = await state.db
-        .from("conversations")
-        .select("id,title,conversation_type,direct_key,created_by,updated_at")
-        .eq("conversation_type", "direct")
-        .eq("direct_key", directKey)
-        .maybeSingle();
-
-      if (error) throw error;
-
-      if (data) {
-        created = data;
-        break;
-      }
-
-      await new Promise(resolve => setTimeout(resolve, 350));
-    }
-
-    if (!created) {
-      throw new Error("تعذر العثور على المحادثة بعد إنشائها.");
-    }
-
-    await ensureOwnMembership(created, friend);
-
-    return {
-      ...created,
-      friend
-    };
-  }
-
-  async function openConversation(conversation) {
-    if (!conversation?.id || state.loading) return;
-
-    state.loading = true;
-
-    try {
-      if (state.channel) {
-        await state.db.removeChannel(state.channel);
-        state.channel = null;
-      }
-
-      state.activeConversation = conversation;
-      state.activeFriend = conversation.friend;
-
-      setAvatar(ui.avatar, conversation.friend);
-      ui.name.textContent = displayName(conversation.friend);
-      ui.status.textContent = "محادثة خاصة";
-
-      ui.app.classList.add("show-chat");
-
-      setComposerEnabled(true);
-      ui.input.value = "";
-
-      renderConversations();
-
-      await loadMessages(conversation.id);
-      subscribeToMessages(conversation.id);
-
-      ui.input.focus();
-
-    } catch (error) {
-      console.error("HANOON open conversation:", error);
-      notify(error.message || "تعذر فتح المحادثة.", "error");
-    } finally {
-      state.loading = false;
-    }
-  }
-
-  function renderMessage(message) {
-    const article = document.createElement("article");
-
-    article.className = "message";
-    article.classList.add(
-      message.sender_id === state.user.id ? "mine" : "theirs"
-    );
-
-    article.dataset.messageId = message.id;
-
-    const body = document.createElement("div");
-    body.className = "message-body";
-    body.textContent = message.body || "";
+    const meta = document.createElement("div");
+    meta.className = "conversation-meta";
 
     const time = document.createElement("div");
-    time.className = "message-time";
-    time.textContent = formatTime(message.created_at);
+    time.className = "conversation-time";
+    time.textContent = formatTime(row.lastMessage?.created_at);
 
-    article.append(body, time);
+    meta.appendChild(time);
 
-    return article;
+    if (row.unread > 0) {
+      const unread = document.createElement("span");
+      unread.className = "unread-count";
+      unread.textContent = row.unread > 99 ? "99+" : String(row.unread);
+      meta.appendChild(unread);
+    } else if (row.muted) {
+      const muted = document.createElement("span");
+      muted.className = "conversation-time";
+      muted.textContent = "مكتومة";
+      meta.appendChild(muted);
+    }
+
+    card.append(avatar, info, meta);
+
+    card.addEventListener("click", () => openChat(row));
+
+    const actions = document.createElement("div");
+    actions.className = "row-actions";
+
+    actions.append(
+      makeAction(
+        row.pinned ? "إلغاء التثبيت" : "تثبيت المحادثة",
+        icons.pin,
+        () => togglePin(row),
+        row.pinned
+      ),
+      makeAction(
+        row.muted ? "إلغاء الكتم" : "كتم المحادثة",
+        icons.mute,
+        () => toggleMute(row),
+        row.muted
+      ),
+      makeAction(
+        "تعليم كمقروءة",
+        icons.read,
+        () => markRead(row)
+      ),
+      makeAction(
+        "أرشفة المحادثة",
+        icons.archive,
+        () => archive(row)
+      )
+    );
+
+    const wrapper = document.createElement("div");
+    wrapper.append(card, actions);
+
+    return wrapper;
   }
 
-  function scrollMessagesToBottom() {
-    ui.messages.scrollTop = ui.messages.scrollHeight;
-  }
+  function render() {
+    const rows = visibleRows();
 
-  async function loadMessages(conversationId) {
-    showEmpty(ui.messages, "جارٍ تحميل الرسائل...");
+    ui.count.textContent = String(
+      state.rows.filter(row => !row.archived).length
+    );
 
-    const { data, error } = await state.db
-      .from("messages")
-      .select("id,conversation_id,sender_id,body,message_type,created_at,deleted_at")
-      .eq("conversation_id", conversationId)
-      .is("deleted_at", null)
-      .order("created_at", { ascending: true })
-      .limit(100);
+    ui.list.replaceChildren();
 
-    if (error) throw error;
-
-    ui.messages.replaceChildren();
-
-    if (!data?.length) {
-      showEmpty(ui.messages, "ابدأ المحادثة بإرسال أول رسالة.");
+    if (!rows.length) {
+      empty(
+        state.filter === "unread"
+          ? "لا توجد رسائل غير مقروءة."
+          : state.filter === "pinned"
+            ? "لا توجد محادثات مثبتة."
+            : "لا توجد محادثات هنا. ابدأ مراسلة أحد أصدقائك."
+      );
       return;
     }
 
-    data.forEach(message => {
-      ui.messages.appendChild(renderMessage(message));
+    rows.forEach(row => {
+      ui.list.appendChild(makeCard(row));
     });
-
-    scrollMessagesToBottom();
   }
 
-  function subscribeToMessages(conversationId) {
-    if (state.channel) {
-      state.db.removeChannel(state.channel);
-    }
-
-    state.channel = state.db
-      .channel(`hanoon-messages-${conversationId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "messages",
-          filter: `conversation_id=eq.${conversationId}`
-        },
-        payload => {
-          if (
-            state.activeConversation?.id !== conversationId ||
-            payload.new.deleted_at
-          ) return;
-
-          const exists = ui.messages.querySelector(
-            `[data-message-id="${CSS.escape(payload.new.id)}"]`
-          );
-
-          if (exists) return;
-
-          const emptyState = ui.messages.querySelector(".chat-empty");
-          if (emptyState) emptyState.remove();
-
-          ui.messages.appendChild(renderMessage(payload.new));
-          scrollMessagesToBottom();
-
-          loadConversations().catch(error => {
-            console.warn("Conversation refresh:", error);
-          });
-        }
-      )
-      .subscribe(status => {
-        if (status === "CHANNEL_ERROR") {
-          console.warn("HANOON realtime channel error.");
-        }
-      });
-  }
-
-  async function sendMessage(event) {
-    event.preventDefault();
-
-    const body = ui.input.value.trim();
-
-    if (!body || !state.activeConversation || state.sending) return;
-
-    state.sending = true;
-    ui.send.disabled = true;
-
+  async function updateMembership(row, changes, successMessage) {
     try {
-      const { data, error } = await state.db
-        .from("messages")
-        .insert({
-          conversation_id: state.activeConversation.id,
-          sender_id: state.user.id,
-          body,
-          message_type: "text"
-        })
-        .select("id,conversation_id,sender_id,body,message_type,created_at,deleted_at")
-        .single();
+      const { error } = await state.db
+        .from("conversation_members")
+        .update(changes)
+        .eq("conversation_id", row.id)
+        .eq("user_id", state.user.id);
 
       if (error) throw error;
 
-      ui.input.value = "";
+      await loadRows();
 
-      const emptyState = ui.messages.querySelector(".chat-empty");
-      if (emptyState) emptyState.remove();
-
-      const exists = ui.messages.querySelector(
-        `[data-message-id="${CSS.escape(data.id)}"]`
-      );
-
-      if (!exists) {
-        ui.messages.appendChild(renderMessage(data));
-      }
-
-      scrollMessagesToBottom();
-
-      const { error: updateError } = await state.db
-        .from("conversations")
-        .update({ updated_at: new Date().toISOString() })
-        .eq("id", state.activeConversation.id);
-
-      if (updateError) {
-        console.warn("Conversation timestamp:", updateError);
-      }
-
-      await loadConversations();
+      if (successMessage) notify(successMessage, "success");
 
     } catch (error) {
-      console.error("HANOON send message:", error);
-      notify(error.message || "تعذر إرسال الرسالة.", "error");
-    } finally {
-      state.sending = false;
-      ui.send.disabled = !state.activeConversation;
+      console.error("HANOON chat preference:", error);
+      notify(error.message || "تعذر تنفيذ العملية.", "error");
     }
   }
 
-  async function openFriendFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    const friendId = params.get("user");
+  async function togglePin(row) {
+    await updateMembership(
+      row,
+      {
+        pinned_at: row.pinned ? null : new Date().toISOString()
+      },
+      row.pinned ? "تم إلغاء تثبيت المحادثة." : "تم تثبيت المحادثة."
+    );
+  }
 
-    if (!friendId) return;
+  async function toggleMute(row) {
+    await updateMembership(
+      row,
+      {
+        muted_until: row.muted
+          ? null
+          : "2099-12-31T23:59:59.000Z"
+      },
+      row.muted ? "تم إلغاء كتم المحادثة." : "تم كتم المحادثة."
+    );
+  }
 
-    if (friendId === state.user.id) {
-      notify("لا يمكنك فتح محادثة مع حسابك الشخصي.", "error");
-      return;
-    }
+  async function markRead(row) {
+    await updateMembership(
+      row,
+      { last_read_at: new Date().toISOString() },
+      "تم تعليم المحادثة كمقروءة."
+    );
+  }
 
-    const { data: friendship, error: friendshipError } =
-      await state.db
-        .from("friend_requests")
-        .select("id,status,sender_id,receiver_id")
-        .eq("status", "accepted")
-        .or(
-          `and(sender_id.eq.${state.user.id},receiver_id.eq.${friendId}),and(sender_id.eq.${friendId},receiver_id.eq.${state.user.id})`
-        )
-        .maybeSingle();
-
-    if (friendshipError) throw friendshipError;
-
-    if (!friendship) {
-      notify("المراسلة متاحة بين الأصدقاء بعد قبول طلب الصداقة فقط.", "error");
-      return;
-    }
-
-    const { data: friend, error: friendError } = await state.db
-      .from("member_directory")
-      .select("id,username,member_code,full_name,avatar_path,bio")
-      .eq("id", friendId)
-      .maybeSingle();
-
-    if (friendError) throw friendError;
-
-    if (!friend) {
-      notify("لم يتم العثور على حساب هذا العضو.", "error");
-      return;
-    }
-
-    const conversation = await getOrCreateConversation(friend);
-
-    const existingIndex = state.conversations.findIndex(
-      item => item.id === conversation.id
+  async function archive(row) {
+    const confirmed = window.confirm(
+      `هل تريد أرشفة محادثة ${nameOf(row.friend)}؟`
     );
 
-    if (existingIndex === -1) {
-      state.conversations.unshift(conversation);
-    } else {
-      state.conversations[existingIndex] = conversation;
-    }
+    if (!confirmed) return;
 
-    renderConversations();
-    await openConversation(conversation);
+    await updateMembership(
+      row,
+      { archived_at: new Date().toISOString() },
+      "تم نقل المحادثة إلى الأرشيف."
+    );
+  }
+
+  function openChat(row) {
+    const params = new URLSearchParams({
+      id: row.id,
+      user: row.friend.id
+    });
+
+    window.location.href = `chat.html?${params.toString()}`;
+  }
+
+  function setFilter(filter) {
+    state.filter = filter;
+
+    document.querySelectorAll("[data-filter]").forEach(button => {
+      button.classList.toggle(
+        "active",
+        button.dataset.filter === filter
+      );
+    });
+
+    render();
   }
 
   function bindEvents() {
-    ui.form.addEventListener("submit", sendMessage);
-
-    ui.search.addEventListener("input", renderConversations);
+    ui.search.addEventListener("input", render);
 
     ui.refresh.addEventListener("click", async () => {
       ui.refresh.disabled = true;
-      ui.refresh.textContent = "جارٍ التحديث...";
 
       try {
-        await loadConversations();
-
-        if (state.activeConversation) {
-          await loadMessages(state.activeConversation.id);
-        }
-
+        await loadRows();
         notify("تم تحديث المحادثات.", "success");
-
       } catch (error) {
-        console.error("HANOON refresh:", error);
         notify(error.message || "تعذر تحديث المحادثات.", "error");
       } finally {
         ui.refresh.disabled = false;
-        ui.refresh.textContent = "تحديث";
       }
     });
 
-    ui.back.addEventListener("click", () => {
-      ui.app.classList.remove("show-chat");
+    ui.unread.addEventListener("click", () => {
+      setFilter(state.filter === "unread" ? "all" : "unread");
     });
 
-    ui.input.addEventListener("keydown", event => {
-      if (
-        event.key === "Enter" &&
-        !event.shiftKey &&
-        window.innerWidth > 700
-      ) {
-        event.preventDefault();
-        ui.form.requestSubmit();
-      }
+    document.querySelectorAll("[data-filter]").forEach(button => {
+      button.addEventListener("click", () => {
+        setFilter(button.dataset.filter);
+      });
     });
+  }
 
-    document.addEventListener("visibilitychange", () => {
-      if (
-        document.visibilityState === "visible" &&
-        state.activeConversation
-      ) {
-        loadMessages(state.activeConversation.id).catch(error => {
-          console.warn("Message refresh:", error);
-        });
-      }
-    });
+  function subscribe() {
+    state.channel = state.db
+      .channel(`hanoon-list-${state.user.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "messages"
+        },
+        () => {
+          loadRows().catch(error => {
+            console.warn("HANOON live list update:", error);
+          });
+        }
+      )
+      .subscribe();
   }
 
   async function initialize() {
     try {
-      if (!window.HANOON?.supabase) {
-        await new Promise((resolve, reject) => {
-          const timer = setTimeout(() => {
-            reject(new Error("انتهت مهلة الاتصال بقاعدة البيانات."));
-          }, 12000);
-
-          window.addEventListener("hanoon:supabase-ready", () => {
-            clearTimeout(timer);
-            resolve();
-          }, { once: true });
-
-          window.addEventListener("hanoon:supabase-error", event => {
-            clearTimeout(timer);
-            reject(new Error(
-              event.detail?.message || "تعذر الاتصال بقاعدة البيانات."
-            ));
-          }, { once: true });
-        });
-      }
-
       state.db = window.HANOON?.supabase;
 
       if (!state.db) {
@@ -753,23 +622,17 @@
       ui.auth.classList.add("hidden");
       ui.app.classList.remove("hidden");
 
-      setComposerEnabled(false);
       bindEvents();
-
-      await loadConversations();
-      await openFriendFromURL();
+      await loadRows();
+      subscribe();
 
     } catch (error) {
-      console.error("HANOON messages:", error);
-
-      ui.auth.classList.add("hidden");
-      ui.app.classList.remove("hidden");
-
-      notify(error.message || "تعذر تشغيل المراسلات.", "error");
+      console.error("HANOON messages list:", error);
+      notify(error.message || "تعذر تحميل المحادثات.", "error");
     }
   }
 
-  function startWhenReady() {
+  function start() {
     if (window.HANOON?.supabase) {
       initialize();
       return;
@@ -780,25 +643,11 @@
       initialize,
       { once: true }
     );
-
-    window.addEventListener(
-      "hanoon:supabase-error",
-      event => {
-        ui.auth.classList.remove("hidden");
-        ui.app.classList.add("hidden");
-        ui.auth.textContent =
-          event.detail?.message || "تعذر الاتصال بقاعدة البيانات.";
-      },
-      { once: true }
-    );
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startWhenReady, {
-      once: true
-    });
+    document.addEventListener("DOMContentLoaded", start, { once: true });
   } else {
-    startWhenReady();
+    start();
   }
-
 })();
