@@ -1,0 +1,275 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#190d35">
+<title>طلبات الصداقة | هنون</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --purple:#b18aff;
+  --pink:#e2a1ff;
+  --text:#f8f1ff;
+  --muted:#c1afd8;
+  --line:#d5a5ff30;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--text);
+  font-family:Cairo,sans-serif;
+  background:
+    radial-gradient(ellipse at 15% 15%,#7135a65c,transparent 38%),
+    radial-gradient(ellipse at 85% 70%,#45228b65,transparent 40%),
+    linear-gradient(145deg,#100a23,#1d103b 55%,#100c27);
+}
+button{font:inherit;cursor:pointer}
+a{color:inherit;text-decoration:none}
+.hidden{display:none!important}
+
+.topbar{
+  height:54px;
+  padding:7px 14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:#130b29dc;
+  border-bottom:1px solid var(--line);
+  backdrop-filter:blur(18px);
+  position:sticky;
+  top:0;
+  z-index:5;
+}
+.brand{display:flex;align-items:center;gap:9px;font-size:16px;font-weight:900}
+.brand-icon{
+  width:29px;height:29px;
+  display:grid;place-items:center;
+  border-radius:10px;
+  background:linear-gradient(135deg,#9c62ed,#d18bf1);
+}
+.brand-icon svg{width:18px;fill:none;stroke:white;stroke-width:1.8}
+.back{
+  padding:6px 12px;
+  border:1px solid var(--line);
+  border-radius:20px;
+  background:#ffffff0b;
+  color:#ead5ff;
+  font-size:10px;
+  font-weight:800;
+}
+.page{width:min(850px,94%);margin:20px auto 40px}
+
+.hero{
+  position:relative;
+  overflow:hidden;
+  padding:23px;
+  border:1px solid #d49cff55;
+  border-radius:22px;
+  background:
+    radial-gradient(circle at 85% 20%,#c47aff45,transparent 35%),
+    linear-gradient(120deg,#31145ceF,#21123eeF);
+  box-shadow:0 15px 45px #0005;
+}
+.hero:after{
+  content:"";
+  position:absolute;
+  width:170px;height:170px;
+  left:-55px;top:-95px;
+  border:1px solid #e6baff55;
+  border-radius:50%;
+  box-shadow:0 0 0 25px #e6baff12,0 0 0 50px #e6baff09;
+}
+.eyebrow{font-size:10px;font-weight:900;letter-spacing:2px;color:#e4bdff}
+.hero h1{margin:6px 0;font-size:clamp(23px,5vw,31px);font-weight:900}
+.hero p{margin:0;color:#d6c3e9;font-size:11px;line-height:2}
+.hero-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+
+.btn{
+  min-height:35px;
+  padding:6px 13px;
+  border:1px solid #d4a3ff55;
+  border-radius:11px;
+  background:linear-gradient(135deg,#9956d8,#7446b8);
+  color:white;
+  font-size:10px;
+  font-weight:900;
+}
+.btn.secondary{background:#ffffff0b;color:#e8d2ff}
+.btn.danger{background:#59243d;border-color:#ff9db344}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+.panel{
+  margin-top:15px;
+  padding:15px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:#1a1030c9;
+  backdrop-filter:blur(18px);
+  box-shadow:0 13px 35px #0004;
+}
+.section-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:12px;
+}
+.section-head h2{margin:0;font-size:15px;font-weight:900}
+.counter{
+  padding:4px 10px;
+  border:1px solid var(--line);
+  border-radius:20px;
+  color:#e9caff;
+  background:#b47bea19;
+  font-size:10px;
+  font-weight:900;
+}
+.tabs{display:flex;gap:7px;margin-bottom:13px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  flex:0 0 auto;
+  padding:7px 13px;
+  border:1px solid var(--line);
+  border-radius:20px;
+  background:#ffffff08;
+  color:#d1bde5;
+  font-size:10px;
+  font-weight:800;
+}
+.tab.active{background:#a66ce52e;color:#f0d8ff;border-color:#d5a5ff88}
+
+.request-list{display:grid;gap:10px}
+.request-card{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:11px;
+  border:1px solid #d4a5ff20;
+  border-radius:14px;
+  background:linear-gradient(110deg,#ffffff0c,#ffffff04);
+}
+.avatar{
+  flex:0 0 43px;
+  width:43px;height:43px;
+  display:grid;place-items:center;
+  overflow:hidden;
+  border:1px solid #d8aaff77;
+  border-radius:50%;
+  background:linear-gradient(135deg,#874bc4,#493c91);
+  font-size:16px;font-weight:900;
+}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.info{flex:1;min-width:0}
+.name{font-size:11px;font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.meta{margin-top:3px;color:var(--muted);font-size:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+.actions .btn{min-height:31px;padding:5px 9px;font-size:9px}
+
+.empty{
+  min-height:150px;
+  display:grid;place-items:center;
+  padding:20px;
+  color:var(--muted);
+  text-align:center;
+  font-size:11px;
+  line-height:2;
+}
+.notice{
+  margin-top:12px;
+  padding:10px 12px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#21143a;
+  color:#e8d5ff;
+  font-size:11px;
+  line-height:1.9;
+}
+.notice.error{color:#ffc2ce;border-color:#ff8ba055}
+.notice.success{color:#b6f6d4;border-color:#71dca855}
+.footer{text-align:center;padding:20px;color:#bca8d1;font-size:10px}
+
+@media(max-width:520px){
+  .page{margin-top:13px}
+  .hero{padding:18px;border-radius:18px}
+  .panel{padding:12px}
+  .request-card{gap:7px;padding:8px}
+  .avatar{width:37px;height:37px;flex-basis:37px}
+  .actions{flex-direction:column}
+  .actions .btn{min-width:65px}
+}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <span class="brand-icon">
+      <svg viewBox="0 0 24 24">
+        <circle cx="9" cy="8" r="4"/>
+        <path d="M2 21v-2a7 7 0 0 1 14 0v2M16 4a4 4 0 0 1 0 8M18 15a6 6 0 0 1 4 6"/>
+      </svg>
+    </span>
+    HANOON
+  </a>
+  <a class="back" href="friends.html">العودة للأصدقاء</a>
+</header>
+
+<main class="page">
+
+  <section class="hero">
+    <div class="eyebrow">HANOON CONNECTIONS</div>
+    <h1>طلبات الصداقة</h1>
+    <p>هنا تقدر تشوف الأشخاص اللي بعتوا لك طلب صداقة، وتختار قبول الطلب أو رفضه.</p>
+    <div class="hero-actions">
+      <a href="friends.html" class="btn">اكتشاف الأعضاء</a>
+      <button id="refreshRequestsBtn" class="btn secondary" type="button">تحديث الطلبات</button>
+    </div>
+  </section>
+
+  <div id="authNotice" class="notice hidden">
+    سجّل الدخول أولاً لمشاهدة طلبات الصداقة.
+    <a href="auth.html" style="color:#e5bdff;font-weight:900">تسجيل الدخول</a>
+  </div>
+
+  <section id="requestsApp" class="panel hidden">
+    <div class="section-head">
+      <h2>إدارة طلبات الصداقة</h2>
+      <span id="requestsCount" class="counter">0 طلب</span>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" type="button" data-request-view="incoming">الطلبات الواردة</button>
+      <button class="tab" type="button" data-request-view="sent">الطلبات المرسلة</button>
+    </div>
+
+    <div id="incomingView">
+      <div id="incomingList" class="request-list">
+        <div class="empty">جارٍ تحميل الطلبات...</div>
+      </div>
+    </div>
+
+    <div id="sentView" class="hidden">
+      <div id="sentList" class="request-list">
+        <div class="empty">جارٍ تحميل الطلبات...</div>
+      </div>
+    </div>
+  </section>
+
+  <div id="globalNotice" class="notice hidden" role="status"></div>
+
+</main>
+
+<footer class="footer">HANOON — المعرفة تصنع الفرق</footer>
+
+<script type="module" src="../js/supabase-client.js"></script>
+<script type="module" src="../js/friend-requests.js"></script>
+
+</body>
+</html>
