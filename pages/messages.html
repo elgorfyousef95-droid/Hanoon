@@ -3,552 +3,285 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#102b32">
-<title>المراسلات | هنون</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#101b30">
+<title>المحادثات | هنون</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
 <style>
 :root{
-  --green:#20b9a6;
-  --green-light:#72e4d5;
-  --bg:#0b171c;
-  --panel:#12252c;
-  --panel2:#1a3038;
-  --text:#f2f7f8;
-  --muted:#9aafb5;
-  --line:#ffffff13;
+  --bg:#0c1425;
+  --panel:#131f35;
+  --panel2:#1a2943;
+  --line:#ffffff12;
+  --text:#f4f6ff;
+  --muted:#9aa9c5;
+  --accent:#8b78f5;
+  --teal:#47d4c3;
 }
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-html,body{
-  width:100%;
-  height:100%;
-  min-height:0;
-  margin:0;
-  overflow:hidden!important;
-  overscroll-behavior:none;
-}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden}
 body{
   font-family:Cairo,sans-serif;
   color:var(--text);
-  background:var(--bg);
+  background:
+    radial-gradient(ellipse at 10% 0%,#5949a52c,transparent 38%),
+    radial-gradient(ellipse at 100% 100%,#147e8b20,transparent 38%),
+    var(--bg);
 }
-button,input,textarea{font:inherit}
+button,input{font:inherit}
 button{cursor:pointer}
-a{text-decoration:none;color:inherit}
+a{color:inherit;text-decoration:none}
 .hidden{display:none!important}
 
+.app{
+  width:100%;
+  height:100dvh;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
 .topbar{
-  height:52px;
-  flex:0 0 52px;
+  height:60px;
+  flex:0 0 60px;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:0 14px;
-  background:#102b32;
+  padding:0 16px;
+  background:#111d31eF;
   border-bottom:1px solid var(--line);
+  backdrop-filter:blur(18px);
 }
-.brand{
-  display:flex;
-  align-items:center;
-  gap:9px;
-  font-size:15px;
-  font-weight:900;
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:16px}
+.brand-mark{
+  width:36px;height:36px;display:grid;place-items:center;
+  border-radius:13px;
+  background:linear-gradient(135deg,#8c79f7,#36c9bd);
+  box-shadow:0 5px 20px #7867e844;
 }
-.brand-icon{
-  width:29px;
-  height:29px;
-  display:grid;
-  place-items:center;
-  border-radius:10px;
-  background:linear-gradient(135deg,#20b9a6,#267d91);
+.brand-mark svg{width:21px;fill:none;stroke:white;stroke-width:1.8}
+.top-actions{display:flex;gap:8px;align-items:center}
+.icon-btn{
+  width:38px;height:38px;display:grid;place-items:center;
+  border:1px solid var(--line);border-radius:12px;
+  background:#ffffff09;color:#d9e3ff;
 }
-.brand-icon svg{
-  width:18px;
-  fill:none;
-  stroke:white;
-  stroke-width:1.8;
-}
-.back-link{
-  padding:6px 12px;
-  border:1px solid #ffffff20;
-  border-radius:20px;
-  background:#ffffff09;
-  color:#b7f6eb;
-  font-size:10px;
-  font-weight:800;
-}
+.icon-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
-.page{
-  width:100%;
-  height:calc(100dvh - 52px);
-  min-height:0;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-}
 .heading{
-  height:65px;
-  flex:0 0 65px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 15px;
-  background:#10232a;
-  border-bottom:1px solid var(--line);
+  padding:18px 17px 12px;
+  display:flex;align-items:center;justify-content:space-between;
 }
-.heading h1{
-  margin:0;
-  font-size:17px;
-  font-weight:900;
+.heading h1{margin:0;font-size:22px;font-weight:900}
+.heading p{margin:3px 0 0;color:var(--muted);font-size:10px}
+.heading-count{
+  min-width:35px;height:35px;padding:0 10px;
+  display:grid;place-items:center;
+  border:1px solid #8b78f544;border-radius:12px;
+  background:#8b78f51a;color:#c9c0ff;
+  font-size:12px;font-weight:900;
 }
-.heading p{
-  margin:2px 0 0;
-  color:var(--muted);
-  font-size:9px;
+.search-wrap{padding:0 15px 12px}
+.search-box{
+  height:45px;display:flex;align-items:center;gap:9px;
+  padding:0 13px;border:1px solid var(--line);
+  border-radius:15px;background:#ffffff08;
 }
-.btn{
-  min-height:34px;
-  padding:5px 12px;
-  border:1px solid #ffffff20;
-  border-radius:10px;
-  background:#ffffff0a;
-  color:#c9f8f0;
-  font-size:10px;
-  font-weight:800;
+.search-box svg{width:18px;flex:0 0 18px;fill:none;stroke:#aebbd5;stroke-width:1.8}
+.search-box input{
+  width:100%;min-width:0;border:0;outline:0;background:transparent;
+  color:white;font-size:11px;
 }
-.btn:disabled{opacity:.5}
+.search-box input::placeholder{color:#8493b1}
 
-.auth-notice,.notice{
-  flex:0 0 auto;
-  margin:8px 12px;
-  padding:9px 12px;
-  border:1px solid var(--line);
-  border-radius:11px;
-  background:#142c33;
-  color:#d7f8f2;
-  font-size:11px;
-  line-height:1.8;
+.shortcuts{
+  display:flex;gap:9px;padding:0 15px 14px;
 }
-.notice.error{color:#ffc1c8;border-color:#ff718055}
-.notice.success{color:#a8f5d7;border-color:#55d5a755}
+.shortcut{
+  min-width:0;flex:1;min-height:47px;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  border:1px solid var(--line);border-radius:14px;
+  background:linear-gradient(145deg,#ffffff0d,#ffffff04);
+  color:#dce5ff;font-size:10px;font-weight:800;
+}
+.shortcut svg{width:17px;height:17px;fill:none;stroke:#a99bff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.shortcut.archive svg{stroke:#54d6c7}
+.shortcut.unread svg{stroke:#f5c875}
 
-.chat-layout{
-  width:100%;
-  flex:1 1 auto;
-  min-height:0;
-  display:grid;
-  grid-template-columns:340px minmax(0,1fr);
-  overflow:hidden;
-  background:var(--bg);
+.filter-row{
+  display:flex;gap:8px;padding:0 15px 12px;
+  overflow-x:auto;scrollbar-width:none;
 }
-.sidebar{
-  min-width:0;
-  min-height:0;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-  background:#10232a;
-  border-left:1px solid var(--line);
+.filter-row::-webkit-scrollbar{display:none}
+.filter{
+  flex:0 0 auto;padding:7px 15px;
+  border:1px solid var(--line);border-radius:20px;
+  background:#ffffff08;color:#aebbd5;
+  font-size:9px;font-weight:800;
 }
-.sidebar-head{
-  flex:0 0 auto;
-  padding:12px;
-  border-bottom:1px solid var(--line);
+.filter.active{
+  border-color:#9b89ff66;
+  background:linear-gradient(135deg,#7664df55,#3d8f9a33);
+  color:#e6e0ff;
 }
-.sidebar-title{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:10px;
+
+.list-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:3px 17px 8px;color:#9eacc7;font-size:9px;font-weight:800;
 }
-.sidebar-title h2{
-  margin:0;
-  font-size:14px;
-  font-weight:900;
-}
-.search{
-  width:100%;
-  height:39px;
-  padding:0 13px;
-  outline:none;
-  border:1px solid #ffffff16;
-  border-radius:22px;
-  background:#07171c;
-  color:white;
-  font-size:11px;
-}
-.search:focus{border-color:var(--green)}
 .conversation-list{
-  flex:1;
-  min-height:0;
-  overflow-x:hidden;
-  overflow-y:auto;
-  overscroll-behavior:contain;
-  padding:5px 8px;
+  flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;
+  padding:0 10px 18px;overscroll-behavior:contain;
 }
 .conversation{
-  width:100%;
-  min-height:69px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:9px 7px;
-  margin:0;
-  border:0;
-  border-bottom:1px solid #ffffff0d;
-  border-radius:0;
-  background:transparent;
-  cursor:pointer;
+  position:relative;display:flex;align-items:center;gap:11px;
+  min-height:77px;padding:10px 8px;
+  border-bottom:1px solid #ffffff0b;
+  border-radius:13px;cursor:pointer;
 }
-.conversation:hover,.conversation.active{
-  background:#ffffff0b;
-}
+.conversation:active{background:#ffffff0c}
+.conversation:hover{background:#ffffff08}
 .avatar{
-  width:47px;
-  height:47px;
-  flex:0 0 47px;
-  display:grid;
-  place-items:center;
-  overflow:hidden;
-  border:1px solid #53d5c74c;
-  border-radius:50%;
-  background:linear-gradient(135deg,#147d79,#285b78);
-  color:white;
-  font-size:16px;
-  font-weight:900;
+  position:relative;width:51px;height:51px;flex:0 0 51px;
+  display:grid;place-items:center;overflow:hidden;
+  border:1px solid #a99aff55;border-radius:50%;
+  background:linear-gradient(135deg,#6253a8,#1a8490);
+  color:white;font-weight:900;font-size:16px;
 }
-.avatar img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
+.avatar img{width:100%;height:100%;object-fit:cover}
+.online-dot{
+  position:absolute;bottom:1px;right:1px;width:11px;height:11px;
+  border:2px solid #15213a;border-radius:50%;background:#4cdb9b;
 }
-.conversation-info{
-  flex:1;
-  min-width:0;
-}
+.conversation-info{flex:1;min-width:0}
+.conversation-top{display:flex;align-items:center;gap:6px;min-width:0}
 .conversation-name{
-  overflow:hidden;
-  white-space:nowrap;
-  text-overflow:ellipsis;
-  color:#f4f8f9;
-  font-size:11px;
-  font-weight:900;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  font-size:11px;font-weight:900;color:#f2f4ff;
 }
+.pin-mark{width:13px;height:13px;flex:0 0 13px;color:#b4a6ff}
 .conversation-last{
-  margin-top:4px;
-  overflow:hidden;
-  white-space:nowrap;
-  text-overflow:ellipsis;
-  color:#9db2b8;
-  font-size:9px;
+  margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  color:#a0aec8;font-size:9px;
 }
-.conversation-time{
-  align-self:flex-start;
-  padding-top:4px;
-  color:#8eaaa9;
-  font-size:8px;
+.conversation-meta{
+  align-self:stretch;display:flex;flex-direction:column;
+  align-items:flex-end;justify-content:space-between;gap:5px;
 }
-
-.chat-main{
-  min-width:0;
-  min-height:0;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-  background:#0c191e;
+.conversation-time{color:#8292b2;font-size:8px;white-space:nowrap}
+.unread-count{
+  min-width:18px;height:18px;padding:0 5px;
+  display:grid;place-items:center;border-radius:20px;
+  background:#39c9b5;color:#082b30;font-size:9px;font-weight:900;
 }
-.chat-header{
-  height:61px;
-  min-height:61px;
-  flex:0 0 61px;
-  display:flex;
-  align-items:center;
-  gap:9px;
-  padding:7px 12px;
-  background:#142a31;
-  border-bottom:1px solid var(--line);
+.row-actions{
+  display:flex;align-items:center;gap:5px;margin-top:5px;
 }
-.chat-header .avatar{
-  width:42px;
-  height:42px;
-  flex-basis:42px;
+.row-action{
+  width:27px;height:27px;display:grid;place-items:center;
+  border:1px solid var(--line);border-radius:9px;
+  background:#ffffff08;color:#b8c6e3;
 }
-.chat-header-info{
-  flex:1;
-  min-width:0;
-}
-.chat-header-name{
-  overflow:hidden;
-  white-space:nowrap;
-  text-overflow:ellipsis;
-  font-size:11px;
-  font-weight:900;
-}
-.chat-header-status{
-  margin-top:2px;
-  color:#9db6b9;
-  font-size:9px;
-}
-.mobile-back{
-  display:none;
-  flex:0 0 auto;
-}
-
-.messages{
-  flex:1 1 auto;
-  min-height:0;
-  width:100%;
-  overflow-x:hidden;
-  overflow-y:auto;
-  overscroll-behavior:contain;
-  padding:13px 12px;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  background-color:#101d22;
-  background-image:
-    radial-gradient(#ffffff08 1px,transparent 1px);
-  background-size:19px 19px;
-}
+.row-action svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.row-action.active{color:#c5b9ff;border-color:#8b78f566;background:#8b78f51a}
 .chat-empty{
-  flex:1;
-  display:grid;
-  place-items:center;
-  padding:25px;
-  text-align:center;
-  color:#9cb4b9;
-  font-size:11px;
-  line-height:2;
+  min-height:180px;display:grid;place-items:center;
+  padding:25px;text-align:center;color:#9eacc7;
+  font-size:11px;line-height:2;
 }
-.message{
-  width:fit-content;
-  max-width:min(78%,460px);
-  min-width:65px;
-  padding:7px 10px 5px;
-  border:1px solid #ffffff0b;
-  border-radius:13px 13px 4px 13px;
-  background:#20343b;
-  color:#f3f8f9;
-  overflow-wrap:anywhere;
-  box-shadow:0 2px 4px #0002;
+.notice{
+  margin:8px 14px;padding:9px 12px;border-radius:12px;
+  border:1px solid var(--line);background:#172640;
+  color:#e5eaff;font-size:10px;
 }
-.message.mine{
-  align-self:flex-start;
-  border-radius:13px 13px 13px 4px;
-  background:#075e54;
-}
-.message.theirs{align-self:flex-end}
-.message-body{
-  font-size:11px;
-  line-height:1.8;
-  white-space:pre-wrap;
-}
-.message-time{
-  margin-top:3px;
-  text-align:left;
-  color:#b0d1ca;
-  font-size:8px;
-}
+.notice.error{color:#ffc4cd;border-color:#ff718055}
+.notice.success{color:#a9f3d9;border-color:#55d5a755}
+.auth-notice{margin:15px;padding:15px;border:1px solid var(--line);border-radius:14px;background:var(--panel);font-size:11px;line-height:2}
+.auth-notice a{color:#a99aff;font-weight:900}
 
-.composer{
-  flex:0 0 auto;
-  min-height:61px;
-  display:flex;
-  align-items:flex-end;
-  gap:8px;
-  padding:9px 10px calc(9px + env(safe-area-inset-bottom));
-  background:#142a31;
-  border-top:1px solid var(--line);
-}
-.composer textarea{
-  flex:1;
-  min-width:0;
-  min-height:41px;
-  max-height:105px;
-  resize:none;
-  padding:9px 13px;
-  border:1px solid #ffffff16;
-  border-radius:22px;
-  outline:none;
-  background:#08191e;
-  color:white;
-  font-size:11px;
-  line-height:1.7;
-}
-.composer textarea:focus{border-color:#32c7b6}
-.send-btn{
-  width:42px;
-  height:42px;
-  flex:0 0 42px;
-  display:grid;
-  place-items:center;
-  border:0;
-  border-radius:50%;
-  background:linear-gradient(135deg,#20b9a6,#167b8a);
-  color:white;
-}
-.send-btn svg{
-  width:19px;
-  fill:none;
-  stroke:white;
-  stroke-width:2;
-  stroke-linecap:round;
-  stroke-linejoin:round;
-}
-.send-btn:disabled{opacity:.45}
-
-@media(max-width:700px){
-  .topbar{height:48px;flex-basis:48px}
-  .page{
-    height:calc(100dvh - 48px);
-    height:calc(100dvh - 48px - env(safe-area-inset-top));
-  }
-  .heading{display:none}
-  .chat-layout{
-    display:grid;
-    grid-template-columns:minmax(0,1fr);
-    grid-template-rows:minmax(0,1fr);
-    height:100%;
-    min-height:0;
-    border:0;
-  }
-  .sidebar{
-    grid-column:1;
-    grid-row:1;
-    border:0;
-  }
-  .chat-main{
-    grid-column:1;
-    grid-row:1;
-    display:none;
-  }
-  .chat-layout.show-chat .sidebar{display:none}
-  .chat-layout.show-chat .chat-main{display:flex}
-  .mobile-back{
-    display:grid;
-    place-items:center;
-    width:34px;
-    height:34px;
-    min-height:34px;
-    padding:0;
-  }
-  .messages{padding:12px 9px}
-  .message{max-width:86%}
-  .sidebar-head{padding:13px}
-  .conversation{min-height:73px}
-}
-@media(min-width:701px){
-  .mobile-back{display:none!important}
+@media(min-width:760px){
+  .app{max-width:760px;margin:auto;border-left:1px solid var(--line);border-right:1px solid var(--line)}
+  body{display:flex;justify-content:center}
+  .conversation{padding-inline:13px}
+  .conversation:hover{transform:translateY(-1px)}
 }
 </style>
 </head>
-
 <body>
+<div class="app">
 
-<header class="topbar">
-  <a class="brand" href="../index.html">
-    <span class="brand-icon">
-      <svg viewBox="0 0 24 24">
-        <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8A8.5 8.5 0 0 1 8.7 3.9a8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/>
-      </svg>
-    </span>
-    HANOON
-  </a>
-  <a class="back-link" href="friends.html">الأصدقاء</a>
-</header>
-
-<main class="page">
+  <header class="topbar">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24">
+          <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8A8.5 8.5 0 0 1 8.7 3.9a8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/>
+        </svg>
+      </span>
+      HANOON
+    </a>
+    <div class="top-actions">
+      <a class="icon-btn" href="friends.html" title="الأصدقاء" aria-label="الأصدقاء">
+        <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M20 8v6m3-3h-6"/></svg>
+      </a>
+      <button class="icon-btn" id="refreshChatsBtn" type="button" title="تحديث" aria-label="تحديث">
+        <svg viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.6 9a7 7 0 0 1 11.6-2L20 12M4 12l2.8 5a7 7 0 0 0 11.6-2"/></svg>
+      </button>
+    </div>
+  </header>
 
   <section class="heading">
     <div>
-      <h1>المراسلات</h1>
-      <p>رسائلك ومحادثاتك الخاصة</p>
+      <h1>المحادثات</h1>
+      <p>كل رسائلك في مكان واحد</p>
     </div>
-    <button class="btn" id="refreshChatsBtn" type="button">تحديث</button>
+    <span class="heading-count" id="chatCount">0</span>
   </section>
 
   <div id="authNotice" class="auth-notice hidden">
     سجّل الدخول أولاً لاستخدام المراسلات.
-    <a href="auth.html" style="color:#8cf2e7;font-weight:900">تسجيل الدخول</a>
+    <a href="auth.html">تسجيل الدخول</a>
   </div>
 
   <div id="globalNotice" class="notice hidden" role="status"></div>
 
-  <section id="messagesApp" class="chat-layout hidden">
+  <section id="messagesApp" class="hidden" style="display:flex;flex:1;min-height:0;flex-direction:column">
+    <div class="search-wrap">
+      <label class="search-box">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+        <input id="conversationSearch" type="search" placeholder="ابحث عن محادثة أو شخص..." autocomplete="off">
+      </label>
+    </div>
 
-    <aside class="sidebar">
-      <div class="sidebar-head">
-        <div class="sidebar-title">
-          <h2>المحادثات</h2>
-          <span id="chatCount" style="font-size:9px;color:#9eb9c0">0</span>
-        </div>
-        <input
-          id="conversationSearch"
-          class="search"
-          type="search"
-          placeholder="ابحث في المحادثات..."
-          autocomplete="off"
-        >
-      </div>
+    <nav class="shortcuts">
+      <a class="shortcut archive" href="archived.html">
+        <svg viewBox="0 0 24 24"><path d="M3 4h18v4H3zM5 8v12h14V8M9 12h6"/></svg>
+        الأرشيف
+      </a>
+      <button class="shortcut unread" id="unreadFilterBtn" type="button">
+        <svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM4 7l8 6 8-6"/></svg>
+        غير المقروءة
+      </button>
+    </nav>
 
-      <div id="conversationList" class="conversation-list">
-        <div class="chat-empty">جارٍ تحميل المحادثات...</div>
-      </div>
-    </aside>
+    <nav class="filter-row" aria-label="تصفية المحادثات">
+      <button class="filter active" type="button" data-filter="all">الكل</button>
+      <button class="filter" type="button" data-filter="unread">غير مقروءة</button>
+      <button class="filter" type="button" data-filter="pinned">المثبتة</button>
+    </nav>
 
-    <section class="chat-main">
+    <div class="list-head">
+      <span>رسائلك الأخيرة</span>
+      <span id="listStatus">محدّثة</span>
+    </div>
 
-      <header class="chat-header">
-        <button class="btn mobile-back" id="mobileBackBtn" type="button" aria-label="العودة للمحادثات">
-          <svg viewBox="0 0 24 24" width="17" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="m15 18-6-6 6-6"/>
-          </svg>
-        </button>
-
-        <div id="chatAvatar" class="avatar">هـ</div>
-
-        <div class="chat-header-info">
-          <div id="chatName" class="chat-header-name">اختر محادثة</div>
-          <div id="chatStatus" class="chat-header-status">محادثاتك الخاصة</div>
-        </div>
-      </header>
-
-      <div id="messageList" class="messages">
-        <div class="chat-empty">
-          اختر محادثة من القائمة لبدء التواصل.
-        </div>
-      </div>
-
-      <form id="messageForm" class="composer">
-        <textarea
-          id="messageInput"
-          rows="1"
-          maxlength="5000"
-          placeholder="اكتب رسالة..."
-          aria-label="نص الرسالة"
-          disabled
-        ></textarea>
-
-        <button class="send-btn" id="sendMessageBtn" type="submit" disabled aria-label="إرسال الرسالة">
-          <svg viewBox="0 0 24 24">
-            <path d="m22 2-7 20-4-9-9-4Z"/>
-            <path d="M22 2 11 13"/>
-          </svg>
-        </button>
-      </form>
-
-    </section>
+    <div id="conversationList" class="conversation-list">
+      <div class="chat-empty">جارٍ تحميل المحادثات...</div>
+    </div>
   </section>
-</main>
+
+</div>
 
 <script type="module" src="../js/supabase-client.js"></script>
 <script type="module" src="../js/messages.js"></script>
-<script src="../js/chat-preferences.js"></script>
-
 </body>
 </html>
