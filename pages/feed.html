@@ -1,0 +1,1088 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1020">
+  <title>هنون | المجتمع</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: rgba(19, 25, 44, .88);
+      --panel-soft: rgba(28, 35, 58, .72);
+      --line: rgba(255,255,255,.09);
+      --gold: #e5c27d;
+      --purple: #a58bff;
+      --text: #f5f4fc;
+      --muted: #a7adc2;
+      --green: #48d6b0;
+      --danger: #ff7189;
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      min-height: 100%;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background: var(--bg);
+      font-family: "Cairo", sans-serif;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background:
+        linear-gradient(180deg, rgba(7,10,23,.86), rgba(8,12,27,.96)),
+        url("https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=2200&q=85")
+        center / cover no-repeat;
+      transform: scale(1.02);
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 12% 12%, rgba(129,102,255,.13), transparent 28%),
+        radial-gradient(circle at 88% 40%, rgba(49,194,183,.08), transparent 28%);
+    }
+
+    button, input, textarea {
+      font: inherit;
+    }
+
+    button, a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 10px max(4%, env(safe-area-inset-right));
+      background: rgba(9,13,29,.88);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 145px;
+    }
+
+    .brand img {
+      width: 43px;
+      height: 43px;
+      object-fit: contain;
+    }
+
+    .brand-copy strong {
+      display: block;
+      font-size: 19px;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+
+    .brand-copy small {
+      display: block;
+      color: var(--gold);
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .main-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      flex: 1;
+    }
+
+    .nav-link {
+      min-width: 86px;
+      padding: 10px 13px;
+      color: var(--muted);
+      text-align: center;
+      border-radius: 13px;
+      font-size: 13px;
+      font-weight: 800;
+      transition: .2s;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: var(--gold);
+      background: rgba(229,194,125,.10);
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .icon-button {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      color: #e9e8f6;
+      background: rgba(255,255,255,.06);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+
+    .icon-button svg {
+      width: 19px;
+      height: 19px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .profile-shortcut {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border: 2px solid rgba(229,194,125,.7);
+      border-radius: 50%;
+      background: linear-gradient(135deg,#6d5ad6,#29264b);
+      font-weight: 900;
+    }
+
+    .profile-shortcut img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .page-wrap {
+      width: min(1440px, 94%);
+      margin: 27px auto 70px;
+      display: grid;
+      grid-template-columns: 265px minmax(0, 650px) 265px;
+      justify-content: center;
+      align-items: start;
+      gap: 22px;
+    }
+
+    .glass {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 18px 55px rgba(0,0,0,.20);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .side-column {
+      display: flex;
+      flex-direction: column;
+      gap: 17px;
+      position: sticky;
+      top: 96px;
+    }
+
+    .side-card {
+      padding: 18px;
+    }
+
+    .side-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 0 0 15px;
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .side-title small {
+      color: var(--gold);
+      font-size: 10px;
+    }
+
+    .quick-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 9px;
+      border-radius: 13px;
+      color: #d9d9e8;
+      font-size: 13px;
+      font-weight: 700;
+      transition: .2s;
+    }
+
+    .quick-link:hover {
+      background: rgba(255,255,255,.06);
+      color: var(--gold);
+    }
+
+    .quick-icon {
+      width: 35px;
+      height: 35px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 35px;
+      color: var(--gold);
+      background: rgba(229,194,125,.10);
+      border: 1px solid rgba(229,194,125,.15);
+      border-radius: 11px;
+    }
+
+    .quick-icon svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .side-banner {
+      min-height: 145px;
+      padding: 17px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      overflow: hidden;
+      position: relative;
+      background:
+        linear-gradient(0deg,rgba(8,10,25,.96),rgba(8,10,25,.10)),
+        url("https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=900&q=85")
+        center / cover;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+
+    .side-banner strong {
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .side-banner span {
+      color: #d4c9ff;
+      font-size: 11px;
+    }
+
+    .center-column {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .welcome-banner {
+      min-height: 190px;
+      padding: 24px;
+      display: flex;
+      align-items: flex-end;
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(90deg,rgba(9,12,29,.12),rgba(9,12,29,.92)),
+        url("https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?auto=format&fit=crop&w=1500&q=85")
+        center 45% / cover;
+      border: 1px solid rgba(229,194,125,.2);
+      border-radius: 25px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.24);
+    }
+
+    .welcome-copy {
+      max-width: 430px;
+    }
+
+    .welcome-copy small {
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .welcome-copy h1 {
+      margin: 7px 0;
+      font-size: clamp(22px,3vw,30px);
+      font-weight: 900;
+      line-height: 1.5;
+    }
+
+    .welcome-copy p {
+      margin: 0;
+      color: #d0d2e1;
+      font-size: 12px;
+      line-height: 1.9;
+    }
+
+    .stories-section {
+      padding: 16px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .section-head a {
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .stories-row {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 2px 1px 7px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(229,194,125,.4) transparent;
+    }
+
+    .story {
+      flex: 0 0 75px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .story-ring {
+      width: 65px;
+      height: 65px;
+      margin: auto auto 7px;
+      padding: 3px;
+      border-radius: 50%;
+      background: linear-gradient(135deg,var(--gold),var(--purple),#43cdb9);
+    }
+
+    .story-ring img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border: 3px solid #171a2d;
+      border-radius: 50%;
+    }
+
+    .story span {
+      display: block;
+      overflow: hidden;
+      color: #d8d9e8;
+      font-size: 10px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .composer {
+      padding: 18px;
+    }
+
+    .composer-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar {
+      width: 45px;
+      height: 45px;
+      flex: 0 0 45px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      color: white;
+      background: linear-gradient(135deg,#7967dc,#342d65);
+      border: 2px solid rgba(229,194,125,.45);
+      border-radius: 50%;
+      font-weight: 900;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .composer-prompt {
+      flex: 1;
+      min-width: 0;
+      padding: 12px 16px;
+      color: #aeb3c7;
+      background: rgba(255,255,255,.055);
+      border: 1px solid var(--line);
+      border-radius: 25px;
+      text-align: right;
+      font-size: 12px;
+    }
+
+    .composer-divider {
+      height: 1px;
+      margin: 16px 0 12px;
+      background: var(--line);
+    }
+
+    .composer-tools {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 7px;
+    }
+
+    .composer-tool {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 5px;
+      color: #d7d9e8;
+      background: transparent;
+      border: 0;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .composer-tool:hover {
+      background: rgba(255,255,255,.06);
+    }
+
+    .composer-tool svg {
+      width: 19px;
+      height: 19px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .composer-tool.photo { color: #55d9b3; }
+    .composer-tool.video { color: #b39bff; }
+    .composer-tool.write { color: var(--gold); }
+
+    .feed-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 2px 3px;
+    }
+
+    .feed-controls h2 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .feed-filter {
+      padding: 8px 13px;
+      color: var(--gold);
+      background: rgba(229,194,125,.08);
+      border: 1px solid rgba(229,194,125,.2);
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .posts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 17px;
+    }
+
+    .post-card {
+      padding: 17px;
+      overflow: hidden;
+    }
+
+    .post-author {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .post-author-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .post-author-info strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .post-author-info small {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .post-menu {
+      width: 35px;
+      height: 35px;
+      color: #d5d7e6;
+      background: rgba(255,255,255,.05);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+
+    .post-text {
+      margin: 14px 0;
+      color: #e4e5ef;
+      font-size: 13px;
+      line-height: 2;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .post-media {
+      width: 100%;
+      max-height: 510px;
+      display: block;
+      object-fit: cover;
+      background: #080b18;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+    }
+
+    .post-stats {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 2px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .post-actions {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .post-action {
+      min-height: 43px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      color: #c6c8d8;
+      background: transparent;
+      border: 0;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .post-action svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .post-action.liked {
+      color: #ff7189;
+    }
+
+    .post-action:hover {
+      background: rgba(255,255,255,.04);
+    }
+
+    .comments-preview {
+      padding-top: 12px;
+      color: #aeb3c7;
+      font-size: 11px;
+    }
+
+    .right-profile {
+      padding: 0 0 17px;
+      overflow: hidden;
+    }
+
+    .cover-mini {
+      height: 95px;
+      background:
+        linear-gradient(0deg,rgba(11,15,32,.25),rgba(11,15,32,.05)),
+        url("https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=800&q=85")
+        center / cover;
+    }
+
+    .profile-mini-body {
+      padding: 0 16px;
+      text-align: center;
+    }
+
+    .profile-mini-avatar {
+      width: 76px;
+      height: 76px;
+      margin: -39px auto 8px;
+      position: relative;
+      border: 4px solid #171b2d;
+      border-radius: 50%;
+      background: linear-gradient(135deg,#8e76e9,#2c2755);
+      display: grid;
+      place-items: center;
+      font-size: 23px;
+      font-weight: 900;
+    }
+
+    .profile-mini-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .profile-mini-body strong {
+      display: block;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .profile-mini-body small {
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .profile-stats {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 4px;
+      margin-top: 17px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .profile-stats strong {
+      display: block;
+      color: var(--gold);
+      font-size: 15px;
+    }
+
+    .profile-stats span {
+      color: var(--muted);
+      font-size: 9px;
+    }
+
+    .suggestion {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 13px;
+    }
+
+    .suggestion .avatar {
+      width: 37px;
+      height: 37px;
+      flex-basis: 37px;
+    }
+
+    .suggestion-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .suggestion-info strong {
+      display: block;
+      font-size: 11px;
+    }
+
+    .suggestion-info small {
+      color: var(--muted);
+      font-size: 9px;
+    }
+
+    .follow-button {
+      padding: 6px 10px;
+      color: var(--gold);
+      background: rgba(229,194,125,.08);
+      border: 1px solid rgba(229,194,125,.2);
+      border-radius: 9px;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .footer-note {
+      padding: 12px;
+      color: #7e849b;
+      text-align: center;
+      font-size: 10px;
+      line-height: 1.9;
+    }
+
+    .mobile-bottom {
+      display: none;
+    }
+
+    .loading-state {
+      padding: 35px 15px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 12px;
+    }
+
+    @media (max-width: 1120px) {
+      .page-wrap {
+        grid-template-columns: 220px minmax(0,650px);
+      }
+      .right-column {
+        display: none;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .topbar {
+        min-height: 64px;
+        padding: 8px 13px;
+      }
+
+      .brand { min-width: auto; }
+      .brand img { width: 38px; height: 38px; }
+      .brand-copy strong { font-size: 16px; }
+      .brand-copy small { font-size: 9px; }
+
+      .main-nav { display: none; }
+      .top-actions { gap: 6px; }
+      .icon-button,.profile-shortcut { width: 38px; height: 38px; }
+
+      .page-wrap {
+        width: min(100% - 20px, 650px);
+        margin: 15px auto 90px;
+        display: block;
+      }
+
+      .left-column { display: none; }
+      .center-column { gap: 13px; }
+
+      .welcome-banner {
+        min-height: 165px;
+        padding: 18px;
+        border-radius: 20px;
+      }
+
+      .welcome-copy h1 { font-size: 23px; }
+      .welcome-copy p { font-size: 11px; }
+
+      .stories-section,.composer,.post-card { padding: 14px; }
+      .stories-row { gap: 9px; }
+      .story { flex-basis: 68px; }
+      .story-ring { width: 59px; height: 59px; }
+
+      .composer-tool { font-size: 10px; gap: 5px; }
+      .post-card { border-radius: 19px; }
+      .post-media { max-height: 430px; }
+
+      .mobile-bottom {
+        position: fixed;
+        z-index: 120;
+        right: 10px;
+        left: 10px;
+        bottom: max(9px,env(safe-area-inset-bottom));
+        min-height: 62px;
+        display: grid;
+        grid-template-columns: repeat(5,1fr);
+        align-items: center;
+        padding: 6px;
+        background: rgba(13,17,34,.95);
+        border: 1px solid rgba(255,255,255,.11);
+        border-radius: 20px;
+        box-shadow: 0 12px 40px rgba(0,0,0,.4);
+        backdrop-filter: blur(20px);
+      }
+
+      .mobile-bottom a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        color: #aeb3c7;
+        font-size: 9px;
+        font-weight: 800;
+      }
+
+      .mobile-bottom a.active { color: var(--gold); }
+
+      .mobile-bottom svg {
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .page-wrap { width: calc(100% - 14px); }
+      .welcome-copy h1 { font-size: 20px; }
+      .composer-tool { font-size: 9px; }
+      .post-action { font-size: 10px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <a class="brand" href="../index.html">
+    <img src="../assets/logo/logo.svg" alt="هنون">
+    <span class="brand-copy">
+      <strong>HANOON</strong>
+      <small>المعرفة تصنع الفرق</small>
+    </span>
+  </a>
+
+  <nav class="main-nav">
+    <a class="nav-link active" href="feed.html">الرئيسية</a>
+    <a class="nav-link" href="community.html">المحادثات</a>
+    <a class="nav-link" href="community.html">الأصدقاء</a>
+    <a class="nav-link" href="shorts.html">الفيديوهات</a>
+  </nav>
+
+  <div class="top-actions">
+    <button class="icon-button" id="feedSearchButton" aria-label="البحث">
+      <svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg>
+    </button>
+    <a class="profile-shortcut" href="profile.html" id="topProfileLink" aria-label="الملف الشخصي">
+      <span id="topProfileInitial">هـ</span>
+      <img id="topProfileImage" alt="" hidden>
+    </a>
+  </div>
+</header>
+
+<main class="page-wrap">
+
+  <aside class="side-column left-column">
+    <section class="glass side-card">
+      <h2 class="side-title">مساحتك في هنون <small>HANOON</small></h2>
+
+      <a class="quick-link" href="profile.html">
+        <span class="quick-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"/></svg>
+        </span>
+        ملفي الشخصي
+      </a>
+
+      <a class="quick-link" href="community.html">
+        <span class="quick-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-9 8.5 9 9 0 0 1-4-.9L3 21l1.8-4.2A8.2 8.2 0 0 1 3 11.5 8.5 8.5 0 0 1 12 3a8.5 8.5 0 0 1 9 8.5Z"/></svg>
+        </span>
+        الرسائل والجروبات
+      </a>
+
+      <a class="quick-link" href="shorts.html">
+        <span class="quick-icon">
+          <svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="4"/><path d="m10 8 6 4-6 4z"/></svg>
+        </span>
+        الفيديوهات القصيرة
+      </a>
+
+      <a class="quick-link" href="friends.html">
+        <span class="quick-icon">
+          <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M20 8v6m-3-3h6"/></svg>
+        </span>
+        الأصدقاء والمتابعون
+      </a>
+
+      <a class="quick-link" href="saved.html">
+        <span class="quick-icon">
+          <svg viewBox="0 0 24 24"><path d="M6 4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18l-6-4-6 4z"/></svg>
+        </span>
+        المحفوظات
+      </a>
+    </section>
+
+    <div class="side-banner">
+      <strong>عالمك.. أفكارك.. مجتمعك</strong>
+      <span>شارك المعرفة واترك أثرًا جميلًا.</span>
+    </div>
+
+    <div class="footer-note">
+      HANOON © 2026<br>
+      المعرفة تصنع الفرق
+    </div>
+  </aside>
+
+  <section class="center-column">
+
+    <section class="welcome-banner">
+      <div class="welcome-copy">
+        <small>أهلاً بك في مجتمع هنون</small>
+        <h1>مساحة تجمع أفكارنا وحكاياتنا</h1>
+        <p>شارك لحظاتك، انشر أفكارك، واكتشف ما يشاركه أصدقاؤك.</p>
+      </div>
+    </section>
+
+    <section class="glass stories-section">
+      <div class="section-head">
+        <h2>الحالات واللحظات</h2>
+        <a href="profile.html">أضف حالة</a>
+      </div>
+
+      <div class="stories-row" id="storiesList">
+        <div class="loading-state">جارٍ تحميل الحالات...</div>
+      </div>
+    </section>
+
+    <section class="glass composer">
+      <div class="composer-top">
+        <div class="avatar" id="composerAvatar">هـ</div>
+        <button class="composer-prompt" id="openComposer" type="button">
+          بماذا تفكر اليوم؟ شارك مجتمع هنون...
+        </button>
+      </div>
+
+      <div class="composer-divider"></div>
+
+      <div class="composer-tools">
+        <button class="composer-tool photo" id="addPhotoButton" type="button">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+          صورة
+        </button>
+
+        <button class="composer-tool video" id="addVideoButton" type="button">
+          <svg viewBox="0 0 24 24"><rect x="3" y="5" width="13" height="14" rx="3"/><path d="m16 10 5-3v10l-5-3z"/></svg>
+          فيديو
+        </button>
+
+        <button class="composer-tool write" id="writePostButton" type="button">
+          <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg>
+          كتابة منشور
+        </button>
+      </div>
+    </section>
+
+    <section class="feed-controls">
+      <h2>أحدث المنشورات</h2>
+      <button class="feed-filter" id="feedSortButton" type="button">الأحدث أولاً</button>
+    </section>
+
+    <section class="posts-list" id="postsList">
+      <div class="glass loading-state">جارٍ تحميل منشورات مجتمع هنون...</div>
+    </section>
+
+  </section>
+
+  <aside class="side-column right-column">
+
+    <section class="glass right-profile">
+      <div class="cover-mini"></div>
+
+      <div class="profile-mini-body">
+        <div class="profile-mini-avatar" id="sideProfileAvatar">هـ</div>
+        <strong id="sideProfileName">عضو هنون</strong>
+        <small id="sideProfileUsername">@hanoon_member</small>
+
+        <div class="profile-stats">
+          <div><strong id="sidePostCount">0</strong><span>منشور</span></div>
+          <div><strong id="sideFriendCount">0</strong><span>صديق</span></div>
+          <div><strong id="sideFollowerCount">0</strong><span>متابع</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="glass side-card">
+      <h2 class="side-title">أشخاص قد تعرفهم</h2>
+      <div id="suggestedMembers">
+        <div class="loading-state">جارٍ تحميل الاقتراحات...</div>
+      </div>
+    </section>
+
+    <section class="glass side-card">
+      <h2 class="side-title">استكشف هنون</h2>
+      <a class="quick-link" href="../index.html">
+        <span class="quick-icon">H</span>
+        المكتبة المعرفية
+      </a>
+      <a class="quick-link" href="articles.html">
+        <span class="quick-icon">✦</span>
+        المقالات والأفكار
+      </a>
+    </section>
+
+  </aside>
+
+</main>
+
+<nav class="mobile-bottom">
+  <a class="active" href="feed.html">
+    <svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-6v-7h-4v7H4a1 1 0 0 1-1-1z"/></svg>
+    الرئيسية
+  </a>
+  <a href="friends.html">
+    <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M20 8v6m-3-3h6"/></svg>
+    الأصدقاء
+  </a>
+  <a href="shorts.html">
+    <svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="4"/><path d="m10 8 6 4-6 4z"/></svg>
+    Shorts
+  </a>
+  <a href="community.html">
+    <svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-9 8.5 9 9 0 0 1-4-.9L3 21l1.8-4.2A8.2 8.2 0 0 1 3 11.5 8.5 8.5 0 0 1 12 3a8.5 8.5 0 0 1 9 8.5Z"/></svg>
+    المحادثات
+  </a>
+  <a href="profile.html">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"/></svg>
+    حسابي
+  </a>
+</nav>
+
+<script type="module" src="../js/supabase-client.js"></script>
+<script type="module" src="../js/feed.js"></script>
+
+</body>
+</html>
