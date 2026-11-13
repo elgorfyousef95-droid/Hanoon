@@ -11,34 +11,53 @@ import "./supabase-client.js";
     user: null,
     profile: null,
     videos: [],
-    busy: false,
     muted: true,
     activeIndex: -1,
     observer: null,
-    playRequest: 0
+    playRequest: 0,
+    feedType: "for-you",
+    busy: false,
+    loading: false,
+    followingIds: new Set()
   };
 
   const ui = {
     feed: $("shortsFeed"),
-    empty: $("shortsEmpty"),
     notice: $("shortNotice"),
     upload: $("uploadShortBtn"),
-    input: $("shortFileInput")
+    input: $("shortFileInput"),
+    tabs: [...document.querySelectorAll(".feed-tab")]
   };
 
-  function notify(message, type = "") {
-    if (!ui.notice) return;
-
+  function notify(message, error = false) {
     ui.notice.textContent = message;
     ui.notice.style.display = "block";
-    ui.notice.style.borderColor =
-      type === "error" ? "#ff7898" : "#8c72f5";
+    ui.notice.style.borderColor = error ? "#ff7898" : "#8c72f5";
 
     clearTimeout(notify.timer);
-
     notify.timer = setTimeout(() => {
       ui.notice.style.display = "none";
-    }, 4500);
+    }, 3500);
+  }
+
+  function empty(message) {
+    if (state.observer) state.observer.disconnect();
+
+    stopAllVideos();
+
+    const box = document.createElement("div");
+    box.className = "empty";
+
+    const title = document.createElement("strong");
+    title.textContent = message;
+
+    const description = document.createElement("small");
+    description.textContent = state.feedType === "following"
+      ? "تابع الأعضاء لتظهر فيديوهاتهم هنا."
+      : "كن أول من يشارك فيديو في مجتمع هنون.";
+
+    box.append(title, description);
+    ui.feed.replaceChildren(box);
   }
 
   function displayName(profile) {
@@ -47,81 +66,59 @@ import "./supabase-client.js";
       "عضو هنون";
   }
 
-  function avatarURL(path) {
+  function storageURL(bucket, path) {
     if (!path) return "";
-
     if (/^https?:\/\//i.test(path)) return path;
 
     return state.db.storage
-      .from("avatars")
-      .getPublicUrl(path).data.publicUrl;
+      .from(bucket)
+      .getPublicUrl(path).data?.publicUrl || "";
   }
 
   function videoURL(path) {
-    if (!path) return "";
-
-    if (/^https?:\/\//i.test(path)) return path;
-
-    return state.db.storage
-      .from("post-media")
-      .getPublicUrl(path).data.publicUrl;
+    return storageURL("post-media", path);
   }
 
-  function formatDate(value) {
-    if (!value) return "";
+  function avatarURL(path) {
+    return storageURL("avatars", path);
+  }
 
-    const date = new Date(value);
-
-    if (Number.isNaN(date.getTime())) return "";
-
-    return date.toLocaleDateString("ar-EG", {
-      day: "numeric",
-      month: "short"
-    });
+  function formatCount(value) {
+    return new Intl.NumberFormat("ar-EG", {
+      notation: value >= 10000 ? "compact" : "standard",
+      maximumFractionDigits: 1
+    }).format(value || 0);
   }
 
   function icon(name) {
     const paths = {
-      heart: '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/>',
-
-      comment: '<path d="M21 11.5a8.5 8.5 0 0 1-9 8.5 9 9 0 0 1-4-.9L3 21l1.9-4.5A8.5 8.5 0 1 1 21 11.5Z"/>',
-
-      share: '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.7 6.6-4.4m-6.6 9 6.6 4.4"/>',
-
-      volume: '<path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7m3-10a9 9 0 0 1 0 13"/>',
-
-      muted: '<path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="m16 9 5 6m0-6-5 6"/>',
-
-      play: '<path d="m8 5 12 7-12 7Z"/>',
-
-      pause: '<path d="M8 5h3v14H8zM15 5h3v14h-3z"/>'
+      heart:
+        '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/>',
+      comment:
+        '<path d="M21 11.5a8.5 8.5 0 0 1-9 8.5 9 9 0 0 1-4-.9L3 21l1.9-4.5A8.5 8.5 0 1 1 21 11.5Z"/>',
+      share:
+        '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.7 6.6-4.4m-6.6 9 6.6 4.4"/>',
+      volume:
+        '<path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7m3-10a9 9 0 0 1 0 13"/>',
+      muted:
+        '<path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="m16 9 5 6m0-6-5 6"/>',
+      play:
+        '<path d="m8 5 12 7-12 7Z"/>',
+      pause:
+        '<path d="M8 5h3v14H8zM15 5h3v14h-3z"/>'
     };
 
     return `
-      <svg
-        viewBox="0 0 24 24"
-        width="25"
-        height="25"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.8"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
         ${paths[name] || ""}
       </svg>
     `;
   }
 
-  function showEmpty(message) {
-    if (!ui.feed) return;
-
-    const box = document.createElement("div");
-    box.className = "empty";
-    box.textContent = message;
-
-    ui.feed.replaceChildren(box);
+  function stopAllVideos() {
+    document.querySelectorAll("#shortsFeed video").forEach(video => {
+      video.pause();
+    });
   }
 
   async function loadProfile() {
@@ -135,94 +132,138 @@ import "./supabase-client.js";
 
     state.profile = data || {
       id: state.user.id,
-      full_name:
-        state.user.user_metadata?.full_name ||
+      full_name: state.user.user_metadata?.full_name ||
         state.user.email?.split("@")[0] ||
         "عضو هنون"
     };
   }
 
-  async function loadVideos() {
-    showEmpty("جارٍ تحميل الفيديوهات...");
-
+  async function loadFollowingIds() {
     const { data, error } = await state.db
-      .from("posts")
-      .select("id,user_id,content,media_path,media_type,created_at")
-      .eq("media_type", "video")
-      .not("media_path", "is", null)
-      .order("created_at", { ascending: false })
-      .limit(40);
+      .from("follows")
+      .select("following_id")
+      .eq("follower_id", state.user.id);
 
     if (error) throw error;
 
-    state.videos = data || [];
-
-    if (!state.videos.length) {
-      showEmpty(
-        "لا توجد فيديوهات قصيرة حتى الآن. كن أول من يشارك فيديو في هنون."
-      );
-      return;
-    }
-
-    await renderVideos();
+    state.followingIds = new Set(
+      (data || []).map(item => item.following_id)
+    );
   }
 
-  async function getInteractions() {
-    const ids = state.videos.map(video => video.id);
-    const users = [
-      ...new Set(state.videos.map(video => video.user_id))
-    ];
+  async function loadVideos() {
+    if (state.loading) return;
+    state.loading = true;
 
-    if (!ids.length) {
-      return {
-        profiles: new Map(),
-        likes: new Map(),
-        myLikes: new Set()
-      };
+    try {
+      empty("جارٍ تحميل الفيديوهات...");
+
+      if (state.feedType === "following") {
+        await loadFollowingIds();
+
+        if (!state.followingIds.size) {
+          empty("لم تتابع أي أعضاء بعد");
+          return;
+        }
+      }
+
+      let query = state.db
+        .from("posts")
+        .select("id,user_id,content,media_path,media_type,created_at")
+        .eq("media_type", "video")
+        .not("media_path", "is", null)
+        .order("created_at", { ascending: false })
+        .limit(50);
+
+      if (state.feedType === "following") {
+        query = query.in(
+          "user_id",
+          [...state.followingIds]
+        );
+      }
+
+      const { data, error } = await query;
+
+      if (error) throw error;
+
+      state.videos = data || [];
+
+      if (!state.videos.length) {
+        empty(
+          state.feedType === "following"
+            ? "لا توجد فيديوهات جديدة من الأعضاء الذين تتابعهم"
+            : "لا توجد فيديوهات قصيرة حتى الآن"
+        );
+        return;
+      }
+
+      await renderVideos();
+
+    } finally {
+      state.loading = false;
     }
+  }
 
-    const results = await Promise.all([
-      state.db
-        .from("member_directory")
+  async function getVideoData() {
+    const ids = state.videos.map(video => video.id);
+    const users = [...new Set(state.videos.map(video => video.user_id))];
+
+    const result = {
+      profiles: new Map(),
+      likes: new Map(),
+      comments: new Map(),
+      myLikes: new Set()
+    };
+
+    if (!ids.length) return result;
+
+    const responses = await Promise.all([
+      state.db.from("member_directory")
         .select("id,username,full_name,avatar_path")
         .in("id", users),
 
-      state.db
-        .from("post_likes")
+      state.db.from("post_likes")
         .select("post_id,user_id")
         .in("post_id", ids),
 
-      state.db
-        .from("post_likes")
+      state.db.from("post_comments")
+        .select("post_id")
+        .in("post_id", ids),
+
+      state.db.from("post_likes")
         .select("post_id")
         .eq("user_id", state.user.id)
         .in("post_id", ids)
     ]);
 
-    const failed = results.find(result => result.error);
-
+    const failed = responses.find(item => item.error);
     if (failed) throw failed.error;
 
-    const [profilesResult, likesResult, mineResult] = results;
+    const [profiles, likes, comments, mine] = responses;
 
-    const profiles = new Map(
-      (profilesResult.data || []).map(item => [item.id, item])
-    );
+    (profiles.data || []).forEach(profile => {
+      result.profiles.set(profile.id, profile);
+    });
 
-    const likes = new Map();
-
-    (likesResult.data || []).forEach(item => {
-      likes.set(
+    (likes.data || []).forEach(item => {
+      result.likes.set(
         item.post_id,
-        (likes.get(item.post_id) || 0) + 1
+        (result.likes.get(item.post_id) || 0) + 1
       );
     });
 
-    const myLikes = new Set(
-      (mineResult.data || []).map(item => item.post_id)
-    );
+    (comments.data || []).forEach(item => {
+      result.comments.set(
+        item.post_id,
+        (result.comments.get(item.post_id) || 0) + 1
+      );
+    });
 
-    return { profiles, likes, myLikes };
+    (mine.data || []).forEach(item => {
+      result.myLikes.add(item.post_id);
+    });
+
+    return result;
   }
 
   function createAction(name, label, count, liked = false) {
@@ -234,7 +275,6 @@ import "./supabase-client.js";
     button.className = `action${liked ? " liked" : ""}`;
     button.innerHTML = icon(name);
     button.setAttribute("aria-label", label);
-    button.title = label;
 
     const small = document.createElement("small");
     small.textContent = count;
@@ -242,6 +282,30 @@ import "./supabase-client.js";
     wrap.append(button, small);
 
     return { wrap, button, small };
+  }
+
+  function createAvatar(profile) {
+    const avatar = document.createElement("div");
+    avatar.className = "avatar";
+
+    const url = avatarURL(profile?.avatar_path);
+
+    if (url) {
+      const image = document.createElement("img");
+      image.src = url;
+      image.alt = displayName(profile);
+      image.loading = "lazy";
+
+      image.onerror = () => {
+        avatar.textContent = displayName(profile).charAt(0);
+      };
+
+      avatar.appendChild(image);
+    } else {
+      avatar.textContent = displayName(profile).charAt(0);
+    }
+
+    return avatar;
   }
 
   function buildVideo(video, data) {
@@ -253,23 +317,15 @@ import "./supabase-client.js";
     card.dataset.videoId = video.id;
 
     const media = document.createElement("video");
-
     media.src = videoURL(video.media_path);
-    media.controls = false;
     media.playsInline = true;
     media.preload = "none";
     media.loop = true;
     media.muted = state.muted;
-
+    media.controls = false;
     media.setAttribute("playsinline", "");
     media.setAttribute("webkit-playsinline", "");
-    media.setAttribute("aria-label", "فيديو قصير");
 
-    media.addEventListener("error", () => {
-      console.warn("HANOON video loading error:", video.id);
-    });
-
-    // الضغط على الفيديو يوقفه أو يستكمل تشغيله.
     media.addEventListener("click", () => {
       if (media.paused) {
         media.play().catch(() => {});
@@ -287,43 +343,19 @@ import "./supabase-client.js";
     const creator = document.createElement("div");
     creator.className = "creator";
 
-    const avatar = document.createElement("div");
-    avatar.className = "avatar";
-
-    const avatarPath = avatarURL(profile.avatar_path);
-
-    if (avatarPath) {
-      const image = document.createElement("img");
-
-      image.src = avatarPath;
-      image.alt = name;
-      image.loading = "lazy";
-      image.style.cssText =
-        "width:100%;height:100%;object-fit:cover;border-radius:50%";
-
-      avatar.appendChild(image);
-    } else {
-      avatar.textContent = name.charAt(0);
-    }
-
     const creatorName = document.createElement("div");
     creatorName.className = "creator-name";
-    creatorName.textContent = name;
+    creatorName.textContent = profile.username
+      ? `${name}  @${profile.username}`
+      : name;
 
-    creator.append(avatar, creatorName);
+    creator.append(createAvatar(profile), creatorName);
 
     const caption = document.createElement("p");
     caption.className = "caption";
-    caption.textContent =
-      video.content || "فيديو جديد من مجتمع هنون";
+    caption.textContent = video.content || "فيديو جديد من هنون";
 
-    const date = document.createElement("p");
-    date.className = "caption";
-    date.style.opacity = ".7";
-    date.style.marginTop = "5px";
-    date.textContent = formatDate(video.created_at);
-
-    info.append(creator, caption, date);
+    info.append(creator, caption);
 
     const actions = document.createElement("div");
     actions.className = "video-actions";
@@ -331,7 +363,7 @@ import "./supabase-client.js";
     const like = createAction(
       "heart",
       "إعجاب",
-      data.likes.get(video.id) || 0,
+      formatCount(data.likes.get(video.id) || 0),
       data.myLikes.has(video.id)
     );
 
@@ -339,10 +371,14 @@ import "./supabase-client.js";
       toggleLike(video.id, like.button, like.small);
     });
 
-    const comment = createAction("comment", "تعليق", "");
+    const comment = createAction(
+      "comment",
+      "تعليق",
+      formatCount(data.comments.get(video.id) || 0)
+    );
 
     comment.button.addEventListener("click", () => {
-      addComment(video.id);
+      addComment(video.id, comment.small);
     });
 
     const share = createAction("share", "مشاركة", "");
@@ -353,48 +389,36 @@ import "./supabase-client.js";
 
     const sound = createAction(
       state.muted ? "muted" : "volume",
-      state.muted ? "تشغيل الصوت" : "كتم الصوت",
+      "الصوت",
       ""
     );
 
     sound.button.addEventListener("click", () => {
       state.muted = !state.muted;
 
-      document.querySelectorAll(".video-card video").forEach(item => {
+      document.querySelectorAll("#shortsFeed video").forEach(item => {
         item.muted = state.muted;
       });
 
-      sound.button.innerHTML = state.muted
-        ? icon("muted")
-        : icon("volume");
-
-      sound.button.title = state.muted
-        ? "تشغيل الصوت"
-        : "كتم الصوت";
+      sound.button.innerHTML = icon(state.muted ? "muted" : "volume");
     });
 
-    const play = createAction("pause", "إيقاف أو تشغيل", "");
+    const play = createAction("pause", "تشغيل أو إيقاف", "");
 
     play.button.addEventListener("click", () => {
       if (media.paused) {
         media.play().catch(() => {});
-        play.button.innerHTML = icon("pause");
-        play.button.title = "إيقاف الفيديو";
       } else {
         media.pause();
-        play.button.innerHTML = icon("play");
-        play.button.title = "تشغيل الفيديو";
       }
     });
 
     media.addEventListener("play", () => {
       play.button.innerHTML = icon("pause");
-      play.button.title = "إيقاف الفيديو";
     });
 
     media.addEventListener("pause", () => {
       play.button.innerHTML = icon("play");
-      play.button.title = "تشغيل الفيديو";
     });
 
     actions.append(
@@ -410,53 +434,47 @@ import "./supabase-client.js";
     return card;
   }
 
-  function getVideoElements() {
+  function getVideos() {
     return [...ui.feed.querySelectorAll(".video-card video")];
   }
 
   function prepareVideo(index) {
-    const videos = getVideoElements();
+    const videos = getVideos();
     const video = videos[index];
 
     if (!video) return;
 
     video.preload = "auto";
 
-    if (video.readyState === 0) {
-      video.load();
-    }
+    if (video.readyState === 0) video.load();
   }
 
   async function activateVideo(index) {
-    const videos = getVideoElements();
+    const videos = getVideos();
+    const current = videos[index];
 
-    if (index < 0 || index >= videos.length) return;
+    if (!current) return;
 
     const request = ++state.playRequest;
-
     state.activeIndex = index;
 
     videos.forEach((video, i) => {
       if (i !== index) {
         video.pause();
-
-        video.preload =
-          Math.abs(i - index) === 1 ? "metadata" : "none";
+        video.preload = Math.abs(i - index) === 1
+          ? "metadata"
+          : "none";
       }
     });
 
-    const current = videos[index];
+    current.muted = state.muted;
 
-    // تجهيز الفيديو الحالي والتالي قبل الانتقال.
     prepareVideo(index);
     prepareVideo(index + 1);
-
-    current.muted = state.muted;
 
     try {
       await current.play();
 
-      // منع تشغيل فيديو قديم إذا انتقل المستخدم بسرعة.
       if (
         request !== state.playRequest ||
         state.activeIndex !== index
@@ -471,17 +489,14 @@ import "./supabase-client.js";
   }
 
   async function renderVideos() {
-    if (!state.videos.length) {
-      showEmpty("لا توجد فيديوهات قصيرة حتى الآن.");
-      return;
-    }
-
     if (state.observer) {
       state.observer.disconnect();
       state.observer = null;
     }
 
-    const data = await getInteractions();
+    stopAllVideos();
+
+    const data = await getVideoData();
     const fragment = document.createDocumentFragment();
 
     state.videos.forEach(video => {
@@ -500,34 +515,26 @@ import "./supabase-client.js";
       state.observer = new IntersectionObserver(entries => {
         const visible = entries
           .filter(entry => entry.isIntersecting)
-          .sort(
-            (a, b) => b.intersectionRatio - a.intersectionRatio
-          );
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
 
         if (!visible.length) return;
 
-        const bestCard = visible[0].target;
-        const index = cards.indexOf(bestCard);
+        const index = cards.indexOf(visible[0].target);
 
-        if (index !== -1 && visible[0].intersectionRatio >= 0.65) {
+        if (index !== -1 && visible[0].intersectionRatio >= 0.6) {
           activateVideo(index);
         }
       }, {
         root: ui.feed,
-        threshold: [0.25, 0.45, 0.65, 0.8, 0.95]
+        threshold: [0.2, 0.4, 0.6, 0.8, 0.95]
       });
 
       cards.forEach(card => state.observer.observe(card));
-
       prepareVideo(0);
       activateVideo(0);
 
     } else {
-      cards.forEach((card, index) => {
-        const video = card.querySelector("video");
-        video.preload = index <= 1 ? "auto" : "none";
-      });
-
+      prepareVideo(0);
       activateVideo(0);
     }
   }
@@ -555,10 +562,8 @@ import "./supabase-client.js";
         if (error) throw error;
 
         button.classList.remove("liked");
-
-        counter.textContent = Math.max(
-          0,
-          Number(counter.textContent) - 1
+        counter.textContent = formatCount(
+          Math.max(0, Number(counter.textContent.replace(/[^\d]/g, "")) - 1)
         );
 
       } else {
@@ -572,21 +577,18 @@ import "./supabase-client.js";
         if (error) throw error;
 
         button.classList.add("liked");
-
-        counter.textContent =
-          Number(counter.textContent) + 1;
+        counter.textContent = "تم";
       }
 
     } catch (error) {
-      console.error("HANOON Shorts like:", error);
-      notify(error.message || "تعذر تسجيل الإعجاب.", "error");
-
+      console.error(error);
+      notify(error.message || "تعذر تسجيل الإعجاب.", true);
     } finally {
       button.disabled = false;
     }
   }
 
-  async function addComment(postId) {
+  async function addComment(postId, counter) {
     const body = prompt("اكتب تعليقك على الفيديو:");
 
     if (body === null) return;
@@ -594,7 +596,7 @@ import "./supabase-client.js";
     const content = body.trim();
 
     if (!content) {
-      notify("اكتب التعليق أولاً.", "error");
+      notify("اكتب التعليق أولاً.", true);
       return;
     }
 
@@ -609,39 +611,37 @@ import "./supabase-client.js";
 
       if (error) throw error;
 
-      notify("تم إضافة تعليقك بنجاح.", "success");
+      const current = Number(
+        counter.textContent.replace(/[^\d]/g, "")
+      );
+
+      counter.textContent = formatCount(current + 1);
+      notify("تم نشر تعليقك.");
 
     } catch (error) {
-      console.error("HANOON Shorts comment:", error);
-      notify(error.message || "تعذر إضافة التعليق.", "error");
+      console.error(error);
+      notify(error.message || "تعذر إضافة التعليق.", true);
     }
   }
 
   async function shareVideo(video) {
-    const url = new URL(window.location.href);
+    const url = new URL(location.href);
     url.hash = `video-${video.id}`;
-
-    const shareData = {
-      title: "فيديو من هنون",
-      text: video.content || "شاهد هذا الفيديو على هنون",
-      url: url.toString()
-    };
 
     try {
       if (navigator.share) {
-        await navigator.share(shareData);
-
-      } else if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(shareData.url);
-        notify("تم نسخ رابط الفيديو.", "success");
-
+        await navigator.share({
+          title: "فيديو من هنون",
+          text: video.content || "شاهد هذا الفيديو على هنون",
+          url: url.toString()
+        });
       } else {
-        notify("المتصفح لا يدعم المشاركة أو النسخ.", "error");
+        await navigator.clipboard.writeText(url.toString());
+        notify("تم نسخ رابط الفيديو.");
       }
-
     } catch (error) {
       if (error.name !== "AbortError") {
-        notify("تعذرت مشاركة الفيديو.", "error");
+        notify("تعذرت مشاركة الفيديو.", true);
       }
     }
   }
@@ -650,17 +650,17 @@ import "./supabase-client.js";
     if (!file) return;
 
     if (!file.type.startsWith("video/")) {
-      notify("اختر ملف فيديو صالحًا.", "error");
+      notify("اختر ملف فيديو صالحًا.", true);
       return;
     }
 
     if (!["video/mp4", "video/webm"].includes(file.type)) {
-      notify("الصيغ المدعومة حاليًا MP4 وWebM.", "error");
+      notify("الصيغ المدعومة حاليًا MP4 وWebM.", true);
       return;
     }
 
     if (file.size > 50 * 1024 * 1024) {
-      notify("الحد الأقصى لحجم الفيديو 50 ميجابايت.", "error");
+      notify("الحد الأقصى لحجم الفيديو 50 ميجابايت.", true);
       return;
     }
 
@@ -673,31 +673,27 @@ import "./supabase-client.js";
     let uploadedPath = null;
 
     try {
-      const extension = file.type === "video/webm"
-        ? "webm"
-        : "mp4";
-
-      const uniqueName = crypto.randomUUID
+      const extension = file.type === "video/webm" ? "webm" : "mp4";
+      const fileId = crypto.randomUUID
         ? crypto.randomUUID()
         : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
-      const path = `${state.user.id}/${uniqueName}.${extension}`;
+      const path = `${state.user.id}/${fileId}.${extension}`;
 
-      const { data: uploaded, error: uploadError } =
-        await state.db.storage
-          .from("post-media")
-          .upload(path, file, {
-            contentType: file.type,
-            upsert: false,
-            cacheControl: "3600"
-          });
+      const { data: uploaded, error: uploadError } = await state.db
+        .storage
+        .from("post-media")
+        .upload(path, file, {
+          contentType: file.type,
+          upsert: false,
+          cacheControl: "3600"
+        });
 
       if (uploadError) throw uploadError;
 
       uploadedPath = uploaded.path;
 
-      const caption =
-        prompt("اكتب وصفًا للفيديو (اختياري):") || "";
+      const caption = prompt("اكتب وصف الفيديو (اختياري):") || "";
 
       const { error: insertError } = await state.db
         .from("posts")
@@ -710,76 +706,68 @@ import "./supabase-client.js";
 
       if (insertError) throw insertError;
 
-      notify("تم رفع الفيديو ونشره بنجاح.", "success");
+      notify("تم نشر الفيديو بنجاح.");
 
+      state.feedType = "for-you";
+      updateTabs();
       await loadVideos();
 
-      window.dispatchEvent(
-        new CustomEvent("hanoon:short-created")
-      );
-
     } catch (error) {
-      console.error("HANOON Shorts upload:", error);
+      console.error(error);
 
       if (uploadedPath) {
-        const { error: cleanupError } = await state.db.storage
+        await state.db.storage
           .from("post-media")
           .remove([uploadedPath]);
-
-        if (cleanupError) {
-          console.warn("Short video cleanup:", cleanupError);
-        }
       }
 
-      notify(
-        error.message || "تعذر رفع الفيديو. حاول مرة أخرى.",
-        "error"
-      );
+      notify(error.message || "تعذر رفع الفيديو.", true);
 
     } finally {
       state.busy = false;
       ui.upload.disabled = false;
-      ui.upload.textContent = "＋ إضافة فيديو";
+      ui.upload.textContent = "إضافة فيديو";
       ui.input.value = "";
     }
   }
 
-  function bindEvents() {
-    ui.upload.addEventListener("click", () => {
-      ui.input.click();
+  function updateTabs() {
+    ui.tabs.forEach(tab => {
+      tab.classList.toggle(
+        "active",
+        (tab.dataset.feed === "following") ===
+          (state.feedType === "following")
+      );
     });
+  }
+
+  function bindEvents() {
+    ui.upload.addEventListener("click", () => ui.input.click());
 
     ui.input.addEventListener("change", () => {
       uploadVideo(ui.input.files?.[0]);
     });
 
-    // إيقاف الفيديو عند الخروج من الصفحة أو إخفائها.
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden) {
-        getVideoElements().forEach(video => video.pause());
-      } else if (state.activeIndex >= 0) {
-        activateVideo(state.activeIndex);
-      }
+    ui.tabs.forEach(tab => {
+      tab.addEventListener("click", async () => {
+        const type = tab.dataset.feed;
+
+        if (!["for-you", "following"].includes(type)) return;
+        if (state.feedType === type) return;
+
+        state.feedType = type;
+        updateTabs();
+
+        ui.feed.scrollTop = 0;
+        await loadVideos();
+      });
     });
 
-    // التنقل بلوحة المفاتيح.
-    ui.feed.addEventListener("keydown", event => {
-      const cards = [...ui.feed.querySelectorAll(".video-card")];
-
-      if (event.key === "ArrowDown") {
-        event.preventDefault();
-
-        cards[
-          Math.min(state.activeIndex + 1, cards.length - 1)
-        ]?.scrollIntoView({ behavior: "smooth" });
-      }
-
-      if (event.key === "ArrowUp") {
-        event.preventDefault();
-
-        cards[
-          Math.max(state.activeIndex - 1, 0)
-        ]?.scrollIntoView({ behavior: "smooth" });
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        stopAllVideos();
+      } else if (state.activeIndex >= 0) {
+        activateVideo(state.activeIndex);
       }
     });
   }
@@ -798,13 +786,8 @@ import "./supabase-client.js";
 
       if (!data.user) {
         ui.upload.disabled = true;
-
-        notify(
-          "سجل الدخول إلى هنون حتى تتمكن من مشاهدة الفيديوهات ورفعها.",
-          "error"
-        );
-
-        showEmpty("يجب تسجيل الدخول أولاً لمشاهدة الفيديوهات القصيرة.");
+        empty("سجل الدخول أولاً لمشاهدة الفيديوهات");
+        notify("يجب تسجيل الدخول لاستخدام الفيديوهات.", true);
         return;
       }
 
@@ -812,19 +795,14 @@ import "./supabase-client.js";
 
       await loadProfile();
       bindEvents();
+      updateTabs();
+
       await loadVideos();
 
     } catch (error) {
       console.error("HANOON Shorts:", error);
-
-      notify(
-        error.message || "تعذر تشغيل صفحة الفيديوهات.",
-        "error"
-      );
-
-      showEmpty(
-        "تعذر تحميل الفيديوهات. تحقق من الاتصال وحاول مرة أخرى."
-      );
+      empty("تعذر تحميل الفيديوهات");
+      notify(error.message || "حدث خطأ أثناء تشغيل الصفحة.", true);
     }
   }
 
@@ -845,7 +823,7 @@ import "./supabase-client.js";
       event => {
         notify(
           event.detail?.message || "تعذر الاتصال بقاعدة البيانات.",
-          "error"
+          true
         );
       },
       { once: true }
@@ -853,9 +831,7 @@ import "./supabase-client.js";
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start, {
-      once: true
-    });
+    document.addEventListener("DOMContentLoaded", start, { once: true });
   } else {
     start();
   }
