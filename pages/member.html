@@ -2,520 +2,444 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0d0b19">
-  <title>عضو في هنون | HANOON</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#080808">
+<title>الملف الشخصي | HANOON</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#080808;
+  --panel:#121212;
+  --text:#f7f7f7;
+  --muted:#929292;
+  --pink:#fe2c55;
+  --line:#292929;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  min-height:100vh;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Cairo,sans-serif;
+  overflow-x:hidden;
+}
+button,a{font:inherit}
+a{color:inherit;text-decoration:none}
+[hidden]{display:none!important}
 
-  <style>
-    :root {
-      --gold: #e6c77d;
-      --purple: #a18aff;
-      --purple-light: #c5b6ff;
-      --teal: #58d9cf;
-      --text: #f8f5ff;
-      --muted: #c0bad1;
-      --glass: rgba(24, 20, 43, .55);
-      --glass-border: rgba(255,255,255,.13);
-      --shadow: 0 20px 65px rgba(0,0,0,.28);
-    }
+/* رأس الصفحة */
+.topbar{
+  height:58px;
+  position:sticky;
+  top:0;
+  z-index:50;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 17px;
+  background:#080808f5;
+  border-bottom:1px solid #202020;
+}
+.brand{
+  font-size:22px;
+  font-weight:900;
+  letter-spacing:1px;
+}
+.brand span{color:var(--pink)}
+.top-actions{display:flex;align-items:center;gap:18px}
+.top-actions a,.top-actions button{
+  border:0;
+  background:none;
+  color:white;
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+}
+.top-actions svg{
+  width:23px;height:23px;
+  fill:none;stroke:currentColor;
+  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
+}
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+/* محتوى الملف */
+.container{
+  width:min(680px,100%);
+  margin:auto;
+  padding-bottom:45px;
+}
+.intro{display:none}
+#memberContent{animation:fade .35s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
 
-    html {
-      min-height: 100%;
-      background: #0d0b19;
-    }
+.loading{
+  padding:65px 15px;
+  text-align:center;
+  color:#bbb;
+  font-size:13px;
+}
+.loading:after{
+  content:"";
+  display:block;
+  width:25px;height:25px;
+  margin:15px auto;
+  border:2px solid #333;
+  border-top-color:var(--pink);
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.error{
+  display:none;
+  margin:25px 15px;
+  padding:20px;
+  border-radius:12px;
+  background:#28151b;
+  color:#ff9aad;
+  text-align:center;
+  font-size:13px;
+}
+.error.show{display:block}
 
-    body {
-      min-height: 100vh;
-      color: var(--text);
-      font-family: "Cairo", sans-serif;
-      background:
-        linear-gradient(135deg, rgba(9,7,23,.78), rgba(17,10,38,.58)),
-        url("https://images.unsplash.com/photo-1754851539824-5a87c5c7cb86?auto=format&fit=crop&fm=jpg&ixid=NHwxMjA3fDA%3D&ixlib=rb-4.1.0&q=85&w=2400")
-        center center / cover fixed no-repeat;
-      overflow-x: hidden;
-    }
+/* بطاقة الهوية */
+.card{
+  position:relative;
+  padding:28px 18px 20px;
+  background:var(--bg);
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+  text-align:center;
+  overflow:visible;
+}
+.card:before,.card:after{display:none}
+.avatar{
+  width:104px;height:104px;
+  margin:0 auto 12px;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  border:2px solid #333;
+  border-radius:50%;
+  background:#292929;
+  color:white;
+  font-size:35px;
+  font-weight:900;
+  box-shadow:0 0 0 3px #171717;
+}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.name{
+  font-size:20px;
+  font-weight:900;
+  line-height:1.5;
+}
+.username{
+  margin-top:2px;
+  color:#ddd;
+  font-size:13px;
+  direction:ltr;
+}
+.bio{
+  max-width:440px;
+  margin:12px auto 8px;
+  color:#e1e1e1;
+  font-size:12px;
+  line-height:1.9;
+  white-space:pre-wrap;
+}
+.code{
+  display:inline-block;
+  margin-top:5px;
+  padding:4px 10px;
+  border:1px solid #303030;
+  border-radius:5px;
+  color:#aaa;
+  background:#111;
+  font-size:10px;
+  direction:ltr;
+}
 
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at 15% 15%, rgba(153,111,255,.19), transparent 35%),
-        radial-gradient(circle at 85% 75%, rgba(99,65,190,.15), transparent 38%);
-      z-index: 0;
-    }
+/* إحصائيات وأزرار المتابعة */
+.member-social{
+  margin:0;
+  padding:14px 16px 18px;
+  border:0;
+  border-radius:0;
+  background:var(--bg);
+  box-shadow:none;
+}
+.member-stats{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:0;
+  margin-bottom:17px;
+}
+.member-stat{
+  min-width:105px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:1px;
+  border:0;
+  background:none;
+  color:white;
+  cursor:pointer;
+}
+.member-stat strong{
+  font-size:19px;
+  font-weight:900;
+}
+.member-stat span{
+  color:#aaa;
+  font-size:11px;
+}
+.member-actions{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  max-width:390px;
+  margin:auto;
+}
+.member-action{
+  min-height:39px;
+  flex:1;
+  padding:7px 12px;
+  border:1px solid #353535;
+  border-radius:5px;
+  background:#242424;
+  color:white;
+  font-size:12px;
+  font-weight:800;
+  cursor:pointer;
+}
+.member-action.primary{
+  border-color:var(--pink);
+  background:var(--pink);
+  color:white;
+}
+.member-action:disabled{opacity:.6}
+.member-request-box{
+  margin-top:15px;
+  padding:13px;
+  border:1px solid #333;
+  border-radius:9px;
+  background:#151515;
+}
+.member-request-title{font-size:12px;font-weight:900;margin-bottom:8px}
+.member-request-row{
+  display:flex;justify-content:space-between;
+  align-items:center;gap:8px;padding:8px 0;
+  border-top:1px solid #292929;
+}
+.member-request-row span{font-size:11px}
+.member-request-row button{
+  border:0;border-radius:5px;padding:6px 10px;
+  background:#333;color:white;font-size:10px;
+}
+.member-private-note{
+  margin-top:12px;padding:12px;
+  border:1px solid #333;border-radius:8px;
+  color:#ccc;font-size:11px;line-height:2;
+}
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
+/* تبويبات الفيديوهات والمنشورات */
+#memberMediaWrapper{margin-top:5px!important}
+.member-tabs{
+  position:sticky;
+  top:58px;
+  z-index:20;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  height:49px;
+  margin:0;
+  border:0;
+  border-bottom:1px solid #292929;
+  background:#080808;
+}
+.member-tab{
+  position:relative;
+  border:0;
+  background:none;
+  color:#888;
+  font-size:12px;
+  font-weight:800;
+}
+.member-tab.active{color:white;border:0}
+.member-tab.active:after{
+  content:"";
+  position:absolute;
+  bottom:0;
+  left:25%;
+  width:50%;
+  height:2px;
+  background:white;
+}
+.member-media-section{
+  margin:0!important;
+  padding:2px 0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:var(--bg)!important;
+}
+.member-media-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:2px!important;
+}
+.member-media-item{
+  position:relative;
+  display:block;
+  aspect-ratio:3/4;
+  overflow:hidden;
+  padding:0;
+  border:0;
+  border-radius:0!important;
+  background:#1c1c1c;
+  cursor:pointer;
+}
+.member-media-item img,.member-media-item video{
+  width:100%;height:100%;object-fit:cover;
+}
+.member-media-text{
+  display:grid;place-items:center;
+  height:100%;padding:8px;
+  color:#eee;font-size:10px;line-height:1.8;
+}
+.member-media-caption{
+  position:absolute;right:0;left:0;bottom:0;
+  padding:17px 5px 5px;
+  overflow:hidden;
+  background:linear-gradient(transparent,#000b);
+  color:white;font-size:9px;
+  white-space:nowrap;text-overflow:ellipsis;
+}
+.member-media-empty{
+  grid-column:1/-1;
+  padding:45px 10px;
+  color:#888;
+  font-size:12px;
+  text-align:center;
+}
 
-    button {
-      font: inherit;
-    }
+/* عرض الوسائط */
+.member-viewer{
+  position:fixed;inset:0;z-index:10000;
+  display:none;align-items:center;justify-content:center;
+  padding:15px;background:#000f;
+}
+.member-viewer.open{display:flex}
+.member-viewer img,.member-viewer video{
+  max-width:100%;max-height:85dvh;object-fit:contain;
+}
+.member-viewer-close{
+  position:absolute;top:18px;left:18px;
+  width:40px;height:40px;
+  border:0;border-radius:50%;
+  background:#292929;color:white;font-size:23px;
+}
 
-    .topbar {
-      position: relative;
-      z-index: 2;
-      min-height: 76px;
-      padding: 12px 5%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-      border-bottom: 1px solid var(--glass-border);
-      background: rgba(13,10,29,.52);
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
-      box-shadow: 0 8px 35px rgba(0,0,0,.13);
-    }
+/* قوائم المتابعين */
+.member-list-modal{
+  position:fixed;inset:0;z-index:10010;
+  display:none;align-items:center;justify-content:center;
+  padding:15px;background:#000d;
+}
+.member-list-modal.open{display:flex}
+.member-list-box{
+  width:min(100%,430px);max-height:80dvh;
+  overflow:auto;padding:17px;
+  border:1px solid #333;border-radius:13px;
+  background:#171717;
+}
+.member-list-head{
+  display:flex;justify-content:space-between;
+  align-items:center;margin-bottom:13px;
+  font-size:14px;font-weight:900;
+}
+.member-list-close{
+  width:32px;height:32px;border:0;
+  border-radius:50%;background:#333;color:white;
+}
+.member-list-person{
+  display:flex;align-items:center;gap:11px;
+  padding:10px 0;border-bottom:1px solid #292929;
+}
+.member-list-person img,.member-list-avatar{
+  width:42px;height:42px;display:grid;
+  place-items:center;border-radius:50%;
+  object-fit:cover;background:#333;
+}
+.member-list-person small{
+  display:block;color:#999;font-size:10px;direction:ltr;
+}
+.member-list-empty{padding:20px;color:#999;text-align:center;font-size:12px}
 
-    .brand {
-      color: var(--gold);
-      font-family: Georgia, serif;
-      font-size: 26px;
-      font-weight: 900;
-      letter-spacing: 3px;
-      text-shadow: 0 0 25px rgba(186,148,255,.35);
-    }
+/* إخفاء تفاصيل الهوايات القديمة من واجهة تيك توك */
+#memberContent>.section{display:none!important}
 
-    .home-link {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 9px;
-      padding: 10px 17px;
-      border: 1px solid rgba(211,190,255,.23);
-      border-radius: 13px;
-      background: rgba(255,255,255,.07);
-      color: #f5efff;
-      font-size: 12px;
-      font-weight: 700;
-      backdrop-filter: blur(12px);
-      transition: .25s ease;
-    }
+#memberToast{
+  font-family:Cairo,sans-serif!important;
+  background:#252525!important;
+  border:1px solid #444!important;
+}
 
-    .home-link:hover {
-      background: rgba(161,138,255,.19);
-      border-color: rgba(193,174,255,.55);
-      transform: translateY(-2px);
-    }
-
-    .home-link svg {
-      width: 17px;
-      height: 17px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 1.8;
-    }
-
-    .container {
-      position: relative;
-      z-index: 1;
-      width: min(760px, 92%);
-      margin: 42px auto 55px;
-    }
-
-    .intro {
-      text-align: center;
-      margin-bottom: 25px;
-    }
-
-    .intro small {
-      display: inline-block;
-      padding: 6px 15px;
-      border: 1px solid rgba(193,171,255,.25);
-      border-radius: 30px;
-      background: rgba(151,119,255,.12);
-      color: var(--purple-light);
-      font-weight: 800;
-      font-size: 11px;
-      letter-spacing: .5px;
-      backdrop-filter: blur(12px);
-    }
-
-    .intro h1 {
-      margin-top: 13px;
-      font-size: clamp(25px, 5vw, 34px);
-      font-weight: 900;
-      text-shadow: 0 5px 25px rgba(0,0,0,.3);
-    }
-
-    .intro p {
-      margin-top: 7px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .loading {
-      padding: 45px 15px;
-      color: #e0d8f5;
-      text-align: center;
-      font-size: 13px;
-    }
-
-    .loading::after {
-      content: "";
-      display: block;
-      width: 27px;
-      height: 27px;
-      margin: 15px auto 0;
-      border: 2px solid rgba(255,255,255,.15);
-      border-top-color: var(--purple-light);
-      border-radius: 50%;
-      animation: spin .8s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .error {
-      display: none;
-      padding: 22px;
-      border: 1px solid rgba(255,125,151,.25);
-      border-radius: 18px;
-      background: rgba(105,28,57,.30);
-      color: #ffc1ce;
-      text-align: center;
-      font-size: 13px;
-      line-height: 2;
-      backdrop-filter: blur(18px);
-    }
-
-    .error.show {
-      display: block;
-    }
-
-    #memberContent {
-      animation: appear .55s ease both;
-    }
-
-    @keyframes appear {
-      from {
-        opacity: 0;
-        transform: translateY(15px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .card {
-      position: relative;
-      isolation: isolate;
-      overflow: hidden;
-      padding: 38px 25px 31px;
-      border: 1px solid rgba(220,204,255,.22);
-      border-radius: 30px;
-      background: linear-gradient(
-        145deg,
-        rgba(255,255,255,.13),
-        rgba(35,25,65,.40) 48%,
-        rgba(18,15,37,.58)
-      );
-      box-shadow: var(--shadow);
-      text-align: center;
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-    }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      z-index: -1;
-      width: 300px;
-      height: 300px;
-      top: -180px;
-      right: calc(50% - 150px);
-      border-radius: 50%;
-      background: rgba(164,126,255,.25);
-      filter: blur(55px);
-    }
-
-    .card::after {
-      content: "";
-      position: absolute;
-      z-index: -1;
-      inset: 0;
-      border-radius: inherit;
-      background: linear-gradient(
-        120deg,
-        rgba(255,255,255,.06),
-        transparent 35%,
-        transparent 70%,
-        rgba(172,142,255,.06)
-      );
-      pointer-events: none;
-    }
-
-    .avatar {
-      position: relative;
-      width: 145px;
-      height: 145px;
-      margin: 0 auto 19px;
-      display: grid;
-      place-items: center;
-      overflow: hidden;
-      border: 3px solid rgba(231,207,255,.88);
-      border-radius: 50%;
-      background: linear-gradient(135deg,#9275ed,#44336e);
-      color: white;
-      font-size: 46px;
-      font-weight: 900;
-      box-shadow:
-        0 0 0 8px rgba(166,130,255,.10),
-        0 0 45px rgba(153,112,255,.36);
-    }
-
-    .avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .name {
-      position: relative;
-      font-size: clamp(23px, 5vw, 29px);
-      font-weight: 900;
-      overflow-wrap: anywhere;
-      text-shadow: 0 3px 20px rgba(0,0,0,.25);
-    }
-
-    .username {
-      position: relative;
-      margin-top: 5px;
-      color: var(--purple-light);
-      font-size: 13px;
-      direction: ltr;
-    }
-
-    .bio {
-      position: relative;
-      max-width: 540px;
-      margin: 18px auto;
-      color: #d4cde6;
-      font-size: 13px;
-      line-height: 2.2;
-      overflow-wrap: anywhere;
-    }
-
-    .code {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-top: 5px;
-      padding: 9px 19px;
-      border: 1px solid rgba(224,199,255,.27);
-      border-radius: 30px;
-      background: rgba(255,255,255,.075);
-      color: var(--gold);
-      font-size: 12px;
-      font-weight: 800;
-      direction: ltr;
-      backdrop-filter: blur(12px);
-    }
-
-    .section {
-      position: relative;
-      overflow: hidden;
-      margin-top: 20px;
-      padding: 23px;
-      border: 1px solid var(--glass-border);
-      border-radius: 23px;
-      background: rgba(24,20,44,.53);
-      box-shadow: 0 14px 40px rgba(0,0,0,.17);
-      text-align: right;
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
-    }
-
-    .section h3 {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      margin-bottom: 17px;
-      font-size: 16px;
-      font-weight: 800;
-    }
-
-    .section h3::before {
-      content: "";
-      width: 4px;
-      height: 22px;
-      border-radius: 5px;
-      background: linear-gradient(var(--purple-light),var(--teal));
-      box-shadow: 0 0 15px rgba(161,138,255,.5);
-    }
-
-    .tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .tag {
-      display: inline-flex;
-      align-items: center;
-      min-height: 36px;
-      padding: 7px 15px;
-      border: 1px solid rgba(179,155,255,.23);
-      border-radius: 30px;
-      background: linear-gradient(
-        135deg,
-        rgba(157,126,255,.15),
-        rgba(255,255,255,.045)
-      );
-      color: #e0d5ff;
-      font-size: 12px;
-      font-weight: 600;
-      backdrop-filter: blur(10px);
-      transition: .2s ease;
-    }
-
-    .tag:hover {
-      border-color: rgba(191,172,255,.5);
-      background: rgba(157,126,255,.22);
-    }
-
-    .empty {
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    footer {
-      position: relative;
-      z-index: 1;
-      padding: 25px 10px 30px;
-      color: rgba(224,215,245,.68);
-      text-align: center;
-      font-size: 11px;
-      line-height: 2;
-    }
-
-    [hidden] {
-      display: none !important;
-    }
-
-    @media(max-width:550px) {
-      .topbar {
-        min-height: 66px;
-        padding: 10px 4%;
-      }
-
-      .brand {
-        font-size: 23px;
-      }
-
-      .container {
-        width: 92%;
-        margin-top: 25px;
-      }
-
-      .card {
-        padding: 31px 17px 26px;
-        border-radius: 25px;
-      }
-
-      .avatar {
-        width: 125px;
-        height: 125px;
-      }
-
-      .section {
-        padding: 19px 16px;
-        border-radius: 20px;
-      }
-    }
-
-    @media(prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: .01ms !important;
-        transition-duration: .01ms !important;
-      }
-    }
-  </style>
+@media(min-width:700px){
+  .container{border-left:1px solid #171717;border-right:1px solid #171717}
+}
+@media(max-width:380px){
+  .member-stat{min-width:90px}
+  .member-stat strong{font-size:17px}
+  .card{padding-top:23px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{animation:none!important;transition:none!important}
+}
+</style>
 </head>
 
 <body>
-
-  <header class="topbar">
-    <a href="../index.html" class="brand">HANOON</a>
-
-    <a href="../index.html" class="home-link">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-6v-7h-4v7H4a1 1 0 0 1-1-1z"/>
-      </svg>
-      الرئيسية
+<header class="topbar">
+  <a href="../index.html" class="brand">HANOON<span>.</span></a>
+  <div class="top-actions">
+    <a href="../index.html" aria-label="الرئيسية">
+      <svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-6v-7h-4v7H4a1 1 0 0 1-1-1z"/></svg>
     </a>
-  </header>
+  </div>
+</header>
 
-  <main class="container">
+<main class="container">
+  <div class="intro">
+    <h1>الملف الشخصي</h1>
+  </div>
 
-    <div class="intro">
-      <small>مجتمع المعرفة</small>
-      <h1>هوية عضو هنون</h1>
-      <p>تعرّف على أحد أعضاء مجتمع هنون.</p>
-    </div>
+  <div class="loading" id="loading">جارٍ تحميل الملف الشخصي...</div>
+  <div class="error" id="error" role="alert"></div>
 
-    <div class="loading" id="loading">
-      جارٍ البحث عن العضو...
-    </div>
+  <div id="memberContent" hidden>
+    <section class="card">
+      <div class="avatar" id="avatar">هـ</div>
+      <h2 class="name" id="name"></h2>
+      <div class="username" id="username"></div>
+      <p class="bio" id="bio"></p>
+      <div class="code" id="memberCode"></div>
+    </section>
 
-    <div class="error" id="error" role="alert"></div>
+    <section class="section">
+      <h3>الهوايات</h3>
+      <div class="tags" id="hobbies"></div>
+    </section>
 
-    <div id="memberContent" hidden>
+    <section class="section">
+      <h3>الاهتمامات القرائية</h3>
+      <div class="tags" id="reading"></div>
+    </section>
+  </div>
+</main>
 
-      <section class="card">
-
-        <div class="avatar" id="avatar">H</div>
-
-        <h2 class="name" id="name"></h2>
-
-        <div class="username" id="username"></div>
-
-        <p class="bio" id="bio"></p>
-
-        <div class="code" id="memberCode"></div>
-
-      </section>
-
-      <section class="section">
-        <h3>الهوايات</h3>
-        <div class="tags" id="hobbies"></div>
-      </section>
-
-      <section class="section">
-        <h3>الاهتمامات القرائية</h3>
-        <div class="tags" id="reading"></div>
-      </section>
-
-    </div>
-
-  </main>
-
-  <footer>
-    HANOON — المعرفة تصنع الفرق
-    <br>
-    جميع الحقوق محفوظة © HANOON
-  </footer>
-
-  <script type="module" src="../js/supabase-client.js"></script>
-  <script src="../js/member.js" defer></script>
-
+<script type="module" src="../js/supabase-client.js"></script>
+<script src="../js/member.js" defer></script>
 </body>
 </html>
