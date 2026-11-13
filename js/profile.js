@@ -1,7 +1,8 @@
 
 /* =====================================================
-   HANOON - PROFILE SYSTEM
-   Profile / Avatar / QR / Posts / Short Videos
+   HANOON - TIKTOK STYLE PROFILE
+   Profile / Avatar / QR / Posts / Videos
+   Followers / Following / Privacy
 ===================================================== */
 
 (() => {
@@ -62,7 +63,6 @@
 
     element.textContent = message;
     element.classList.add("show");
-
     setTimeout(() => element.classList.remove("show"), 2600);
   }
 
@@ -84,15 +84,13 @@
 
   function parseList(value) {
     if (!Array.isArray(value)) return [];
-
-    return value.filter(
-      item => typeof item === "string" && item.trim()
+    return value.filter(item =>
+      typeof item === "string" && item.trim()
     );
   }
 
   function splitInput(value) {
-    return value
-      .split(/[،,]/)
+    return value.split(/[،,]/)
       .map(item => item.trim())
       .filter(Boolean)
       .slice(0, 30);
@@ -125,7 +123,6 @@
 
   function getAvatarURL(path) {
     if (!path) return "";
-
     if (/^https?:\/\//i.test(path)) return path;
 
     const { data } = supabase.storage
@@ -137,7 +134,6 @@
 
   function getMediaURL(path) {
     if (!path) return "";
-
     if (/^https?:\/\//i.test(path)) return path;
 
     const { data } = supabase.storage
@@ -153,12 +149,11 @@
 
     container.replaceChildren();
 
-    const url = path
-      ? getAvatarURL(path)
-      : fallbackURL;
+    const url = path ? getAvatarURL(path) : fallbackURL;
 
     if (!url) {
-      container.textContent = (name || "H").trim().charAt(0) || "H";
+      container.textContent =
+        (name || "H").trim().charAt(0) || "H";
       return;
     }
 
@@ -169,7 +164,8 @@
 
     image.onerror = () => {
       container.replaceChildren();
-      container.textContent = (name || "H").trim().charAt(0) || "H";
+      container.textContent =
+        (name || "H").trim().charAt(0) || "H";
     };
 
     container.appendChild(image);
@@ -193,10 +189,8 @@
       return;
     }
 
-    const publicURL = getPublicProfileURL(username);
-
     new QRCode(container, {
-      text: publicURL,
+      text: getPublicProfileURL(username),
       width: 150,
       height: 150,
       colorDark: "#111827",
@@ -228,25 +222,162 @@
   }
 
   /* =====================================================
-     PROFILE MEDIA DESIGN
+     PROFILE SOCIAL UI
   ===================================================== */
 
-  function installMediaStyles() {
-    if ($("profileMediaStyles")) return;
+  function installSocialStyles() {
+    if ($("profileSocialStyles")) return;
 
     const style = document.createElement("style");
-    style.id = "profileMediaStyles";
+    style.id = "profileSocialStyles";
 
     style.textContent = `
-      .profile-media-section{
+      .profile-stats{
+        display:grid;
+        grid-template-columns:repeat(3,1fr);
+        padding:15px 8px;
+        border-bottom:1px solid #303030;
+        background:#101010;
+      }
+
+      .profile-stat{
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        gap:2px;
+        min-width:0;
+        border:0;
+        background:transparent;
+        color:#fff;
+      }
+
+      .profile-stat strong{
+        font-size:18px;
+        font-weight:900;
+        line-height:1.5;
+        font-variant-numeric:tabular-nums;
+      }
+
+      .profile-stat span{
+        color:#aaa;
+        font-size:10px;
+      }
+
+      .profile-privacy{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:12px;
+        margin:13px 12px;
+        padding:14px;
+        border:1px solid #303030;
+        border-radius:12px;
+        background:#141414;
+      }
+
+      .profile-privacy-copy{
+        min-width:0;
+      }
+
+      .profile-privacy-copy strong{
+        display:block;
+        color:#fff;
+        font-size:12px;
+        font-weight:900;
+      }
+
+      .profile-privacy-copy small{
+        display:block;
+        margin-top:4px;
+        color:#999;
+        font-size:10px;
+        line-height:1.8;
+      }
+
+      .privacy-switch{
         position:relative;
-        overflow:hidden;
-        margin-top:22px;
-        padding:22px;
-        border:1px solid rgba(195,164,255,.20);
-        border-radius:23px;
-        background:linear-gradient(145deg,rgba(26,19,51,.92),rgba(10,8,28,.94));
-        box-shadow:0 18px 48px rgba(0,0,0,.25);
+        flex:0 0 48px;
+        width:48px;
+        height:27px;
+      }
+
+      .privacy-switch input{
+        position:absolute;
+        width:1px;
+        height:1px;
+        opacity:0;
+      }
+
+      .privacy-switch span{
+        position:absolute;
+        inset:0;
+        border-radius:30px;
+        background:#444;
+        cursor:pointer;
+        transition:.2s;
+      }
+
+      .privacy-switch span::before{
+        content:"";
+        position:absolute;
+        top:3px;
+        right:3px;
+        width:21px;
+        height:21px;
+        border-radius:50%;
+        background:#fff;
+        transition:.2s;
+      }
+
+      .privacy-switch input:checked + span{
+        background:#fe2c55;
+      }
+
+      .privacy-switch input:checked + span::before{
+        transform:translateX(-21px);
+      }
+
+      .privacy-switch input:focus-visible + span{
+        outline:2px solid #fff;
+        outline-offset:3px;
+      }
+
+      .profile-tabs{
+        position:sticky;
+        top:58px;
+        z-index:20;
+        display:grid;
+        grid-template-columns:repeat(3,1fr);
+        margin-top:14px;
+        border-top:1px solid #303030;
+        border-bottom:1px solid #303030;
+        background:#090909ed;
+        backdrop-filter:blur(15px);
+      }
+
+      .profile-tab{
+        min-height:48px;
+        border:0;
+        border-bottom:2px solid transparent;
+        background:transparent;
+        color:#999;
+        font-size:11px;
+        font-weight:900;
+      }
+
+      .profile-tab.active{
+        border-bottom-color:#fe2c55;
+        color:#fff;
+      }
+
+      .profile-media-section{
+        margin:0;
+        padding:15px 8px;
+        border:0;
+        border-radius:0;
+        background:#080808;
+        box-shadow:none;
       }
 
       .profile-media-head{
@@ -254,44 +385,45 @@
         align-items:center;
         justify-content:space-between;
         gap:10px;
-        margin-bottom:17px;
+        margin-bottom:12px;
       }
 
       .profile-media-title{
         display:flex;
         align-items:center;
-        gap:10px;
-        font-size:17px;
+        gap:8px;
+        font-size:14px;
         font-weight:900;
       }
 
       .profile-media-title svg{
-        width:22px;
-        height:22px;
+        width:19px;
+        height:19px;
         fill:none;
-        stroke:#c2a9ff;
+        stroke:#fe2c55;
         stroke-width:1.8;
       }
 
       .profile-media-count{
-        color:#b7b2ca;
+        margin-top:2px;
+        color:#999;
         font-size:10px;
       }
 
       .profile-media-grid{
         display:grid;
         grid-template-columns:repeat(3,minmax(0,1fr));
-        gap:9px;
+        gap:3px;
       }
 
       .profile-media-card{
         position:relative;
         min-width:0;
         overflow:hidden;
-        aspect-ratio:1/1;
-        border:1px solid rgba(255,255,255,.12);
-        border-radius:14px;
-        background:#111026;
+        aspect-ratio:3/4;
+        border:0;
+        border-radius:2px;
+        background:#202020;
         cursor:pointer;
       }
 
@@ -304,27 +436,26 @@
       }
 
       .profile-media-card.video-card{
-        aspect-ratio:9/14;
+        aspect-ratio:3/4;
       }
 
       .profile-video-mark{
         position:absolute;
-        left:8px;
-        bottom:8px;
-        width:30px;
-        height:30px;
+        left:7px;
+        bottom:7px;
+        width:25px;
+        height:25px;
         display:grid;
         place-items:center;
-        border:1px solid #ffffff55;
         border-radius:50%;
-        background:#080817aa;
+        background:#0009;
         color:#fff;
         pointer-events:none;
       }
 
       .profile-video-mark svg{
-        width:15px;
-        height:15px;
+        width:14px;
+        height:14px;
         fill:none;
         stroke:currentColor;
         stroke-width:2;
@@ -335,11 +466,10 @@
         right:0;
         left:0;
         bottom:0;
-        padding:20px 8px 7px;
+        padding:18px 6px 5px;
         overflow:hidden;
         color:#fff;
         font-size:9px;
-        line-height:1.7;
         background:linear-gradient(transparent,#000b);
         white-space:nowrap;
         text-overflow:ellipsis;
@@ -347,28 +477,21 @@
 
       .profile-media-empty{
         grid-column:1/-1;
-        padding:28px 12px;
-        border:1px dashed rgba(195,164,255,.25);
-        border-radius:15px;
-        color:#b7b2ca;
+        padding:25px 10px;
+        color:#999;
         text-align:center;
         font-size:11px;
         line-height:2;
       }
 
       .profile-media-link{
-        display:inline-flex;
-        align-items:center;
-        gap:6px;
-        min-height:34px;
-        padding:6px 12px;
-        border:1px solid rgba(165,138,255,.32);
-        border-radius:10px;
-        background:rgba(165,138,255,.10);
-        color:#e1d6ff;
+        padding:6px 10px;
+        border:1px solid #ffffff20;
+        border-radius:7px;
+        background:#222;
+        color:#eee;
         font-size:10px;
-        font-weight:900;
-        white-space:nowrap;
+        font-weight:800;
       }
 
       .profile-media-modal{
@@ -378,9 +501,8 @@
         display:none;
         align-items:center;
         justify-content:center;
-        padding:18px;
-        background:rgba(3,3,12,.94);
-        backdrop-filter:blur(15px);
+        padding:15px;
+        background:#000f;
       }
 
       .profile-media-modal.open{
@@ -389,54 +511,226 @@
 
       .profile-media-modal-content{
         position:relative;
-        width:min(100%,650px);
-        max-height:88dvh;
+        width:min(100%,600px);
+        max-height:90dvh;
         display:grid;
         place-items:center;
       }
 
       .profile-media-modal-content img,
       .profile-media-modal-content video{
-        display:block;
         max-width:100%;
-        max-height:82dvh;
-        border-radius:15px;
+        max-height:84dvh;
         object-fit:contain;
         background:#000;
+        border-radius:8px;
       }
 
       .profile-media-close{
         position:absolute;
-        top:-43px;
+        top:-42px;
         left:0;
-        width:36px;
-        height:36px;
+        width:35px;
+        height:35px;
         border:1px solid #ffffff44;
         border-radius:50%;
-        background:#ffffff15;
+        background:#222;
         color:white;
-        font-size:20px;
+        font-size:21px;
       }
 
-      @media(max-width:600px){
-        .profile-media-section{padding:17px 12px}
-        .profile-media-grid{gap:6px}
-        .profile-media-card{border-radius:10px}
-        .profile-media-head{align-items:flex-start}
-        .profile-media-title{font-size:14px}
+      @media(max-width:420px){
+        .profile-media-section{padding-inline:4px}
+        .profile-media-grid{gap:2px}
       }
     `;
 
     document.head.appendChild(style);
   }
 
+  function createSocialProfileUI() {
+    if ($("profileStats")) return;
+
+    installSocialStyles();
+
+    const cover = document.querySelector(".profile-cover");
+    const actions = document.querySelector(".profile-actions");
+
+    if (!cover || !actions) return;
+
+    const stats = document.createElement("section");
+    stats.className = "profile-stats";
+    stats.id = "profileStats";
+    stats.innerHTML = `
+      <div class="profile-stat">
+        <strong id="profilePostsStat">—</strong>
+        <span>المنشورات</span>
+      </div>
+      <div class="profile-stat">
+        <strong id="profileFollowersStat">—</strong>
+        <span>المتابعون</span>
+      </div>
+      <div class="profile-stat">
+        <strong id="profileFollowingStat">—</strong>
+        <span>يتابع</span>
+      </div>
+    `;
+    cover.insertAdjacentElement("afterend", stats);
+
+    const privacy = document.createElement("section");
+    privacy.className = "profile-privacy";
+    privacy.id = "profilePrivacy";
+    privacy.innerHTML = `
+      <div class="profile-privacy-copy">
+        <strong>خصوصية الحساب</strong>
+        <small id="profilePrivacyDescription">
+          حساب عام: يمكن للجميع مشاهدة منشوراتك.
+        </small>
+      </div>
+      <label class="privacy-switch" aria-label="تفعيل الحساب الخاص">
+        <input id="profilePrivacyToggle" type="checkbox">
+        <span></span>
+      </label>
+    `;
+    actions.insertAdjacentElement("afterend", privacy);
+
+    $("profilePrivacyToggle").addEventListener(
+      "change",
+      updatePrivacy
+    );
+  }
+
+  async function loadSocialStats() {
+    const postsCount = $("profilePostsStat");
+    const followersCount = $("profileFollowersStat");
+    const followingCount = $("profileFollowingStat");
+
+    if (!postsCount || !followersCount || !followingCount) return;
+
+    try {
+      const [posts, followers, following] = await Promise.all([
+        supabase
+          .from("posts")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", currentUser.id),
+
+        supabase
+          .from("follows")
+          .select("follower_id", { count: "exact", head: true })
+          .eq("following_id", currentUser.id),
+
+        supabase
+          .from("follows")
+          .select("following_id", { count: "exact", head: true })
+          .eq("follower_id", currentUser.id)
+      ]);
+
+      if (posts.error) throw posts.error;
+      if (followers.error) throw followers.error;
+      if (following.error) throw following.error;
+
+      postsCount.textContent = formatCount(posts.count || 0);
+      followersCount.textContent = formatCount(followers.count || 0);
+      followingCount.textContent = formatCount(following.count || 0);
+
+    } catch (error) {
+      console.error("Social stats error:", error);
+      postsCount.textContent = "—";
+      followersCount.textContent = "—";
+      followingCount.textContent = "—";
+    }
+  }
+
+  function formatCount(value) {
+    return new Intl.NumberFormat("ar-EG").format(value);
+  }
+
+  async function updatePrivacy(event) {
+    const toggle = event.target;
+    const description = $("profilePrivacyDescription");
+
+    if (busy) {
+      toggle.checked = Boolean(currentProfile?.is_private);
+      return;
+    }
+
+    const newValue = toggle.checked;
+    const oldValue = Boolean(currentProfile?.is_private);
+
+    toggle.disabled = true;
+
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .update({ is_private: newValue })
+        .eq("id", currentUser.id)
+        .select("is_private")
+        .single();
+
+      if (error) throw error;
+
+      currentProfile.is_private = data.is_private;
+
+      description.textContent = newValue
+        ? "حساب خاص: منشوراتك لا تظهر إلا لمتابعيك المقبولين."
+        : "حساب عام: يمكن للجميع مشاهدة منشوراتك.";
+
+      toast(
+        newValue
+          ? "تم تحويل الحساب إلى خاص."
+          : "أصبح حسابك عامًا."
+      );
+
+    } catch (error) {
+      console.error("Privacy update error:", error);
+      toggle.checked = oldValue;
+      toast(error.message || "تعذر تحديث الخصوصية.");
+
+    } finally {
+      toggle.disabled = false;
+    }
+  }
+
+  function renderPrivacy(profile) {
+    const toggle = $("profilePrivacyToggle");
+    const description = $("profilePrivacyDescription");
+
+    if (!toggle || !description) return;
+
+    toggle.checked = Boolean(profile.is_private);
+
+    description.textContent = profile.is_private
+      ? "حساب خاص: منشوراتك لا تظهر إلا لمتابعيك المقبولين."
+      : "حساب عام: يمكن للجميع مشاهدة منشوراتك.";
+  }
+
+  /* =====================================================
+     PROFILE MEDIA
+  ===================================================== */
+
   function createMediaSections() {
     if ($("profilePostsSection") || !$("profileContent")) return;
 
-    installMediaStyles();
+    installSocialStyles();
 
-    const anchor = document.querySelector(".profile-actions");
+    const anchor = document.querySelector(".profile-privacy");
     if (!anchor) return;
+
+    const tabs = document.createElement("nav");
+    tabs.className = "profile-tabs";
+    tabs.id = "profileMediaTabs";
+    tabs.setAttribute("aria-label", "محتوى الملف الشخصي");
+    tabs.innerHTML = `
+      <button class="profile-tab active" type="button" data-tab="all">
+        الكل
+      </button>
+      <button class="profile-tab" type="button" data-tab="videos">
+        الفيديوهات
+      </button>
+      <button class="profile-tab" type="button" data-tab="posts">
+        المنشورات
+      </button>
+    `;
 
     const wrapper = document.createElement("div");
     wrapper.id = "profileMediaWrapper";
@@ -452,9 +746,13 @@
               </svg>
               منشوراتي
             </div>
-            <div class="profile-media-count" id="profilePostsCount">منشورات حسابك</div>
+            <div class="profile-media-count" id="profilePostsCount">
+              منشورات حسابك
+            </div>
           </div>
-          <a class="profile-media-link" href="posts.html">كل المنشورات</a>
+          <a class="profile-media-link" href="posts.html">
+            كل المنشورات
+          </a>
         </div>
         <div class="profile-media-grid" id="profilePostsGrid">
           <div class="profile-media-empty">جارٍ تحميل منشوراتك...</div>
@@ -471,9 +769,13 @@
               </svg>
               فيديوهاتي
             </div>
-            <div class="profile-media-count" id="profileVideosCount">فيديوهاتك القصيرة</div>
+            <div class="profile-media-count" id="profileVideosCount">
+              فيديوهاتك القصيرة
+            </div>
           </div>
-          <a class="profile-media-link" href="shorts.html">كل الفيديوهات</a>
+          <a class="profile-media-link" href="shorts.html">
+            كل الفيديوهات
+          </a>
         </div>
         <div class="profile-media-grid" id="profileVideosGrid">
           <div class="profile-media-empty">جارٍ تحميل فيديوهاتك...</div>
@@ -481,7 +783,24 @@
       </section>
     `;
 
-    anchor.insertAdjacentElement("afterend", wrapper);
+    anchor.insertAdjacentElement("afterend", tabs);
+    tabs.insertAdjacentElement("afterend", wrapper);
+
+    tabs.addEventListener("click", event => {
+      const button = event.target.closest("[data-tab]");
+      if (!button) return;
+
+      tabs.querySelectorAll(".profile-tab").forEach(tab => {
+        tab.classList.toggle("active", tab === button);
+      });
+
+      const selected = button.dataset.tab;
+      const postsSection = $("profilePostsSection");
+      const videosSection = $("profileVideosSection");
+
+      postsSection.hidden = selected === "videos";
+      videosSection.hidden = selected === "posts";
+    });
 
     const modal = document.createElement("div");
     modal.className = "profile-media-modal";
@@ -528,14 +847,14 @@
 
     body.replaceChildren();
 
-    const url = getMediaURL(post.media_path);
-    const isVideo = post.media_type === "video";
+    const media = document.createElement(
+      post.media_type === "video" ? "video" : "img"
+    );
 
-    const media = document.createElement(isVideo ? "video" : "img");
-    media.src = url;
+    media.src = getMediaURL(post.media_path);
     media.alt = post.content || "محتوى من الملف الشخصي";
 
-    if (isVideo) {
+    if (post.media_type === "video") {
       media.controls = true;
       media.autoplay = true;
       media.playsInline = true;
@@ -548,7 +867,9 @@
   function makeMediaCard(post, isVideo) {
     const card = document.createElement("button");
     card.type = "button";
-    card.className = "profile-media-card" + (isVideo ? " video-card" : "");
+    card.className =
+      "profile-media-card" + (isVideo ? " video-card" : "");
+
     card.setAttribute(
       "aria-label",
       isVideo ? "مشاهدة الفيديو" : "عرض المنشور"
@@ -585,7 +906,7 @@
     } else {
       const placeholder = document.createElement("div");
       placeholder.style.cssText =
-        "height:100%;display:grid;place-items:center;padding:12px;color:#e1d6ff;font-size:11px;line-height:1.8;text-align:center";
+        "height:100%;display:grid;place-items:center;padding:12px;color:#ddd;font-size:11px;line-height:1.8;text-align:center";
       placeholder.textContent = post.content || "منشور نصي";
       card.appendChild(placeholder);
     }
@@ -642,10 +963,10 @@
     );
 
     $("profilePostsCount").textContent =
-      `${posts.length} منشور`;
+      `${formatCount(posts.length)} منشور`;
 
     $("profileVideosCount").textContent =
-      `${videos.length} فيديو`;
+      `${formatCount(videos.length)} فيديو`;
 
     postsGrid.replaceChildren();
     videosGrid.replaceChildren();
@@ -671,6 +992,11 @@
         videosGrid.appendChild(makeMediaCard(post, true));
       });
     }
+
+    if ($("profilePostsStat")) {
+      $("profilePostsStat").textContent =
+        formatCount(all.length);
+    }
   }
 
   /* =====================================================
@@ -681,13 +1007,11 @@
     currentProfile = profile;
 
     const name = (
-      profile.full_name ||
-      getAccountName()
+      profile.full_name || getAccountName()
     ).trim();
 
     const username = (
-      profile.username ||
-      getAccountUsername()
+      profile.username || getAccountUsername()
     ).trim();
 
     const avatarFallback =
@@ -704,11 +1028,7 @@
     $("memberCode").textContent =
       profile.member_code || "غير متاح";
 
-    renderAvatar(
-      profile.avatar_path,
-      name,
-      avatarFallback
-    );
+    renderAvatar(profile.avatar_path, name, avatarFallback);
 
     renderTags(
       $("hobbiesList"),
@@ -732,6 +1052,9 @@
 
     $("profileLoading").hidden = true;
     $("profileContent").hidden = false;
+
+    createSocialProfileUI();
+    renderPrivacy(profile);
   }
 
   async function loadProfile() {
@@ -755,7 +1078,11 @@
     }
 
     renderProfile(data);
-    await loadProfileMedia();
+
+    await Promise.all([
+      loadProfileMedia(),
+      loadSocialStats()
+    ]);
   }
 
   /* =====================================================
@@ -881,7 +1208,6 @@
       }
 
       const file = $("avatarInput").files?.[0];
-
       let avatarPath = currentProfile.avatar_path;
 
       if (file) {
@@ -923,16 +1249,12 @@
       $("avatarInput").value = "";
 
       renderProfile(data);
-
       showMessage("تم حفظ بياناتك بنجاح.", "success");
       toast("تم تحديث اسمك وصورتك وبياناتك.");
 
     } catch (error) {
       console.error("Profile save error:", error);
-
-      showMessage(
-        error.message || "تعذر حفظ التعديلات."
-      );
+      showMessage(error.message || "تعذر حفظ التعديلات.");
 
     } finally {
       busy = false;
@@ -978,7 +1300,6 @@
 
   async function logout() {
     const confirmed = confirm("هل تريد تسجيل الخروج من هنون؟");
-
     if (!confirmed) return;
 
     const { error } = await supabase.auth.signOut();
@@ -994,6 +1315,13 @@
   function bindEvents() {
     $("profileForm").addEventListener("submit", saveProfile);
     $("logoutButton").addEventListener("click", logout);
+
+    $("editProfileShortcut")?.addEventListener("click", () => {
+      $("editSection")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    });
 
     $("copyMemberCode").addEventListener("click", () => {
       copyText(
@@ -1038,14 +1366,20 @@
     });
 
     window.addEventListener("hanoon:post-created", () => {
-      loadProfileMedia().catch(error => {
-        console.error("Profile posts refresh:", error);
+      Promise.all([
+        loadProfileMedia(),
+        loadSocialStats()
+      ]).catch(error => {
+        console.error("Profile refresh error:", error);
       });
     });
 
     window.addEventListener("hanoon:short-created", () => {
-      loadProfileMedia().catch(error => {
-        console.error("Profile videos refresh:", error);
+      Promise.all([
+        loadProfileMedia(),
+        loadSocialStats()
+      ]).catch(error => {
+        console.error("Profile refresh error:", error);
       });
     });
   }
@@ -1054,9 +1388,7 @@
     try {
       supabase = await waitForSupabase();
 
-      const { data, error } =
-        await supabase.auth.getSession();
-
+      const { data, error } = await supabase.auth.getSession();
       if (error) throw error;
 
       if (!data.session) {
@@ -1069,12 +1401,14 @@
       bindEvents();
       await loadProfile();
 
-      console.info("HANOON: Profile system is ready.");
+      console.info("HANOON: TikTok-style profile is ready.");
 
     } catch (error) {
       console.error("HANOON profile error:", error);
 
-      $("profileLoading").hidden = true;
+      if ($("profileLoading")) {
+        $("profileLoading").hidden = true;
+      }
 
       showPageError(
         error.message ||
