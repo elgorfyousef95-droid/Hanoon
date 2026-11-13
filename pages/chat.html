@@ -3,9 +3,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#101b25">
-<title>المراسلة | هنون</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#075e54">
+<title>المحادثة | هنون</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,15 +14,15 @@
 <style>
 :root{
   --page:#0b141a;
-  --header:#17232d;
-  --panel:#1e2c36;
-  --panel2:#23333f;
-  --line:rgba(255,255,255,.075);
-  --text:#f1f5f7;
-  --muted:#9aaab5;
-  --green:#20c997;
+  --header:#202c33;
+  --panel:#1f2c34;
+  --panel2:#263640;
+  --line:#ffffff12;
+  --text:#e9edef;
+  --muted:#aebac0;
+  --green:#00a884;
   --green-dark:#075e54;
-  --mine:#075e54;
+  --mine:#005c4b;
   --other:#202c33;
   --blue:#53bdeb;
   --danger:#f05d73;
@@ -45,20 +45,10 @@ html,body{
   color:var(--text);
 }
 
-button,input,textarea{
-  font:inherit;
-}
-
-button{
-  border:0;
-  cursor:pointer;
-  color:inherit;
-}
-
-button:disabled{
-  opacity:.4;
-  cursor:not-allowed;
-}
+button,input,textarea{font:inherit}
+button{border:0;cursor:pointer;color:inherit}
+button:disabled{opacity:.4;cursor:not-allowed}
+.hidden{display:none!important}
 
 .chat-shell{
   width:100%;
@@ -77,28 +67,27 @@ button:disabled{
 /* HEADER */
 
 .chat-header{
-  min-height:72px;
+  min-height:62px;
   display:flex;
   align-items:center;
-  gap:10px;
-  padding:9px 13px;
+  gap:8px;
+  padding:7px 10px;
   background:var(--header);
   border-bottom:1px solid var(--line);
   flex-shrink:0;
   z-index:5;
-  box-shadow:0 3px 15px rgba(0,0,0,.12);
 }
 
 .back-button,
 .header-action{
-  width:41px;
-  height:41px;
+  width:39px;
+  height:39px;
   flex-shrink:0;
   border-radius:50%;
   background:transparent;
   display:grid;
   place-items:center;
-  color:#d5e0e7;
+  color:#e9edef;
   transition:background .2s,transform .2s;
 }
 
@@ -125,17 +114,17 @@ button:disabled{
 }
 
 .person-avatar{
-  width:45px;
-  height:45px;
+  width:42px;
+  height:42px;
   border-radius:50%;
   flex-shrink:0;
-  background:linear-gradient(135deg,#7968d9,#27b9a8);
+  background:linear-gradient(135deg,#128c7e,#075e54);
   display:grid;
   place-items:center;
   overflow:hidden;
   font-weight:800;
-  font-size:17px;
-  border:2px solid rgba(255,255,255,.1);
+  font-size:16px;
+  border:0;
 }
 
 .person-avatar img{
@@ -150,70 +139,67 @@ button:disabled{
 }
 
 .person-name{
-  font-size:14px;
+  font-size:13px;
   font-weight:800;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
-  color:#f4f8fa;
+  color:#e9edef;
 }
 
 .person-status{
-  font-size:11px;
-  color:#a6b4bd;
+  font-size:10px;
+  color:#aebac0;
   margin-top:1px;
-  min-height:17px;
+  min-height:16px;
 }
 
-.person-status.online{
-  color:#35d69f;
-}
+.person-status.online{color:#25d366}
 
 .header-actions{
   display:flex;
   align-items:center;
-  gap:3px;
+  gap:2px;
 }
 
 /* NOTICES */
 
 .chat-notice{
-  margin:8px 12px 0;
+  margin:7px 10px 0;
   padding:9px 12px;
-  border-radius:12px;
-  background:rgba(32,201,151,.12);
+  border-radius:10px;
+  background:rgba(0,168,132,.13);
   color:#b8f5df;
-  font-size:12px;
+  font-size:11px;
   display:none;
   flex-shrink:0;
 }
 
-.chat-notice.show{
-  display:block;
-}
+.chat-notice.show{display:block}
 
 .chat-notice a{
-  color:#72e6c2;
+  color:#53d9b6;
   margin-inline-start:5px;
 }
 
-/* MESSAGE BACKGROUND */
+/* MESSAGE AREA */
 
 .message-area{
   flex:1;
   min-height:0;
   overflow-y:auto;
   overflow-x:hidden;
-  padding:18px 13px 24px;
+  padding:14px 10px 20px;
   display:flex;
   flex-direction:column;
-  gap:9px;
+  gap:7px;
   overscroll-behavior:contain;
   scroll-behavior:smooth;
+
   background-color:#0b141a;
   background-image:
-    radial-gradient(circle at 15% 20%,rgba(48,115,130,.09),transparent 35%),
-    radial-gradient(circle at 85% 75%,rgba(60,100,120,.07),transparent 38%);
+    radial-gradient(circle at 15% 20%,rgba(0,168,132,.055),transparent 38%),
+    radial-gradient(circle at 85% 75%,rgba(36,90,103,.08),transparent 40%);
   background-size:cover;
   background-position:center;
   scrollbar-width:thin;
@@ -230,10 +216,10 @@ button:disabled{
   align-self:center;
   font-size:10px;
   color:#d0dce2;
-  background:rgba(35,48,58,.92);
+  background:#182229;
   border:1px solid rgba(255,255,255,.06);
   padding:5px 14px;
-  border-radius:20px;
+  border-radius:8px;
   margin:5px 0 8px;
 }
 
@@ -248,25 +234,23 @@ button:disabled{
   align-items:end;
   column-gap:8px;
   row-gap:3px;
-  padding:8px 11px 6px;
+  padding:7px 9px 5px;
   background:var(--other);
-  border:1px solid rgba(255,255,255,.035);
-  border-radius:14px 14px 14px 4px;
-  box-shadow:0 2px 5px rgba(0,0,0,.12);
+  border:1px solid rgba(255,255,255,.025);
+  border-radius:9px 9px 9px 2px;
+  box-shadow:0 1px 1px rgba(0,0,0,.15);
   overflow-wrap:anywhere;
   position:relative;
   animation:messageIn .18s ease-out;
 }
 
-.message.theirs{
-  margin-inline-end:auto;
-}
+.message.theirs{margin-inline-end:auto}
 
 .message.mine{
   align-self:flex-end;
   background:var(--mine);
-  border-color:rgba(255,255,255,.045);
-  border-radius:14px 14px 4px 14px;
+  border-color:rgba(255,255,255,.025);
+  border-radius:9px 9px 2px 9px;
 }
 
 @keyframes messageIn{
@@ -277,17 +261,17 @@ button:disabled{
 .message-body{
   grid-column:1 / -1;
   font-size:13px;
-  line-height:1.85;
+  line-height:1.8;
   white-space:pre-wrap;
   word-break:break-word;
-  color:#f1f5f7;
+  color:#e9edef;
 }
 
 .message-time{
   grid-column:2;
   grid-row:2;
   font-size:9px;
-  color:rgba(231,243,246,.66);
+  color:rgba(231,243,246,.65);
   text-align:left;
   direction:ltr;
   white-space:nowrap;
@@ -332,7 +316,7 @@ button:disabled{
   max-width:100%;
   max-height:330px;
   object-fit:cover;
-  border-radius:10px;
+  border-radius:8px;
 }
 
 .message-audio{
@@ -350,14 +334,14 @@ button:disabled{
   display:block;
   max-width:100%;
   max-height:300px;
-  border-radius:11px;
+  border-radius:9px;
 }
 
 .empty-chat{
   margin:auto;
   text-align:center;
   color:#a3b1ba;
-  font-size:13px;
+  font-size:12px;
   padding:25px;
 }
 
@@ -367,8 +351,8 @@ button:disabled{
   flex-shrink:0;
   display:flex;
   align-items:flex-end;
-  gap:6px;
-  padding:9px 9px calc(9px + env(safe-area-inset-bottom));
+  gap:5px;
+  padding:7px 7px calc(7px + env(safe-area-inset-bottom));
   background:var(--header);
   border-top:1px solid var(--line);
   z-index:4;
@@ -376,46 +360,41 @@ button:disabled{
 
 .composer-tools{
   display:flex;
-  gap:1px;
+  gap:0;
   align-items:center;
 }
 
 .tool-button{
-  width:37px;
+  width:35px;
   height:43px;
   flex-shrink:0;
-  border-radius:12px;
+  border-radius:50%;
   background:transparent;
-  color:#aebdc7;
+  color:#aebac0;
   display:grid;
   place-items:center;
 }
 
-.tool-button:active{
-  background:rgba(255,255,255,.1);
-}
+.tool-button:active{background:rgba(255,255,255,.1)}
 
-.tool-button svg{
-  width:21px;
-  height:21px;
-}
+.tool-button svg{width:21px;height:21px}
 
 .composer-input-wrap{
   flex:1;
   min-width:0;
   display:flex;
   align-items:center;
-  background:#263640;
-  border:1px solid rgba(255,255,255,.035);
+  background:#2a3942;
+  border:1px solid rgba(255,255,255,.025);
   border-radius:24px;
-  padding:0 14px;
-  min-height:45px;
+  padding:0 13px;
+  min-height:43px;
 }
 
 #messageInput{
   width:100%;
   min-width:0;
-  height:43px;
+  height:41px;
   border:0;
   outline:0;
   resize:none;
@@ -423,40 +402,33 @@ button:disabled{
   background:transparent;
   font-size:13px;
   font-family:inherit;
-  padding:10px 0;
+  padding:9px 0;
 }
 
-#messageInput::placeholder{
-  color:#9aabb5;
-}
+#messageInput::placeholder{color:#aebac0}
 
 .send-button,
 .record-button{
-  width:45px;
-  height:45px;
+  width:43px;
+  height:43px;
   flex-shrink:0;
   border-radius:50%;
   display:grid;
   place-items:center;
-  background:#20b99a;
+  background:#00a884;
   color:#06251e;
   transition:transform .2s,background .2s;
 }
 
 .send-button:active,
-.record-button:active{
-  transform:scale(.93);
-}
+.record-button:active{transform:scale(.93)}
 
 .send-button svg,
-.record-button svg{
-  width:21px;
-  height:21px;
-}
+.record-button svg{width:21px;height:21px}
 
 .record-button{
-  background:#293a49;
-  color:#c8baff;
+  background:#2a3942;
+  color:#d1d9dc;
 }
 
 .record-button.recording{
@@ -488,7 +460,7 @@ button:disabled{
   position:absolute;
   inset:0;
   z-index:10;
-  background:rgba(0,0,0,.52);
+  background:rgba(0,0,0,.55);
   backdrop-filter:blur(3px);
   display:flex;
   align-items:flex-end;
@@ -504,10 +476,10 @@ button:disabled{
   width:100%;
   max-height:78%;
   overflow:auto;
-  background:#1b2a35;
+  background:#202c33;
   border:1px solid rgba(255,255,255,.08);
-  border-radius:23px 23px 0 0;
-  padding:17px 15px calc(20px + env(safe-area-inset-bottom));
+  border-radius:18px 18px 0 0;
+  padding:16px 14px calc(18px + env(safe-area-inset-bottom));
   box-shadow:0 -15px 45px rgba(0,0,0,.38);
   animation:panelIn .22s ease;
 }
@@ -521,16 +493,14 @@ button:disabled{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  margin-bottom:16px;
+  margin-bottom:15px;
 }
 
-.panel-heading strong{
-  font-size:14px;
-}
+.panel-heading strong{font-size:14px}
 
 .close-panel{
-  width:35px;
-  height:35px;
+  width:34px;
+  height:34px;
   border-radius:50%;
   background:#ffffff12;
   color:#e9f0f3;
@@ -547,10 +517,10 @@ button:disabled{
 
 .sticker-choice{
   min-height:68px;
-  border-radius:15px;
+  border-radius:12px;
   background:#ffffff09;
   border:1px solid var(--line);
-  font-size:34px;
+  font-size:32px;
 }
 
 .menu-grid{
@@ -560,8 +530,8 @@ button:disabled{
 }
 
 .menu-item{
-  min-height:80px;
-  border-radius:15px;
+  min-height:78px;
+  border-radius:12px;
   background:#ffffff08;
   border:1px solid var(--line);
   display:flex;
@@ -569,20 +539,18 @@ button:disabled{
   align-items:center;
   justify-content:center;
   gap:8px;
-  font-size:11px;
+  font-size:10px;
   color:#dce6eb;
   padding:8px 4px;
   text-align:center;
 }
 
-.menu-item:active{
-  background:#ffffff16;
-}
+.menu-item:active{background:#ffffff16}
 
 .menu-item svg{
-  color:#55cdb9;
-  width:23px;
-  height:23px;
+  color:#25d366;
+  width:22px;
+  height:22px;
 }
 
 .recording-strip{
@@ -605,10 +573,10 @@ button:disabled{
 
 .reply-preview{
   padding:8px 12px;
-  background:#1b2940;
-  border-right:3px solid var(--green);
+  background:#1c2b33;
+  border-right:3px solid #00a884;
   font-size:11px;
-  color:#dce4f5;
+  color:#dce4e8;
   display:flex;
   justify-content:space-between;
 }
@@ -619,16 +587,16 @@ button:disabled{
   font-size:19px;
 }
 
-/* MOBILE AND DESKTOP */
+/* RESPONSIVE */
 
 @media(max-width:380px){
-  .chat-header{gap:6px;padding-inline:7px}
-  .back-button,.header-action{width:36px;height:38px}
-  .person-avatar{width:40px;height:40px}
+  .chat-header{gap:5px;padding-inline:6px}
+  .back-button,.header-action{width:35px;height:37px}
+  .person-avatar{width:39px;height:39px}
   .header-actions{gap:0}
-  .composer{gap:3px;padding-inline:5px}
-  .tool-button{width:32px}
-  .send-button,.record-button{width:42px;height:42px}
+  .composer{gap:2px;padding-inline:4px}
+  .tool-button{width:31px}
+  .send-button,.record-button{width:41px;height:41px}
   .message{max-width:88%}
 }
 
@@ -637,7 +605,7 @@ button:disabled{
   .chat-shell{
     height:calc(100dvh - 30px);
     border:1px solid var(--line);
-    border-radius:22px;
+    border-radius:12px;
     box-shadow:var(--shadow);
   }
 }
@@ -743,7 +711,7 @@ button:disabled{
         type="text"
         autocomplete="off"
         maxlength="5000"
-        placeholder="اكتب رسالة..."
+        placeholder="اكتب رسالة"
         aria-label="اكتب رسالتك"
       >
     </div>
@@ -890,10 +858,8 @@ button:disabled{
 
 </main>
 
-<!-- Receipt system -->
 <script src="../js/chat-receipts.js"></script>
 <script src="../js/chat-replies.js"></script>
-<!-- App scripts -->
 <script type="module" src="../js/supabase-client.js"></script>
 <script type="module" src="../js/chat.js"></script>
 <script src="../js/chat-preferences.js"></script>
