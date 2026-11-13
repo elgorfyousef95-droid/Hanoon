@@ -3,597 +3,431 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#080808">
-<title>الفيديوهات | HANOON</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>هنون | الفيديوهات</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
 :root{
   --pink:#fe2c55;
+  --cyan:#25f4ee;
   --white:#fff;
-  --muted:#bcbcbc;
-  --black:#080808;
+  --black:#000;
+  --glass:rgba(20,20,20,.55);
+  --muted:#c9c9c9;
 }
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{
-  width:100%;
-  height:100%;
-  min-height:0;
-  margin:0;
-  overflow:hidden;
-  overscroll-behavior:none;
-  background:#000;
+  width:100%;height:100%;margin:0;overflow:hidden;
+  background:#000;color:#fff;font-family:Cairo,sans-serif;
 }
-body{
-  color:var(--white);
-  font-family:Cairo,sans-serif;
-}
-button,a{font:inherit}
+button,input,textarea{font:inherit}
 button{cursor:pointer}
 a{color:inherit;text-decoration:none}
 [hidden]{display:none!important}
 
-/* شاشة الفيديو */
-.page{
-  position:fixed;
-  inset:0;
-  width:100%;
-  height:100dvh;
-  overflow:hidden;
-  background:#000;
+#shortsApp{
+  position:fixed;inset:0;width:100%;height:100%;
+  height:100dvh;background:#000;overflow:hidden;
 }
-.shorts-feed{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  overflow-x:hidden;
-  overflow-y:auto;
-  overscroll-behavior-y:contain;
-  scroll-snap-type:y mandatory;
-  scroll-behavior:smooth;
-  scrollbar-width:none;
-  background:#000;
+#shortsFeed{
+  position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;
+  scroll-snap-type:y mandatory;scroll-behavior:smooth;
+  overscroll-behavior-y:contain;scrollbar-width:none;
 }
-.shorts-feed::-webkit-scrollbar{display:none}
+#shortsFeed::-webkit-scrollbar{display:none}
 
-/* كل فيديو */
 .video-card{
-  position:relative;
-  isolation:isolate;
-  width:100%;
-  height:100%;
-  min-height:100%;
-  overflow:hidden;
-  scroll-snap-align:start;
-  scroll-snap-stop:always;
-  background:#080808;
+  position:relative;width:100%;height:100%;
+  min-height:100%;overflow:hidden;isolation:isolate;
+  scroll-snap-align:start;scroll-snap-stop:always;
+  background:#090909;
 }
 .video-card video{
-  position:absolute;
-  inset:0;
-  z-index:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  background:#080808;
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;background:#090909;z-index:0;
 }
 .video-shade{
-  position:absolute;
-  inset:0;
-  z-index:1;
-  pointer-events:none;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(0,0,0,.43) 0%,
-      transparent 18%,
-      transparent 48%,
-      rgba(0,0,0,.18) 65%,
-      rgba(0,0,0,.82) 100%
-    );
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(
+    180deg,rgba(0,0,0,.42),transparent 20%,
+    transparent 48%,rgba(0,0,0,.15) 62%,
+    rgba(0,0,0,.78) 100%
+  );
 }
 
-/* رأس الصفحة */
+/* الرأس */
 .topbar{
-  position:fixed;
-  z-index:30;
-  top:0;
-  right:0;
-  left:0;
-  height:calc(62px + env(safe-area-inset-top));
-  padding:
-    env(safe-area-inset-top)
-    14px
-    0;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  background:linear-gradient(#0009,transparent);
+  position:absolute;z-index:20;top:0;left:0;right:0;
+  padding:calc(env(safe-area-inset-top) + 12px) 16px 12px;
+  display:flex;align-items:center;justify-content:space-between;
   pointer-events:none;
 }
 .topbar>*{pointer-events:auto}
 .brand{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  font-size:16px;
-  font-weight:900;
-  text-shadow:0 2px 10px #000;
+  display:flex;align-items:center;gap:8px;
+  font-size:18px;font-weight:900;text-shadow:0 2px 12px #000;
 }
-.brand-mark{
-  width:34px;
-  height:34px;
-  display:grid;
-  place-items:center;
-  border:1px solid #ffffff55;
-  border-radius:11px;
-  background:#ffffff1c;
-  backdrop-filter:blur(12px);
+.brand-symbol{
+  width:34px;height:34px;border-radius:11px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--pink),#9c4cff);
+  box-shadow:0 4px 18px #fe2c5550;
 }
-.brand-mark svg{
-  width:19px;
-  fill:none;
-  stroke:white;
-  stroke-width:2;
-  stroke-linecap:round;
-  stroke-linejoin:round;
-}
+.brand-symbol svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2}
 .brand-name span{color:var(--pink)}
-.header-actions{
-  display:flex;
-  align-items:center;
-  gap:8px;
+.header-tools{display:flex;align-items:center;gap:9px}
+.header-button{
+  width:40px;height:40px;border:1px solid #ffffff30;
+  border-radius:50%;display:grid;place-items:center;
+  background:#0005;color:white;backdrop-filter:blur(14px);
 }
-.header-icon{
-  width:38px;
-  height:38px;
-  display:grid;
-  place-items:center;
-  border:1px solid #ffffff35;
-  border-radius:50%;
-  background:#0005;
-  color:white;
-  backdrop-filter:blur(12px);
+.header-button svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.upload-button{
+  height:38px;padding:0 13px;border:0;border-radius:8px;
+  color:#111;background:#fff;font-size:11px;font-weight:900;
 }
-.header-icon svg{
-  width:20px;
-  height:20px;
-  fill:none;
-  stroke:currentColor;
-  stroke-width:1.8;
-  stroke-linecap:round;
-  stroke-linejoin:round;
-}
-.upload-btn{
-  min-height:37px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:6px;
-  padding:0 12px;
-  border:0;
-  border-radius:7px;
-  background:white;
-  color:#111;
-  font-size:11px;
-  font-weight:900;
-}
-.upload-btn svg{
-  width:17px;
-  height:17px;
-  fill:none;
-  stroke:currentColor;
-  stroke-width:2;
-  stroke-linecap:round;
-  stroke-linejoin:round;
-}
-.upload-btn:disabled{opacity:.5}
 #shortFileInput{display:none}
 
-/* تبويبات لك ومتابَعون */
+/* التبويبات */
 .feed-tabs{
-  position:fixed;
-  z-index:25;
-  top:calc(67px + env(safe-area-inset-top));
-  left:50%;
-  transform:translateX(-50%);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:22px;
-  width:max-content;
-  max-width:90%;
+  position:absolute;z-index:18;top:calc(67px + env(safe-area-inset-top));
+  left:50%;transform:translateX(-50%);
+  display:flex;gap:24px;align-items:center;
 }
 .feed-tab{
-  position:relative;
-  padding:7px 2px 10px;
-  border:0;
-  background:none;
-  color:#ddd;
-  font-size:13px;
-  font-weight:800;
-  text-shadow:0 2px 8px #000;
+  position:relative;padding:8px 3px 11px;border:0;
+  background:transparent;color:#d2d2d2;
+  font-size:14px;font-weight:800;text-shadow:0 2px 8px #000;
 }
-.feed-tab.active{color:white}
+.feed-tab.active{color:#fff}
 .feed-tab.active:after{
-  content:"";
-  position:absolute;
-  bottom:3px;
-  right:15%;
-  width:70%;
-  height:3px;
-  border-radius:5px;
-  background:white;
+  content:"";position:absolute;bottom:3px;right:15%;
+  width:70%;height:3px;border-radius:4px;background:#fff;
 }
 
-/* بيانات صاحب الفيديو */
+/* بيانات الفيديو */
 .video-info{
-  position:absolute;
-  z-index:4;
-  right:14px;
-  left:78px;
-  bottom:calc(88px + env(safe-area-inset-bottom));
-  pointer-events:auto;
+  position:absolute;z-index:5;right:15px;left:78px;
+  bottom:calc(83px + env(safe-area-inset-bottom));
 }
-.creator{
-  display:flex;
-  align-items:center;
-  gap:9px;
-  margin-bottom:9px;
-}
+.creator{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .avatar{
-  width:43px;
-  height:43px;
-  flex:0 0 43px;
-  display:grid;
-  place-items:center;
-  overflow:hidden;
-  border:2px solid white;
-  border-radius:50%;
-  background:linear-gradient(135deg,#555,#222);
-  color:white;
-  font-size:14px;
-  font-weight:900;
-  box-shadow:0 2px 12px #0008;
+  width:43px;height:43px;flex:0 0 43px;
+  display:grid;place-items:center;overflow:hidden;
+  border:2px solid #fff;border-radius:50%;
+  background:linear-gradient(135deg,#555,#171717);
+  font-size:14px;font-weight:900;
 }
-.avatar img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-.creator-name{
-  color:white;
-  font-size:13px;
-  font-weight:900;
-  text-shadow:0 2px 8px #000;
-}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.creator-name{font-size:13px;font-weight:900;text-shadow:0 2px 8px #000}
 .caption{
-  max-width:100%;
-  margin:0;
-  color:white;
-  font-size:12px;
-  line-height:1.9;
-  overflow-wrap:anywhere;
-  text-shadow:0 2px 8px #000;
+  margin:0;max-width:100%;font-size:12px;line-height:1.9;
+  overflow-wrap:anywhere;text-shadow:0 2px 8px #000;
 }
 
-/* أزرار التفاعل */
+/* أزرار الفيديو */
 .video-actions{
-  position:absolute;
-  z-index:5;
-  left:10px;
-  bottom:calc(96px + env(safe-area-inset-bottom));
-  display:grid;
-  justify-items:center;
-  gap:16px;
+  position:absolute;z-index:7;left:9px;
+  bottom:calc(94px + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;align-items:center;gap:15px;
 }
-.action-wrap{
-  display:grid;
-  justify-items:center;
-  gap:4px;
-  color:white;
-}
+.action-wrap{display:flex;flex-direction:column;align-items:center;gap:3px}
 .action{
-  width:45px;
-  height:45px;
-  display:grid;
-  place-items:center;
-  border:0;
-  border-radius:50%;
-  background:transparent;
-  color:white;
-  filter:drop-shadow(0 2px 5px #0008);
+  width:48px;height:48px;border:0;border-radius:50%;
+  background:transparent;color:#fff;display:grid;place-items:center;
+  filter:drop-shadow(0 2px 5px #0009);
 }
-.action svg{
-  width:29px;
-  height:29px;
-  fill:none;
-  stroke:currentColor;
-  stroke-width:2;
-  stroke-linecap:round;
-  stroke-linejoin:round;
-}
+.action svg{width:29px;height:29px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .action.liked{color:var(--pink)}
-.action-wrap small{
-  min-height:13px;
-  color:white;
-  font-size:10px;
-  font-weight:900;
-  text-shadow:0 2px 7px #000;
+.action-wrap small{font-size:10px;font-weight:900;text-shadow:0 2px 7px #000}
+.follow-ring{
+  position:relative;margin-top:-8px;width:19px;height:19px;
+  border-radius:50%;display:grid;place-items:center;
+  background:var(--pink);border:2px solid #fff;
+  font-size:13px;font-weight:900;
 }
 
-/* إشعارات */
-.notice{
-  position:fixed;
-  z-index:100;
-  top:calc(110px + env(safe-area-inset-top));
-  right:12px;
-  left:12px;
-  display:none;
-  max-width:440px;
-  margin:auto;
-  padding:12px 15px;
-  border:1px solid #ffffff38;
-  border-radius:12px;
-  background:#171717f5;
-  color:white;
-  box-shadow:0 12px 35px #0008;
-  font-size:11px;
-  line-height:1.8;
+/* قرص الصوت */
+.sound-indicator{
+  position:absolute;z-index:8;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:62px;height:62px;border-radius:50%;
+  display:grid;place-items:center;background:#0007;
+  backdrop-filter:blur(10px);opacity:0;pointer-events:none;
+  transition:opacity .2s;
 }
+.sound-indicator.show{opacity:1}
+.sound-indicator svg{width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2}
 
-/* الشريط السفلي */
+/* شريط التقدم */
+.video-progress{
+  position:absolute;z-index:8;bottom:calc(61px + env(safe-area-inset-bottom));
+  left:0;right:0;height:2px;background:#ffffff45;
+}
+.video-progress span{display:block;width:0;height:100%;background:#fff}
+
+/* القائمة السفلية */
 .bottom-nav{
-  position:fixed;
-  z-index:35;
-  right:0;
-  bottom:0;
-  left:0;
-  height:calc(62px + env(safe-area-inset-bottom));
-  padding:6px 10px env(safe-area-inset-bottom);
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  align-items:center;
-  border-top:1px solid #ffffff18;
-  background:linear-gradient(transparent,#000 25%);
+  position:absolute;z-index:25;bottom:0;left:0;right:0;
+  height:calc(61px + env(safe-area-inset-bottom));
+  padding:5px 8px env(safe-area-inset-bottom);
+  display:grid;grid-template-columns:repeat(5,1fr);
+  align-items:center;background:linear-gradient(transparent,#000 22%);
 }
 .nav-item{
-  min-width:0;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:3px;
-  border:0;
-  background:none;
-  color:#d5d5d5;
-  font-size:9px;
-  font-weight:700;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;border:0;background:none;color:#ddd;font-size:9px;font-weight:700;
 }
-.nav-item svg{
-  width:23px;
-  height:23px;
-  fill:none;
-  stroke:currentColor;
-  stroke-width:1.8;
-  stroke-linecap:round;
-  stroke-linejoin:round;
+.nav-item svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav-item.active{color:#fff}
+.create-icon{
+  width:43px;height:29px;display:grid;place-items:center;
+  border-radius:8px;background:#fff;
+  border-right:4px solid var(--cyan);border-left:4px solid var(--pink);
 }
-.nav-item.active{color:white}
-.nav-item.active svg{stroke-width:2.5}
-.create-nav{
-  width:43px;
-  height:29px;
-  display:grid;
-  place-items:center;
-  border:0;
-  border-right:4px solid #55e4dc;
-  border-left:4px solid var(--pink);
-  border-radius:8px;
-  background:white;
-  color:#111;
-}
-.create-nav svg{
-  width:20px;
-  height:20px;
-  stroke:#111;
-  stroke-width:2.5;
-}
+.create-icon svg{width:20px;height:20px;stroke:#111;stroke-width:2.5}
 
-/* شاشة عدم وجود فيديوهات */
-.empty{
-  position:absolute;
-  inset:0;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:13px;
-  padding:30px;
-  color:white;
+/* الإشعارات المصممة */
+#shortNotice{
+  position:absolute;z-index:100;top:calc(115px + env(safe-area-inset-top));
+  right:16px;left:16px;margin:auto;max-width:420px;
+  padding:13px 16px;border:1px solid #ffffff20;border-radius:14px;
+  background:rgba(25,25,25,.94);color:white;
+  box-shadow:0 12px 35px #0008;font-size:12px;line-height:1.8;
+  text-align:center;backdrop-filter:blur(18px);
+  opacity:0;transform:translateY(-12px);pointer-events:none;
+  transition:.25s;
+}
+#shortNotice.show{opacity:1;transform:translateY(0)}
+
+/* شاشة التعليقات */
+.sheet-backdrop{
+  position:absolute;z-index:50;inset:0;background:#0009;
+  opacity:0;pointer-events:none;transition:opacity .25s;
+}
+.sheet-backdrop.open{opacity:1;pointer-events:auto}
+.comments-sheet{
+  position:absolute;z-index:51;right:0;left:0;bottom:0;
+  height:min(72%,650px);border-radius:20px 20px 0 0;
+  background:#171717;display:flex;flex-direction:column;
+  transform:translateY(105%);transition:transform .3s ease;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.comments-sheet.open{transform:translateY(0)}
+.sheet-handle{width:38px;height:4px;border-radius:5px;background:#777;margin:10px auto}
+.sheet-heading{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:5px 17px 13px;border-bottom:1px solid #ffffff14;
+  font-size:13px;font-weight:900;
+}
+.sheet-close{border:0;background:none;color:#fff;font-size:24px}
+.comments-list{flex:1;overflow-y:auto;padding:14px 16px}
+.comment-item{display:flex;gap:10px;margin-bottom:17px}
+.comment-avatar{
+  width:35px;height:35px;flex:0 0 35px;border-radius:50%;
+  background:#383838;display:grid;place-items:center;overflow:hidden;
+}
+.comment-avatar img{width:100%;height:100%;object-fit:cover}
+.comment-body{flex:1;min-width:0}
+.comment-user{font-size:11px;color:#aaa;font-weight:700}
+.comment-text{font-size:12px;line-height:1.8;margin-top:3px;overflow-wrap:anywhere}
+.comment-input-row{
+  display:flex;gap:9px;align-items:center;padding:12px 14px;
+  border-top:1px solid #ffffff15;
+}
+.comment-input{
+  flex:1;min-width:0;border:1px solid #ffffff20;
+  border-radius:22px;padding:11px 14px;background:#292929;
+  color:#fff;outline:none;font-size:12px;
+}
+.comment-send{
+  width:39px;height:39px;border:0;border-radius:50%;
+  background:var(--pink);color:white;display:grid;place-items:center;
+}
+.comment-send svg{width:19px;height:19px;stroke:#fff;fill:none;stroke-width:2}
+
+/* نافذة مخصصة */
+.dialog-backdrop{
+  position:absolute;z-index:70;inset:0;display:none;
+  align-items:center;justify-content:center;padding:22px;
+  background:#000b;backdrop-filter:blur(7px);
+}
+.dialog-backdrop.open{display:flex}
+.app-dialog{
+  width:100%;max-width:360px;padding:22px 19px;
+  border:1px solid #ffffff20;border-radius:20px;
+  background:#1b1b1b;box-shadow:0 20px 70px #0009;
   text-align:center;
-  font-size:12px;
-  line-height:2;
 }
-.empty:before{
-  content:"";
-  width:65px;
-  height:65px;
-  display:block;
-  border:1px solid #ffffff55;
-  border-radius:20px;
-  background:linear-gradient(135deg,#fe2c55,#6c50df);
+.dialog-icon{
+  width:48px;height:48px;margin:0 auto 12px;
+  display:grid;place-items:center;border-radius:15px;
+  background:linear-gradient(135deg,var(--pink),#8c4cff);
 }
+.dialog-icon svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:2}
+.dialog-title{font-size:15px;font-weight:900}
+.dialog-message{font-size:12px;color:#bbb;line-height:1.9;margin:9px 0 18px}
+.dialog-actions{display:flex;gap:9px}
+.dialog-actions button{
+  flex:1;border:0;border-radius:10px;padding:11px;
+  background:#333;color:white;font-size:12px;font-weight:800;
+}
+.dialog-actions .primary{background:var(--pink)}
+
+/* شاشة التحميل الفارغة */
+.empty{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;
+  gap:12px;padding:30px;color:white;
+}
+.empty-mark{
+  width:65px;height:65px;border-radius:20px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--pink),#864cff);
+}
+.empty-mark svg{width:30px;height:30px;stroke:white;fill:none;stroke-width:2}
 .empty strong{font-size:15px}
-.empty small{color:#bbb;font-size:11px}
+.empty small{font-size:11px;color:#aaa;line-height:1.8}
 
-/* شريط تقدم الفيديو */
-.video-progress{
-  position:absolute;
-  z-index:6;
-  right:0;
-  bottom:calc(62px + env(safe-area-inset-bottom));
-  left:0;
-  height:2px;
-  background:#ffffff35;
-}
-.video-progress span{
-  display:block;
-  width:0;
-  height:100%;
-  background:white;
-}
-
-/* شاشة الكمبيوتر */
 @media(min-width:700px){
   body{background:#151515}
-  .page{
-    width:min(480px,100%);
-    right:50%;
-    left:auto;
-    transform:translateX(50%);
-    border-right:1px solid #333;
-    border-left:1px solid #333;
-  }
-  .topbar{
-    right:50%;
-    left:auto;
-    width:min(480px,100%);
-    transform:translateX(50%);
-  }
-  .bottom-nav{
-    right:50%;
-    left:auto;
-    width:min(480px,100%);
-    transform:translateX(50%);
+  #shortsApp{
+    width:min(480px,100%);right:50%;left:auto;
+    transform:translateX(50%);border-inline:1px solid #333;
   }
 }
-
-/* الشاشات الصغيرة */
-@media(max-width:380px){
-  .brand{font-size:14px}
-  .upload-btn{padding:0 9px;font-size:10px}
-  .video-info{right:10px;left:70px}
-  .video-actions{left:5px;gap:12px}
-  .action{width:41px;height:41px}
-}
-
-/* تقليل الحركة عند طلب الجهاز */
 @media(prefers-reduced-motion:reduce){
-  .shorts-feed{scroll-behavior:auto}
+  *,*::before,*::after{scroll-behavior:auto!important;transition:none!important}
 }
 </style>
 </head>
 
 <body>
+<div id="shortsApp">
 
-<header class="topbar">
-  <a class="brand" href="../index.html">
-    <span class="brand-mark">
-      <svg viewBox="0 0 24 24">
-        <rect x="4" y="3" width="16" height="18" rx="3"/>
-        <path d="m10 8 5 4-5 4z"/>
-      </svg>
-    </span>
-    <span class="brand-name">HANOON<span>.</span></span>
-  </a>
+  <header class="topbar">
+    <a class="brand" href="../index.html">
+      <span class="brand-symbol">
+        <svg viewBox="0 0 24 24"><path d="m9 6 9 6-9 6z"/></svg>
+      </span>
+      <span class="brand-name">HANOON<span>.</span></span>
+    </a>
 
-  <div class="header-actions">
-    <button class="header-icon" type="button" aria-label="بحث" onclick="location.href='search.html'">
-      <svg viewBox="0 0 24 24">
-        <circle cx="10.8" cy="10.8" r="6.8"/>
-        <path d="m16 16 5 5"/>
-      </svg>
-    </button>
-
-    <button class="upload-btn" id="uploadShortBtn" type="button">
-      <svg viewBox="0 0 24 24">
-        <path d="M12 16V4m-5 5 5-5 5 5"/>
-        <path d="M4 16v4h16v-4"/>
-      </svg>
-      إضافة فيديو
-    </button>
-
-    <input id="shortFileInput" type="file" accept="video/mp4,video/webm" hidden>
-  </div>
-</header>
-
-<nav class="feed-tabs" aria-label="أنواع الفيديوهات">
-  <button class="feed-tab active" type="button" data-feed="for-you">لك</button>
-  <button class="feed-tab" type="button" data-feed="following">المتابَعون</button>
-</nav>
-
-<div id="shortNotice" class="notice" role="status" aria-live="polite"></div>
-
-<main class="page">
-  <section id="shortsFeed" class="shorts-feed" aria-label="الفيديوهات القصيرة">
-    <div class="empty">
-      <strong>عالم فيديوهات هنون</strong>
-      جارٍ تجهيز الفيديوهات...
-      <small>اسحب لأعلى لاكتشاف المزيد</small>
+    <div class="header-tools">
+      <button class="header-button" type="button" aria-label="بحث" id="shortSearchBtn">
+        <svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg>
+      </button>
+      <button class="upload-button" id="uploadShortBtn" type="button">＋ إضافة فيديو</button>
+      <input id="shortFileInput" type="file" accept="video/mp4,video/webm" hidden>
     </div>
+  </header>
+
+  <nav class="feed-tabs">
+    <button class="feed-tab active" type="button" data-feed="for-you">لك</button>
+    <button class="feed-tab" type="button" data-feed="following">المتابَعون</button>
+  </nav>
+
+  <div id="shortNotice" role="status" aria-live="polite"></div>
+
+  <main id="shortsFeed" aria-label="فيديوهات هنون">
+    <div class="empty">
+      <div class="empty-mark">
+        <svg viewBox="0 0 24 24"><path d="m9 6 9 6-9 6z"/></svg>
+      </div>
+      <strong>فيديوهات هنون</strong>
+      <small>اكتشف الفيديوهات والمبدعين</small>
+    </div>
+  </main>
+
+  <div class="sheet-backdrop" id="commentsBackdrop"></div>
+
+  <section class="comments-sheet" id="commentsSheet" aria-label="التعليقات">
+    <div class="sheet-handle"></div>
+    <div class="sheet-heading">
+      <span id="commentsTitle">التعليقات</span>
+      <button class="sheet-close" id="closeCommentsBtn" type="button" aria-label="إغلاق">×</button>
+    </div>
+    <div class="comments-list" id="commentsList"></div>
+    <form class="comment-input-row" id="commentForm">
+      <input class="comment-input" id="commentInput" maxlength="1000" placeholder="أضف تعليقًا..." autocomplete="off">
+      <button class="comment-send" type="submit" aria-label="إرسال التعليق">
+        <svg viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4zM22 2 11 13"/></svg>
+      </button>
+    </form>
   </section>
-</main>
 
-<nav class="bottom-nav" aria-label="التنقل الرئيسي">
-  <a class="nav-item" href="../index.html">
-    <svg viewBox="0 0 24 24">
-      <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-6v-7h-4v7H4a1 1 0 0 1-1-1z"/>
-    </svg>
-    <span>الرئيسية</span>
-  </a>
+  <div class="dialog-backdrop" id="appDialog">
+    <div class="app-dialog">
+      <div class="dialog-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/></svg>
+      </div>
+      <div class="dialog-title" id="dialogTitle">هنون</div>
+      <div class="dialog-message" id="dialogMessage"></div>
+      <div class="dialog-actions">
+        <button type="button" id="dialogCancel">إلغاء</button>
+        <button type="button" class="primary" id="dialogConfirm">حسنًا</button>
+      </div>
+    </div>
+  </div>
 
-  <a class="nav-item" href="community.html">
-    <svg viewBox="0 0 24 24">
-      <circle cx="9" cy="8" r="3"/>
-      <circle cx="17" cy="9" r="2.5"/>
-      <path d="M3 20v-1a6 6 0 0 1 12 0v1zM16 15a5 5 0 0 1 5 5"/>
-    </svg>
-    <span>اكتشف</span>
-  </a>
+  <nav class="bottom-nav" aria-label="التنقل الرئيسي">
+    <a class="nav-item" href="../index.html">
+      <svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-6v-7h-4v7H4a1 1 0 0 1-1-1z"/></svg>
+      <span>الرئيسية</span>
+    </a>
 
-  <button class="nav-item" type="button" id="bottomUploadBtn" aria-label="إضافة فيديو">
-    <span class="create-nav">
-      <svg viewBox="0 0 24 24">
-        <path d="M12 5v14M5 12h14"/>
-      </svg>
-    </span>
-    <span>إضافة</span>
-  </button>
+    <a class="nav-item" href="community.html">
+      <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20v-1a6 6 0 0 1 12 0v1zM16 15a5 5 0 0 1 5 5"/></svg>
+      <span>اكتشف</span>
+    </a>
 
-  <a class="nav-item" href="messages.html">
-    <svg viewBox="0 0 24 24">
-      <path d="M4 5h16v12H9l-5 4z"/>
-      <path d="M8 9h8M8 13h5"/>
-    </svg>
-    <span>الرسائل</span>
-  </a>
+    <button class="nav-item" id="bottomUploadBtn" type="button">
+      <span class="create-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      </span>
+      <span>إضافة</span>
+    </button>
 
-  <a class="nav-item" href="profile.html">
-    <svg viewBox="0 0 24 24">
-      <circle cx="12" cy="8" r="4"/>
-      <path d="M4 21a8 8 0 0 1 16 0"/>
-    </svg>
-    <span>الملف الشخصي</span>
-  </a>
-</nav>
+    <a class="nav-item" href="messages.html">
+      <svg viewBox="0 0 24 24"><path d="M4 5h16v12H9l-5 4z"/><path d="M8 9h8M8 13h5"/></svg>
+      <span>الرسائل</span>
+    </a>
+
+    <a class="nav-item" href="member.html">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+      <span>حسابي</span>
+    </a>
+  </nav>
+</div>
 
 <script>
-document.getElementById("bottomUploadBtn").addEventListener("click",function(){
+document.getElementById("bottomUploadBtn").addEventListener("click",()=>{
   document.getElementById("shortFileInput").click();
+});
+
+document.getElementById("commentsBackdrop").addEventListener("click",()=>{
+  document.getElementById("commentsSheet").classList.remove("open");
+  document.getElementById("commentsBackdrop").classList.remove("open");
+});
+
+document.getElementById("closeCommentsBtn").addEventListener("click",()=>{
+  document.getElementById("commentsSheet").classList.remove("open");
+  document.getElementById("commentsBackdrop").classList.remove("open");
+});
+
+document.getElementById("dialogCancel").addEventListener("click",()=>{
+  document.getElementById("appDialog").classList.remove("open");
+});
+
+document.getElementById("dialogConfirm").addEventListener("click",()=>{
+  document.getElementById("appDialog").classList.remove("open");
 });
 </script>
 
 <script type="module" src="../js/shorts.js"></script>
-
 </body>
 </html>
