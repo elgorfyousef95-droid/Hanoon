@@ -3,19 +3,20 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#080b16">
-<title>فيديوهات هنون</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#080808">
+<title>الفيديوهات | HANOON</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
 :root{
-  --cyan:#55e4dc;
-  --purple:#9274ff;
-  --text:#fff;
-  --muted:#c1c6d8;
+  --pink:#fe2c55;
+  --white:#fff;
+  --muted:#bcbcbc;
+  --black:#080808;
 }
 *{
   box-sizing:border-box;
@@ -26,126 +27,31 @@ html,body{
   height:100%;
   min-height:0;
   margin:0;
-  overflow:hidden!important;
+  overflow:hidden;
   overscroll-behavior:none;
+  background:#000;
 }
 body{
+  color:var(--white);
   font-family:Cairo,sans-serif;
-  color:var(--text);
-  background:#080b16;
 }
-button,input{font:inherit}
+button,a{font:inherit}
 button{cursor:pointer}
 a{color:inherit;text-decoration:none}
+[hidden]{display:none!important}
 
-.topbar{
-  position:relative;
-  z-index:10;
-  height:58px;
-  width:100%;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  padding:0 15px;
-  background:linear-gradient(90deg,#10152c,#171b38);
-  border-bottom:1px solid #ffffff15;
-}
-.brand{
-  display:flex;
-  align-items:center;
-  gap:9px;
-}
-.brand-icon{
-  width:35px;
-  height:35px;
-  display:grid;
-  place-items:center;
-  border-radius:12px;
-  background:linear-gradient(135deg,#347fe9,#9365ed);
-  box-shadow:0 5px 18px #765eea55;
-}
-.brand-icon svg{
-  width:19px;
-  fill:none;
-  stroke:white;
-  stroke-width:1.8;
-}
-.brand strong{
-  display:block;
-  font-size:13px;
-  font-weight:900;
-}
-.brand small{
-  display:block;
-  color:#aeb8d5;
-  font-size:9px;
-}
-.header-actions{
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-.back-link,.upload-btn{
-  min-height:34px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:6px;
-  padding:6px 11px;
-  border:1px solid #ffffff20;
-  border-radius:11px;
-  background:#ffffff0c;
-  color:white;
-  font-size:10px;
-  font-weight:900;
-  white-space:nowrap;
-}
-.upload-btn{
-  border:0;
-  background:linear-gradient(120deg,#347fe9,#8865ed);
-  box-shadow:0 5px 18px #477ce944;
-}
-.upload-btn:disabled{
-  opacity:.55;
-  cursor:not-allowed;
-}
-.upload-btn svg{
-  width:16px;
-  height:16px;
-  fill:none;
-  stroke:currentColor;
-  stroke-width:2;
-}
-#shortFileInput{display:none}
-
-.notice{
-  position:fixed;
-  z-index:30;
-  top:67px;
-  right:12px;
-  left:12px;
-  display:none;
-  max-width:520px;
-  margin:auto;
-  padding:11px 14px;
-  border:1px solid #9274ff88;
-  border-radius:13px;
-  background:#171a35f5;
-  color:#fff;
-  box-shadow:0 10px 30px #0008;
-  font-size:11px;
-  line-height:1.8;
-}
-
+/* شاشة الفيديو */
 .page{
-  position:relative;
+  position:fixed;
+  inset:0;
   width:100%;
-  height:calc(100dvh - 58px);
+  height:100dvh;
   overflow:hidden;
-  background:#080b16;
+  background:#000;
 }
 .shorts-feed{
+  position:absolute;
+  inset:0;
   width:100%;
   height:100%;
   overflow-x:hidden;
@@ -154,10 +60,11 @@ a{color:inherit;text-decoration:none}
   scroll-snap-type:y mandatory;
   scroll-behavior:smooth;
   scrollbar-width:none;
-  background:#080b16;
+  background:#000;
 }
 .shorts-feed::-webkit-scrollbar{display:none}
 
+/* كل فيديو */
 .video-card{
   position:relative;
   isolation:isolate;
@@ -167,10 +74,7 @@ a{color:inherit;text-decoration:none}
   overflow:hidden;
   scroll-snap-align:start;
   scroll-snap-stop:always;
-  background:#050711;
-  border:0;
-  border-radius:0;
-  box-shadow:none;
+  background:#080808;
 }
 .video-card video{
   position:absolute;
@@ -179,10 +83,7 @@ a{color:inherit;text-decoration:none}
   width:100%;
   height:100%;
   object-fit:cover;
-  background:#050711;
-}
-.video-card video::-webkit-media-controls-panel{
-  background:linear-gradient(transparent,#0008);
+  background:#080808;
 }
 .video-shade{
   position:absolute;
@@ -190,35 +91,179 @@ a{color:inherit;text-decoration:none}
   z-index:1;
   pointer-events:none;
   background:
-    linear-gradient(0deg,#050711ed 0%,#05071155 22%,transparent 48%,#05071144 100%);
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,.43) 0%,
+      transparent 18%,
+      transparent 48%,
+      rgba(0,0,0,.18) 65%,
+      rgba(0,0,0,.82) 100%
+    );
 }
+
+/* رأس الصفحة */
+.topbar{
+  position:fixed;
+  z-index:30;
+  top:0;
+  right:0;
+  left:0;
+  height:calc(62px + env(safe-area-inset-top));
+  padding:
+    env(safe-area-inset-top)
+    14px
+    0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  background:linear-gradient(#0009,transparent);
+  pointer-events:none;
+}
+.topbar>*{pointer-events:auto}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:16px;
+  font-weight:900;
+  text-shadow:0 2px 10px #000;
+}
+.brand-mark{
+  width:34px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  border:1px solid #ffffff55;
+  border-radius:11px;
+  background:#ffffff1c;
+  backdrop-filter:blur(12px);
+}
+.brand-mark svg{
+  width:19px;
+  fill:none;
+  stroke:white;
+  stroke-width:2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.brand-name span{color:var(--pink)}
+.header-actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.header-icon{
+  width:38px;
+  height:38px;
+  display:grid;
+  place-items:center;
+  border:1px solid #ffffff35;
+  border-radius:50%;
+  background:#0005;
+  color:white;
+  backdrop-filter:blur(12px);
+}
+.header-icon svg{
+  width:20px;
+  height:20px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.upload-btn{
+  min-height:37px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:0 12px;
+  border:0;
+  border-radius:7px;
+  background:white;
+  color:#111;
+  font-size:11px;
+  font-weight:900;
+}
+.upload-btn svg{
+  width:17px;
+  height:17px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.upload-btn:disabled{opacity:.5}
+#shortFileInput{display:none}
+
+/* تبويبات لك ومتابَعون */
+.feed-tabs{
+  position:fixed;
+  z-index:25;
+  top:calc(67px + env(safe-area-inset-top));
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:22px;
+  width:max-content;
+  max-width:90%;
+}
+.feed-tab{
+  position:relative;
+  padding:7px 2px 10px;
+  border:0;
+  background:none;
+  color:#ddd;
+  font-size:13px;
+  font-weight:800;
+  text-shadow:0 2px 8px #000;
+}
+.feed-tab.active{color:white}
+.feed-tab.active:after{
+  content:"";
+  position:absolute;
+  bottom:3px;
+  right:15%;
+  width:70%;
+  height:3px;
+  border-radius:5px;
+  background:white;
+}
+
+/* بيانات صاحب الفيديو */
 .video-info{
   position:absolute;
-  z-index:3;
-  right:17px;
-  left:83px;
-  bottom:calc(22px + env(safe-area-inset-bottom));
+  z-index:4;
+  right:14px;
+  left:78px;
+  bottom:calc(88px + env(safe-area-inset-bottom));
   pointer-events:auto;
 }
 .creator{
   display:flex;
   align-items:center;
-  gap:10px;
-  margin-bottom:10px;
+  gap:9px;
+  margin-bottom:9px;
 }
 .avatar{
-  width:42px;
-  height:42px;
-  flex:0 0 42px;
+  width:43px;
+  height:43px;
+  flex:0 0 43px;
   display:grid;
   place-items:center;
   overflow:hidden;
-  border:2px solid #fff;
+  border:2px solid white;
   border-radius:50%;
-  background:linear-gradient(135deg,#347fe9,#9365ed);
+  background:linear-gradient(135deg,#555,#222);
   color:white;
-  font-size:15px;
+  font-size:14px;
   font-weight:900;
+  box-shadow:0 2px 12px #0008;
 }
 .avatar img{
   width:100%;
@@ -226,24 +271,27 @@ a{color:inherit;text-decoration:none}
   object-fit:cover;
 }
 .creator-name{
-  color:#fff;
-  font-size:12px;
+  color:white;
+  font-size:13px;
   font-weight:900;
   text-shadow:0 2px 8px #000;
 }
 .caption{
+  max-width:100%;
   margin:0;
-  color:#fff;
+  color:white;
   font-size:12px;
   line-height:1.9;
   overflow-wrap:anywhere;
   text-shadow:0 2px 8px #000;
 }
+
+/* أزرار التفاعل */
 .video-actions{
   position:absolute;
-  z-index:4;
-  left:12px;
-  bottom:calc(28px + env(safe-area-inset-bottom));
+  z-index:5;
+  left:10px;
+  bottom:calc(96px + env(safe-area-inset-bottom));
   display:grid;
   justify-items:center;
   gap:16px;
@@ -255,104 +303,193 @@ a{color:inherit;text-decoration:none}
   color:white;
 }
 .action{
-  width:44px;
-  height:44px;
+  width:45px;
+  height:45px;
   display:grid;
   place-items:center;
-  border:1px solid #ffffff45;
+  border:0;
   border-radius:50%;
-  background:#11172c99;
-  color:#fff;
-  backdrop-filter:blur(12px);
-  box-shadow:0 5px 16px #0005;
+  background:transparent;
+  color:white;
+  filter:drop-shadow(0 2px 5px #0008);
 }
 .action svg{
-  width:21px;
-  height:21px;
+  width:29px;
+  height:29px;
   fill:none;
   stroke:currentColor;
-  stroke-width:1.9;
+  stroke-width:2;
   stroke-linecap:round;
   stroke-linejoin:round;
 }
-.action.liked{
-  color:#ff5d9c;
-  background:#ff47802c;
-  border-color:#ff7fa4;
-}
+.action.liked{color:var(--pink)}
 .action-wrap small{
+  min-height:13px;
   color:white;
-  font-size:9px;
+  font-size:10px;
   font-weight:900;
-  text-shadow:0 2px 6px #000;
+  text-shadow:0 2px 7px #000;
 }
-.empty{
-  width:min(90%,430px);
-  min-height:230px;
-  margin:35px auto;
-  padding:35px 20px;
+
+/* إشعارات */
+.notice{
+  position:fixed;
+  z-index:100;
+  top:calc(110px + env(safe-area-inset-top));
+  right:12px;
+  left:12px;
+  display:none;
+  max-width:440px;
+  margin:auto;
+  padding:12px 15px;
+  border:1px solid #ffffff38;
+  border-radius:12px;
+  background:#171717f5;
+  color:white;
+  box-shadow:0 12px 35px #0008;
+  font-size:11px;
+  line-height:1.8;
+}
+
+/* الشريط السفلي */
+.bottom-nav{
+  position:fixed;
+  z-index:35;
+  right:0;
+  bottom:0;
+  left:0;
+  height:calc(62px + env(safe-area-inset-bottom));
+  padding:6px 10px env(safe-area-inset-bottom);
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  align-items:center;
+  border-top:1px solid #ffffff18;
+  background:linear-gradient(transparent,#000 25%);
+}
+.nav-item{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  border:0;
+  background:none;
+  color:#d5d5d5;
+  font-size:9px;
+  font-weight:700;
+}
+.nav-item svg{
+  width:23px;
+  height:23px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.nav-item.active{color:white}
+.nav-item.active svg{stroke-width:2.5}
+.create-nav{
+  width:43px;
+  height:29px;
   display:grid;
   place-items:center;
-  align-content:center;
-  gap:10px;
-  border:1px solid #9274ff45;
-  border-radius:22px;
-  background:linear-gradient(145deg,#171d3a,#10152a);
-  color:#d8def5;
+  border:0;
+  border-right:4px solid #55e4dc;
+  border-left:4px solid var(--pink);
+  border-radius:8px;
+  background:white;
+  color:#111;
+}
+.create-nav svg{
+  width:20px;
+  height:20px;
+  stroke:#111;
+  stroke-width:2.5;
+}
+
+/* شاشة عدم وجود فيديوهات */
+.empty{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:13px;
+  padding:30px;
+  color:white;
   text-align:center;
   font-size:12px;
   line-height:2;
 }
-.empty::before{
+.empty:before{
   content:"";
-  width:55px;
-  height:55px;
+  width:65px;
+  height:65px;
   display:block;
-  border:1px solid #9c8aff88;
-  border-radius:18px;
-  background:linear-gradient(135deg,#347fe9,#9365ed);
-  box-shadow:0 8px 25px #6f64d944;
+  border:1px solid #ffffff55;
+  border-radius:20px;
+  background:linear-gradient(135deg,#fe2c55,#6c50df);
 }
-@media(min-width:701px){
+.empty strong{font-size:15px}
+.empty small{color:#bbb;font-size:11px}
+
+/* شريط تقدم الفيديو */
+.video-progress{
+  position:absolute;
+  z-index:6;
+  right:0;
+  bottom:calc(62px + env(safe-area-inset-bottom));
+  left:0;
+  height:2px;
+  background:#ffffff35;
+}
+.video-progress span{
+  display:block;
+  width:0;
+  height:100%;
+  background:white;
+}
+
+/* شاشة الكمبيوتر */
+@media(min-width:700px){
+  body{background:#151515}
   .page{
-    width:min(520px,100%);
-    height:calc(100dvh - 58px);
-    margin:auto;
-    border-left:1px solid #ffffff15;
-    border-right:1px solid #ffffff15;
+    width:min(480px,100%);
+    right:50%;
+    left:auto;
+    transform:translateX(50%);
+    border-right:1px solid #333;
+    border-left:1px solid #333;
   }
-  body{background:#080b16}
-}
-@media(max-width:600px){
   .topbar{
-    height:53px;
-    padding:0 10px;
+    right:50%;
+    left:auto;
+    width:min(480px,100%);
+    transform:translateX(50%);
   }
-  .page{
-    height:calc(100dvh - 53px);
+  .bottom-nav{
+    right:50%;
+    left:auto;
+    width:min(480px,100%);
+    transform:translateX(50%);
   }
-  .back-link{
-    padding:6px 8px;
-    font-size:9px;
-  }
-  .upload-btn{
-    padding:6px 9px;
-    font-size:9px;
-  }
-  .video-info{
-    right:12px;
-    left:76px;
-    bottom:calc(18px + env(safe-area-inset-bottom));
-  }
-  .video-actions{
-    left:8px;
-    bottom:calc(23px + env(safe-area-inset-bottom));
-    gap:13px;
-  }
-  .action{
-    width:41px;
-    height:41px;
-  }
+}
+
+/* الشاشات الصغيرة */
+@media(max-width:380px){
+  .brand{font-size:14px}
+  .upload-btn{padding:0 9px;font-size:10px}
+  .video-info{right:10px;left:70px}
+  .video-actions{left:5px;gap:12px}
+  .action{width:41px;height:41px}
+}
+
+/* تقليل الحركة عند طلب الجهاز */
+@media(prefers-reduced-motion:reduce){
+  .shorts-feed{scroll-behavior:auto}
 }
 </style>
 </head>
@@ -361,19 +498,23 @@ a{color:inherit;text-decoration:none}
 
 <header class="topbar">
   <a class="brand" href="../index.html">
-    <span class="brand-icon">
+    <span class="brand-mark">
       <svg viewBox="0 0 24 24">
         <rect x="4" y="3" width="16" height="18" rx="3"/>
         <path d="m10 8 5 4-5 4z"/>
       </svg>
     </span>
-    <span>
-      <strong>HANOON</strong>
-      <small>الفيديوهات القصيرة</small>
-    </span>
+    <span class="brand-name">HANOON<span>.</span></span>
   </a>
 
   <div class="header-actions">
+    <button class="header-icon" type="button" aria-label="بحث" onclick="location.href='search.html'">
+      <svg viewBox="0 0 24 24">
+        <circle cx="10.8" cy="10.8" r="6.8"/>
+        <path d="m16 16 5 5"/>
+      </svg>
+    </button>
+
     <button class="upload-btn" id="uploadShortBtn" type="button">
       <svg viewBox="0 0 24 24">
         <path d="M12 16V4m-5 5 5-5 5 5"/>
@@ -381,18 +522,76 @@ a{color:inherit;text-decoration:none}
       </svg>
       إضافة فيديو
     </button>
+
     <input id="shortFileInput" type="file" accept="video/mp4,video/webm" hidden>
-    <a class="back-link" href="../index.html">الرئيسية</a>
   </div>
 </header>
+
+<nav class="feed-tabs" aria-label="أنواع الفيديوهات">
+  <button class="feed-tab active" type="button" data-feed="for-you">لك</button>
+  <button class="feed-tab" type="button" data-feed="following">المتابَعون</button>
+</nav>
 
 <div id="shortNotice" class="notice" role="status" aria-live="polite"></div>
 
 <main class="page">
-  <section id="shortsFeed" class="shorts-feed">
-    <div class="empty">جارٍ تجهيز الفيديوهات...</div>
+  <section id="shortsFeed" class="shorts-feed" aria-label="الفيديوهات القصيرة">
+    <div class="empty">
+      <strong>عالم فيديوهات هنون</strong>
+      جارٍ تجهيز الفيديوهات...
+      <small>اسحب لأعلى لاكتشاف المزيد</small>
+    </div>
   </section>
 </main>
+
+<nav class="bottom-nav" aria-label="التنقل الرئيسي">
+  <a class="nav-item" href="../index.html">
+    <svg viewBox="0 0 24 24">
+      <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-6v-7h-4v7H4a1 1 0 0 1-1-1z"/>
+    </svg>
+    <span>الرئيسية</span>
+  </a>
+
+  <a class="nav-item" href="community.html">
+    <svg viewBox="0 0 24 24">
+      <circle cx="9" cy="8" r="3"/>
+      <circle cx="17" cy="9" r="2.5"/>
+      <path d="M3 20v-1a6 6 0 0 1 12 0v1zM16 15a5 5 0 0 1 5 5"/>
+    </svg>
+    <span>اكتشف</span>
+  </a>
+
+  <button class="nav-item" type="button" id="bottomUploadBtn" aria-label="إضافة فيديو">
+    <span class="create-nav">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 5v14M5 12h14"/>
+      </svg>
+    </span>
+    <span>إضافة</span>
+  </button>
+
+  <a class="nav-item" href="messages.html">
+    <svg viewBox="0 0 24 24">
+      <path d="M4 5h16v12H9l-5 4z"/>
+      <path d="M8 9h8M8 13h5"/>
+    </svg>
+    <span>الرسائل</span>
+  </a>
+
+  <a class="nav-item" href="profile.html">
+    <svg viewBox="0 0 24 24">
+      <circle cx="12" cy="8" r="4"/>
+      <path d="M4 21a8 8 0 0 1 16 0"/>
+    </svg>
+    <span>الملف الشخصي</span>
+  </a>
+</nav>
+
+<script>
+document.getElementById("bottomUploadBtn").addEventListener("click",function(){
+  document.getElementById("shortFileInput").click();
+});
+</script>
 
 <script type="module" src="../js/shorts.js"></script>
 
