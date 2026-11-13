@@ -56,10 +56,9 @@
       node.id = "memberToast";
       node.style.cssText = `
         position:fixed;bottom:22px;left:50%;
-        transform:translateX(-50%);
-        z-index:10020;padding:12px 20px;
-        border:1px solid #ffffff25;border-radius:12px;
-        background:#211a38;color:#fff;
+        transform:translateX(-50%);z-index:10020;
+        padding:12px 20px;border-radius:10px;
+        background:#252525;color:white;
         font:700 12px Cairo,sans-serif;
         box-shadow:0 10px 30px #0008;
         text-align:center;max-width:90%;
@@ -138,15 +137,11 @@
       if (!/^HN-[A-F0-9]{10}$/.test(search.code)) {
         throw new Error("كود العضو غير صحيح.");
       }
-
       query = query.eq("member_code", search.code);
-
     } else if (search.id) {
       query = query.eq("id", search.id);
-
     } else if (search.user) {
       query = query.eq("username", search.user);
-
     } else {
       throw new Error("رابط الملف الشخصي غير مكتمل.");
     }
@@ -158,9 +153,7 @@
       throw new Error("حدث خطأ أثناء البحث عن العضو.");
     }
 
-    if (!data) {
-      throw new Error("لم نعثر على هذا العضو.");
-    }
+    if (!data) throw new Error("لم نعثر على هذا العضو.");
 
     return data;
   }
@@ -173,6 +166,8 @@
   }
 
   function renderTags(container, values, emptyMessage) {
+    if (!container) return;
+
     container.replaceChildren();
 
     const list = Array.isArray(values)
@@ -233,268 +228,19 @@
       el.avatar.textContent = name.charAt(0) || "هـ";
     }
 
-    renderTags(
-      el.hobbies,
-      profile.hobbies,
-      "لم يضف العضو هواياته بعد."
-    );
-
-    renderTags(
-      el.reading,
-      profile.reading_interests,
-      "لم يحدد اهتماماته القرائية بعد."
-    );
+    renderTags(el.hobbies, profile.hobbies, "لا توجد هوايات مضافة.");
+    renderTags(el.reading, profile.reading_interests, "لا توجد اهتمامات مضافة.");
 
     document.title = name + " | HANOON";
 
-    installSocialStyles();
     createSocialSections();
     createMediaSections();
   }
 
-  /* ==========================================
-     تنسيق المتابعة
-  ========================================== */
-
-  function installSocialStyles() {
-    if ($("memberSocialStyles")) return;
-
-    const style = document.createElement("style");
-    style.id = "memberSocialStyles";
-
-    style.textContent = `
-      .member-social{
-        margin-top:20px;
-        padding:18px;
-        border:1px solid rgba(193,171,255,.22);
-        border-radius:20px;
-        background:rgba(20,16,39,.82);
-        backdrop-filter:blur(18px);
-      }
-
-      .member-stats{
-        display:grid;
-        grid-template-columns:repeat(3,1fr);
-        gap:5px;
-        margin-bottom:16px;
-      }
-
-      .member-stat{
-        display:flex;
-        flex-direction:column;
-        align-items:center;
-        gap:3px;
-        border:0;
-        background:transparent;
-        color:#fff;
-        cursor:pointer;
-      }
-
-      .member-stat strong{
-        font-size:18px;
-        font-weight:900;
-      }
-
-      .member-stat span{
-        color:#bdb5d2;
-        font-size:10px;
-      }
-
-      .member-actions{
-        display:flex;
-        flex-wrap:wrap;
-        justify-content:center;
-        gap:9px;
-      }
-
-      .member-action{
-        min-height:42px;
-        flex:1;
-        padding:9px 13px;
-        border:1px solid #ffffff24;
-        border-radius:10px;
-        background:#ffffff0d;
-        color:#fff;
-        font:800 12px Cairo,sans-serif;
-        cursor:pointer;
-      }
-
-      .member-action.primary{
-        border-color:#fe2c55;
-        background:#fe2c55;
-        color:white;
-      }
-
-      .member-action:disabled{
-        opacity:.55;
-        cursor:wait;
-      }
-
-      .member-request-box{
-        margin-top:14px;
-        padding:13px;
-        border:1px solid #c1aaff30;
-        border-radius:13px;
-        background:#ffffff08;
-      }
-
-      .member-request-title{
-        margin-bottom:9px;
-        color:#fff;
-        font-size:12px;
-        font-weight:900;
-      }
-
-      .member-request-row{
-        display:flex;
-        align-items:center;
-        justify-content:space-between;
-        gap:8px;
-        padding:8px 0;
-        border-top:1px solid #ffffff12;
-      }
-
-      .member-request-row span{
-        color:#eee;
-        font-size:11px;
-      }
-
-      .member-request-row button{
-        padding:6px 10px;
-        border:0;
-        border-radius:8px;
-        background:#8c70e8;
-        color:white;
-        font:700 10px Cairo,sans-serif;
-      }
-
-      .member-private-note{
-        margin-top:15px;
-        padding:15px;
-        border:1px solid #ffffff20;
-        border-radius:13px;
-        color:#d8cfff;
-        background:#ffffff08;
-        font-size:11px;
-        line-height:2;
-        text-align:center;
-      }
-
-      .member-list-modal{
-        position:fixed;
-        inset:0;
-        z-index:10010;
-        display:none;
-        align-items:center;
-        justify-content:center;
-        padding:15px;
-        background:#000d;
-      }
-
-      .member-list-modal.open{display:flex}
-
-      .member-list-box{
-        width:min(100%,430px);
-        max-height:80dvh;
-        overflow:auto;
-        padding:18px;
-        border:1px solid #ffffff24;
-        border-radius:18px;
-        background:#171329;
-      }
-
-      .member-list-head{
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        margin-bottom:13px;
-        color:#fff;
-        font-size:14px;
-        font-weight:900;
-      }
-
-      .member-list-close{
-        width:32px;
-        height:32px;
-        border:0;
-        border-radius:50%;
-        background:#ffffff16;
-        color:white;
-        font-size:20px;
-      }
-
-      .member-list-person{
-        display:flex;
-        align-items:center;
-        gap:11px;
-        padding:10px 0;
-        border-bottom:1px solid #ffffff12;
-        color:#fff;
-      }
-
-      .member-list-person img,
-      .member-list-avatar{
-        width:42px;
-        height:42px;
-        display:grid;
-        place-items:center;
-        border-radius:50%;
-        object-fit:cover;
-        background:#56418b;
-        color:white;
-        font-weight:900;
-      }
-
-      .member-list-person small{
-        display:block;
-        margin-top:3px;
-        color:#aaa;
-        direction:ltr;
-        text-align:right;
-      }
-
-      .member-list-empty{
-        padding:20px;
-        color:#aaa;
-        text-align:center;
-        font-size:12px;
-      }
-
-      .member-tabs{
-        display:grid;
-        grid-template-columns:repeat(2,1fr);
-        margin-top:20px;
-        border-bottom:1px solid #ffffff25;
-      }
-
-      .member-tab{
-        padding:13px 5px;
-        border:0;
-        border-bottom:2px solid transparent;
-        background:transparent;
-        color:#bdb5d2;
-        font:800 12px Cairo,sans-serif;
-      }
-
-      .member-tab.active{
-        border-bottom-color:#c1aaff;
-        color:white;
-      }
-
-      @media(max-width:450px){
-        .member-social{padding:14px}
-        .member-stat strong{font-size:16px}
-      }
-    `;
-
-    document.head.appendChild(style);
-  }
+  /* قسم الإحصائيات والأزرار */
 
   function createSocialSections() {
     if ($("memberSocialSection")) return;
-
-    const card = document.querySelector(".card");
-    if (!card) return;
 
     const section = document.createElement("section");
     section.className = "member-social";
@@ -512,12 +258,13 @@
           <strong>—</strong><span>يتابع</span>
         </button>
       </div>
-
       <div class="member-actions" id="memberActionButtons"></div>
-
       <div id="memberIncomingRequests"></div>
       <div id="memberPrivateNote"></div>
     `;
+
+    const card = document.querySelector(".card");
+    if (!card) return;
 
     card.insertAdjacentElement("afterend", section);
 
@@ -564,7 +311,6 @@
     button.addEventListener("click", action);
 
     $("memberActionButtons").appendChild(button);
-
     return button;
   }
 
@@ -576,7 +322,6 @@
       .maybeSingle();
 
     if (error) throw error;
-
     isPrivate = Boolean(data?.is_private);
   }
 
@@ -618,7 +363,6 @@
       .order("created_at", { ascending: false });
 
     if (error) throw error;
-
     incomingRequests = data || [];
   }
 
@@ -628,19 +372,14 @@
       .select("id", { count: "exact", head: true })
       .eq("user_id", member.id);
 
-    if (posts.error) {
-      console.warn("Member posts count:", posts.error);
-    }
+    if (posts.error) console.warn(posts.error);
 
     $("memberPostsStat").querySelector("strong").textContent =
       number(posts.count || 0);
 
     const canSeeCounts =
       !isPrivate ||
-      (viewer && (
-        viewer.id === member.id ||
-        isFollowing
-      ));
+      (viewer && (viewer.id === member.id || isFollowing));
 
     if (!canSeeCounts) {
       $("memberFollowersStat").querySelector("strong").textContent = "—";
@@ -668,9 +407,7 @@
       number(following.count || 0);
   }
 
-  /* ==========================================
-     زر المتابعة وإلغاء المتابعة
-  ========================================== */
+  /* المتابعة */
 
   async function followMember(button) {
     button.disabled = true;
@@ -685,16 +422,10 @@
             status: "pending"
           });
 
-        if (error) {
-          if (error.code === "23505") {
-            throw new Error("طلب المتابعة موجود بالفعل.");
-          }
-          throw error;
-        }
+        if (error) throw error;
 
         outgoingRequest = { status: "pending" };
         toast("تم إرسال طلب المتابعة.");
-
       } else {
         const { error } = await db
           .from("follows")
@@ -703,29 +434,26 @@
             following_id: member.id
           });
 
-        if (error) {
-          if (error.code === "23505") {
-            throw new Error("أنت تتابع هذا الحساب بالفعل.");
-          }
-          throw error;
-        }
+        if (error) throw error;
 
         isFollowing = true;
         toast("أصبحت تتابع هذا العضو.");
       }
 
       await refreshSocial();
-
     } catch (error) {
       console.error(error);
-      toast(error.message || "تعذرت عملية المتابعة.");
-
+      toast(error.code === "23505"
+        ? "الطلب أو المتابعة موجود بالفعل."
+        : error.message || "تعذرت عملية المتابعة.");
     } finally {
       button.disabled = false;
     }
   }
 
   async function cancelRequest(button) {
+    if (!outgoingRequest?.id) return;
+
     button.disabled = true;
 
     try {
@@ -741,19 +469,16 @@
       outgoingRequest = null;
       toast("تم إلغاء طلب المتابعة.");
       await refreshSocial();
-
     } catch (error) {
       console.error(error);
       toast("تعذر إلغاء الطلب.");
-
     } finally {
       button.disabled = false;
     }
   }
 
   async function unfollowMember(button) {
-    const confirmed = confirm("هل تريد إلغاء متابعة هذا العضو؟");
-    if (!confirmed) return;
+    if (!confirm("هل تريد إلغاء متابعة هذا العضو؟")) return;
 
     button.disabled = true;
 
@@ -769,19 +494,15 @@
       isFollowing = false;
       toast("تم إلغاء المتابعة.");
       await refreshSocial();
-
     } catch (error) {
       console.error(error);
       toast("تعذر إلغاء المتابعة.");
-
     } finally {
       button.disabled = false;
     }
   }
 
-  /* ==========================================
-     قبول ورفض طلبات المتابعة
-  ========================================== */
+  /* طلبات المتابعة الواردة */
 
   async function respondToRequest(request, status, button) {
     button.disabled = true;
@@ -789,10 +510,7 @@
     try {
       const { data, error } = await db
         .from("follow_requests")
-        .update({
-          status,
-          updated_at: new Date().toISOString()
-        })
+        .update({ status })
         .eq("id", request.id)
         .eq("receiver_id", viewer.id)
         .eq("status", "pending")
@@ -820,7 +538,6 @@
       }
 
       await refreshSocial();
-
     } catch (error) {
       console.error(error);
       toast(error.message || "تعذرت معالجة الطلب.");
@@ -855,7 +572,7 @@
 
     const title = document.createElement("div");
     title.className = "member-request-title";
-    title.textContent = "طلبات المتابعة الواردة";
+    title.textContent = "طلبات المتابعة";
     box.appendChild(title);
 
     incomingRequests.forEach(request => {
@@ -897,18 +614,17 @@
   function renderActionButtons() {
     const container = $("memberActionButtons");
     container.replaceChildren();
-
     $("memberIncomingRequests").replaceChildren();
 
     if (!viewer) {
       addActionButton("تسجيل الدخول للمتابعة", () => {
-        location.href = "auth.html";
+        location.href = "../index.html";
       }, true);
       return;
     }
 
     if (viewer.id === member.id) {
-      addActionButton("ملفي الشخصي", () => {
+      addActionButton("تعديل الملف الشخصي", () => {
         location.href = "profile.html";
       }, true);
 
@@ -919,17 +635,13 @@
     if (isFollowing) {
       addActionButton(
         "إلغاء المتابعة",
-        event => unfollowMember(event.currentTarget),
-        false
+        event => unfollowMember(event.currentTarget)
       );
-
     } else if (outgoingRequest) {
       addActionButton(
         "إلغاء طلب المتابعة",
-        event => cancelRequest(event.currentTarget),
-        false
+        event => cancelRequest(event.currentTarget)
       );
-
     } else {
       addActionButton(
         isPrivate ? "طلب متابعة" : "متابعة",
@@ -959,8 +671,8 @@
     ]);
 
     renderActionButtons();
-
     await loadSocialStats();
+    await loadMemberMedia();
   }
 
   async function copyText(value) {
@@ -972,17 +684,12 @@
     }
   }
 
-  /* ==========================================
-     قوائم المتابعين والمتابَعين
-  ========================================== */
+  /* قوائم المتابعين */
 
   async function openMemberList(type) {
     if (
       isPrivate &&
-      (!viewer || (
-        viewer.id !== member.id &&
-        !isFollowing
-      ))
+      (!viewer || (viewer.id !== member.id && !isFollowing))
     ) {
       toast("قوائم هذا الحساب خاصة بالمتابعين المقبولين.");
       return;
@@ -1008,21 +715,16 @@
         ? query.eq("following_id", member.id)
         : query.eq("follower_id", member.id);
 
-      const { data, error } = await query
-        .order("created_at", { ascending: false })
-        .limit(200);
-
+      const { data, error } = await query.limit(200);
       if (error) throw error;
 
       const ids = (data || []).map(item =>
-        type === "followers"
-          ? item.follower_id
-          : item.following_id
+        type === "followers" ? item.follower_id : item.following_id
       );
 
       if (!ids.length) {
         content.innerHTML =
-          '<div class="member-list-empty">لا توجد حسابات في هذه القائمة حتى الآن.</div>';
+          '<div class="member-list-empty">لا توجد حسابات في هذه القائمة.</div>';
         return;
       }
 
@@ -1047,10 +749,7 @@
         link.className = "member-list-person";
         link.href = `member.html?id=${encodeURIComponent(id)}`;
 
-        const avatarURL = getStorageURL(
-          "avatars",
-          person.avatar_path
-        );
+        const avatarURL = getStorageURL("avatars", person.avatar_path);
 
         if (avatarURL) {
           const image = document.createElement("img");
@@ -1060,19 +759,15 @@
         } else {
           const avatar = document.createElement("span");
           avatar.className = "member-list-avatar";
-          avatar.textContent =
-            (person.full_name || "هـ").charAt(0);
+          avatar.textContent = (person.full_name || "هـ").charAt(0);
           link.appendChild(avatar);
         }
 
         const details = document.createElement("span");
-        details.textContent =
-          person.full_name || "عضو هنون";
+        details.textContent = person.full_name || "عضو هنون";
 
         const username = document.createElement("small");
-        username.textContent = person.username
-          ? "@" + person.username
-          : "";
+        username.textContent = person.username ? "@" + person.username : "";
 
         details.appendChild(username);
         link.appendChild(details);
@@ -1081,9 +776,8 @@
 
       if (!content.children.length) {
         content.innerHTML =
-          '<div class="member-list-empty">لا توجد حسابات ظاهرة في هذه القائمة.</div>';
+          '<div class="member-list-empty">لا توجد حسابات ظاهرة.</div>';
       }
-
     } catch (error) {
       console.error(error);
       content.innerHTML =
@@ -1091,9 +785,7 @@
     }
   }
 
-  /* ==========================================
-     منشورات وفيديوهات العضو
-  ========================================== */
+  /* الفيديوهات والمنشورات */
 
   function createMediaSections() {
     if ($("memberPostsSection")) return;
@@ -1124,8 +816,6 @@
       </section>
     `;
 
-    wrapper.style.cssText = "margin-top:16px";
-
     wrapper.querySelectorAll("[data-tab]").forEach(button => {
       button.addEventListener("click", () => {
         wrapper.querySelectorAll(".member-tab").forEach(tab => {
@@ -1140,126 +830,22 @@
       });
     });
 
-    const card = document.querySelector(".card");
-    const social = $("memberSocialSection");
+    $("memberSocialSection").insertAdjacentElement("afterend", wrapper);
 
-    social.insertAdjacentElement("afterend", wrapper);
+    const viewerBox = document.createElement("div");
+    viewerBox.className = "member-viewer";
+    viewerBox.id = "memberViewer";
 
-    const mediaStyle = document.createElement("style");
-    mediaStyle.textContent = `
-      .member-media-section{
-        margin-top:12px;
-        padding:8px;
-        border-radius:14px;
-        background:#15102a;
-      }
-
-      .member-media-grid{
-        display:grid;
-        grid-template-columns:repeat(3,minmax(0,1fr));
-        gap:5px;
-      }
-
-      .member-media-item{
-        position:relative;
-        display:block;
-        aspect-ratio:3/4;
-        overflow:hidden;
-        padding:0;
-        border:0;
-        border-radius:5px;
-        background:#211a38;
-      }
-
-      .member-media-item img,
-      .member-media-item video{
-        width:100%;
-        height:100%;
-        object-fit:cover;
-      }
-
-      .member-media-text{
-        display:grid;
-        place-items:center;
-        height:100%;
-        padding:8px;
-        color:#eee;
-        font-size:10px;
-        line-height:1.8;
-      }
-
-      .member-media-caption{
-        position:absolute;
-        right:0;
-        left:0;
-        bottom:0;
-        padding:15px 5px 5px;
-        overflow:hidden;
-        background:linear-gradient(transparent,#000b);
-        color:#fff;
-        font-size:9px;
-        white-space:nowrap;
-        text-overflow:ellipsis;
-      }
-
-      .member-media-empty{
-        grid-column:1/-1;
-        padding:25px 10px;
-        color:#aaa;
-        font-size:11px;
-        text-align:center;
-      }
-
-      .member-viewer{
-        position:fixed;
-        inset:0;
-        z-index:10000;
-        display:none;
-        align-items:center;
-        justify-content:center;
-        padding:15px;
-        background:#000f;
-      }
-
-      .member-viewer.open{display:flex}
-
-      .member-viewer img,
-      .member-viewer video{
-        max-width:100%;
-        max-height:85dvh;
-        object-fit:contain;
-      }
-
-      .member-viewer-close{
-        position:absolute;
-        top:20px;
-        left:20px;
-        width:40px;
-        height:40px;
-        border:0;
-        border-radius:50%;
-        background:#ffffff22;
-        color:white;
-        font-size:23px;
-      }
-    `;
-
-    document.head.appendChild(mediaStyle);
-
-    const viewer = document.createElement("div");
-    viewer.className = "member-viewer";
-    viewer.id = "memberViewer";
-
-    viewer.innerHTML = `
+    viewerBox.innerHTML = `
       <button class="member-viewer-close" type="button">×</button>
       <div id="memberViewerBody"></div>
     `;
 
-    document.body.appendChild(viewer);
+    document.body.appendChild(viewerBox);
 
-    viewer.addEventListener("click", event => {
+    viewerBox.addEventListener("click", event => {
       if (
-        event.target === viewer ||
+        event.target === viewerBox ||
         event.target.closest(".member-viewer-close")
       ) {
         closeViewer();
@@ -1285,7 +871,6 @@
   function openViewer(post) {
     const viewerElement = $("memberViewer");
     const body = $("memberViewerBody");
-
     const url = getStorageURL("post-media", post.media_path);
 
     if (!url) {
@@ -1322,10 +907,7 @@
       const url = getStorageURL("post-media", post.media_path);
 
       if (url) {
-        const media = document.createElement(
-          isVideo ? "video" : "img"
-        );
-
+        const media = document.createElement(isVideo ? "video" : "img");
         media.src = url;
         media.alt = post.content || "منشور";
         media.loading = "lazy";
@@ -1365,10 +947,7 @@
 
     const canSeeContent =
       !isPrivate ||
-      (viewer && (
-        viewer.id === member.id ||
-        isFollowing
-      ));
+      (viewer && (viewer.id === member.id || isFollowing));
 
     if (!canSeeContent) {
       postsGrid.innerHTML =
@@ -1400,14 +979,8 @@
     }
 
     const all = data || [];
-
-    const posts = all.filter(post =>
-      post.media_type !== "video"
-    );
-
-    const videos = all.filter(post =>
-      post.media_type === "video"
-    );
+    const posts = all.filter(post => post.media_type !== "video");
+    const videos = all.filter(post => post.media_type === "video");
 
     postsGrid.replaceChildren();
     videosGrid.replaceChildren();
@@ -1431,9 +1004,7 @@
     }
   }
 
-  /* ==========================================
-     تشغيل الصفحة
-  ========================================== */
+  /* تشغيل صفحة العضو */
 
   async function init() {
     try {
@@ -1442,7 +1013,6 @@
       db = await waitForSupabase();
 
       const sessionResult = await db.auth.getSession();
-
       if (sessionResult.error) throw sessionResult.error;
 
       viewer = sessionResult.data.session?.user || null;
@@ -1475,7 +1045,6 @@
       }
 
       showContent();
-
     } catch (error) {
       console.error("HANOON member page:", error);
       showError(error.message || "تعذر عرض الملف الشخصي.");
@@ -1487,5 +1056,4 @@
   } else {
     init();
   }
-
 })();
