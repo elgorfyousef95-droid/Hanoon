@@ -3,6 +3,7 @@
   "use strict";
 
   const $ = id => document.getElementById(id);
+  const now = () => new Date().toISOString();
 
   const state = {
     db: null,
@@ -17,6 +18,7 @@
     recordingChunks: [],
     recordingStarted: 0,
     recordingTimer: null,
+    cancelRecording: false,
     typingTimer: null,
     typingActive: false,
     presenceTimer: null,
@@ -51,8 +53,6 @@
     fileInput: $("chatFileInput")
   };
 
-  const now = () => new Date().toISOString();
-
   function showNotice(message, type = "") {
     if (!ui.notice) return;
 
@@ -60,7 +60,7 @@
     ui.notice.className = "chat-notice show";
     ui.notice.style.background = type === "error"
       ? "rgba(255,80,105,.15)"
-      : "rgba(65,200,180,.12)";
+      : "rgba(0,168,132,.13)";
     ui.notice.style.color = type === "error"
       ? "#ffb3c0"
       : "#b9f4e9";
@@ -317,9 +317,9 @@
 
     if (data) {
       state.settings = {
-        read_receipts: data.read_receipts,
-        last_seen_visibility: data.last_seen_visibility,
-        online_visibility: data.online_visibility
+        read_receipts: data.read_receipts ?? true,
+        last_seen_visibility: data.last_seen_visibility || "contacts",
+        online_visibility: data.online_visibility || "contacts"
       };
     }
   }
@@ -330,14 +330,13 @@
     const values = {
       user_id: state.user.id,
       is_online: online,
-      last_seen_at: online ? undefined : now(),
       last_seen_visibility: state.settings.last_seen_visibility,
       online_visibility: state.settings.online_visibility,
       read_receipts: state.settings.read_receipts,
       updated_at: now()
     };
 
-    if (online) delete values.last_seen_at;
+    if (!online) values.last_seen_at = now();
 
     const { error } = await state.db
       .from("chat_presence")
@@ -355,13 +354,9 @@
       .eq("user_id", state.friend.id)
       .maybeSingle();
 
-    if (error) {
+    if (error || !data) {
       ui.status.textContent = "محادثة خاصة";
-      return;
-    }
-
-    if (!data) {
-      ui.status.textContent = "محادثة خاصة";
+      ui.status.classList.remove("online");
       return;
     }
 
@@ -387,16 +382,13 @@
     }
   }
 
-  function getPrivateFileURL(path) {
-    return state.db.storage
-      .from("chat-media")
-      .createSignedUrl(path, 60 * 60);
-  }
-
   async function resolveAttachment(path) {
     if (!path) return "";
 
-    const { data, error } = await getPrivateFileURL(path);
+    const { data, error } = await state.db.storage
+      .from("chat-media")
+      .createSignedUrl(path, 60 * 60);
+
     if (error) {
       console.warn("Attachment URL:", error);
       return "";
@@ -416,7 +408,7 @@
     const body = document.createElement("div");
     body.className = "message-body";
 
-    if (message.message_type === "image" || message.message_type === "video" || message.message_type === "audio") {
+    if (["image", "video", "audio"].includes(message.message_type)) {
       const url = await resolveAttachment(message.attachment_path);
 
       if (!url) {
@@ -433,9 +425,6 @@
         video.src = url;
         video.controls = true;
         video.playsInline = true;
-        video.style.maxWidth = "100%";
-        video.style.maxHeight = "280px";
-        video.style.borderRadius = "11px";
         body.appendChild(video);
       } else {
         const audio = document.createElement("audio");
@@ -443,6 +432,14 @@
         audio.controls = true;
         audio.className = "message-audio";
         body.appendChild(audio);
+
+        if (message.duration_seconds) {
+          const duration = document.createElement("div");
+          duration.textContent = formatDuration(message.duration_seconds);
+          duration.style.fontSize = "10px";
+          duration.style.color = "#b9c8ce";
+          body.appendChild(duration);
+        }
       }
     } else if (message.message_type === "sticker") {
       body.style.fontSize = "54px";
@@ -529,6 +526,15 @@
     scrollToBottom();
   }
 
+  async function updateConversationTime() {
+    const { error } = await state.db
+      .from("conversations")
+      .update({ updated_at: now() })
+      .eq("id", state.conversation.id);
+
+    if (error) console.warn("Conversation timestamp:", error);
+  }
+
   async function insertMessage(values) {
     const { data, error } = await state.db
       .from("messages")
@@ -542,18 +548,10 @@
 
     if (error) throw error;
 
-    appendMessage(data);
-    updateConversationTime();
+    await appendMessage(data);
+    await updateConversationTime();
+
     return data;
-  }
-
-  async function updateConversationTime() {
-    const { error } = await state.db
-      .from("conversations")
-      .update({ updated_at: now() })
-      .eq("id", state.conversation.id);
-
-    if (error) console.warn("Conversation timestamp:", error);
   }
 
   async function sendMessage(event) {
@@ -585,18 +583,22 @@
     }
   }
 
-  async function uploadAndSend(file, type) {
-    if (!file || !state.conversation) return;
+  async function uploadAndSend(file, type, extra = {}) {
+    if (!file || !state.conversation) return null;
 
     if (file.size > 25 * 1024 * 1024) {
       showNotice("حجم الملف يجب ألا يتجاوز 25 ميجابايت.", "error");
-      return;
+      return null;
     }
 
     const extension = (file.name?.split(".").pop() || "bin")
       .toLowerCase().replace(/[^a-z0-9]/g, "");
 
-    const path = `${state.conversation.id}/${state.user.id}/${Date.now()}-${crypto.randomUUID()}.${extension}`;
+    const unique = crypto.randomUUID
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
+    const path = `${state.conversation.id}/${state.user.id}/${Date.now()}-${unique}.${extension}`;
 
     showNotice("جارٍ رفع الملف...");
 
@@ -610,18 +612,20 @@
 
       if (uploadError) throw uploadError;
 
-      await insertMessage({
+      const message = await insertMessage({
         body: file.name || "",
         message_type: type,
         attachment_path: path,
-        duration_seconds: null
+        duration_seconds: extra.duration_seconds ?? null
       });
 
       showNotice("تم إرسال المرفق.");
+      return message;
 
     } catch (error) {
       console.error("Upload:", error);
       showNotice(error.message || "تعذر رفع المرفق.", "error");
+      return null;
     }
   }
 
@@ -639,16 +643,19 @@
       state.recordingChunks = [];
       state.recorder = new MediaRecorder(state.recordingStream);
       state.recordingStarted = Date.now();
+      state.cancelRecording = false;
 
       state.recorder.ondataavailable = event => {
         if (event.data?.size) state.recordingChunks.push(event.data);
       };
 
       state.recorder.onstop = async () => {
-        const duration = Math.round((Date.now() - state.recordingStarted) / 1000);
-        const blob = new Blob(state.recordingChunks, {
-          type: state.recorder.mimeType || "audio/webm"
-        });
+        const duration = Math.round(
+          (Date.now() - state.recordingStarted) / 1000
+        );
+
+        const mimeType = state.recorder.mimeType || "audio/webm";
+        const blob = new Blob(state.recordingChunks, { type: mimeType });
 
         stopRecordingUI();
 
@@ -662,34 +669,22 @@
           return;
         }
 
-        const extension = blob.type.includes("ogg") ? "ogg" :
-          blob.type.includes("mp4") ? "mp4" : "webm";
+        const extension = mimeType.includes("ogg") ? "ogg" :
+          mimeType.includes("mp4") ? "mp4" : "webm";
 
         const file = new File(
           [blob],
           `voice-${Date.now()}.${extension}`,
-          { type: blob.type }
+          { type: mimeType }
         );
 
-        await uploadAndSend(file, "audio");
-
-        const { data: latest } = await state.db
-          .from("messages")
-          .select("id")
-          .eq("conversation_id", state.conversation.id)
-          .eq("sender_id", state.user.id)
-          .order("created_at", { ascending: false })
-          .limit(1)
-          .maybeSingle();
-
-        if (latest) {
-          await state.db.from("messages")
-            .update({ duration_seconds: duration })
-            .eq("id", latest.id);
-        }
+        await uploadAndSend(file, "audio", {
+          duration_seconds: duration
+        });
       };
 
       state.recorder.start();
+
       ui.record.classList.add("recording");
       ui.recordingStrip.classList.remove("hidden");
 
@@ -709,6 +704,7 @@
   function stopRecordingUI() {
     clearInterval(state.recordingTimer);
     state.recordingTimer = null;
+
     ui.record.classList.remove("recording");
     ui.recordingStrip.classList.add("hidden");
 
@@ -720,6 +716,7 @@
 
   function stopVoiceRecording(cancel = false) {
     if (!state.recorder || state.recorder.state === "inactive") return;
+
     state.cancelRecording = cancel;
     state.recorder.stop();
   }
@@ -844,8 +841,10 @@
 
         await appendMessage(payload.new);
 
-        if (payload.new.sender_id !== state.user.id &&
-            document.visibilityState === "visible") {
+        if (
+          payload.new.sender_id !== state.user.id &&
+          document.visibilityState === "visible"
+        ) {
           await updateReadStatus();
         }
       })
@@ -854,9 +853,8 @@
         showTyping(Boolean(event.payload.active));
       })
       .subscribe(status => {
-        if (status === "SUBSCRIBED") {
-          loadFriendPresence();
-        }
+        if (status === "SUBSCRIBED") loadFriendPresence();
+
         if (status === "CHANNEL_ERROR") {
           console.warn("HANOON realtime connection error.");
         }
@@ -871,11 +869,15 @@
 
     const actions = [
       ["نسخ الرسالة", async () => {
-        await navigator.clipboard?.writeText(message.body || "");
-        showNotice("تم نسخ الرسالة.");
+        try {
+          await navigator.clipboard.writeText(message.body || "");
+          showNotice("تم نسخ الرسالة.");
+        } catch {
+          showNotice("تعذر نسخ الرسالة.", "error");
+        }
       }],
       ["الرد على الرسالة", () => {
-        ui.input.value = `↩ ${message.body || "مرفق"}\n`;
+        ui.input.value = `↩ ${message.body || "مرفق"} `;
         ui.input.focus();
       }],
       ["حذف الرسالة لدي", async () => {
@@ -913,10 +915,12 @@
       button.type = "button";
       button.className = "menu-item message-action-item";
       button.textContent = label;
+
       button.addEventListener("click", async () => {
         closePanel("messageActionsPanel");
         await callback();
       });
+
       box.appendChild(button);
     });
 
@@ -942,6 +946,8 @@
     const panel = ensurePanel("wallpaperPanel", "خلفية المحادثة");
     const box = panel.querySelector(".bottom-panel");
 
+    box.querySelectorAll(".message-action-item").forEach(item => item.remove());
+
     const options = [
       ["اللون الأصلي", "#0c1220"],
       ["بنفسجي", "#211a3d"],
@@ -956,16 +962,20 @@
       button.className = "menu-item message-action-item";
       button.textContent = label;
       button.style.background = color;
+
       button.addEventListener("click", () => {
         applyWallpaper("");
         ui.messages.style.backgroundColor = color;
+
         localStorage.setItem(
           `hanoon_wallpaper_${state.conversation.id}`,
           color
         );
+
         closePanel("wallpaperPanel");
         showNotice("تم تغيير خلفية المحادثة على هذا الجهاز.");
       });
+
       box.appendChild(button);
     });
 
@@ -1000,6 +1010,21 @@
     openPanel("wallpaperPanel");
   }
 
+  async function savePrivacySettings() {
+    const { error } = await state.db
+      .from("chat_presence")
+      .upsert({
+        user_id: state.user.id,
+        is_online: true,
+        last_seen_visibility: state.settings.last_seen_visibility,
+        online_visibility: state.settings.online_visibility,
+        read_receipts: state.settings.read_receipts,
+        updated_at: now()
+      }, { onConflict: "user_id" });
+
+    if (error) throw error;
+  }
+
   async function setupPrivacyOptions() {
     const panel = ensurePanel("privacyPanel", "الخصوصية والظهور");
     const box = panel.querySelector(".bottom-panel");
@@ -1007,14 +1032,8 @@
     box.querySelectorAll(".privacy-option").forEach(item => item.remove());
 
     const fields = [
-      {
-        key: "online_visibility",
-        title: "من يمكنه رؤية اتصالك؟"
-      },
-      {
-        key: "last_seen_visibility",
-        title: "من يمكنه رؤية آخر ظهور؟"
-      }
+      { key: "online_visibility", title: "من يمكنه رؤية اتصالك؟" },
+      { key: "last_seen_visibility", title: "من يمكنه رؤية آخر ظهور؟" }
     ];
 
     const choices = [
@@ -1038,26 +1057,17 @@
           `${label}${state.settings[field.key] === value ? " ✓" : ""}`;
 
         button.addEventListener("click", async () => {
+          const previous = state.settings[field.key];
           state.settings[field.key] = value;
 
-          const { error } = await state.db
-            .from("chat_presence")
-            .upsert({
-              user_id: state.user.id,
-              is_online: true,
-              last_seen_visibility: state.settings.last_seen_visibility,
-              online_visibility: state.settings.online_visibility,
-              read_receipts: state.settings.read_receipts,
-              updated_at: now()
-            }, { onConflict: "user_id" });
-
-          if (error) {
+          try {
+            await savePrivacySettings();
+            showNotice("تم حفظ إعداد الخصوصية.");
+            setupPrivacyOptions();
+          } catch {
+            state.settings[field.key] = previous;
             showNotice("تعذر حفظ إعداد الخصوصية.", "error");
-            return;
           }
-
-          showNotice("تم حفظ إعداد الخصوصية.");
-          setupPrivacyOptions();
         });
 
         box.appendChild(button);
@@ -1072,26 +1082,17 @@
       : "مؤشرات القراءة متوقفة";
 
     receipt.addEventListener("click", async () => {
-      state.settings.read_receipts = !state.settings.read_receipts;
+      const previous = state.settings.read_receipts;
+      state.settings.read_receipts = !previous;
 
-      const { error } = await state.db
-        .from("chat_presence")
-        .upsert({
-          user_id: state.user.id,
-          is_online: true,
-          last_seen_visibility: state.settings.last_seen_visibility,
-          online_visibility: state.settings.online_visibility,
-          read_receipts: state.settings.read_receipts,
-          updated_at: now()
-        }, { onConflict: "user_id" });
-
-      if (error) {
+      try {
+        await savePrivacySettings();
+        showNotice("تم تحديث مؤشرات القراءة.");
+        setupPrivacyOptions();
+      } catch {
+        state.settings.read_receipts = previous;
         showNotice("تعذر حفظ الإعداد.", "error");
-        return;
       }
-
-      showNotice("تم تحديث مؤشرات القراءة.");
-      setupPrivacyOptions();
     });
 
     box.appendChild(receipt);
@@ -1106,7 +1107,6 @@
     });
 
     ui.more.addEventListener("click", () => openPanel("chatActionsPanel"));
-
     ui.attach.addEventListener("click", () => openPanel("attachPanel"));
     ui.sticker.addEventListener("click", () => openPanel("stickerPanel"));
 
@@ -1122,10 +1122,14 @@
 
     $("chooseCameraBtn")?.addEventListener("click", () => {
       closePanel("attachPanel");
+
       const input = ui.imageInput;
       input.setAttribute("capture", "environment");
       input.click();
-      input.addEventListener("change", () => input.removeAttribute("capture"), { once: true });
+
+      input.addEventListener("change", () => {
+        input.removeAttribute("capture");
+      }, { once: true });
     });
 
     ui.imageInput.addEventListener("change", async () => {
@@ -1136,10 +1140,12 @@
 
     ui.fileInput.addEventListener("change", async () => {
       const file = ui.fileInput.files?.[0];
+
       if (file) {
         const type = file.type.startsWith("video/") ? "video" : "file";
         await uploadAndSend(file, type);
       }
+
       ui.fileInput.value = "";
     });
 
@@ -1183,21 +1189,28 @@
     });
 
     $("chatSearchBtn")?.addEventListener("click", () => {
-      closePanel("chatActionsPanel");
-
       const term = prompt("اكتب كلمة للبحث داخل المحادثة:");
-      if (!term) return;
+      if (!term?.trim()) return;
 
       const matches = [...ui.messages.querySelectorAll(".message")]
-        .filter(item => item.textContent.toLowerCase().includes(term.toLowerCase()));
+        .filter(item =>
+          item.textContent.toLowerCase().includes(term.trim().toLowerCase())
+        );
 
       ui.messages.querySelectorAll(".message").forEach(item => {
         item.style.outline = "";
       });
 
       matches.forEach(item => {
-        item.style.outline = "2px solid #42cdbb";
+        item.style.outline = "2px solid #00a884";
       });
+
+      if (matches[0]) {
+        matches[0].scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
+      }
 
       showNotice(`تم العثور على ${matches.length} نتيجة.`);
     });
@@ -1206,19 +1219,22 @@
       closePanel("chatActionsPanel");
 
       const media = [...ui.messages.querySelectorAll("img,video,audio")];
+
       if (!media.length) {
         showNotice("لا توجد وسائط في هذه المحادثة.");
         return;
       }
 
-      const first = media[0];
-      first.scrollIntoView({ behavior: "smooth", block: "center" });
+      media[0].scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
     });
 
     $("chatClearBtn")?.addEventListener("click", async () => {
       closePanel("chatActionsPanel");
 
-      if (!confirm("هل تريد مسح الرسائل من عرضك؟")) return;
+      if (!confirm("هل تريد مسح الرسائل التي أرسلتها من عرضك؟")) return;
 
       const { error } = await state.db
         .from("messages")
@@ -1232,13 +1248,14 @@
       }
 
       ui.messages.replaceChildren();
+      state.messageIds.clear();
       showEmpty("تم إخفاء رسائلك من هذه المحادثة.");
       showNotice("تم تنفيذ طلب المسح للرسائل التي أرسلتها.");
     });
 
     $("chatBlockBtn")?.addEventListener("click", () => {
       closePanel("chatActionsPanel");
-      showNotice("ميزة الحظر ستحتاج ربطها بنظام الحظر العام للأعضاء.", "error");
+      showNotice("ميزة الحظر لم يتم ربطها بقاعدة البيانات بعد.", "error");
     });
 
     ui.input.addEventListener("keydown", event => {
@@ -1262,6 +1279,7 @@
     window.addEventListener("pagehide", () => {
       if (state.channel) state.db.removeChannel(state.channel);
       setMyPresence(false);
+      stopRecordingUI();
     });
   }
 
