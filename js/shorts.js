@@ -9,16 +9,20 @@ import "./supabase-client.js";
   const state = {
     db: null,
     user: null,
-    profile: null,
     videos: [],
-    muted: true,
+    muted: false,
     activeIndex: -1,
     observer: null,
     playRequest: 0,
     feedType: "for-you",
+    followingIds: new Set(),
+    likeCounts: new Map(),
+    commentCounts: new Map(),
+    likedPosts: new Set(),
     busy: false,
-    loading: false,
-    followingIds: new Set()
+    noticeTimer: null,
+    dialogAction: null,
+    currentCommentPost: null
   };
 
   const ui = {
@@ -26,53 +30,62 @@ import "./supabase-client.js";
     notice: $("shortNotice"),
     upload: $("uploadShortBtn"),
     input: $("shortFileInput"),
-    tabs: [...document.querySelectorAll(".feed-tab")]
+    tabs: [...document.querySelectorAll(".feed-tab")],
+    commentsSheet: $("commentsSheet"),
+    commentsBackdrop: $("commentsBackdrop"),
+    commentsList: $("commentsList"),
+    commentsTitle: $("commentsTitle"),
+    commentForm: $("commentForm"),
+    commentInput: $("commentInput"),
+    dialog: $("appDialog"),
+    dialogTitle: $("dialogTitle"),
+    dialogMessage: $("dialogMessage"),
+    dialogCancel: $("dialogCancel"),
+    dialogConfirm: $("dialogConfirm")
   };
 
   function notify(message, error = false) {
     ui.notice.textContent = message;
-    ui.notice.style.display = "block";
-    ui.notice.style.borderColor = error ? "#ff7898" : "#8c72f5";
+    ui.notice.style.borderColor = error ? "#fe2c55" : "#25f4ee";
+    ui.notice.classList.add("show");
 
-    clearTimeout(notify.timer);
-    notify.timer = setTimeout(() => {
-      ui.notice.style.display = "none";
-    }, 3500);
+    clearTimeout(state.noticeTimer);
+
+    state.noticeTimer = setTimeout(() => {
+      ui.notice.classList.remove("show");
+    }, 3200);
   }
 
-  function empty(message) {
-    if (state.observer) state.observer.disconnect();
-
-    stopAllVideos();
-
-    const box = document.createElement("div");
-    box.className = "empty";
-
-    const title = document.createElement("strong");
-    title.textContent = message;
-
-    const description = document.createElement("small");
-    description.textContent = state.feedType === "following"
-      ? "تابع الأعضاء لتظهر فيديوهاتهم هنا."
-      : "كن أول من يشارك فيديو في مجتمع هنون.";
-
-    box.append(title, description);
-    ui.feed.replaceChildren(box);
+  function formatCount(value) {
+    return new Intl.NumberFormat("ar-EG", {
+      notation: value >= 10000 ? "compact" : "standard",
+      maximumFractionDigits: 1
+    }).format(value || 0);
   }
 
   function displayName(profile) {
-    return profile?.full_name ||
-      profile?.username ||
-      "عضو هنون";
+    return profile?.full_name || profile?.username || "عضو هنون";
+  }
+
+  function icon(name) {
+    const paths = {
+      heart: '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/>',
+      comment: '<path d="M21 11.5a8.5 8.5 0 0 1-9 8.5 9 9 0 0 1-4-.9L3 21l1.9-4.5A8.5 8.5 0 1 1 21 11.5Z"/>',
+      share: '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.7 6.6-4.4m-6.6 9 6.6 4.4"/>',
+      volume: '<path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7m3-10a9 9 0 0 1 0 13"/>',
+      muted: '<path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="m16 9 5 6m0-6-5 6"/>',
+      play: '<path d="m8 5 12 7-12 7Z"/>',
+      pause: '<path d="M8 5h3v14H8zM15 5h3v14h-3z"/>'
+    };
+
+    return `<svg viewBox="0 0 24 24" aria-hidden="true">${paths[name] || ""}</svg>`;
   }
 
   function storageURL(bucket, path) {
     if (!path) return "";
     if (/^https?:\/\//i.test(path)) return path;
 
-    return state.db.storage
-      .from(bucket)
-      .getPublicUrl(path).data?.publicUrl || "";
+    return state.db.storage.from(bucket).getPublicUrl(path).data?.publicUrl || "";
   }
 
   function videoURL(path) {
@@ -83,59 +96,66 @@ import "./supabase-client.js";
     return storageURL("avatars", path);
   }
 
-  function formatCount(value) {
-    return new Intl.NumberFormat("ar-EG", {
-      notation: value >= 10000 ? "compact" : "standard",
-      maximumFractionDigits: 1
-    }).format(value || 0);
-  }
-
-  function icon(name) {
-    const paths = {
-      heart:
-        '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/>',
-      comment:
-        '<path d="M21 11.5a8.5 8.5 0 0 1-9 8.5 9 9 0 0 1-4-.9L3 21l1.9-4.5A8.5 8.5 0 1 1 21 11.5Z"/>',
-      share:
-        '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.7 6.6-4.4m-6.6 9 6.6 4.4"/>',
-      volume:
-        '<path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7m3-10a9 9 0 0 1 0 13"/>',
-      muted:
-        '<path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="m16 9 5 6m0-6-5 6"/>',
-      play:
-        '<path d="m8 5 12 7-12 7Z"/>',
-      pause:
-        '<path d="M8 5h3v14H8zM15 5h3v14h-3z"/>'
-    };
-
-    return `
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        ${paths[name] || ""}
-      </svg>
-    `;
-  }
-
   function stopAllVideos() {
     document.querySelectorAll("#shortsFeed video").forEach(video => {
       video.pause();
     });
   }
 
-  async function loadProfile() {
-    const { data, error } = await state.db
-      .from("member_directory")
-      .select("id,username,full_name,avatar_path")
-      .eq("id", state.user.id)
-      .maybeSingle();
+  function showDialog({
+    title = "هنون",
+    message = "",
+    confirmText = "حسنًا",
+    cancelText = "إلغاء",
+    showCancel = true,
+    action = null,
+    content = null
+  } = {}) {
+    ui.dialogTitle.textContent = title;
+    ui.dialogMessage.replaceChildren();
 
-    if (error) throw error;
+    if (content) {
+      ui.dialogMessage.append(content);
+    } else {
+      ui.dialogMessage.textContent = message;
+    }
 
-    state.profile = data || {
-      id: state.user.id,
-      full_name: state.user.user_metadata?.full_name ||
-        state.user.email?.split("@")[0] ||
-        "عضو هنون"
-    };
+    ui.dialogConfirm.textContent = confirmText;
+    ui.dialogCancel.textContent = cancelText;
+    ui.dialogCancel.hidden = !showCancel;
+
+    state.dialogAction = action;
+    ui.dialog.classList.add("open");
+  }
+
+  function closeDialog() {
+    ui.dialog.classList.remove("open");
+    state.dialogAction = null;
+  }
+
+  function showEmpty(message, description = "") {
+    if (state.observer) {
+      state.observer.disconnect();
+      state.observer = null;
+    }
+
+    stopAllVideos();
+
+    const box = document.createElement("div");
+    box.className = "empty";
+
+    const mark = document.createElement("div");
+    mark.className = "empty-mark";
+    mark.innerHTML = icon("play");
+
+    const title = document.createElement("strong");
+    title.textContent = message;
+
+    const small = document.createElement("small");
+    small.textContent = description;
+
+    box.append(mark, title, small);
+    ui.feed.replaceChildren(box);
   }
 
   async function loadFollowingIds() {
@@ -147,22 +167,26 @@ import "./supabase-client.js";
     if (error) throw error;
 
     state.followingIds = new Set(
-      (data || []).map(item => item.following_id)
+      (data || []).map(row => row.following_id)
     );
   }
 
   async function loadVideos() {
-    if (state.loading) return;
-    state.loading = true;
+    if (state.busy) return;
+
+    state.busy = true;
 
     try {
-      empty("جارٍ تحميل الفيديوهات...");
+      showEmpty("جارٍ تحميل الفيديوهات...", "لحظات ونبدأ المشاهدة");
 
       if (state.feedType === "following") {
         await loadFollowingIds();
 
         if (!state.followingIds.size) {
-          empty("لم تتابع أي أعضاء بعد");
+          showEmpty(
+            "لا تتابع أي أعضاء بعد",
+            "تابع الأعضاء لتظهر فيديوهاتهم هنا."
+          );
           return;
         }
       }
@@ -176,10 +200,7 @@ import "./supabase-client.js";
         .limit(50);
 
       if (state.feedType === "following") {
-        query = query.in(
-          "user_id",
-          [...state.followingIds]
-        );
+        query = query.in("user_id", [...state.followingIds]);
       }
 
       const { data, error } = await query;
@@ -189,18 +210,24 @@ import "./supabase-client.js";
       state.videos = data || [];
 
       if (!state.videos.length) {
-        empty(
+        showEmpty(
+          "لا توجد فيديوهات حاليًا",
           state.feedType === "following"
-            ? "لا توجد فيديوهات جديدة من الأعضاء الذين تتابعهم"
-            : "لا توجد فيديوهات قصيرة حتى الآن"
+            ? "لا توجد فيديوهات من الأعضاء الذين تتابعهم."
+            : "كن أول من يشارك فيديو في مجتمع هنون."
         );
         return;
       }
 
       await renderVideos();
 
+    } catch (error) {
+      console.error(error);
+      showEmpty("تعذر تحميل الفيديوهات", "حاول مرة أخرى.");
+      notify(error.message || "حدث خطأ أثناء تحميل الفيديوهات.", true);
+
     } finally {
-      state.loading = false;
+      state.busy = false;
     }
   }
 
@@ -284,9 +311,9 @@ import "./supabase-client.js";
     return { wrap, button, small };
   }
 
-  function createAvatar(profile) {
+  function createAvatar(profile, className = "avatar") {
     const avatar = document.createElement("div");
-    avatar.className = "avatar";
+    avatar.className = className;
 
     const url = avatarURL(profile?.avatar_path);
 
@@ -297,7 +324,9 @@ import "./supabase-client.js";
       image.loading = "lazy";
 
       image.onerror = () => {
-        avatar.textContent = displayName(profile).charAt(0);
+        avatar.replaceChildren(
+          document.createTextNode(displayName(profile).charAt(0))
+        );
       };
 
       avatar.appendChild(image);
@@ -306,6 +335,22 @@ import "./supabase-client.js";
     }
 
     return avatar;
+  }
+
+  function createProgress(video) {
+    const progress = document.createElement("div");
+    progress.className = "video-progress";
+
+    const fill = document.createElement("span");
+    progress.appendChild(fill);
+
+    video.addEventListener("timeupdate", () => {
+      if (!video.duration || !Number.isFinite(video.duration)) return;
+
+      fill.style.width = `${(video.currentTime / video.duration) * 100}%`;
+    });
+
+    return progress;
   }
 
   function buildVideo(video, data) {
@@ -367,18 +412,26 @@ import "./supabase-client.js";
       data.myLikes.has(video.id)
     );
 
+    state.likeCounts.set(video.id, data.likes.get(video.id) || 0);
+
+    if (data.myLikes.has(video.id)) {
+      state.likedPosts.add(video.id);
+    }
+
     like.button.addEventListener("click", () => {
       toggleLike(video.id, like.button, like.small);
     });
 
     const comment = createAction(
       "comment",
-      "تعليق",
+      "التعليقات",
       formatCount(data.comments.get(video.id) || 0)
     );
 
+    state.commentCounts.set(video.id, data.comments.get(video.id) || 0);
+
     comment.button.addEventListener("click", () => {
-      addComment(video.id, comment.small);
+      openComments(video.id, comment.small);
     });
 
     const share = createAction("share", "مشاركة", "");
@@ -394,12 +447,7 @@ import "./supabase-client.js";
     );
 
     sound.button.addEventListener("click", () => {
-      state.muted = !state.muted;
-
-      document.querySelectorAll("#shortsFeed video").forEach(item => {
-        item.muted = state.muted;
-      });
-
+      setMuted(!state.muted);
       sound.button.innerHTML = icon(state.muted ? "muted" : "volume");
     });
 
@@ -429,7 +477,13 @@ import "./supabase-client.js";
       play.wrap
     );
 
-    card.append(media, shade, info, actions);
+    card.append(
+      media,
+      shade,
+      info,
+      actions,
+      createProgress(media)
+    );
 
     return card;
   }
@@ -446,7 +500,28 @@ import "./supabase-client.js";
 
     video.preload = "auto";
 
-    if (video.readyState === 0) video.load();
+    if (video.readyState === 0) {
+      video.load();
+    }
+  }
+
+  function setMuted(muted) {
+    state.muted = muted;
+
+    getVideos().forEach(video => {
+      video.muted = muted;
+    });
+
+    document.querySelectorAll(".video-actions .action").forEach(button => {
+      if (button.getAttribute("aria-label") === "الصوت") {
+        button.innerHTML = icon(muted ? "muted" : "volume");
+      }
+    });
+
+    if (!muted) {
+      const active = getVideos()[state.activeIndex];
+      if (active) active.play().catch(() => {});
+    }
   }
 
   async function activateVideo(index) {
@@ -461,9 +536,7 @@ import "./supabase-client.js";
     videos.forEach((video, i) => {
       if (i !== index) {
         video.pause();
-        video.preload = Math.abs(i - index) === 1
-          ? "metadata"
-          : "none";
+        video.preload = Math.abs(i - index) === 1 ? "metadata" : "none";
       }
     });
 
@@ -475,15 +548,29 @@ import "./supabase-client.js";
     try {
       await current.play();
 
-      if (
-        request !== state.playRequest ||
-        state.activeIndex !== index
-      ) {
+      if (request !== state.playRequest || state.activeIndex !== index) {
         current.pause();
       }
+
     } catch (error) {
-      if (error.name !== "AbortError") {
-        console.warn("HANOON autoplay:", error);
+      if (request !== state.playRequest) return;
+
+      /*
+       * بعض المتصفحات تمنع التشغيل التلقائي بالصوت.
+       * نحاول تشغيل الفيديو صامتًا بدل توقفه تمامًا.
+       */
+      if (!state.muted) {
+        state.muted = true;
+        current.muted = true;
+
+        try {
+          await current.play();
+          notify("اضغط زر الصوت لتشغيل صوت الفيديو.");
+        } catch (fallbackError) {
+          console.warn("تعذر التشغيل التلقائي:", fallbackError);
+        }
+      } else if (error.name !== "AbortError") {
+        console.warn("تعذر تشغيل الفيديو:", error);
       }
     }
   }
@@ -498,6 +585,10 @@ import "./supabase-client.js";
 
     const data = await getVideoData();
     const fragment = document.createDocumentFragment();
+
+    state.likeCounts.clear();
+    state.commentCounts.clear();
+    state.likedPosts.clear();
 
     state.videos.forEach(video => {
       fragment.appendChild(buildVideo(video, data));
@@ -542,17 +633,11 @@ import "./supabase-client.js";
   async function toggleLike(postId, button, counter) {
     button.disabled = true;
 
+    const wasLiked = state.likedPosts.has(postId);
+    const oldCount = state.likeCounts.get(postId) || 0;
+
     try {
-      const { data: existing, error: findError } = await state.db
-        .from("post_likes")
-        .select("post_id")
-        .eq("post_id", postId)
-        .eq("user_id", state.user.id)
-        .maybeSingle();
-
-      if (findError) throw findError;
-
-      if (existing) {
+      if (wasLiked) {
         const { error } = await state.db
           .from("post_likes")
           .delete()
@@ -561,10 +646,9 @@ import "./supabase-client.js";
 
         if (error) throw error;
 
+        state.likedPosts.delete(postId);
+        state.likeCounts.set(postId, Math.max(0, oldCount - 1));
         button.classList.remove("liked");
-        counter.textContent = formatCount(
-          Math.max(0, Number(counter.textContent.replace(/[^\d]/g, "")) - 1)
-        );
 
       } else {
         const { error } = await state.db
@@ -576,29 +660,143 @@ import "./supabase-client.js";
 
         if (error) throw error;
 
+        state.likedPosts.add(postId);
+        state.likeCounts.set(postId, oldCount + 1);
         button.classList.add("liked");
-        counter.textContent = "تم";
       }
+
+      counter.textContent = formatCount(state.likeCounts.get(postId));
 
     } catch (error) {
       console.error(error);
       notify(error.message || "تعذر تسجيل الإعجاب.", true);
+
     } finally {
       button.disabled = false;
     }
   }
 
-  async function addComment(postId, counter) {
-    const body = prompt("اكتب تعليقك على الفيديو:");
+  function closeComments() {
+    ui.commentsSheet.classList.remove("open");
+    ui.commentsBackdrop.classList.remove("open");
+    state.currentCommentPost = null;
+  }
 
-    if (body === null) return;
+  async function openComments(postId, counter) {
+    state.currentCommentPost = postId;
+    ui.commentsTitle.textContent =
+      `التعليقات · ${formatCount(state.commentCounts.get(postId) || 0)}`;
 
-    const content = body.trim();
+    ui.commentsList.replaceChildren();
 
-    if (!content) {
-      notify("اكتب التعليق أولاً.", true);
-      return;
+    const loading = document.createElement("div");
+    loading.className = "comment-text";
+    loading.textContent = "جارٍ تحميل التعليقات...";
+    ui.commentsList.appendChild(loading);
+
+    ui.commentsBackdrop.classList.add("open");
+    ui.commentsSheet.classList.add("open");
+
+    try {
+      const { data: comments, error } = await state.db
+        .from("post_comments")
+        .select("id,user_id,body,created_at")
+        .eq("post_id", postId)
+        .order("created_at", { ascending: true })
+        .limit(100);
+
+      if (error) throw error;
+
+      const userIds = [...new Set((comments || []).map(item => item.user_id))];
+
+      let profiles = [];
+
+      if (userIds.length) {
+        const result = await state.db
+          .from("member_directory")
+          .select("id,username,full_name,avatar_path")
+          .in("id", userIds);
+
+        if (result.error) throw result.error;
+        profiles = result.data || [];
+      }
+
+      const profileMap = new Map(profiles.map(item => [item.id, item]));
+
+      ui.commentsList.replaceChildren();
+
+      if (!comments?.length) {
+        const empty = document.createElement("div");
+        empty.className = "comment-text";
+        empty.textContent = "لا توجد تعليقات حتى الآن. كن أول من يعلّق.";
+        ui.commentsList.appendChild(empty);
+      } else {
+        comments.forEach(item => {
+          const profile = profileMap.get(item.user_id) || {};
+
+          const row = document.createElement("div");
+          row.className = "comment-item";
+
+          const avatar = document.createElement("div");
+          avatar.className = "comment-avatar";
+
+          const avatarUrl = avatarURL(profile.avatar_path);
+
+          if (avatarUrl) {
+            const image = document.createElement("img");
+            image.src = avatarUrl;
+            image.alt = displayName(profile);
+            avatar.appendChild(image);
+          } else {
+            avatar.textContent = displayName(profile).charAt(0);
+          }
+
+          const body = document.createElement("div");
+          body.className = "comment-body";
+
+          const user = document.createElement("div");
+          user.className = "comment-user";
+          user.textContent = displayName(profile);
+
+          const text = document.createElement("div");
+          text.className = "comment-text";
+          text.textContent = item.body;
+
+          body.append(user, text);
+          row.append(avatar, body);
+          ui.commentsList.appendChild(row);
+        });
+      }
+
+      ui.commentsTitle.textContent =
+        `التعليقات · ${formatCount(comments?.length || 0)}`;
+
+      state.commentCounts.set(postId, comments?.length || 0);
+      counter.textContent = formatCount(comments?.length || 0);
+
+    } catch (error) {
+      console.error(error);
+      ui.commentsList.replaceChildren();
+
+      const message = document.createElement("div");
+      message.className = "comment-text";
+      message.textContent = "تعذر تحميل التعليقات. حاول مرة أخرى.";
+      ui.commentsList.appendChild(message);
+
+      notify(error.message || "تعذر تحميل التعليقات.", true);
     }
+  }
+
+  async function submitComment(event) {
+    event.preventDefault();
+
+    const postId = state.currentCommentPost;
+    const body = ui.commentInput.value.trim();
+
+    if (!postId || !body) return;
+
+    const sendButton = ui.commentForm.querySelector("button");
+    sendButton.disabled = true;
 
     try {
       const { error } = await state.db
@@ -606,21 +804,39 @@ import "./supabase-client.js";
         .insert({
           post_id: postId,
           user_id: state.user.id,
-          body: content
+          body
         });
 
       if (error) throw error;
 
-      const current = Number(
-        counter.textContent.replace(/[^\d]/g, "")
+      ui.commentInput.value = "";
+
+      const newCount = (state.commentCounts.get(postId) || 0) + 1;
+      state.commentCounts.set(postId, newCount);
+
+      const card = ui.feed.querySelector(`[data-video-id="${CSS.escape(postId)}"]`);
+      const commentCounter = card?.querySelector(
+        '.video-actions .action-wrap:nth-child(2) small'
       );
 
-      counter.textContent = formatCount(current + 1);
+      if (commentCounter) {
+        commentCounter.textContent = formatCount(newCount);
+      }
+
+      await openComments(postId, {
+        set textContent(value) {
+          if (commentCounter) commentCounter.textContent = value;
+        }
+      });
+
       notify("تم نشر تعليقك.");
 
     } catch (error) {
       console.error(error);
-      notify(error.message || "تعذر إضافة التعليق.", true);
+      notify(error.message || "تعذر نشر التعليق.", true);
+
+    } finally {
+      sendButton.disabled = false;
     }
   }
 
@@ -635,9 +851,15 @@ import "./supabase-client.js";
           text: video.content || "شاهد هذا الفيديو على هنون",
           url: url.toString()
         });
-      } else {
+      } else if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(url.toString());
         notify("تم نسخ رابط الفيديو.");
+      } else {
+        showDialog({
+          title: "مشاركة الفيديو",
+          message: url.toString(),
+          showCancel: false
+        });
       }
     } catch (error) {
       if (error.name !== "AbortError") {
@@ -646,7 +868,50 @@ import "./supabase-client.js";
     }
   }
 
-  async function uploadVideo(file) {
+  function openCaptionDialog(file) {
+    const wrapper = document.createElement("div");
+    wrapper.style.textAlign = "right";
+
+    const label = document.createElement("label");
+    label.textContent = "وصف الفيديو";
+    label.style.display = "block";
+    label.style.marginBottom = "8px";
+    label.style.fontSize = "12px";
+
+    const textarea = document.createElement("textarea");
+    textarea.maxLength = 2000;
+    textarea.placeholder = "اكتب وصفًا للفيديو...";
+    textarea.style.cssText = [
+      "width:100%",
+      "min-height:100px",
+      "resize:vertical",
+      "padding:12px",
+      "border:1px solid #ffffff25",
+      "border-radius:12px",
+      "background:#292929",
+      "color:white",
+      "outline:none",
+      "font:inherit",
+      "font-size:12px"
+    ].join(";");
+
+    wrapper.append(label, textarea);
+
+    showDialog({
+      title: "نشر فيديو جديد",
+      confirmText: "نشر الفيديو",
+      content: wrapper,
+      action: async () => {
+        const caption = textarea.value.trim();
+        closeDialog();
+        await uploadVideo(file, caption);
+      }
+    });
+
+    textarea.focus();
+  }
+
+  async function uploadVideo(file, caption = "") {
     if (!file) return;
 
     if (!file.type.startsWith("video/")) {
@@ -693,13 +958,11 @@ import "./supabase-client.js";
 
       uploadedPath = uploaded.path;
 
-      const caption = prompt("اكتب وصف الفيديو (اختياري):") || "";
-
       const { error: insertError } = await state.db
         .from("posts")
         .insert({
           user_id: state.user.id,
-          content: caption.trim(),
+          content: caption,
           media_path: uploadedPath,
           media_type: "video"
         });
@@ -716,9 +979,13 @@ import "./supabase-client.js";
       console.error(error);
 
       if (uploadedPath) {
-        await state.db.storage
+        const { error: removeError } = await state.db.storage
           .from("post-media")
           .remove([uploadedPath]);
+
+        if (removeError) {
+          console.error("تعذر حذف الملف بعد فشل النشر:", removeError);
+        }
       }
 
       notify(error.message || "تعذر رفع الفيديو.", true);
@@ -726,7 +993,7 @@ import "./supabase-client.js";
     } finally {
       state.busy = false;
       ui.upload.disabled = false;
-      ui.upload.textContent = "إضافة فيديو";
+      ui.upload.textContent = "＋ إضافة فيديو";
       ui.input.value = "";
     }
   }
@@ -735,8 +1002,7 @@ import "./supabase-client.js";
     ui.tabs.forEach(tab => {
       tab.classList.toggle(
         "active",
-        (tab.dataset.feed === "following") ===
-          (state.feedType === "following")
+        tab.dataset.feed === state.feedType
       );
     });
   }
@@ -744,8 +1010,12 @@ import "./supabase-client.js";
   function bindEvents() {
     ui.upload.addEventListener("click", () => ui.input.click());
 
+    const bottomUpload = $("bottomUploadBtn");
+    bottomUpload?.addEventListener("click", () => ui.input.click());
+
     ui.input.addEventListener("change", () => {
-      uploadVideo(ui.input.files?.[0]);
+      const file = ui.input.files?.[0];
+      if (file) openCaptionDialog(file);
     });
 
     ui.tabs.forEach(tab => {
@@ -757,10 +1027,41 @@ import "./supabase-client.js";
 
         state.feedType = type;
         updateTabs();
-
         ui.feed.scrollTop = 0;
+
         await loadVideos();
       });
+    });
+
+    ui.commentForm.addEventListener("submit", submitComment);
+
+    ui.commentsBackdrop.addEventListener("click", closeComments);
+    $("closeCommentsBtn")?.addEventListener("click", closeComments);
+
+    ui.dialogCancel.addEventListener("click", closeDialog);
+
+    ui.dialog.addEventListener("click", event => {
+      if (event.target === ui.dialog) closeDialog();
+    });
+
+    ui.dialogConfirm.addEventListener("click", async () => {
+      const action = state.dialogAction;
+
+      if (action) {
+        ui.dialogConfirm.disabled = true;
+
+        try {
+          await action();
+        } finally {
+          ui.dialogConfirm.disabled = false;
+        }
+      } else {
+        closeDialog();
+      }
+    });
+
+    $("shortSearchBtn")?.addEventListener("click", () => {
+      location.href = "search.html";
     });
 
     document.addEventListener("visibilitychange", () => {
@@ -770,6 +1071,18 @@ import "./supabase-client.js";
         activateVideo(state.activeIndex);
       }
     });
+
+    /*
+     * أول تفاعل من المستخدم يساعد المتصفح على السماح بالصوت.
+     */
+    document.addEventListener("pointerdown", () => {
+      const active = getVideos()[state.activeIndex];
+
+      if (active && state.muted) {
+        // لا نفتح الصوت قسرًا؛ المستخدم يختار زر الصوت.
+        active.play().catch(() => {});
+      }
+    }, { once: true });
   }
 
   async function initialize() {
@@ -786,14 +1099,18 @@ import "./supabase-client.js";
 
       if (!data.user) {
         ui.upload.disabled = true;
-        empty("سجل الدخول أولاً لمشاهدة الفيديوهات");
+
+        showEmpty(
+          "سجل الدخول أولًا",
+          "سجل الدخول إلى حسابك لمشاهدة فيديوهات هنون."
+        );
+
         notify("يجب تسجيل الدخول لاستخدام الفيديوهات.", true);
         return;
       }
 
       state.user = data.user;
 
-      await loadProfile();
       bindEvents();
       updateTabs();
 
@@ -801,7 +1118,8 @@ import "./supabase-client.js";
 
     } catch (error) {
       console.error("HANOON Shorts:", error);
-      empty("تعذر تحميل الفيديوهات");
+
+      showEmpty("تعذر تحميل الفيديوهات", "تحقق من اتصالك وحاول مرة أخرى.");
       notify(error.message || "حدث خطأ أثناء تشغيل الصفحة.", true);
     }
   }
