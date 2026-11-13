@@ -9,11 +9,10 @@
     user: null,
     conversationId: null,
     reply: null,
+    selectedMessage: null,
     observer: null,
     busy: false
   };
-
-  const escapeText = value => String(value || "").slice(0, 500);
 
   function notice(message, error = false) {
     const box = $("globalNotice");
@@ -32,12 +31,16 @@
 
   function getMessageText(message) {
     if (!message) return "رسالة";
-    if (message.message_type === "image") return "صورة";
-    if (message.message_type === "video") return "فيديو";
-    if (message.message_type === "audio") return "رسالة صوتية";
-    if (message.message_type === "file") return message.body || "ملف";
-    if (message.message_type === "sticker") return message.body || "ملصق";
-    return message.body || "رسالة";
+    if (message.deleted_at) return "رسالة محذوفة";
+
+    switch (message.message_type) {
+      case "image": return "صورة";
+      case "video": return "فيديو";
+      case "audio": return "رسالة صوتية";
+      case "file": return message.body || "ملف";
+      case "sticker": return message.body || "ملصق";
+      default: return message.body || "رسالة";
+    }
   }
 
   function getPreview() {
@@ -58,9 +61,7 @@
       cancel.setAttribute("aria-label", "إلغاء الرد");
 
       preview.append(text, cancel);
-
-      const form = $("messageForm");
-      form?.before(preview);
+      $("messageForm")?.before(preview);
     }
 
     return preview;
@@ -68,9 +69,7 @@
 
   function cancelReply() {
     state.reply = null;
-
-    const preview = getPreview();
-    preview.classList.add("hidden");
+    getPreview().classList.add("hidden");
 
     const input = $("messageInput");
     if (input) input.placeholder = "اكتب رسالة...";
@@ -91,7 +90,8 @@
     const text = $("replyPreviewText");
 
     if (text) {
-      text.textContent = `الرد على ${state.reply.sender}: ${state.reply.text}`;
+      text.textContent =
+        `الرد على ${state.reply.sender}: ${state.reply.text}`;
     }
 
     preview.classList.remove("hidden");
@@ -103,11 +103,14 @@
     }
   }
 
-  async function loadOriginalMessage(id) {
+  async function loadMessage(id) {
+    if (!id) return null;
+
     const { data, error } = await state.db
       .from("messages")
       .select("id,sender_id,body,message_type,attachment_path,created_at,deleted_at")
       .eq("id", id)
+      .eq("conversation_id", state.conversationId)
       .maybeSingle();
 
     if (error || !data || data.deleted_at) return null;
@@ -117,7 +120,7 @@
   async function addReplyQuote(element, replyId) {
     if (!element || element.querySelector(".reply-quote")) return;
 
-    const original = await loadOriginalMessage(replyId);
+    const original = await loadMessage(replyId);
     if (!original || !element.isConnected) return;
 
     const quote = document.createElement("div");
@@ -136,20 +139,29 @@
 
     quote.append(author, content);
 
-    quote.addEventListener("click", () => {
-      const target = document.querySelector(
-        `[data-message-id="${CSS.escape(replyId)}"]`
-      );
+    const goToOriginal = () => {
+      const target = [...document.querySelectorAll(".message")]
+        .find(item => item.dataset.messageId === replyId);
 
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth", block: "center" });
-        target.classList.add("reply-target-highlight");
-        setTimeout(
-          () => target.classList.remove("reply-target-highlight"),
-          1600
-        );
-      } else {
+      if (!target) {
         notice("الرسالة الأصلية غير موجودة ضمن الرسائل المعروضة.");
+        return;
+      }
+
+      target.scrollIntoView({ behavior: "smooth", block: "center" });
+      target.classList.add("reply-target-highlight");
+
+      setTimeout(
+        () => target.classList.remove("reply-target-highlight"),
+        1600
+      );
+    };
+
+    quote.addEventListener("click", goToOriginal);
+    quote.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        goToOriginal();
       }
     });
 
@@ -171,9 +183,9 @@
       .eq("id", id)
       .maybeSingle();
 
-    if (error || !data?.reply_to) return;
-
-    await addReplyQuote(element, data.reply_to);
+    if (!error && data?.reply_to) {
+      await addReplyQuote(element, data.reply_to);
+    }
   }
 
   function watchMessages() {
@@ -185,18 +197,20 @@
     state.observer?.disconnect();
 
     state.observer = new MutationObserver(records => {
-      for (const record of records) {
-        for (const node of record.addedNodes) {
-          if (node.nodeType !== 1) continue;
+      records.forEach(record => {
+        record.addedNodes.forEach(node => {
+          if (node.nodeType !== 1) return;
 
           if (node.matches?.(".message")) decorateMessage(node);
-
           node.querySelectorAll?.(".message").forEach(decorateMessage);
-        }
-      }
+        });
+      });
     });
 
-    state.observer.observe(list, { childList: true, subtree: true });
+    state.observer.observe(list, {
+      childList: true,
+      subtree: true
+    });
   }
 
   function installStyles() {
@@ -204,6 +218,7 @@
 
     const style = document.createElement("style");
     style.id = "chatRepliesStyles";
+
     style.textContent = `
       .reply-quote {
         grid-column: 1 / -1;
@@ -257,46 +272,49 @@
     document.addEventListener("click", event => {
       if (event.target.closest("#cancelReplyBtn")) {
         cancelReply();
-      }
-    });
-
-    list.addEventListener("contextmenu", async event => {
-      const messageElement = event.target.closest(".message");
-      if (!messageElement) return;
-
-      event.preventDefault();
-      event.stopPropagation();
-      event.stopImmediatePropagation();
-
-      const messageId = messageElement.dataset.messageId;
-      if (!messageId) return;
-
-      const original = await loadOriginalMessage(messageId);
-      if (!original) {
-        notice("تعذر تحديد الرسالة المطلوبة للرد.", true);
         return;
       }
 
-      selectReply(original, messageElement);
+      const action = event.target.closest(
+        "#messageActionsPanel .message-action-item"
+      );
 
-      const panel = $("messageActionsPanel");
-      panel?.classList.add("hidden");
-    }, true);
+      if (!action) return;
 
-    list.addEventListener("dblclick", async event => {
-      const messageElement = event.target.closest(".message");
-      if (!messageElement) return;
+      const label = action.textContent.trim();
+
+      if (label !== "الرد على الرسالة") return;
 
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
 
-      const original = await loadOriginalMessage(
-        messageElement.dataset.messageId
-      );
+      const selected = state.selectedMessage;
+      if (!selected) {
+        notice("حدد الرسالة التي تريد الرد عليها.", true);
+        return;
+      }
 
-      if (original) selectReply(original, messageElement);
+      const panel = $("messageActionsPanel");
+      panel?.classList.add("hidden");
+
+      selectReply(selected.message, selected.element);
+      state.selectedMessage = null;
     }, true);
+
+    function rememberSelectedMessage(event) {
+      const element = event.target.closest(".message");
+      if (!element) return;
+
+      const id = element.dataset.messageId;
+      if (!id) return;
+
+      state.selectedMessage = { id, element };
+    }
+
+    // نترك قائمة خيارات الرسالة الأصلية تعمل دون اعتراض.
+    list.addEventListener("contextmenu", rememberSelectedMessage, true);
+    list.addEventListener("dblclick", rememberSelectedMessage, true);
 
     form.addEventListener("submit", async event => {
       if (!state.reply) return;
@@ -329,16 +347,11 @@
           .single();
 
         if (error) throw error;
+        if (!data?.id) throw new Error("لم يتم تأكيد حفظ الرد.");
 
         input.value = "";
         cancelReply();
-
         notice("تم إرسال ردك بنجاح.");
-
-        // تظهر الرسالة عبر اتصال Realtime الخاص بالمحادثة.
-        if (!data?.id) {
-          throw new Error("لم يتم تأكيد حفظ الرد.");
-        }
 
       } catch (error) {
         console.error("HANOON reply:", error);
@@ -363,9 +376,7 @@
     const { data, error } = await db.auth.getUser();
     if (error || !data?.user) return;
 
-    const params = new URLSearchParams(location.search);
-    const conversationId = params.get("id");
-
+    const conversationId = new URLSearchParams(location.search).get("id");
     if (!conversationId) return;
 
     state.db = db;
@@ -374,7 +385,6 @@
 
     bindEvents();
 
-    // انتظر ظهور الرسائل التي يحملها ملف المحادثة الأساسي.
     setTimeout(watchMessages, 500);
     setTimeout(watchMessages, 1500);
   }
