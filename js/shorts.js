@@ -11,7 +11,11 @@ import "./supabase-client.js";
     user: null,
     profile: null,
     videos: [],
-    busy: false
+    busy: false,
+    muted: true,
+    activeIndex: -1,
+    observer: null,
+    playRequest: 0
   };
 
   const ui = {
@@ -23,12 +27,15 @@ import "./supabase-client.js";
   };
 
   function notify(message, type = "") {
+    if (!ui.notice) return;
+
     ui.notice.textContent = message;
     ui.notice.style.display = "block";
     ui.notice.style.borderColor =
       type === "error" ? "#ff7898" : "#8c72f5";
 
     clearTimeout(notify.timer);
+
     notify.timer = setTimeout(() => {
       ui.notice.style.display = "none";
     }, 4500);
@@ -76,19 +83,44 @@ import "./supabase-client.js";
   function icon(name) {
     const paths = {
       heart: '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/>',
+
       comment: '<path d="M21 11.5a8.5 8.5 0 0 1-9 8.5 9 9 0 0 1-4-.9L3 21l1.9-4.5A8.5 8.5 0 1 1 21 11.5Z"/>',
+
       share: '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.7 6.6-4.4m-6.6 9 6.6 4.4"/>',
+
       volume: '<path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7m3-10a9 9 0 0 1 0 13"/>',
-      play: '<path d="m8 5 12 7-12 7Z"/>'
+
+      muted: '<path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="m16 9 5 6m0-6-5 6"/>',
+
+      play: '<path d="m8 5 12 7-12 7Z"/>',
+
+      pause: '<path d="M8 5h3v14H8zM15 5h3v14h-3z"/>'
     };
 
-    return `<svg viewBox="0 0 24 24" aria-hidden="true">${paths[name] || ""}</svg>`;
+    return `
+      <svg
+        viewBox="0 0 24 24"
+        width="25"
+        height="25"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        ${paths[name] || ""}
+      </svg>
+    `;
   }
 
   function showEmpty(message) {
+    if (!ui.feed) return;
+
     const box = document.createElement("div");
     box.className = "empty";
     box.textContent = message;
+
     ui.feed.replaceChildren(box);
   }
 
@@ -126,7 +158,9 @@ import "./supabase-client.js";
     state.videos = data || [];
 
     if (!state.videos.length) {
-      showEmpty("لا توجد فيديوهات قصيرة حتى الآن. كن أول من يشارك فيديو في هنون.");
+      showEmpty(
+        "لا توجد فيديوهات قصيرة حتى الآن. كن أول من يشارك فيديو في هنون."
+      );
       return;
     }
 
@@ -135,9 +169,9 @@ import "./supabase-client.js";
 
   async function getInteractions() {
     const ids = state.videos.map(video => video.id);
-    const users = [...new Set(
-      state.videos.map(video => video.user_id)
-    )];
+    const users = [
+      ...new Set(state.videos.map(video => video.user_id))
+    ];
 
     if (!ids.length) {
       return {
@@ -166,6 +200,7 @@ import "./supabase-client.js";
     ]);
 
     const failed = results.find(result => result.error);
+
     if (failed) throw failed.error;
 
     const [profilesResult, likesResult, mineResult] = results;
@@ -218,12 +253,30 @@ import "./supabase-client.js";
     card.dataset.videoId = video.id;
 
     const media = document.createElement("video");
+
     media.src = videoURL(video.media_path);
-    media.controls = true;
+    media.controls = false;
     media.playsInline = true;
-    media.preload = "metadata";
+    media.preload = "none";
     media.loop = true;
+    media.muted = state.muted;
+
+    media.setAttribute("playsinline", "");
+    media.setAttribute("webkit-playsinline", "");
     media.setAttribute("aria-label", "فيديو قصير");
+
+    media.addEventListener("error", () => {
+      console.warn("HANOON video loading error:", video.id);
+    });
+
+    // الضغط على الفيديو يوقفه أو يستكمل تشغيله.
+    media.addEventListener("click", () => {
+      if (media.paused) {
+        media.play().catch(() => {});
+      } else {
+        media.pause();
+      }
+    });
 
     const shade = document.createElement("div");
     shade.className = "video-shade";
@@ -241,9 +294,13 @@ import "./supabase-client.js";
 
     if (avatarPath) {
       const image = document.createElement("img");
+
       image.src = avatarPath;
       image.alt = name;
-      image.style.cssText = "width:100%;height:100%;object-fit:cover;border-radius:50%";
+      image.loading = "lazy";
+      image.style.cssText =
+        "width:100%;height:100%;object-fit:cover;border-radius:50%";
+
       avatar.appendChild(image);
     } else {
       avatar.textContent = name.charAt(0);
@@ -283,31 +340,69 @@ import "./supabase-client.js";
     });
 
     const comment = createAction("comment", "تعليق", "");
+
     comment.button.addEventListener("click", () => {
       addComment(video.id);
     });
 
     const share = createAction("share", "مشاركة", "");
+
     share.button.addEventListener("click", () => {
       shareVideo(video);
     });
 
-    const sound = createAction("volume", "الصوت", "");
+    const sound = createAction(
+      state.muted ? "muted" : "volume",
+      state.muted ? "تشغيل الصوت" : "كتم الصوت",
+      ""
+    );
+
     sound.button.addEventListener("click", () => {
-      media.muted = !media.muted;
-      sound.button.innerHTML = media.muted
-        ? icon("play")
+      state.muted = !state.muted;
+
+      document.querySelectorAll(".video-card video").forEach(item => {
+        item.muted = state.muted;
+      });
+
+      sound.button.innerHTML = state.muted
+        ? icon("muted")
         : icon("volume");
-      sound.button.title = media.muted
+
+      sound.button.title = state.muted
         ? "تشغيل الصوت"
         : "كتم الصوت";
+    });
+
+    const play = createAction("pause", "إيقاف أو تشغيل", "");
+
+    play.button.addEventListener("click", () => {
+      if (media.paused) {
+        media.play().catch(() => {});
+        play.button.innerHTML = icon("pause");
+        play.button.title = "إيقاف الفيديو";
+      } else {
+        media.pause();
+        play.button.innerHTML = icon("play");
+        play.button.title = "تشغيل الفيديو";
+      }
+    });
+
+    media.addEventListener("play", () => {
+      play.button.innerHTML = icon("pause");
+      play.button.title = "إيقاف الفيديو";
+    });
+
+    media.addEventListener("pause", () => {
+      play.button.innerHTML = icon("play");
+      play.button.title = "تشغيل الفيديو";
     });
 
     actions.append(
       like.wrap,
       comment.wrap,
       share.wrap,
-      sound.wrap
+      sound.wrap,
+      play.wrap
     );
 
     card.append(media, shade, info, actions);
@@ -315,10 +410,75 @@ import "./supabase-client.js";
     return card;
   }
 
+  function getVideoElements() {
+    return [...ui.feed.querySelectorAll(".video-card video")];
+  }
+
+  function prepareVideo(index) {
+    const videos = getVideoElements();
+    const video = videos[index];
+
+    if (!video) return;
+
+    video.preload = "auto";
+
+    if (video.readyState === 0) {
+      video.load();
+    }
+  }
+
+  async function activateVideo(index) {
+    const videos = getVideoElements();
+
+    if (index < 0 || index >= videos.length) return;
+
+    const request = ++state.playRequest;
+
+    state.activeIndex = index;
+
+    videos.forEach((video, i) => {
+      if (i !== index) {
+        video.pause();
+
+        video.preload =
+          Math.abs(i - index) === 1 ? "metadata" : "none";
+      }
+    });
+
+    const current = videos[index];
+
+    // تجهيز الفيديو الحالي والتالي قبل الانتقال.
+    prepareVideo(index);
+    prepareVideo(index + 1);
+
+    current.muted = state.muted;
+
+    try {
+      await current.play();
+
+      // منع تشغيل فيديو قديم إذا انتقل المستخدم بسرعة.
+      if (
+        request !== state.playRequest ||
+        state.activeIndex !== index
+      ) {
+        current.pause();
+      }
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        console.warn("HANOON autoplay:", error);
+      }
+    }
+  }
+
   async function renderVideos() {
     if (!state.videos.length) {
       showEmpty("لا توجد فيديوهات قصيرة حتى الآن.");
       return;
+    }
+
+    if (state.observer) {
+      state.observer.disconnect();
+      state.observer = null;
     }
 
     const data = await getInteractions();
@@ -330,24 +490,45 @@ import "./supabase-client.js";
 
     ui.feed.replaceChildren(fragment);
 
-    const videos = [...ui.feed.querySelectorAll("video")];
+    const cards = [...ui.feed.querySelectorAll(".video-card")];
+
+    if (!cards.length) return;
+
+    state.activeIndex = -1;
 
     if ("IntersectionObserver" in window) {
-      const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          const video = entry.target;
+      state.observer = new IntersectionObserver(entries => {
+        const visible = entries
+          .filter(entry => entry.isIntersecting)
+          .sort(
+            (a, b) => b.intersectionRatio - a.intersectionRatio
+          );
 
-          if (entry.isIntersecting) {
-            videos.forEach(other => {
-              if (other !== video) other.pause();
-            });
-          } else {
-            video.pause();
-          }
-        });
-      }, { threshold: 0.65 });
+        if (!visible.length) return;
 
-      videos.forEach(video => observer.observe(video));
+        const bestCard = visible[0].target;
+        const index = cards.indexOf(bestCard);
+
+        if (index !== -1 && visible[0].intersectionRatio >= 0.65) {
+          activateVideo(index);
+        }
+      }, {
+        root: ui.feed,
+        threshold: [0.25, 0.45, 0.65, 0.8, 0.95]
+      });
+
+      cards.forEach(card => state.observer.observe(card));
+
+      prepareVideo(0);
+      activateVideo(0);
+
+    } else {
+      cards.forEach((card, index) => {
+        const video = card.querySelector("video");
+        video.preload = index <= 1 ? "auto" : "none";
+      });
+
+      activateVideo(0);
     }
   }
 
@@ -374,10 +555,12 @@ import "./supabase-client.js";
         if (error) throw error;
 
         button.classList.remove("liked");
+
         counter.textContent = Math.max(
           0,
           Number(counter.textContent) - 1
         );
+
       } else {
         const { error } = await state.db
           .from("post_likes")
@@ -389,11 +572,15 @@ import "./supabase-client.js";
         if (error) throw error;
 
         button.classList.add("liked");
-        counter.textContent = Number(counter.textContent) + 1;
+
+        counter.textContent =
+          Number(counter.textContent) + 1;
       }
+
     } catch (error) {
       console.error("HANOON Shorts like:", error);
       notify(error.message || "تعذر تسجيل الإعجاب.", "error");
+
     } finally {
       button.disabled = false;
     }
@@ -423,6 +610,7 @@ import "./supabase-client.js";
       if (error) throw error;
 
       notify("تم إضافة تعليقك بنجاح.", "success");
+
     } catch (error) {
       console.error("HANOON Shorts comment:", error);
       notify(error.message || "تعذر إضافة التعليق.", "error");
@@ -442,12 +630,15 @@ import "./supabase-client.js";
     try {
       if (navigator.share) {
         await navigator.share(shareData);
+
       } else if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(shareData.url);
         notify("تم نسخ رابط الفيديو.", "success");
+
       } else {
         notify("المتصفح لا يدعم المشاركة أو النسخ.", "error");
       }
+
     } catch (error) {
       if (error.name !== "AbortError") {
         notify("تعذرت مشاركة الفيديو.", "error");
@@ -505,7 +696,8 @@ import "./supabase-client.js";
 
       uploadedPath = uploaded.path;
 
-      const caption = prompt("اكتب وصفًا للفيديو (اختياري):") || "";
+      const caption =
+        prompt("اكتب وصفًا للفيديو (اختياري):") || "";
 
       const { error: insertError } = await state.db
         .from("posts")
@@ -543,6 +735,7 @@ import "./supabase-client.js";
         error.message || "تعذر رفع الفيديو. حاول مرة أخرى.",
         "error"
       );
+
     } finally {
       state.busy = false;
       ui.upload.disabled = false;
@@ -558,6 +751,36 @@ import "./supabase-client.js";
 
     ui.input.addEventListener("change", () => {
       uploadVideo(ui.input.files?.[0]);
+    });
+
+    // إيقاف الفيديو عند الخروج من الصفحة أو إخفائها.
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        getVideoElements().forEach(video => video.pause());
+      } else if (state.activeIndex >= 0) {
+        activateVideo(state.activeIndex);
+      }
+    });
+
+    // التنقل بلوحة المفاتيح.
+    ui.feed.addEventListener("keydown", event => {
+      const cards = [...ui.feed.querySelectorAll(".video-card")];
+
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+
+        cards[
+          Math.min(state.activeIndex + 1, cards.length - 1)
+        ]?.scrollIntoView({ behavior: "smooth" });
+      }
+
+      if (event.key === "ArrowUp") {
+        event.preventDefault();
+
+        cards[
+          Math.max(state.activeIndex - 1, 0)
+        ]?.scrollIntoView({ behavior: "smooth" });
+      }
     });
   }
 
@@ -575,7 +798,12 @@ import "./supabase-client.js";
 
       if (!data.user) {
         ui.upload.disabled = true;
-        notify("سجل الدخول إلى هنون حتى تتمكن من مشاهدة الفيديوهات ورفعها.", "error");
+
+        notify(
+          "سجل الدخول إلى هنون حتى تتمكن من مشاهدة الفيديوهات ورفعها.",
+          "error"
+        );
+
         showEmpty("يجب تسجيل الدخول أولاً لمشاهدة الفيديوهات القصيرة.");
         return;
       }
@@ -588,8 +816,15 @@ import "./supabase-client.js";
 
     } catch (error) {
       console.error("HANOON Shorts:", error);
-      notify(error.message || "تعذر تشغيل صفحة الفيديوهات.", "error");
-      showEmpty("تعذر تحميل الفيديوهات. تحقق من الاتصال وحاول مرة أخرى.");
+
+      notify(
+        error.message || "تعذر تشغيل صفحة الفيديوهات.",
+        "error"
+      );
+
+      showEmpty(
+        "تعذر تحميل الفيديوهات. تحقق من الاتصال وحاول مرة أخرى."
+      );
     }
   }
 
@@ -618,7 +853,9 @@ import "./supabase-client.js";
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start, { once: true });
+    document.addEventListener("DOMContentLoaded", start, {
+      once: true
+    });
   } else {
     start();
   }
